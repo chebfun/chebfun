@@ -148,5 +148,16 @@ h1 = conv(fg, gg);
 h2 = [conv(f,g), conv(g,g)];
 pass(16) = norm(h1 - h2) < eps*10;
 
+ffg = conv([f f],g);
+fgg = conv(f,[g g]);
+pass(17) = norm(ffg-fgg) < 10*eps;
+
+cheb.x;
+phi = @(t) chebfun(@(x) exp(-x^2/(4*t))/sqrt(4*pi*t));
+f = 1 - 0.2*x - abs(x-0.2);
+fsmooth = conv(f,phi(1e-4),'same');
+pass(18) = norm(f-fsmooth) < .01;
+
+
 end
 

@@ -22,16 +22,21 @@ function h = conv(f, g, varargin)
 %
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
-% Example:
+% Examples:
+%     cheb.x; f = 0.8 - abs(x-0.2);
+%     phi = @(t) chebfun(@(x) exp(-x^2/(4*t))/sqrt(4*pi*t));
+%     fsmooth = conv(f,phi(1e-2),'same');
+%     plot(f,'b',fsmooth','r')
+%
 %     f = chebfun(1/2); g = f;
 %     subplot(2, 2, 1), plot(f)
 %     for j = 2:4, g = conv(f, g); subplot(2, 2, j), plot(g), end
 %     figure, for j = 1:4, subplot(2,2,j), plot(g), g = diff(g); end
 %
-% REFERENCES:
+% Reference:
 %   [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
-%   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages
-%   A1207-A1220, 2014.
+%   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3,
+%   pp. A1207-A1220, 2014.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
