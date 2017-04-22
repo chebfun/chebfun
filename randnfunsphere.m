@@ -1,6 +1,6 @@
 function f = randnfunsphere(dt)
 %RANDNFUN   Random smooth function on the unit sphere
-%   F = RANDNFUNSPHERE(DT) returns a smooth SPHEREFUN maximum
+%   F = RANDNFUNSPHERE(DT) returns a smooth SPHEREFUN of maximum
 %   frequency about 2pi/DT and standard normal distribution N(0,1)
 %   at each point.  F is obtained from a combination of spherical
 %   harmonics with random coefficients.
@@ -9,7 +9,8 @@ function f = randnfunsphere(dt)
 %
 % Examples:
 %
-%   f = randnfunsphere(0.1); std(f), plot(f)
+%   f = randnfunsphere(0.2); std2(f), plot(f)
+%   colormap([0 0 0; 1 1 1]); caxis(norm(caxis,inf)*[-1 1])
 %
 % See also RANDNFUN, RANDNFUN2.
 
@@ -29,9 +30,9 @@ end
 
 function F = sphHarmFixedDegRand(lam,th,l,c)
 %SPHHARMFIXEDDEGRAND Random combination of all spherical harmonics of fixed degree
-%   F = SPHHARMFIXEDDEGRAND(LAM,TH,DEG,C) is a random combination all
+%   F = SPHHARMFIXEDDEGRAND(LAM,TH,DEG,C) is a random combination of all
 %   spherical harmonics of a given degree DEG.  The random coefficients
-%   for the combination are given in C, which must be equal to 2*DEG+1.
+%   for the combination are given in C, which must be of dimension 2*DEG+1.
 
 % Determine whether the input is on a tensor product grid.  If it is then
 % we can speed things up because the associated Legendre functions can be
@@ -69,7 +70,7 @@ F = legendre(l, cos(th));
 Fp = bsxfun(@times,a.*c(l+1:end),F);
 Fn = bsxfun(@times,a(2:end).*c(l:-1:1), F(2:end,:,:));
 
-% If this is a tensor grid the reproduce the associated Legendre functions
+% If this is a tensor grid then reproduce the associated Legendre functions
 % to match the tensor grid structure.
 if ( tensorGrid )
     Fp = repmat(Fp, [1 n]);
