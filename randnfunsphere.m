@@ -1,22 +1,23 @@
 function f = randnfunsphere(dt,type)
-%RANDNFUN   Random smooth function on the unit sphere
+%RANDNFUNSPHERE   Random smooth function on the unit sphere
 %   F = RANDNFUNSPHERE(DT) returns a smooth SPHEREFUN of maximum
 %   frequency about 2pi/DT and standard normal distribution N(0,1)
 %   at each point.  F is obtained from a combination of spherical
 %   harmonics with random coefficients.
 %
-%   F = RANDNFUNSPHERE(DT,'monochrome') similar to the result above, but
-%   uses a fixed degree expansion.
+%   RANDNFUNSPHERE(DT, 'monochrome') is similar, but uses a
+%   fixed-degree expansion so that all components have wave number
+%   about equal to 2pi/DT.
 %
-%   F = RANDNFUNSPHERE() same as RANDNFUNSPHERE(1).
+%   RANDNFUNSPHERE() uses the default value DT = 1.
 %
 % Examples:
 %
 %   f = randnfunsphere(0.2); std2(f), plot(f)
-%   colormap([0 0 0; 1 1 1]); caxis(norm(caxis,inf)*[-1 1])
+%   colormap([0 0 0; 1 1 1]), caxis(norm(caxis,inf)*[-1 1])
 %
 %   f = randnfunsphere(0.2,'monochromatic'); std2(f), plot(f)
-%   colormap([0 0 0; 1 1 1]); caxis(norm(caxis,inf)*[-1 1])
+%   colormap([0 0 0; 1 1 1]), caxis(norm(caxis,inf)*[-1 1])
 %
 % See also RANDNFUN, RANDNFUN2.
 
@@ -29,18 +30,17 @@ end
 
 deg = round(pi/dt);
 
-% We will not use adaptive construction, but will just sample the function
-% on a fine enough grid to exactly resolve it then pass this to the
-% constructor.
+% We do not use adaptive construction, but just sample the function on a
+% fine enough grid to exactly resolve it then pass this to the constructor.
 
 % If there is more than one input argument then check for monochromatic
 % option.
+
 if nargin > 1
-    % We will allow the user to just type anything starting with "m" for
-    % the monochromatic option.
+    % If the user types anything starting with "m", use monochromatic option.
     if ( ischar( type ) && strncmpi(type,'m',1) )
         c = randn(2*deg+1, 1);
-        c = 2*c/sqrt(nnz(c));     % normalize so variance is 1
+        c = sqrt(4*pi/nnz(c))*c;     % normalize so variance is 1
 
         % Sampling grid to exactly recover the random spherical harmonic:
         ll = trigpts(2*deg,[-pi pi]);
@@ -52,7 +52,7 @@ if nargin > 1
     end
 else
     c = randn((deg+1)^2, 1);
-    c = 2*c/sqrt(nnz(c));     % normalize so variance is 1
+    c = sqrt(4*pi/nnz(c))*c;         % normalize so variance is 1
 
     % Sampling grid to exactly recover the random spherical harmonic:
     ll = trigpts(2*deg,[-pi pi]);
@@ -74,7 +74,7 @@ function F = sphHarmDegRand(lam,th,deg,coeffs)
 %   COEFFS, which must be of dimension (DEG+1)^2. LAM and TH are assummed to be
 %   vectors containing slices from the tensor product grid.
 
-% Make th a row vector to better work with matlab's Legendre function. Also
+% Make th a row vector to better work with Matlab's Legendre function. Also
 % Legendre operates on cos(th).
 costh = cos(th(:));
 % Make lam row

@@ -2,7 +2,7 @@ function Y = sphharm(l, m)
 %SPHHARM   Normalized, real-valued, spherical harmonic of degree L, order 
 %   M at a given set of locations on the sphere.
 %
-%   Y = sphHarm(L, M) returns the degree L, order M normalized
+%   Y = SPHHARM(L, M) returns the degree L, order M normalized
 %   spherical harmonic on the sphere expressed in longitude-latitude
 %   coordinates (or azimuthal-elevation).  Here
 %        -pi <= lam <= pi   is the longitude (azimuthal) coordinate, and
@@ -17,8 +17,7 @@ function Y = sphharm(l, m)
 % The degree l must be greater than or equal to the magnitude of the order
 % m:
 if ( l < abs(m) )
-    error('SPHEREFUN:sphHarm', ['The degree of the spherical harmonic '...
-        'must be greater than or equal to the magnitude of the order']);
+    error('SPHEREFUN:sphHarm', 'Degree must be >= order for spherical harmonic ');
 end
 
 if ( abs(l) > 75 )
