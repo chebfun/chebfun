@@ -37,6 +37,8 @@ if isreal(f)
     f = f + 1i*g;
 end
 
+% If F is just a 0 chebfun, don't plot arrows
+
 % Did the user pass in ystretch argument?
 findStretch = find(strcmp(varargin,'ystretch'));
 if ~isempty(findStretch)
@@ -69,21 +71,35 @@ fpend = feval(fp, fdom(end));
 
 % Normalise the slopes
 for aCounter=1:length(fpend)
-    fpend(aCounter) = 0.001*fpend(aCounter)/norm(fpend(aCounter),2);
+    if norm(fpend(aCounter),2) ~= 0
+        fpend(aCounter) = 0.001*fpend(aCounter)/norm(fpend(aCounter),2);
+    end
 end
 
-% Plot the complex valued CHEBFUNs
-pp = plot(f,varargin{:});
+% Plot the complex valued CHEBFUNs. Note that we need treat real valued chebfuns
+% in a special way. The only way we end up with a real f is if the g input from
+% above was 0 (since then, f = f + 1i*g from above just gives the input f). In
+% that case, plot(f) won't call the desired complex chebfun plot. See #2106.
+if ( isreal(f) )
+    pp = plot(f, 0*f, varargin{:});
+else
+    pp = plot(f,varargin{:});
+end
 
-% Loop through the pieces, and plot arrows at the end
+
+% Loop through the pieces, and plot arrows at the end. Don't plot any arrows in
+% case where the CHEBFUN column is a zero chebfun:
+isz = iszero(f);
 for aCounter=1:length(fend)
-    % Create a vector of arrow annotations, then set their properties below
-    h(aCounter) = annotation('arrow');
-    set(h(aCounter),'parent', gca, ...
-        'position', [real(fend(aCounter)) imag(fend(aCounter)) ...
-            real(fpend(aCounter)) ystretch*imag(fpend(aCounter))], ...
-        'HeadLength', markerSize, 'HeadWidth', markerSize, ...
-        'Color', pp(aCounter).Color, varargin{:});
+    h(aCounter) = annotation('arrow','Visible','off');
+    if ( ~isz(aCounter) ) 
+        set(h(aCounter),'parent', gca, ...
+            'position', [real(fend(aCounter)) imag(fend(aCounter)) ...
+                real(fpend(aCounter)) ystretch*imag(fpend(aCounter))], ...
+            'HeadLength', markerSize, 'HeadWidth', markerSize, ...
+            'Color', pp(aCounter).Color, ...
+            'Visible', 'on', varargin{:});
+    end
 end
 
 % Return a handle to the graphic objects if method called with an output. Note
