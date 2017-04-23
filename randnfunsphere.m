@@ -15,6 +15,9 @@ function f = randnfunsphere(dt,type)
 %   f = randnfunsphere(0.2); std2(f), plot(f)
 %   colormap([0 0 0; 1 1 1]); caxis(norm(caxis,inf)*[-1 1])
 %
+%   f = randnfunsphere(0.2,'monochromatic'); std2(f), plot(f)
+%   colormap([0 0 0; 1 1 1]); caxis(norm(caxis,inf)*[-1 1])
+%
 % See also RANDNFUN, RANDNFUN2.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
@@ -40,7 +43,8 @@ if nargin > 1
         c = 2*c/sqrt(nnz(c));     % normalize so variance is 1
 
         % Sampling grid to exactly recover the random spherical harmonic:
-        [ll,tt] = meshgrid(trigpts(2*deg,[-pi pi]),linspace(0,pi,2*deg));
+        ll = trigpts(2*deg,[-pi pi]);
+        tt = linspace(0,pi,2*deg);
         f = spherefun( sphHarmFixedDegRand(ll,tt,deg,c) );
     else
         error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnkown', ...
@@ -51,7 +55,8 @@ else
     c = 2*c/sqrt(nnz(c));     % normalize so variance is 1
 
     % Sampling grid to exactly recover the random spherical harmonic:
-    [ll,tt] = meshgrid(trigpts(2*deg,[-pi pi]),linspace(0,pi,2*deg));
+    ll = trigpts(2*deg,[-pi pi]);
+    tt = linspace(0,pi,2*deg);
     f = spherefun( sphHarmDegRand(ll,tt,deg,c) );
 end
 
@@ -63,29 +68,19 @@ end
 function F = sphHarmDegRand(lam,th,deg,coeffs)
 %SPHHARMDEGRAND Random combination of all spherical harmonics of a given degree 
 %   
-%   F = SPHHARMDEGRAND(LAM,TH,DEG,COEFFS) is a random combination of all
-%   spherical harmonics up to degree DEG.  The random coefficients
-%   for the combination are given in COEFFS, which must be of dimension 
-%   (DEG+1)^2.
+%   F = SPHHARMDEGRAND(LAM,TH,DEG,COEFFS) computes a random combination of all
+%   spherical harmonics up to degree DEG over a tensor product given by 
+%   LAM x TH.  The random coefficients for the combination are given in
+%   COEFFS, which must be of dimension (DEG+1)^2. LAM and TH are assummed to be
+%   vectors containing slices from the tensor product grid.
 
-% Determine whether the input is on a tensor product grid.  If it is then
-% we can speed things up because the associated Legendre functions can be
-% computed more quickly.
-
-[m, n] = size(th);
-tensorGrid = 0;
-if m > 1 && n > 1
-    th = th(:,1);
-    tensorGrid = 1;
-else
-    % Flatten theta so it works with Matlab's Legendre function
-    th = th(:).';
-end
-
-% Flatten lambda so it works with Matlab's Legendre function
+% Make th a row vector to better work with matlab's Legendre function. Also
+% Legendre operates on cos(th).
+costh = cos(th(:));
+% Make lam row
 lam = lam(:).';
-costh = cos(th);
 
+% Handle the zero degree term separately since it's simple
 c = coeffs(1);
 coeffs = coeffs(2:end);
 F = 1/sqrt(4*pi)*c;
@@ -103,7 +98,8 @@ for l = 1:deg
     % Compute the associated Legendre functions of cos(th) (Co-latitude)
     G = legendre(l, costh);
     
-    % Extract out the coefficients:
+    % Extract out the coefficients and then discard the coefficients from
+    % the global coeffs vector.
     c = coeffs(1:(2*l+1));
     coeffs = coeffs((2*l+1)+1:end);
 
@@ -112,45 +108,31 @@ for l = 1:deg
     % Legendre functions and one for the negative.
     Gp = bsxfun(@times,a.*c(l+1:end),G);
     Gn = bsxfun(@times,a(2:end).*c(l:-1:1), G(2:end,:,:));
-
-    % If this is a tensor grid then reproduce the associated Legendre functions
-    % to match the tensor grid structure.
-    if ( tensorGrid )
-        Gp = repmat(Gp, [1 n]);
-        Gn = repmat(Gn, [1 n]);
-    end
-
+    
+    % Permute rows and columns to do the tensor product computation
+    Gp = permute(Gp,[2 3 1]);
+    Gn = permute(Gn,[2 3 1]);
+    
     % Multiply the associated Legendre polynomials by the correct Fourier modes
     % in the longitude variable and sum up the results.
-    F = F + sum(Gp.*cos((0:l)'*lam)) + sum(Gn.*sin((1:l)'*lam));
+    F = F + sum(bsxfun(@mtimes,Gp, permute(cos((0:l)'*lam),[3 2 1])),3) + ...
+            sum(bsxfun(@mtimes,Gn, permute(sin((1:l)'*lam),[3 2 1])),3);
 end
-
-% Reshape so it is the same size as the th and lam that were passed in.
-F = reshape(F, [m n]);
 
 end
 
 function F = sphHarmFixedDegRand(lam,th,l,c)
 %SPHHARMFIXEDDEGRAND Random combination of all spherical harmonics of fixed degree
-%   F = SPHHARMFIXEDDEGRAND(LAM,TH,DEG,C) is a random combination of all
-%   spherical harmonics of a given degree DEG.  The random coefficients
-%   for the combination are given in C, which must be of dimension 2*DEG+1.
+%   F = SPHHARMFIXEDDEGRAND(LAM,TH,DEG,COEFFS) computes a random combination of all
+%   spherical harmonics of a fixed degree DEG over a tensor product given by 
+%   LAM x TH.  The random coefficients for the combination are given in
+%   COEFFS, which must be of dimension 2*DEG+1. LAM and TH are assummed to be
+%   vectors containing slices from the tensor product grid.
 
-% Determine whether the input is on a tensor product grid.  If it is then
-% we can speed things up because the associated Legendre functions can be
-% computed more quickly.
-
-[m, n] = size(th);
-tensorGrid = 0;
-if m > 1 && n > 1
-    th = th(:,1);
-    tensorGrid = 1;
-else
-    % Flatten theta so it works with Matlab's Legendre function
-    th = th(:).';
-end
-
-% Flatten lambda so it works with Matlab's Legendre function
+% Make th a row vector to better work with matlab's Legendre function. Also
+% Legendre operates on cos(th).
+costh = cos(th(:));
+% Make lam row
 lam = lam(:).';
 
 % Normalization terms for the associated Legendre functions.
@@ -164,7 +146,7 @@ a = 2*sqrt((2*l + 1)/4/pi*aa);
 a(1) = a(1)/2;                      % correction for the zero mode.
 
 % Compute the associated Legendre functions of cos(th) (Co-latitude)
-F = legendre(l, cos(th));
+F = legendre(l, costh);
 
 % Multiply the random coefficients by the associated Legendre polynomials.
 % We will do one for the positive (including zero) order associated
@@ -172,18 +154,14 @@ F = legendre(l, cos(th));
 Fp = bsxfun(@times,a.*c(l+1:end),F);
 Fn = bsxfun(@times,a(2:end).*c(l:-1:1), F(2:end,:,:));
 
-% If this is a tensor grid then reproduce the associated Legendre functions
-% to match the tensor grid structure.
-if ( tensorGrid )
-    Fp = repmat(Fp, [1 n]);
-    Fn = repmat(Fn, [1 n]);
-end
+% Permute rows and columns to do the tensor product computation
+Fp = permute(Fp,[2 3 1]);
+Fn = permute(Fn,[2 3 1]);
 
 % Multiply the associated Legendre polynomials by the correct Fourier modes
 % in the longitude variable and sum up the results.
-F = sum(Fp.*cos((0:l)'*lam)) + sum(Fn.*sin((1:l)'*lam));
-% Reshape so it is the same size as the th and lam that were passed in.
-F = reshape(F, [m n]);
+F = sum(bsxfun(@mtimes,Fp, permute(cos((0:l)'*lam),[3 2 1])),3) + ...
+    sum(bsxfun(@mtimes,Fn, permute(sin((1:l)'*lam),[3 2 1])),3);
 
 end
 
