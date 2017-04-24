@@ -17,7 +17,7 @@ function f = randnfun(varargin)
 %   is defined by a a finite Fourier series with independent normally
 %   distributed coefficients of equal variance.
 %
-%   F = RANDNFUN() uses the default value DT = 1.  Combinations such
+%   RANDNFUN() uses the default value DT = 1.  Combinations such
 %   as RANDNFUN(DOM), RANDNFUN('norm', DT) are allowed so long as
 %   DT, if present, precedes N, if present.
 %
