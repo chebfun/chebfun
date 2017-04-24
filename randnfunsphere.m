@@ -36,17 +36,17 @@ elseif nargin == 1
         dt = 1;
         type = 'monochromatic';
     else
-        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnkown', ...
+        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnknown', ...
             'Input argument unknown, options are a positive number or the string ''monochromatic''.');
     end
 elseif nargin == 2
     if ~isnumeric( dt )
-        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnkown', ...
+        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnknown', ...
             'First input argument must be a positive number.');
     end
     
     if ( ~ischar( type ) || ~strncmpi(type,'m',1) )
-        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnkown', ...
+        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnknown', ...
             'Second input argument unknown.  The only option is ''monochromatic''.');
     else
         type = 'monochromatic';
@@ -82,7 +82,7 @@ function F = sphHarmSum(lam,th,deg,coeffs)
 %   
 %   F = SPHHARMSUM(LAM,TH,DEG,COEFFS) computes the linear combination of all
 %   spherical harmonics up to degree DEG over a tensor product grid given by 
-%   LAM x TH using the coefficients specified by COEFFS. LAM and TH are assummed to be
+%   LAM x TH using the coefficients specified by COEFFS. LAM and TH are assumed to be
 %   vectors containing slices from the tensor product grid. COEFFS must
 %   contain (DEG+1)^2 entries, as this is the total number of linearly
 %   independent spherical harmonics <= deg.  The coefficients are assumed
@@ -142,14 +142,14 @@ function F = sphHarmSumFixedDeg(lam,th,l,c)
 %   
 %   F = SPHHARMSUMFIXEDDEG(LAM,TH,DEG,COEFFS) computes the linear combination of all
 %   spherical harmonics of degree DEG over a tensor product grid given by 
-%   LAM x TH using the coefficients specified by COEFFS. LAM and TH are assummed to be
+%   LAM x TH using the coefficients specified by COEFFS. LAM and TH are assumed to be
 %   vectors containing slices from the tensor product grid. COEFFS must
 %   contain 2*DEG+1 entries, as this is the total number of linearly
 %   independent spherical harmonics of degree DEG. The coefficients are assumed
 %   to be ordered corresponding to order of the spherical harmonics.  For
 %   example, for a degree 3 sum, the ordering should be -3,-2,-1,0,1,2,3.
 
-% Make th a row vector to better work with matlab's Legendre function. Also
+% Make th a row vector to better work with Matlab's Legendre function. Also
 % Legendre operates on cos(th).
 costh = cos(th(:));
 % Make lam row
