@@ -64,11 +64,11 @@ tt = linspace(0,pi,2*deg);
 
 if strcmpi(type,'monochromatic');
     c = randn(2*deg+1, 1);
-    c = sqrt(2*pi/nnz(c))*c;     % normalize so variance is 1
+    c = sqrt(4*pi/nnz(c))*c;     % normalize so variance is 1
     f = spherefun( sphHarmSumFixedDeg(ll,tt,deg,c) );
 else
     c = randn((deg+1)^2, 1);
-    c = sqrt(2*pi/nnz(c))*c;         % normalize so variance is 1
+    c = sqrt(4*pi/nnz(c))*c;         % normalize so variance is 1
     f = spherefun( sphHarmSum(ll,tt,deg,c) );
 end
 
@@ -80,15 +80,15 @@ end
 function F = sphHarmSum(lam,th,deg,coeffs)
 %SPHHARMSUM Linear combination of all spherical harmonics of a given degree 
 %   
-%   F = SPHHARMSUM(LAM,TH,DEG,COEFFS) computes the linear combination of all
-%   spherical harmonics up to degree DEG over a tensor product grid given by 
-%   LAM x TH using the coefficients specified by COEFFS. LAM and TH are assummed to be
-%   vectors containing slices from the tensor product grid. COEFFS must
-%   contain (DEG+1)^2 entries, as this is the total number of linearly
-%   independent spherical harmonics <= deg.  The coefficients are assumed
-%   to be ordered corresponding to the degree and order of the spherical
-%   harmonics.  For example, for a degree 3 sum, the ordering should be
-%   0,-1,0,1,-2,-1,0,1,2,-3,-2,-1,0,1,2,3.
+%   F = SPHHARMSUM(LAM,TH,DEG,COEFFS) computes the linear combination of
+%   all spherical harmonics up to degree DEG over a tensor product grid
+%   given by LAM x TH using the coefficients specified by COEFFS. LAM and
+%   TH are assummed to be vectors containing slices from the tensor product
+%   grid. COEFFS must contain (DEG+1)^2 entries, as this is the total
+%   number of linearly independent spherical harmonics <= deg.  The
+%   coefficients are assumed to be ordered corresponding to the degree and
+%   order of the spherical harmonics.  For example, for a degree 3 sum, the
+%   ordering should be 0,-1,0,1,-2,-1,0,1,2,-3,-2,-1,0,1,2,3.
 
 % Make th a row vector to better work with Matlab's Legendre function. Also
 % Legendre operates on cos(th).
@@ -108,8 +108,8 @@ for l = 1:deg
     mask = (pp > abs(mm-(2*l+1)/2));
     kk = mm.*mask + ~mask;
     aa = exp(-sum(log(kk), 2));
-    a = 2*sqrt((2*l + 1)/4/pi*aa);
-    a(1) = a(1)/2;                      % correction for the zero mode.
+    a = sqrt(2*(2*l + 1)/4/pi*aa);
+    a(1) = a(1)/sqrt(2);                   % correction for the zero mode.
 
     % Compute the associated Legendre functions of cos(th) (Co-latitude)
     G = legendre(l, costh);
@@ -140,14 +140,15 @@ end
 function F = sphHarmSumFixedDeg(lam,th,l,c)
 %SPHHARMSUMFIXEDDEG Linear combination of all spherical harmonics of a fixed degree 
 %   
-%   F = SPHHARMSUMFIXEDDEG(LAM,TH,DEG,COEFFS) computes the linear combination of all
-%   spherical harmonics of degree DEG over a tensor product grid given by 
-%   LAM x TH using the coefficients specified by COEFFS. LAM and TH are assummed to be
-%   vectors containing slices from the tensor product grid. COEFFS must
-%   contain 2*DEG+1 entries, as this is the total number of linearly
-%   independent spherical harmonics of degree DEG. The coefficients are assumed
-%   to be ordered corresponding to order of the spherical harmonics.  For
-%   example, for a degree 3 sum, the ordering should be -3,-2,-1,0,1,2,3.
+%   F = SPHHARMSUMFIXEDDEG(LAM,TH,DEG,COEFFS) computes the linear
+%   combination of all spherical harmonics of degree DEG over a tensor
+%   product grid given by LAM x TH using the coefficients specified by
+%   COEFFS. LAM and TH are assummed to be vectors containing slices from
+%   the tensor product grid. COEFFS must contain 2*DEG+1 entries, as this
+%   is the total number of linearly independent spherical harmonics of
+%   degree DEG. The coefficients are assumed to be ordered corresponding to
+%   order of the spherical harmonics.  For example, for a degree 3 sum, the
+%   ordering should be -3,-2,-1,0,1,2,3.
 
 % Make th a row vector to better work with matlab's Legendre function. Also
 % Legendre operates on cos(th).
@@ -162,8 +163,8 @@ pp = (0:l)'*ones(1, 2*l);
 mask = (pp > abs(mm-(2*l+1)/2));
 kk = mm.*mask + ~mask;
 aa = exp(-sum(log(kk), 2));
-a = 2*sqrt((2*l + 1)/4/pi*aa);
-a(1) = a(1)/2;                      % correction for the zero mode.
+a = sqrt(2*(2*l + 1)/4/pi*aa);
+a(1) = a(1)/sqrt(2);                   % correction for the zero mode.
 
 % Compute the associated Legendre functions of cos(th) (Co-latitude)
 F = legendre(l, costh);
