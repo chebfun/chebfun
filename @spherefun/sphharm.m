@@ -87,11 +87,8 @@ sz = size(z);
 z = z(:)'; 
 lam = lam(:)';
 
-% Normalization:
-kk = l-abs(m)+1:l+abs(m);
-aa = exp(-sum(log(kk)));
-a = sqrt((2*l + 1)/4/pi * aa * (2 - double(m==0)));
-Y = legendre(l, z);
+% Get the normalized associated Legendre function.
+Y = (-1)^m/sqrt((1+double(m==0))*pi)*legendre(l, z, 'norm');
 
 % Get the right associated legendre function:
 Y = squeeze(Y(abs(m)+1, :, :));
@@ -100,9 +97,11 @@ Y = squeeze(Y(abs(m)+1, :, :));
 pos = abs(max(0, sign(m+1)));
 
 % Compute the spherical harmonic:
-Y = (pos*cos(m*lam) + (1-pos)*sin(m*lam)).*(a*Y);
+Y = (pos*cos(m*lam) + (1-pos)*sin(abs(m)*lam)).*(Y);
 
 % Reshape so it is the same size as the th and lam that were passed in.
+% Y = reshape(Y, sz);
 Y = reshape(Y, sz);
+% norm(Y(:)-P(:))/norm(Y(:))
 
 end
