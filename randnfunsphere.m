@@ -92,7 +92,7 @@ function F = sphHarmSum(lam,th,deg,coeffs)
 
 % Make th a row vector to better work with Matlab's Legendre function. Also
 % Legendre operates on cos(th).
-costh = cos(th(:));
+costh = cos(th(:)).';
 % Make lam row
 lam = lam(:).';
 
@@ -147,7 +147,7 @@ function F = sphHarmSumFixedDeg(lam,th,l,c)
 
 % Make th a row vector to better work with Matlab's Legendre function. Also
 % Legendre operates on cos(th).
-costh = cos(th(:));
+costh = cos(th(:)).';
 % Make lam row
 lam = lam(:).';
 

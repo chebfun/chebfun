@@ -14,11 +14,11 @@ function Y = sphharm(l, m)
 % The degree l must be greater than or equal to the magnitude of the order
 % m:
 if ( l < abs(m) )
-    error('SPHEREFUN:sphHarm', 'Degree must be >= order for spherical harmonic ');
+    error('CHEBFUN:SPHEREFUN:sphHarm', 'Degree must be >= order for spherical harmonic ');
 end
 
-if ( abs(l) > 75 )
-    error('SPHEREFUN:sphHarm','Only spherical harmonics of degree <= 75.');
+if ( abs(l) > 120 )
+    warning('CHEBFUN:SPHEREFUN:sphHarm:maxDegree','Results may be inaccurate for degrees larger than approximately 120.');
 end
 
 % Developer note: once support for different longitude and latitude domains
@@ -50,8 +50,8 @@ end
 % samples.  
 
 % Construct a matrix of values at the latitude-longitude grid
-[ll,tt] = meshgrid(trigpts( max( 2*abs(m)+2, 4 ), dom(1:2) ),...
-                   linspace( dom(3), dom(4), 2*l+2 ) );
+ll = trigpts( max( 2*abs(m)+2, 4 ), dom(1:2) );
+tt = linspace( dom(3), dom(4), 2*l+2 );
 Y = spherefun( mySphHarm(l,m,ll,tt,coord), dom );
 % Simplify to get the most compressed representation.
 Y = simplify( Y );
@@ -65,8 +65,7 @@ function Y = mySphHarm(l, m, lam, th, coord)
 % following reasons:
 %
 % 1. Stability: it uses the normalized spherical harmonics and the
-% normalization factors are unstable to compute for large l and m.  We
-% should switch to unnormalized spherical harmonics.
+% normalization factors are unstable to compute for large l and m.
 % 
 % 2. Efficiency: the code just uses matlab's `legendre` function for 
 % computing the associated legendre polynomials and this function is dead
@@ -81,27 +80,22 @@ if ( coord == 1 )
 else
     z = cos(th);  % Co-latitude
 end
-    
-% Flatten and transpose th and lam so they work with the legendre function:
-sz = size(z); 
-z = z(:)'; 
-lam = lam(:)';
+
+% Make lam and z row vectors for what follows.
+z = z.';
+% Make lam row
+lam = lam(:).';
 
 % Get the normalized associated Legendre function.
 Y = (-1)^m/sqrt((1+double(m==0))*pi)*legendre(l, z, 'norm');
 
 % Get the right associated legendre function:
-Y = squeeze(Y(abs(m)+1, :, :));
+Y = squeeze(Y(abs(m)+1, :, :)).';
 
 % Determine if the cos or sin term should be added:
 pos = abs(max(0, sign(m+1)));
 
 % Compute the spherical harmonic:
-Y = (pos*cos(m*lam) + (1-pos)*sin(abs(m)*lam)).*(Y);
-
-% Reshape so it is the same size as the th and lam that were passed in.
-% Y = reshape(Y, sz);
-Y = reshape(Y, sz);
-% norm(Y(:)-P(:))/norm(Y(:))
+Y = Y*(pos*cos(m*lam) + (1-pos)*sin(abs(m)*lam));
 
 end
