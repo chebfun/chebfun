@@ -1,12 +1,9 @@
 function Y = sphharm(l, m)
-%SPHHARM   Normalized, real-valued, spherical harmonic of degree L, order 
-%   M at a given set of locations on the sphere.
+%SPHHARM   Real-valued, spherical harmonic of degree L, order M.
 %
-%   Y = SPHHARM(L, M) returns the degree L, order M normalized
-%   spherical harmonic on the sphere expressed in longitude-latitude
-%   coordinates (or azimuthal-elevation).  Here
-%        -pi <= lam <= pi   is the longitude (azimuthal) coordinate, and
-%          0 <= th  <= pi   is the latitude (elevation) coordinate.
+%   Y = SPHHARM(L, M) returns the degree L, order M real-valued 
+%   spherical harmonic on the sphere.  Y is normalized so that its two-norm
+%   over the sphere is 1.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -24,40 +24,52 @@ function f = randnfunsphere(dt,type)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Parse the inputs
 if nargin == 0
     dt = 1;
+    type = 'white';
+elseif nargin == 1
+    % User either called randnspherefun(dt) or randnspherefun('monochromatic')
+    if isnumeric( dt )
+        type = 'white';
+    elseif ( ischar( dt ) && strncmpi(dt,'m',1) )
+        dt = 1;
+        type = 'monochromatic';
+    else
+        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnkown', ...
+            'Input argument unknown, options are a positive number or the string ''monochromatic''.');
+    end
+elseif nargin == 2
+    if ~isnumeric( dt )
+        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnkown', ...
+            'First input argument must be a positive number.');
+    end
+    
+    if ( ~ischar( type ) || ~strncmpi(type,'m',1) )
+        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnkown', ...
+            'Second input argument unknown.  The only option is ''monochromatic''.');
+    else
+        type = 'monochromatic';
+    end
 end
-
+ 
 deg = round(pi/dt);
 
 % We do not use adaptive construction, but just sample the function on a
 % fine enough grid to exactly resolve it then pass this to the constructor.
 
-% If there is more than one input argument then check for monochromatic
-% option.
+% Sampling grid to exactly recover the random spherical harmonic:
+ll = trigpts(2*deg,[-pi pi]);
+tt = linspace(0,pi,2*deg);
 
-if nargin > 1
-    % If the user types anything starting with "m", use monochromatic option.
-    if ( ischar( type ) && strncmpi(type,'m',1) )
-        c = randn(2*deg+1, 1);
-        c = sqrt(4*pi/nnz(c))*c;     % normalize so variance is 1
-
-        % Sampling grid to exactly recover the random spherical harmonic:
-        ll = trigpts(2*deg,[-pi pi]);
-        tt = linspace(0,pi,2*deg);
-        f = spherefun( sphHarmFixedDegRand(ll,tt,deg,c) );
-    else
-        error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnkown', ...
-            'The type of random spherefun is unknown. The only option is monochromatic.');
-    end
+if strcmpi(type,'monochromatic');
+    c = randn(2*deg+1, 1);
+    c = sqrt(2*pi/nnz(c))*c;     % normalize so variance is 1
+    f = spherefun( sphHarmSumFixedDeg(ll,tt,deg,c) );
 else
     c = randn((deg+1)^2, 1);
-    c = sqrt(4*pi/nnz(c))*c;         % normalize so variance is 1
-
-    % Sampling grid to exactly recover the random spherical harmonic:
-    ll = trigpts(2*deg,[-pi pi]);
-    tt = linspace(0,pi,2*deg);
-    f = spherefun( sphHarmDegRand(ll,tt,deg,c) );
+    c = sqrt(2*pi/nnz(c))*c;         % normalize so variance is 1
+    f = spherefun( sphHarmSum(ll,tt,deg,c) );
 end
 
 % Simplify the result
@@ -65,14 +77,18 @@ f = simplify(f);
 
 end
 
-function F = sphHarmDegRand(lam,th,deg,coeffs)
-%SPHHARMDEGRAND Random combination of all spherical harmonics of a given degree 
+function F = sphHarmSum(lam,th,deg,coeffs)
+%SPHHARMSUM Linear combination of all spherical harmonics of a given degree 
 %   
-%   F = SPHHARMDEGRAND(LAM,TH,DEG,COEFFS) computes a random combination of all
-%   spherical harmonics up to degree DEG over a tensor product given by 
-%   LAM x TH.  The random coefficients for the combination are given in
-%   COEFFS, which must be of dimension (DEG+1)^2. LAM and TH are assummed to be
-%   vectors containing slices from the tensor product grid.
+%   F = SPHHARMSUM(LAM,TH,DEG,COEFFS) computes the linear combination of all
+%   spherical harmonics up to degree DEG over a tensor product grid given by 
+%   LAM x TH using the coefficients specified by COEFFS. LAM and TH are assummed to be
+%   vectors containing slices from the tensor product grid. COEFFS must
+%   contain (DEG+1)^2 entries, as this is the total number of linearly
+%   independent spherical harmonics <= deg.  The coefficients are assumed
+%   to be ordered corresponding to the degree and order of the spherical
+%   harmonics.  For example, for a degree 3 sum, the ordering should be
+%   0,-1,0,1,-2,-1,0,1,2,-3,-2,-1,0,1,2,3.
 
 % Make th a row vector to better work with Matlab's Legendre function. Also
 % Legendre operates on cos(th).
@@ -121,13 +137,17 @@ end
 
 end
 
-function F = sphHarmFixedDegRand(lam,th,l,c)
-%SPHHARMFIXEDDEGRAND Random combination of all spherical harmonics of fixed degree
-%   F = SPHHARMFIXEDDEGRAND(LAM,TH,DEG,COEFFS) computes a random combination of all
-%   spherical harmonics of a fixed degree DEG over a tensor product given by 
-%   LAM x TH.  The random coefficients for the combination are given in
-%   COEFFS, which must be of dimension 2*DEG+1. LAM and TH are assummed to be
-%   vectors containing slices from the tensor product grid.
+function F = sphHarmSumFixedDeg(lam,th,l,c)
+%SPHHARMSUMFIXEDDEG Linear combination of all spherical harmonics of a fixed degree 
+%   
+%   F = SPHHARMSUMFIXEDDEG(LAM,TH,DEG,COEFFS) computes the linear combination of all
+%   spherical harmonics of degree DEG over a tensor product grid given by 
+%   LAM x TH using the coefficients specified by COEFFS. LAM and TH are assummed to be
+%   vectors containing slices from the tensor product grid. COEFFS must
+%   contain 2*DEG+1 entries, as this is the total number of linearly
+%   independent spherical harmonics of degree DEG. The coefficients are assumed
+%   to be ordered corresponding to order of the spherical harmonics.  For
+%   example, for a degree 3 sum, the ordering should be -3,-2,-1,0,1,2,3.
 
 % Make th a row vector to better work with matlab's Legendre function. Also
 % Legendre operates on cos(th).
