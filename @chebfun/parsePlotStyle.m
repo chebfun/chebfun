@@ -96,35 +96,59 @@ function style = parseStyle(styleString)
 %   converts into a cell array containing a sequence of name-value pairs 
 %   suitable for passing to MATLAB's built-in plotting functions.
 
-style = {};
 if ( iscell(styleString) )
-    cc = regexp(styleString{1},'[bgrcmykw]', 'match');
-    if ( ~isempty(cc) )
-        % Forgive " 'jumpline', {'b', ...} " by inserting a 'color'.
-        style = ['Color', cc, styleString{2:end}];
+    [styleArgs, isValidStyle] = parseMATLABLineStyle(styleString{1});
+    if ( isValidStyle )
+        % Forgive " 'jumpline', {'b--', ...} " by manually inserting styles.
+        style = [styleArgs, styleString{2:end}];
     else
         style = styleString;
     end
     return
 end
 
-ll = regexp(styleString, '[-:.]+','match');           % style
-if ( ~isempty(ll) )
-    style = [style, 'LineStyle', ll];
-end
+style = parseMATLABLineStyle(styleString);
 
-cc = regexp(styleString,'[bgrcmykw]', 'match');       % color
-if ( ~isempty(cc) )
-    style = [style, 'Color', cc];
-end
-
-mm = regexp(styleString,'[.ox+*sdv^<>ph]', 'match');  % marker
-if ( ~isempty(mm) )
-    style = [style, 'Marker', mm];
-end
-
-if ( any(strcmpi(styleString, {'none', 'off', ''})) ) % off
+% 'off' overrides everything else.
+if ( any(strcmpi(styleString, {'none', 'off', ''})) )
     style = {'LineStyle', 'none'};
 end
 
+end
+
+function [styleArgs, isValidStyle] = parseMATLABLineStyle(str)
+%PARSEMATLABLINESTYLE   Validate and break a MATLAB line style into its pieces.
+%   STYLEARGS = PARSEMATLABLINESTYLE(STR) takes the MATLAB line style
+%   specification in STR and converts it into a cell array STYLEARGS of
+%   'LineStyle', 'Marker', and 'Color' keyword pairs suitable for passing
+%   to built-in PLOT.
+%
+%   [STYLEARGS, ISVALIDLINESTYLE] = PARSEMATLABLINESTYLE(STR) additionally
+%   returns a logical variable that is TRUE when the style supplied in STR is a
+%   well-formed MATLAB line style and FALSE otherwise.
+
+    styleArgs = {};
+
+    % Line style.  (This MUST be done first for '-.' to be parsed correctly.)
+    [indS, indE, ~, line] = regexp(str, '--|-\.|-|:');
+    str(indS:indE) = [];
+    if ( ~isempty(line) )
+        styleArgs = [styleArgs, 'LineStyle', line];
+    end
+
+    % Marker style.
+    [indS, indE, ~, marker] = regexp(str, '[.ox+*sdv^<>ph]');
+    str(indS:indE) = [];
+    if ( ~isempty(marker) )
+        styleArgs = [styleArgs, 'Marker', marker];
+    end
+
+    % Point style.
+    [indS, indE, ~, color] = regexp(str, '[bgrcmykw]');
+    str(indS:indE) = [];
+    if ( ~isempty(color) )
+        styleArgs = [styleArgs, 'Color', color];
+    end
+
+    isValidStyle = isempty(str);
 end

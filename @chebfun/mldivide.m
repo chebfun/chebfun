@@ -7,7 +7,6 @@ function X = mldivide(A, B)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Something is wrong with the comment lines below.
 % TODO: Give an example for each of the cases below.
 
 if ( isscalar(A) )
@@ -26,11 +25,11 @@ elseif ( isnumeric(A) )
     
 elseif ( A(1).isTransposed )
     % [M x INF] * [INF x N] = [M x N]:
-    %        AX = B
-    %   X^* A^* = B^*
-    %   X^* QR  = B^*
+    % AX = B
+    % X^* A^* = B^*
+    % X^* QR�= B^*
     % R^* Q^* X = B
-    %         X = Q(R^{-*} B)
+    % X = Q(R^{-*} B)
     
     [Q, R] = qr(A', 0);
     X = Q * (R'\B);

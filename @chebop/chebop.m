@@ -254,6 +254,7 @@ classdef (InferiorClasses = {?double}) chebop
     properties ( Access = public )
         domain = [];    % Domain of the operator
         op = [];        % The operator
+        opShow = [];    % Pretty print the operator
         lbc = [];       % Left boundary condition(s)
         lbcShow = [];   % Pretty print left boundary condition(s)
         rbc = [];       % Right boundary condition(s)
@@ -365,6 +366,17 @@ classdef (InferiorClasses = {?double}) chebop
         % Clear periodic boundary conditions.
         [N, L] = clearPeriodicBCs(N, L)
         
+        function funArgs = getFunArgs(N)
+            % GETFUNARGS  Get input argument list of a CHEBOP .op fields as a string
+            if ( isempty(N.op) )
+                funArgs = '';
+                return
+            end
+            funString = func2str(N.op);                       % Anon. func. string
+            firstRightParLoc = min(strfind(funString, ')'));  % First ) in string
+            funArgs = funString(3:firstRightParLoc-1);        % Grab variables name
+        end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -418,7 +430,7 @@ classdef (InferiorClasses = {?double}) chebop
         % Solve a linear problem posed with CHEBOP.
         [u, info] = solvebvpLinear(L, rhs, Ninit, displayInfo, pref)
         
-    end
+    end 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     %% METHODS IMPLEMENTED IN THIS FILE:
@@ -584,5 +596,12 @@ classdef (InferiorClasses = {?double}) chebop
                 isempty(N.rbc) && isempty(N.bc) && isempty(N.init);
         end
         
+        function out = hasbc(N)
+            %HASBC   Test for BCs in a CHEBOP.
+            %   HASBC(N) returns logical true if N has a non-empty BC, LBC, or
+            %   RBC field.
+            out = ~isempty(N.rbc) || ~isempty(N.bc) || ~isempty(N.init);
+        end
+       
     end    
 end

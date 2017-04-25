@@ -83,14 +83,15 @@ if(isempty(xk)) % no initial reference is given by the user
     if(n == 0) % polynomial case
         xk = chebpts(N + 2, f.domain([1, end]));
         [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        q = chebfun('1');
+        q = chebfun('1', f.domain([1,end]));
         if(polyOutput)
             varargout = {p,err,status};
         else
             varargout = {p,q,p,err,status};
         end
     else % rational case
-        % A first attempt is using CF as an initial guess
+        % A first attempt is using CF as an initial guess                
+        
         try
         xk = cfInit(f, m, n);
         [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
@@ -98,7 +99,7 @@ if(isempty(xk)) % no initial reference is given by the user
         catch
         disp('CF-based initialization failed, turning to AAA-Lawson')
         status.success = 0; % CF didn't work
-        end
+        end        
         
         % If CF doesn't give a satisfactory answer, we try AAA-Lawson
         if(status.success == 0)
@@ -107,24 +108,31 @@ if(isempty(xk)) % no initial reference is given by the user
             [p,q,rh,err,status] = remezKernel(f, m, n, N, rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
+        
 
         % A final attempt using cumulative distribution functions
         if(status.success == 0)
             xk = cdfInit(f,m,n,symFlag,opts,1);
             [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-            varargout = {p,q,rh,err,status};
+            varargout = {p,q,rh,err,status};            
         end
+        
+
         
         if(status.success == 0)
             xk = cdfInit(f,m,n,symFlag,opts,2);
             [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
+        
+        if(status.success == 0) % all attempts failed
+        disp('Failed to produce the best approximant.')            
+        end
     end
 else  % the user has also given a starting reference
     if(n == 0)
         [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        q = chebfun('1');
+        q = chebfun('1', f.domain([1,end]));
         if(polyOutput)
             varargout = {p,err,status};
         else
@@ -174,7 +182,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
     % Iterate twice during which sample points are refined. 
     % This is done to find the nonsmooth parts of the function
     % and sample more densely there. 
-    for it = 1:2 
+    for it = 1:2 % (maybe helps to run more)
     num = round(NN/length(xk));             
     Z = [];
     for ii = 1:length(xk)-1
@@ -756,7 +764,7 @@ pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);
 
 if isempty(pos)  % Unfortunately, no solution with same signs.
     if(dialogFlag)
-        disp('Trial interpolant too far from optimal.')
+        disp('Trial interpolant too far from optimal...')
     end
     interpSuccess = 0; 
     
@@ -788,7 +796,9 @@ for ii = 1:length(xsupport)
 end
 D = @(x)-D(x); % flip back sign
 
-rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
+%rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
+rh = @(zz) reval(zz, xsupport, N, D, wN, wD);
+
 interpSuccess = 1; 
 
 % Form chebfuns of p and q (note: could be numerically unstable, but
@@ -804,6 +814,51 @@ p = simplify(p); q = simplify(q); % or
 % p = chebfun(p,m+1); qp = chebfun(q,n+1); 
 
 end
+
+function r = reval(zz, xsupport, N, D, wN, wD)
+zv = zz(:);
+r = N(zv)./D(zv);
+ii = find(isnan(r));
+for jj = 1:length(ii)
+    if ( isnan(zv(ii(jj))) || ~any(zv(ii(jj)) == xsupport) )
+        % r(NaN) = NaN is fine.
+        % The second case may happen if r(zv(ii)) = 0/0 at some point.
+    else
+        % Clean up values NaN = inf/inf at support points.
+        % Find the corresponding node and set entry to correct value:
+        pos = zv(ii(jj)) == xsupport; 
+        r(ii(jj)) = -wN(pos)./wD(pos);
+    end    
+end
+r = reshape(r, size(zz));
+end
+
+function r = revalaaa(zz, zj, fj, wj)
+% Evaluate rational function in barycentric form.
+zv = zz(:);                             % vectorize zz if necessary
+CC = 1./bsxfun(@minus, zv, zj.');       % Cauchy matrix
+r = (CC*(wj.*fj))./(CC*wj);             % vector of values
+
+% Deal with input inf: r(inf) = lim r(zz) = sum(w.*f) / sum(w):
+r(isinf(zv)) = sum(wj.*fj)./sum(wj);
+
+% Deal with NaN:
+ii = find(isnan(r));
+for jj = 1:length(ii)
+    if ( isnan(zv(ii(jj))) || ~any(zv(ii(jj)) == zj) )
+        % r(NaN) = NaN is fine.
+        % The second case may happen if r(zv(ii)) = 0/0 at some point.
+    else
+        % Clean up values NaN = inf/inf at support points.
+        % Find the corresponding node and set entry to correct value:
+        r(ii(jj)) = fj(zv(ii(jj)) == zj);
+    end
+end
+
+% Reshape to input format:
+r = reshape(r, size(zz));
+
+end % End of REVAL().
 
 
 function r = rr(zz,xsupport,wN,wD)        % evaluate r at zz
@@ -924,25 +979,32 @@ function rts = findExtrema(f,rh,xk)
 % rh is a handle to p/q
 
 err_handle = @(x) feval(f, x) - rh(x);
-sample_points = linspace(f.domain(1),f.domain(end),5000);
-scale_of_error = norm(err_handle(sample_points),inf);
-relTol =  1e-15 * (vscale(f)/scale_of_error);
-rts = [];
 
 doms = unique([f.domain(1); xk; f.domain(end)]).';
 
 % Initial trial
 if ( isempty(xk) )
+sample_points = linspace(f.domain(1),f.domain(end),5000);
+scale_of_error = norm(err_handle(sample_points),inf);
+relTol =  1e-15 * (vscale(f)/scale_of_error);   
     warning off
     ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
     warning on
     rts = roots(diff(ek), 'nobreaks');
 else
-    for k = 1:length(doms)-1
-        ek = chebfun(@(x) err_handle(x), [doms(k), doms(k+1)], 33, 'eps', 1e-12); 
-        ek = simplify(ek);
-        rts = [rts; roots(diff(ek), 'nobreaks')];  %#ok<AGROW>
+    nn = 2^3; % sampling pts in each subinterval (try low number first)
+    mid = (doms(1:end-1)+doms(2:end))/2; % midpoints
+    rad = (doms(2:end)-doms(1:end-1))/2; % radius
+    xx = ones(nn+1,1)*mid+cos(pi*((nn:-1:0).')/nn)*rad; % sample matrix
+    valerr = feval(f,xx)-rh(xx);
+    rts = zeros(5*length(xk),1);
+    pos = 1;
+    for k = 1:length(doms)-1                
+       rnow = rootsdiff(valerr(:,k),[doms(k) doms(k+1)],err_handle,f,rh);
+       rts(pos:pos+length(rnow)-1) = rnow; % update reference points
+       pos = pos+length(rnow);
     end    
+    rts(pos:end) = [];
 end
 
 % Append end points of the domain.
@@ -1466,7 +1528,7 @@ end
 end % End of PARSEINPUT().
 
 
-%% generate function handle, interpolatory mode
+% generate function handle, interpolatory mode
 function r = rrint(zz,z,w,f)                 % evaluate r at zz
 zv = zz(:);                               % vectorize zz if necessary
 CC = 1./bsxfun(@minus,zv,z.');            % Cauchy matrix 
@@ -1506,3 +1568,41 @@ if ( nargin < 3 ), q = ones(length(z),1); end
             [Q,~] = qr(Q); Q = conj(Q(:,dim+1:end)); % desired null space
 end
 
+function r = rootsdiff(vals,dom,err_handle,f,rh) % vals is either a function or values at chebpts
+% returns the roots of diff(vals) via ChebyshevU-colleague
+if length(vals)<=1
+if nargin<3, n = 2^5; end    
+xx = chebpts(n+1,dom);    
+vals = vals(xx);
+else 
+n = size(vals,1)-1;
+end
+
+tol = 1e-3; % no need for high tolerance
+c = 1;   % initialize
+while ( (abs(c(end)/c(1))>tol) & (n<=2^6) )% sample until happy
+cc = fft([vals(end:-1:1);vals(2:end-1)])/n;
+cc(1) = cc(1)/2;
+c = real(cc(1:n+1)); % coeffs of f=err_handle in T
+cU = c(2:end).*(1:length(c)-1).'; % coeffs of df in U
+% simplify; no need to get full accuracy. Then reorder to highest coeffs first. 
+len = max( find((abs(cU)/norm(cU)>1e-14)) ); cU = flipud(cU(1:len)); 
+if ( length(cU)<=1 | norm(cU)<1e-14 ), r = []; return; end % constant function
+if abs(c(end)/c(1))>tol  % resample at finer grid
+    n = 2*n;
+    vals = feval(err_handle,(dom(1)+dom(end))/2 + ...
+        cos(pi*((n:-1:0).')/n)*(dom(end)-dom(1))/2);
+end
+end
+
+if length(cU)<=1, r = []; return; end % constant function
+
+% now construct colleague matrix for ChebyshevU
+    oh = ones(len-2,1)/2;
+    C = diag(oh,1) + diag(oh,-1);
+    cU = -cU(2:end)/cU(1)/2;cU(2) = cU(2)+.5;
+    C(1,:) = cU.';
+ei = eig(C);
+ei = real(ei(abs(imag(ei))<1e-5 & abs(ei)<=1+1e-7)); % remove irrelevant roots
+r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
+end
