@@ -3,7 +3,7 @@ function y = feval(varargin)
 %   Y = FEVAL( F, X, Y) evaluates a diskfun F at a point (X,Y) in Cartesian
 %   cooridnates, where X and Y are doubles.
 %
-%   Y = FEVAL( F, THETA, R, 'polar') evaluates a diskfun F in polar 
+%   Y = FEVAL( F, THETA, R, 'polar') evaluates a diskfun F in polar
 %   coordinates (THETA,R).  Here THETA and R are doubles representing the
 %   central angle (in radians) and radius in polar coordinates and must be
 %   points in the unit disk.
@@ -17,11 +17,11 @@ function y = feval(varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Figure out if Cartesian or polar coordinates should be used.
-iscart = 1; 
-% Search for user-supplied 'polar' flag in arguments: 
+iscart = 1;
+% Search for user-supplied 'polar' flag in arguments:
 isPolar = find(strcmp(varargin, 'polar'));
 if ( any( isPolar ) )
-    iscart = 0; 
+    iscart = 0;
 end
 
 % Now evaluate
@@ -33,9 +33,9 @@ else
     c1 = varargin{2};
     c2 = varargin{3};
     if ( isnumeric(c1) && isnumeric(c2) ) % Eval at a point
-    tns =0;    
+        tns =0;
         if ( ndims(c1) >= 3 && isequal(size(c1), size(c2)) )
-            % x and y are tensors. 
+            % x and y are tensors.
             sizec1 = size(c1);
             c1 = c1(:);
             c2 = c2(:);
@@ -45,19 +45,19 @@ else
             [theta,r] = cart2pol(c1,c2); % Convert to polar
             if ((any(r > 1+1e-8) )) % Check for points off disk
                 error('CHEBFUN:DISKFUN:FEVAL:pointsNotOnDisk',...
-                ['The specified points to evaluate the function do not '...
-                'lie sufficiently close to the unit disk.']);
-            end 
+                    ['The specified points to evaluate the function do not '...
+                    'lie sufficiently close to the unit disk.']);
+            end
             y = feval@separableApprox(f, theta, r);
         else
             theta = c1;
             r = c2;
             if ( any(r > 1+1e-8) ) % Check for points off disk
                 error('CHEBFUN:DISKFUN:FEVAL:pointsNotOnDisk',...
-                ['The specified points to evaluate the function do not '...
-                'lie sufficiently close to the unit disk.']);
-            end 
-        	y = feval@separableApprox(f, theta, r);
+                    ['The specified points to evaluate the function do not '...
+                    'lie sufficiently close to the unit disk.']);
+            end
+            y = feval@separableApprox(f, theta, r);
         end
         if ( (size(theta, 1) == 1) && (size(r,1) == 1) )
             y = y.';
@@ -68,11 +68,11 @@ else
     elseif ( strcmp(c1, ':') && strcmp(c2, ':') ) % Return the diskfun
         y = f;
     elseif ( strcmp(c1, ':') && isnumeric(c2) ) % Angular slice
-         y = chebfun(@(t) feval(f, bsxfun(@times, c2, cos(t) ), ...
-                             bsxfun(@times, c2, sin(t) ) , 'cart'), [-pi, pi], 'trig');             
+        y = chebfun(@(t) feval(f, bsxfun(@times, c2, cos(t) ), ...
+            bsxfun(@times, c2, sin(t) ) , 'cart'), [-pi, pi], 'trig');
     elseif (isnumeric(c1) && strcmp(c2, ':')) % Radial slice
         y = chebfun(@(t) feval(f, bsxfun(@times, cos(c1), t ),...
-                         bsxfun(@times, sin(c1), t ), 'cart') );                  
+            bsxfun(@times, sin(c1), t ), 'cart') );
     else
         error('CHEBFUN:DISKFUN:feval:argin',['Unknown input '...
             'feval(%s,%s)',c1,c2]);
