@@ -23,7 +23,7 @@ function f = randnfun2(varargin)
 %   f = randnfun2(0.1); mean2(f), plot(f)
 %   f = randnfun2(0.25); plot(roots(f)), axis equal
 %
-% See also RANDNFUN.
+% See also RANDNFUN, RANDNFUNSPHERE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
