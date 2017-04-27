@@ -21,7 +21,7 @@ if nargin == 0
     dt = 1;
 end
  
-fsquare = randnfun2(dt);
+fsquare = randnfun2(dt,1.25*[-1 1 -1 1],'trig');
 f = diskfun(@(x,y) fsquare(x,y));
 
 end
