@@ -4,7 +4,7 @@ function p = interp1(x, y, method, dom)
 %   defined on the domain [X(1), X(end)] corresponding to the polynomial
 %   interpolant through the data Y(j) at points X(j).
 %
-%   If Y is a matrix with more than one column then then Y(:,j) is taken as the
+%   If Y is a matrix with more than one column then Y(:,j) is taken as the
 %   value to be matched at X(j) and P is an array-valued CHEBFUN with each
 %   column corresponding to the appropriate interpolant.
 %
@@ -17,20 +17,20 @@ function p = interp1(x, y, method, dom)
 %       f = chebfun(ff, d);
 %       plot(f, 'k', p, 'r-'), hold on, plot(x, ff(x), 'r.'), grid on
 %
-%   P = CHEBFUN.INTERP1(X, Y, METHOD) specifies alternate interpolation methods.
-%   The default is as described above. (Use an empty matrix [] to specify the
-%   default.) Available methods are:
+%   P = CHEBFUN.INTERP1(X, Y, METHOD) specifies alternatative interpolation
+%   methods.  The default is as described above. (Use an empty matrix []
+%   to specify the default.) Available methods are:
 %       'linear'   - linear interpolation
 %       'spline'   - piecewise cubic spline interpolation (SPLINE)
 %       'pchip'    - shape-preserving piecewise cubic interpolation
 %       'cubic'    - same as 'pchip'
 %       'poly'     - polynomial interpolation, as described above
-%       'trig'     - trigonometric polynomial interpolation, as above.
+%       'trig'     - trigonometric polynomial interpolation, as above
 %       'periodic' - same as the 'trig' option.
 %   
-%   For the trigonometric case, if the end points of the domain coincide
+%   For the trigonometric case, if the endpoints of the domain coincide
 %   with the first and the last interpolation points, the average of the 
-%   corresponding function values are interpolated.
+%   corresponding function values is interpolated.
 % 
 %   P = CHEBFUN.INTERP1(X, Y, METHOD, DOM) restricts the result P to the domain
 %   DOM.
