@@ -11,8 +11,8 @@ function [uOut, tOut, computingTime] = solvepde(varargin)
 
 %% Parse inputs:
 
-% SOLVEPDE has been called by SPIN/SPIN2/SPIN3. The inputs have been parsed in
-% those files and are expeceted to be:
+% SOLVEPDE has been called by SPIN/SPIN2/SPIN3/SPINSPHERE. The inputs have been 
+% parsed in those files and are expeceted to be:
 %
 % OPTION 1.     SOLVEPDE(S, N, DT), S is a SPINOPERATOR object, N is the number
 %               of grid points and DT is the time-step.
