@@ -1643,6 +1643,7 @@ end
 
 function op = str2op(op)
     % Convert string inputs to either numeric format or function_handles.
+    %{
     sop = str2num(op); %#ok<ST2NM> % STR2DOUBLE doesn't support str2double('pi')
     if ( ~isempty(sop) )
         op = sop;
@@ -1654,4 +1655,6 @@ function op = str2op(op)
         end
         op = eval(['@(' depVar{:} ')', op]);
     end
+    %}
+    op = inline(vectorize(op));
 end
