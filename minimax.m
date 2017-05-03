@@ -595,7 +595,7 @@ status.diffx = diffx;
 status.xk = xk;
 status.success = interpSuccess;
  
-if(not(isempty(p)))
+if( ~isempty(p))
     p = simplify(p);
 end
 if ( rationalMode )
@@ -966,6 +966,7 @@ interpSuccess = 1;
 if dialogFlag
     x = chebpts(m+n+1,f.domain([1,end]));
     nodex = zeros(length(x),1);
+    node = @(z) prod(z-t); 
     for ii = 1:length(x)    
         nodex(ii) = node(x(ii)); 
     end 
