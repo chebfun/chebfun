@@ -32,23 +32,24 @@ function varargout = minimax(f, varargin)
 %   [P, ERR] = MINIMAX(...) and [P, Q, R_HANDLE, ERR] = MINIMAX(...) returns
 %   the maximum error ERR.
 %
-%   [P, ERR, STATUS] = MINIMAX(...) and [P, Q, R_HANDLE, ERR, STATUS] = MINIMAX(...)
-%   return a structure array STATUS with the following fields:
-%      STATUS.DELTA  - Obtained tolerance.
-%      STATUS.ITER   - Number of iterations performed.
-%      STATUS.DIFFX  - Maximum correction in last trial reference.
-%      STATUS.XK     - Last trial reference on which the error equioscillates.
+%   [P, ERR, STATUS] = MINIMAX(...) and [P, Q, R_HANDLE, ERR, STATUS] =
+%   MINIMAX(...) return a structure array STATUS with the following fields:
+%      STATUS.DELTA - Obtained tolerance.
+%      STATUS.ITER  - Number of iterations performed.
+%      STATUS.DIFFX - Maximum correction in last trial reference.
+%      STATUS.XK    - Last trial reference on which the error equioscillates.
 %
 %   This code is quite reliable for polynomial approximations but may
 %   sometimes have difficulties in the rational case.
 %
 % References:
 %
-%   [1] B. Beckermann, S. Filip and Y. Nakatsukasa, manuscript in preparation.
+%   [1] B. Beckermann, S. Filip, Y. Nakatsukasa and L. N. Trefethen,
+%   manuscript in preparation.
 %
-%   [2] R. Pachon and L. N. Trefethen, "Barycentric-Remez algorithms for best
-%   polynomial approximation in the chebfun system", BIT Numerical Mathematics,
-%   49:721-742, 2009.
+%   [2] R. Pachon and L. N. Trefethen, "Barycentric-Remez algorithms for
+%   best polynomial approximation in the chebfun system", BIT Numerical
+%   Mathematics, 49:721-742, 2009.
 %
 %   [3] R. Pachon, "Algorithms for Polynomial and Rational Approximation".
 %   D. Phil. Thesis, University of Oxford, 2010 (Chapter 6).
@@ -216,10 +217,10 @@ function xk = AAALawsonInit(f,fHandle, m,n) % AAA-Lawson initialization for
                                             % functions with breakpoints
     NN = max(10*max(m,n),round(1e5/max(m,n))); 
     dom = domain(f);
-    Z = linspace(dom(1),dom(end),NN); 
+    Z = linspace(dom(1), dom(end), NN); 
     F = fHandle(Z);
-    [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);    % 1st AAA-Lawson    
-    xk = findReference(f, fHandle, r,m,n,xk);
+    [r,~,~,~,xk] = aaamn_lawson(F, Z, m, n);    % 1st AAA-Lawson    
+    xk = findReference(f, fHandle, r, m, n, xk);
     
     % Iterate twice during which sample points are refined. 
     % This is done to find the nonsmooth parts of the function
@@ -457,10 +458,15 @@ normf = opts.normf;
 dom = opts.dom;
 
 % If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
-if ( m == -1 )
+if ( m == -1 && dialogFlag)
     q = chebfun(1, dom);
     p = chebfun(0, dom);
     varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,inf), []};    
+    return
+elseif ( m == -1 )
+    q = [];
+    p = [];
+    varargout = {p, q, [], [], []};    
     return
 end
 
@@ -622,7 +628,8 @@ end
 
 % Detect polynomial / rational approximation type and parse degrees.
 polyOutput = true;
-if ( ~mod(nargin - isSilent, 2) ) % Even number of inputs --> polynomial case.
+if ( ~mod(nargin - isSilent, 2) ) % Even number of inputs --> polynomial
+                                  % case.
     m = varargin{1};
     n = 0;
     rationalMode = false;
@@ -679,16 +686,16 @@ end
 end
 
 function [m, n, symFlag] = adjustDegreesForSymmetries(f, m, n)
-%ADJUSTDEGREESFORSYMMETRIES   Adjust rational approximation degrees to account
-%   for function symmetries.
+%ADJUSTDEGREESFORSYMMETRIES   Adjust rational approximation degrees to
+%   account for function symmetries.
 %
-%   [M, N] = ADJUSTDEGREESFORSYMMETRIES(F, M, N) returns new degrees M and N to
-%   correct the defect of the rational approximation if the target function is
-%   even or odd.  In either case, the Walsh table is covered with blocks of
-%   size 2x2, e.g.  for even function the best rational approximant is the same
-%   for types [m/n], [m+1/n], [m/n+1] and [m+1/n+1], with m and n even. This
-%   strategy is similar to the one proposed by van Deun and Trefethen for CF
-%   approximation in Chebfun (see @chebfun/cf.m).
+%   [M, N] = ADJUSTDEGREESFORSYMMETRIES(F, M, N) returns new degrees M and
+%   N to correct the defect of the rational approximation if the target
+%   function is even or odd.  In either case, the Walsh table is covered
+%   with blocks of size 2x2, e.g.  for even function the best rational
+%   approximant is the same for types [m/n], [m+1/n], [m/n+1] and [m+1/n+1],
+%   with m and n even. This strategy is similar to the one proposed by van
+%   Deun and Trefethen for CF approximation in Chebfun (see @chebfun/cf.m).
 
 % Sample piecewise-smooth CHEBFUNs.
 if ( (numel(f.funs) > 1) || (length(f) > 128) )
@@ -907,14 +914,22 @@ interpSuccess = 1;
 % Form chebfuns of p and q (note: could be numerically unstable, but
 % provided for convenience)
 % Find values of node polynomial at Chebyshev points
-x = chebpts(m+n+1,f.domain([1,end]));
-nodex = zeros(length(x),1); for ii = 1:length(x),    nodex(ii) = node(x(ii)); end 
-qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
-pvals = nodex.*feval(N,x);
+if dialogFlag
+    x = chebpts(m+n+1,f.domain([1,end]));
+    nodex = zeros(length(x),1);
+    for ii = 1:length(x)    
+        nodex(ii) = node(x(ii)); 
+    end 
+    qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
+    pvals = nodex.*feval(N,x);
  
-p = chebfun(pvals,f.domain([1,end])); q = chebfun(qvals,f.domain([1,end]));
-p = simplify(p); q = simplify(q); % or
-% p = chebfun(p,m+1); qp = chebfun(q,n+1); 
+    p = chebfun(pvals,f.domain([1,end]));
+    q = chebfun(qvals,f.domain([1,end]));
+    p = simplify(p); q = simplify(q);
+else
+    p = [];
+    q = [];
+end
 
 end
 
@@ -959,22 +974,24 @@ end
 end
 
 
-function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, fHandle, p, rh, Npts, n)
+function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, ...
+                                                  fHandle, p, rh, Npts, n)
 %EXCHANGE   Modify an equioscillation reference using the Remez algorithm.
-%   EXCHANGE(XK, H, METHOD, F, P, RH, NPTS, N) performs one step of the Remez algorithm
-%   for the best rational approximation of the CHEBFUN F of the target function
-%   according to the first method (METHOD = 1), i.e., exchanges only one point,
-%   or the second method (METHOD = 2), i.e., exchanges all the reference points.
-%   XK is a column vector with the reference, H is the levelled error, P is the
-%   numerator, and RH is a function handle, NPTS is the required number of
-%   alternation points, and N is the denominator degree.
+%   EXCHANGE(XK, H, METHOD, F, P, RH, NPTS, N) performs one step of the
+%   Remez algorithm for the best rational approximation of the CHEBFUN F
+%   of the target function according to the first method (METHOD = 1),
+%   i.e., exchanges only one point, or the second method (METHOD = 2),
+%   i.e., exchanges all the reference points. XK is a column vector with
+%   the reference, H is the levelled error, P is the numerator, and RH is a
+%   function handle, NPTS is the required number of alternation points,
+%   and N is the denominator degree.
 %
-%   [XK, NORME, E_HANDLE, FLAG] = EXCHANGE(...) returns the modified reference
-%   XK, the supremum norm of the error NORME (included as an output argument,
-%   since it is readily computed in EXCHANGE and is used later in MINIMAX), a
-%   function handle E_HANDLE for the error, and a FLAG indicating whether there
-%   were at least N+2 alternating extrema of the error to form the next
-%   reference (FLAG = 1) or not (FLAG = 0).
+%   [XK, NORME, E_HANDLE, FLAG] = EXCHANGE(...) returns the modified
+%   reference XK, the supremum norm of the error NORME (included as an
+%   output argument, since it is readily computed in EXCHANGE and is used
+%   later in MINIMAX), a function handle E_HANDLE for the error, and a FLAG
+%   indicating whether there were at least N+2 alternating extrema of the
+%   error to form the next reference (FLAG = 1) or not (FLAG = 0).
 
 % Compute extrema of the error.
 if(n == 0) % polynomial case
@@ -1049,7 +1066,8 @@ function rts = findExtrema(f, fHandle, rh,xk)
 
 err_handle = @(x) fHandle(x) - rh(x);
 
-doms = unique([f.domain(1); xk; f.domain(end)]).';
+doms = unique([f.domain'; xk]).';
+doms = sort(doms,'ascend');
 
 % Initial trial
 if ( isempty(xk) )
@@ -1057,7 +1075,8 @@ sample_points = linspace(f.domain(1),f.domain(end),5000);
 scale_of_error = norm(err_handle(sample_points),inf);
 relTol =  1e-15 * (vscale(f)/scale_of_error);   
     warning off
-    ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
+    ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, ...
+                                               'splitting', 'on');
     warning on
     rts = roots(diff(ek), 'nobreaks');
 else
@@ -1077,7 +1096,8 @@ else
 end
 
 % Append end points of the domain.
-rts = unique([f.domain(1) ; rts; f.domain(end)]);
+rts = unique([f.domain' ; rts]);
+rts = sort(rts,'ascend');
 
 end
 
@@ -1656,7 +1676,8 @@ c = real(cc(1:n+1)); % coeffs of f=err_handle in T
 cU = c(2:end).*(1:length(c)-1).'; % coeffs of df in U
 % simplify; no need to get full accuracy. Then reorder to highest coeffs first. 
 len = max( find((abs(cU)/norm(cU)>1e-14)) ); cU = flipud(cU(1:len)); 
-if ( length(cU)<=1 || norm(cU)<1e-14 ), r = []; return; end % constant function
+%if ( length(cU)<=1 || norm(cU./max(abs(cU)))<1e-14 ), r = []; return; end % constant function
+if ( length(cU)<=1 ), r = []; return; end
 if abs(c(end)/c(1))>tol  % resample at finer grid
     n = 2*n;
     vals = feval(err_handle,(dom(1)+dom(end))/2 + ...
