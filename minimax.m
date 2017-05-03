@@ -795,36 +795,26 @@ if m~=n % force coefficients to lie in null space of Vandermonde
     [Qmnall,~] = qr(Qmn);
 end
 
+%{
     C = zeros(length(xk),length(xsupport)); % Cauchy (basis) matrix
 for ii = 1:length(xk)
     C(ii,:) = 1./(xk(ii)-xsupport);
 end
-
-
+%}
+    C = 1./bsxfun(@minus,xk,xsupport.');    % Cauchy matrix
+    
 % prepare QR factorizations; these lead to symmetric eigenproblem
 if ( m == n )
-    if (m < 20) % take support points old-fashioned way in early stage
-    t = xsupport;     
-    % find Delta diag matrix 
-    Delta = zeros(1,length(xk));
-    for ii = 1:length(xk)
-        % wt(ii) = prod(xk(ii)-xsupport);
-        % wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));
-        % Delta = diag(-(wt.^2)./wxdiff);
-        % do above in a way that avoids underflow, overflow
-        %wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
-        Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
-            - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
-    end
-    Delta = diag(Delta);
-    [Q,R] = qr(sqrt(abs(Delta))*C,0); 
-    else
     % take support points to be equal to every other reference pts, but keep xsupport for sign check
+    ttol = 1e-10;
+    xsupport = (ttol.*xk(1:2:end-1)+(1-ttol).*xk(2:2:end));      
+    C = 1./bsxfun(@minus, xk, xsupport.');        
+    %xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;      
     t = xk(2:2:end);
     % Cstar(ii,ii/2) = |wt'(xi)/sqrt(wx'(xi))|
     Xkdiff = abs(bsxfun(@minus, xk, xk.')); Xkdiff(eye(size(Xkdiff))~=0) = 1; % inf to 0
     Xtdiff = abs(bsxfun(@minus, xk(1:2:end), t.'));
-    ST = sum(log(Xtdiff.'));SX = sum(log(Xkdiff));
+    ST = sum(log(Xtdiff.')); SX = sum(log(Xkdiff));
     VV = exp(ST.'-0.5*SX(1:2:end).');
     VV = VV*ones(1,length(t));
     Div = bsxfun(@minus,xk(1:2:end),t.');
@@ -839,26 +829,24 @@ if ( m == n )
     Cstar = Cstar(ix,:); % sort rows appropriately
     
     % now take QR of Cstar; we need to be careful how to do it as rows have
-    % large dynamical range (though orthogonal columns)
-    %{
+    % large dynamical range (though orthogonal columns)    
     % Householder QR with row sorting, better than [Q,R] = qr(Cstar,0);
     [~,ix] = sort(norms(Cstar'),'descend');
     [Q,R] = qr(Cstar(ix,:),0);
     ixx(ix) = 1:length(ix);
-    Q = Q(ixx,:);    
-    %}
+    Q = Q(ixx,:);        
     
+    %{
     nrm = zeros(1,m+1); % Cholesky QR with col-scaling
     for ii = 1:m+1
-        nrm(ii) = norm(Cstar);
+        nrm(ii) = norm(Cstar(:,ii));
     end
     Cstar = Cstar/diag(nrm);
     CTC = Cstar'*Cstar; 
     R = chol(CTC);
     Q = Cstar/R;
     R = R*diag(nrm);
-    
-    end    
+    %}
 else
     t = xsupport;     
     % find Delta diag matrix 
@@ -907,7 +895,7 @@ vt = [alpha;beta];
 % D(x)*node(x), where node(x) = prod(x-xsupport). 
 
 if ( m <= n ) % values of D at xk
-    Dvals = C(:,1:n+1)*(vt(m+1+1:end,:)); 
+    Dvals = C(:,1:n+1)*vt(m+1+1:end,:); 
 else
     Dvals = C*(Qmn*vt(m+1+1:end,:)); 
 end
@@ -926,7 +914,6 @@ if isempty(pos)  % Unfortunately, no solution with same signs.
         disp('Trial interpolant too far from optimal...')
     end
     interpSuccess = 0; 
-    
     p = []; q = []; rh = []; h = 1e-19;
     return
 elseif ( length(pos) > 1 ) % more than one solution with no sign changes...
