@@ -87,8 +87,8 @@ pass(12) = (norm(f-p,inf)/1e30 - .0135210) < .01;
 % Higher degree abs(x) approximation
 x = chebfun('x');
 f = abs(x);
-[~, ~, ~,err,~] = minimax(f, 20, 20, 'silent');
-pass(13) = abs(err-4.875957512631913e-6)/4.875957512631913e-6 < 1e-3;
+[~, ~, ~,err,~] = minimax(f, 30, 30, 'silent');
+pass(13) = abs(err-2.1739878e-7)/2.1739878e-7 < 1e-3;
 
 % Check correct output formatting for polynomial Remez
 f = chebfun('exp(x)');

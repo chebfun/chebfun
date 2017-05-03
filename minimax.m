@@ -584,7 +584,7 @@ end
 if ( abs(abs(h)-abs(err))/abs(err) > opts.tol && ...
      abs(abs(h)-abs(err))/normf >= 1e-14 && dialogFlag && interpSuccess )
     warning('CHEBFUN:CHEBFUN:minimax:convergence', ...
-        ['Remez algorithm did not converge after ', num2str(iter), ...
+        ['minimax algorithm did not converge after ', num2str(iter), ...
          ' iterations to the tolerance ', num2str(opts.tol), '.']);
 end
  
@@ -756,6 +756,7 @@ function [p, q, rh, h, interpSuccess,xsupport] = ...
 % The function values at the current reference points
 fk = fHandle(xk);
 % Take barycentric support points to be alternating values of two reference points
+% (in the diagonal m=n case with m>20, these will be replaced by t = xk(2:2:end))
 xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;  
 xadd = (xk(2:2:end-1)+xk(3:2:end))/2; % when m~=n, we need more support points
 
@@ -799,32 +800,81 @@ for ii = 1:length(xk)
     C(ii,:) = 1./(xk(ii)-xsupport);
 end
 
-% find Delta diag matrix 
-wt = zeros( 1,length(xk) );
-for ii = 1:length(xk)    
-% wt(ii) = prod(xk(ii)-xsupport);
-% wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
-% Delta = diag(-(wt.^2)./wxdiff);
-% do above in a way that avoids underflow, overflow
-    wt(ii) = exp(sum(log(abs(prod(xk(ii)-xsupport)))));
-%wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));    
-    Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
-        - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
-end
-Delta = diag(Delta); 
-
-%DD = diag(1./norms(sqrt(abs(Delta))*C)); % scaling, might help stability
-DD = eye(size(C,2));
 
 % prepare QR factorizations; these lead to symmetric eigenproblem
 if ( m == n )
-    [Q,R] = qr(sqrt(abs(Delta))*C,0);
-elseif ( m > n )
+    if (m < 20) % take support points old-fashioned way in early stage
+    t = xsupport;     
+    % find Delta diag matrix 
+    Delta = zeros(1,length(xk));
+    for ii = 1:length(xk)
+        % wt(ii) = prod(xk(ii)-xsupport);
+        % wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));
+        % Delta = diag(-(wt.^2)./wxdiff);
+        % do above in a way that avoids underflow, overflow
+        %wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
+        Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
+            - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
+    end
+    Delta = diag(Delta);
+    [Q,R] = qr(sqrt(abs(Delta))*C,0); 
+    else
+    % take support points to be equal to every other reference pts, but keep xsupport for sign check
+    t = xk(2:2:end);
+    % Cstar(ii,ii/2) = |wt'(xi)/sqrt(wx'(xi))|
+    Xkdiff = abs(bsxfun(@minus, xk, xk.')); Xkdiff(eye(size(Xkdiff))~=0) = 1; % inf to 0
+    Xtdiff = abs(bsxfun(@minus, xk(1:2:end), t.'));
+    ST = sum(log(Xtdiff.'));SX = sum(log(Xkdiff));
+    VV = exp(ST.'-0.5*SX(1:2:end).');
+    VV = VV*ones(1,length(t));
+    Div = bsxfun(@minus,xk(1:2:end),t.');
+    C1 = VV./Div; % odd columns of C
+    
+    % Cstar(ii,jj) = |wt(xi)/sqrt(wx'(xi))|/(xi-tj)
+    Xtdiff = abs(bsxfun(@minus, xk(2:2:end), t.')); Xtdiff(eye(size(Xtdiff))~=0) = 1;
+    ST = sum(log(Xtdiff.'));SX = sum(log(Xkdiff));
+    C2 = diag(exp(ST.'-0.5*SX(2:2:end).'));
+    Cstar = [C1;C2];
+    ix = sort([1:m+1 1:m+1]); ix(2:2:end) = ix(2:2:end)+m+1;
+    Cstar = Cstar(ix,:); % sort rows appropriately
+    
+    % now take QR of Cstar; we need to be careful how to do it as rows have
+    % large dynamical range (though orthogonal columns)
+    %{
+    % Householder QR with row sorting, better than [Q,R] = qr(Cstar,0);
+    [~,ix] = sort(norms(Cstar'),'descend');
+    [Q,R] = qr(Cstar(ix,:),0);
+    ixx(ix) = 1:length(ix);
+    Q = Q(ixx,:);    
+    %}
+    
+    nrm = zeros(1,m+1); % Cholesky QR with col-scaling
+    for ii = 1:m+1
+        nrm(ii) = norm(Cstar);
+    end
+    Cstar = Cstar/diag(nrm);
+    CTC = Cstar'*Cstar; 
+    R = chol(CTC);
+    Q = Cstar/R;
+    R = R*diag(nrm);
+    
+    end    
+else
+    t = xsupport;     
+    % find Delta diag matrix 
+    Delta = zeros( 1,length(xk) );
+    for ii = 1:length(xk)
+        Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
+           - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
+    end
+    Delta = diag(Delta);
+    if ( m > n )
     [Q,R] = qr(sqrt(abs(Delta))*C*Qmn,0);    
     [Qall,Rall] = qr(sqrt(abs(Delta))*C*Qmnall,0);
-else % m<n
+    else % m<n
     [Q,R] = qr(sqrt(abs(Delta))*C,0);
     [Qpart,Rpart] = qr(sqrt(abs(Delta))*C*Qmn,0);
+    end
 end
 
 S = diag((-1).^(0:length(xk)-1));
@@ -850,15 +900,14 @@ end
 vt = [alpha;beta];
 
 % conditioning check, might help
-% disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) ...
-%     cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
+% disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) m n])
 
 % Among the n+1 eigenvalues, only one can be the solution. The correct
 % one needs to have no sign changes in the denominator polynomial
 % D(x)*node(x), where node(x) = prod(x-xsupport). 
 
 if ( m <= n ) % values of D at xk
-    Dvals = C(:,1:n+1)*(DD*vt(m+1+1:end,:)); 
+    Dvals = C(:,1:n+1)*(vt(m+1+1:end,:)); 
 else
     Dvals = C*(Qmn*vt(m+1+1:end,:)); 
 end
@@ -889,25 +938,25 @@ h = -d(pos, pos);                 % levelled reference error.
 
 % coefficients for barycentric representations
 if ( m <= n )
-    wD = (DD*vt(m+2:end,pos));
+    wD = vt(m+2:end,pos);
 else
     wD = Qmn*vt(m+2:end,pos);    
 end
 if ( m >= n )
-    wN = DD(1:m+1,1:m+1)*vt(1:m+1,pos);
+    wN = vt(1:m+1,pos);
 else
     wN = Qmn*vt(1:m+1,pos);    
 end
 
 D = @(x) 0; N = @(x) 0;    % form function handle rh = N/D 
-for ii = 1:length(xsupport)
-   D = @(x) D(x) + wD(ii)./(x-xsupport(ii));
-   N = @(x) N(x) + wN(ii)./(x-xsupport(ii));   
+for ii = 1:length(t)
+   D = @(x) D(x) + wD(ii)./(x-t(ii));
+   N = @(x) N(x) + wN(ii)./(x-t(ii));   
 end
 D = @(x)-D(x); % flip back sign
 
 %rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
-rh = @(zz) reval(zz, xsupport, N, D, wN, wD);
+rh = @(zz) reval(zz, t, N, D, wN, wD);
 
 interpSuccess = 1; 
 
