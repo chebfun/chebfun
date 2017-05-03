@@ -1,30 +1,36 @@
 function varargout = minimax(f, varargin)
-%MINIMAX   Best polynomial or rational approximation for real valued chebfuns.
-%   P = MINIMAX(F, M) computes the minimax polynomial approximation of degree M
-%   to the real CHEBFUN F using the Remez algorithm.
+%MINIMAX   Best polynomial or rational approximation for real valued
+%          continuous functions.
+%   P = MINIMAX(F, M) computes the minimax polynomial approximation of
+%   degree M to the real function F using the Remez algorithm. F can
+%   be either a CHEBFUN, a function handle or a string representation
+%   of the function to approximate.
 %
-%   [P, Q] = MINIMAX(F, M, N) computes the minimax rational approximation P/Q
-%   of type (M, N).
+%   [P, Q] = MINIMAX(F, M, N) computes the minimax rational approximation
+%   P/Q of type (M, N).
 %
-%   [P, Q, R_HANDLE] = MINIMAX(F, M, N) additionally returns a function handle
-%   for evaluating P/Q.
+%   [P, Q, R_HANDLE] = MINIMAX(F, M, N) additionally returns a function
+%   handle for evaluating P/Q.
 %
 %   [...] = MINIMAX(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the relative equioscillation error.
 %
 %   [...] = MINIMAX(..., 'display', 'iter') displays output at each iteration.
 %
-%   [...] = MINIMAX(..., 'maxiter', MAXITER) sets the maximum number of allowable
-%   iterations to MAXITER.
+%   [...] = MINIMAX(..., 'maxiter', MAXITER) sets the maximum number of
+%   allowable iterations to MAXITER.
 %
-%   [...] = MINIMAX(..., 'init', XK) allows the user to specify the vector XK as
-%   the starting reference.
+%   [...] = MINIMAX(..., 'init', XK) allows the user to specify the vector
+%   XK as the starting reference.
 %
-%   [...] = MINIMAX(..., 'plotfcns', 'error') plots the error after each iteration
-%   while the algorithm executes.
+%   [...] = MINIMAX(..., 'plotfcns', 'error') plots the error after each
+%   iteration while the algorithm executes.
 %
-%   [P, ERR] = MINIMAX(...) and [P, Q, R_HANDLE, ERR] = MINIMAX(...) returns the
-%   maximum error ERR.
+%   [...] = MINIMAX(..., 'silent') turns off all messages regarding the
+%   execution of the algorithm.
+%
+%   [P, ERR] = MINIMAX(...) and [P, Q, R_HANDLE, ERR] = MINIMAX(...) returns
+%   the maximum error ERR.
 %
 %   [P, ERR, STATUS] = MINIMAX(...) and [P, Q, R_HANDLE, ERR, STATUS] = MINIMAX(...)
 %   return a structure array STATUS with the following fields:
@@ -33,8 +39,8 @@ function varargout = minimax(f, varargin)
 %      STATUS.DIFFX  - Maximum correction in last trial reference.
 %      STATUS.XK     - Last trial reference on which the error equioscillates.
 %
-%   This code is quite reliable for polynomial approximations but may sometimes
-%   have difficulties in the rational case.
+%   This code is quite reliable for polynomial approximations but may
+%   sometimes have difficulties in the rational case.
 %
 % References:
 %
@@ -52,9 +58,11 @@ function varargout = minimax(f, varargin)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~isa(f,'chebfun') ) % check if input is chebfun; if not, look for splitting points
+if ( ~isa(f,'chebfun') ) % check if input is chebfun; if not, look for
+                         % splitting points
     dom = [];
     domIndex = 0;
+    
     for k = 1:length(varargin) % look for domain
         if isfloat(varargin{k})
             if length(varargin{k}) == 2
@@ -63,19 +71,18 @@ if ( ~isa(f,'chebfun') ) % check if input is chebfun; if not, look for splitting
             end
         end
     end
+    
     if isempty(dom) % domain not provided, default to [-1,1]
         dom = [-1 1];
     else
         varargin(domIndex) = [];
-    end 
-    if ( ischar(f) )
-        fHandle = str2op(f);
-    else % assume f is a function handle
-        fHandle = f;
     end
-    f = chebfun(f,[dom(1),dom(2)],'splitting','on');
+    
+    fHandle = str2op(vectorize(f));
+
+    f = chebfun(f, dom, 'splitting', 'on');
 else % f is a chebfun input
-    fHandle = @(x) feval(f,x);
+    fHandle = @(x) feval(f, x);
 end
 
 if ( ~isreal(f) )
@@ -89,79 +96,92 @@ if ( numColumns(f) > 1 )
 end
 
 % Parse the inputs.
-[m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = parseInputs(f, varargin{:});
+[m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = ...
+                                   parseInputs(f, varargin{:});
 
 % If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
 if ( m == -1 )
-    q = chebfun(1, f.domain([1,end]));
-    p = chebfun(0, f.domain([1,end]));
+    q = chebfun(1, f.domain([1, end]));
+    p = chebfun(0, f.domain([1, end]));
     varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,'inf'), []};    
     return
 end
 
-if(isempty(xk)) % no initial reference is given by the user
+if ( isempty(xk) ) % no initial reference is given by the user
     % Several initialization attempts are made
-    if(n == 0) % polynomial case
+    if ( n == 0 ) % polynomial case
         xk = chebpts(N + 2, f.domain([1, end]));
-        [p,err,status] = minimaxKernel(f, fHandle,m, n, N, rationalMode, xk, opts, 1);
-        q = chebfun('1', f.domain([1,end]));
-        if(polyOutput)
-            varargout = {p,err,status};
+        [p,err,status] = minimaxKernel(f, fHandle,m, n, N, rationalMode,...
+                                       xk, opts, 1);
+        q = chebfun('1', f.domain([1, end]));
+        if ( polyOutput )
+            varargout = {p, err, status};
         else
-            varargout = {p,q,p,err,status};
+            varargout = {p, q, p, err, status};
         end
     else % rational case
         % A first attempt is using CF as an initial guess                
         
         try
-        xk = cfInit(f, fHandle, m, n);
-        [p,q,rh,err,status] = minimaxKernel(f, fHandle,m, n, N, rationalMode, xk, opts, 1);
-        varargout = {p,q,rh,err,status};
+            xk = cfInit(f, fHandle, m, n);
+            [p,q,rh,err,status] = minimaxKernel(f, fHandle,m, n, N, ...
+                                                rationalMode, xk, opts, 1);
+            varargout = {p, q, rh, err, status};
         catch
-        disp('CF-based initialization failed, turning to AAA-Lawson')
-        status.success = 0; % CF didn't work
+            if ~opts.silentFlag
+                disp('CF-based initialization failed, turning to AAA-Lawson');
+            end
+            status.success = 0; % CF didn't work
         end        
         
         % If CF doesn't give a satisfactory answer, we try AAA-Lawson
-        if(status.success == 0)
-            disp('Trying AAA-Lawson-based initialization...');
+        if ~status.success
+            if ~opts.silentFlag
+                disp('Trying AAA-Lawson-based initialization...');
+            end
             xk = AAALawsonInit(f, fHandle, m, n);
-            [p,q,rh,err,status] = minimaxKernel(f, fHandle, m, n, N, rationalMode, xk, opts, 1);
-            varargout = {p,q,rh,err,status};
+            [p,q,rh,err,status] = minimaxKernel(f, fHandle, m, n, N, ...
+                                                rationalMode, xk, opts, 1);
+            varargout = {p, q, rh, err, status};
         end
         
 
         % A final attempt using cumulative distribution functions
-        if(status.success == 0)
-            xk = cdfInit(f,fHandle,m,n,symFlag,opts,1);
-            [p,q,rh,err,status] = minimaxKernel(f, fHandle, m, n, N, rationalMode, xk, opts, 1);
-            varargout = {p,q,rh,err,status};            
+        if ~status.success
+            xk = cdfInit(f, fHandle, m, n, symFlag, opts, 1);
+            [p,q,rh,err,status] = minimaxKernel(f, fHandle, m, n, N, ...
+                                                rationalMode, xk, opts, 1);
+            varargout = {p, q, rh, err, status};            
         end
         
 
         
-        if(status.success == 0)
-            xk = cdfInit(f,fHandle,m,n,symFlag,opts,2);
-            [p,q,rh,err,status] = minimaxKernel(f, fHandle, m, n, N, rationalMode, xk, opts, 1);
-            varargout = {p,q,rh,err,status};
+        if ~status.success
+            xk = cdfInit(f, fHandle, m, n, symFlag, opts, 2);
+            [p,q,rh,err,status] = minimaxKernel(f, fHandle, m, n, N, ...
+                                                rationalMode, xk, opts, 1);
+            varargout = {p, q, rh, err, status};
         end
         
-        if(status.success == 0) % all attempts failed
-        disp('Failed to produce the best approximant.')            
+        if ~status.success % all attempts failed
+        	error('CHEBFUN:CHEBFUN:minimax:failure', ...
+                'MINIMAX failed to produce the best approximant.')            
         end
     end
 else  % the user has also given a starting reference
-    if(n == 0)
-        [p,err,status] = minimaxKernel(f, fHandle, m, n, N, rationalMode, xk, opts, 1);
+    if ( n == 0 )
+        [p,err,status] = minimaxKernel(f, fHandle, m, n, N, ...
+                                       rationalMode, xk, opts, 1);
         q = chebfun('1', f.domain([1,end]));
-        if(polyOutput)
-            varargout = {p,err,status};
+        if ( polyOutput )
+            varargout = {p, err, status};
         else
-            varargout = {p,q,p,err,status};
+            varargout = {p, q, p, err, status};
         end
     else
-        [p,q,rh,err,status] = minimaxKernel(f, fHandle, m, n, N, rationalMode, xk, opts, 1);
-        varargout = {p,q,rh,err,status};
+        [p,q,rh,err,status] = minimaxKernel(f, fHandle, m, n, N, ...
+                                            rationalMode, xk, opts, 1);
+        varargout = {p, q, rh, err, status};
     end
 end
 
@@ -185,17 +205,18 @@ function xk = cfInit(f, fHandle, m, n)
     % If the above procedure failed to produce a reference
     % with enough oscillation points, use polynomial Remez.
     if ( flag == 0 )
-        [~,~,status] = minimax(f,m+n); xk = status.xk;
+        [~,~,status] = minimax(f, m+n); xk = status.xk;
     end
 end
 
 % Now turn to initialization via AAA-Lawson, this is more expensive than CF
 % but less so than CDF (which follows if this fails). 
 % 
-function xk = AAALawsonInit(f,fHandle, m,n) % AAA-Lawson initialization for functions with breakpoints
+function xk = AAALawsonInit(f,fHandle, m,n) % AAA-Lawson initialization for
+                                            % functions with breakpoints
     NN = max(10*max(m,n),round(1e5/max(m,n))); 
     dom = domain(f);
-    Z = linspace(dom(1),dom(end),NN);   
+    Z = linspace(dom(1),dom(end),NN); 
     F = fHandle(Z);
     [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);    % 1st AAA-Lawson    
     xk = findReference(f, fHandle, r,m,n,xk);
@@ -207,36 +228,38 @@ function xk = AAALawsonInit(f,fHandle, m,n) % AAA-Lawson initialization for func
     num = round(NN/length(xk));             
     Z = [];
     for ii = 1:length(xk)-1
-        Z = [Z linspace(xk(ii),xk(ii+1),num)];  % equispaced sampling between
+        Z = [Z linspace(xk(ii), xk(ii+1),num)]; % equispaced sampling between
                                                 % each pair of reference pts
     end
-    Z = unique(Z); Z = Z(:); F = feval(f,Z);
-    [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n); % Do AAA-Lawson with updated sample pts
-    xk = findReference(f, fHandle, r,m,n,xk); 
+    Z = unique(Z); Z = Z(:); F = feval(f, Z);
+    [r,~,~,~,xk] = aaamn_lawson(F, Z, m, n); % Do AAA-Lawson with updated
+                                             % sample pts
+    xk = findReference(f, fHandle, r, m, n, xk); 
     end    
 end    
 
 % Cumulative distribution function-based initialization of the rational
 % version of the exchange algorithm.
-function xk = cdfInit(f, fHandle, m,n,symFlag,opts,step)
+function xk = cdfInit(f, fHandle, m, n, symFlag, opts, step)
     newlineCounter = 0;
     stepSize = step; % Increase in degree of numerator and/or denominator
                      % at each step.
-    if(symFlag > 0) % Dealing with symmetry (even or odd).
+    if ( symFlag > 0 ) % Dealing with symmetry (even or odd).
         stepSize = 2*step;
     end
-    text = ['Trying CDF-based initialization with step size ', ...
-                                num2str(stepSize),'...'];
-    disp(text);
+    if ~opts.silentFlag
+        text = ['Trying CDF-based initialization with step size ', ...
+                                                num2str(stepSize),'...'];
+        disp(text);
+    end
     
     % The approximation is close to being diagonal; start from an
     % approximation where both the numerator and denominator degrees
     % are decreased by the same value.
-    if(abs(m-n) <= 2)
-
-        minValue = min(m,n);
-        minValue = minValue - rem(minValue,stepSize);
-        k = minValue/stepSize;
+    if ( abs(m-n) <= 2 )
+        minValue = min(m, n);
+        minValue = minValue - rem(minValue, stepSize);
+        k = minValue / stepSize;
         k = k - (3 - step);
         % Starting small degree problem.
         startM = m - stepSize * k;
@@ -246,156 +269,187 @@ function xk = cdfInit(f, fHandle, m,n,symFlag,opts,step)
         % of working without problem for the small degree case;
         % CF is used for now.
         xk = cfInit(f, fHandle, startM, startN);
-        [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, startN, startM+startN, ...
-                                        true, xk, opts, 0);
+        [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, startN, ...
+                                        startM+startN, true, xk, opts, 0);
         % If Remez worked on the small degree problem, start increasing
         % the degrees in both the numerator and denominator.
-        if(status.success == 1)   
+        if status.success   
             while(startM < m - stepSize && (status.success == 1))
                 startM = startM + stepSize;
                 startN = startN + stepSize;
                 newlineCounter = newlineCounter + 1;
                 if(newlineCounter == 10)
                     newlineCounter = 0;
-                    fprintf('\n');
+                    if ~opts.silentFlag
+                        fprintf('\n');
+                    end
                 end
-                fprintf('(%d,%d) ',startM, startN);
+                if ~opts.silentFlag
+                    fprintf('(%d,%d) ',startM, startN);
+                end
                 % Use the distribution information from the previous
                 % reference to construct a starting reference for the new,
                 % larger degree problem.
                 xk = refGen(f, status.xk, startM + startN + 2, symFlag);
-                [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, startN, ...
-                                        startM+startN, true, xk, opts, 0);
+                [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, ...
+                                    startN, startM+startN, true, xk, ...
+                                    opts, 0);
             end
         end
     
 
-        if(status.success == 1)
+        if status.success
             xk = refGen(f, status.xk, m + n + 2, symFlag);
-            fprintf('(%d,%d)\n',m, n);
+            if ~opts.silentFlag
+                fprintf('(%d,%d)\n',m, n);
+            end
         else
             % There was a failure somewhere, use reference from polynomial
             % Remez (might work sometimes).
-            fprintf('\n');
-            text = ['Initialization failed using CDF with step size ', ...
+            if ~opts.silentFlag
+                fprintf('\n');
+                text = ['Initialization failed using CDF with step size ', ...
                                             num2str(stepSize)];
-            disp(text);
-            [~,~,status] = minimax(f,m+n); xk = status.xk;
+                disp(text);
+            end
+            [~,~,status] = minimax(f, m+n); xk = status.xk;
         end
     else
         % Similar strategy to the diagonal case.
-        if(m < n)
+        if ( m < n )
             % Construct the 'corner' instance.
             % (m - stepSize*k, n - stepSize*k), where m - stepSize * k will
             % usually be 0 or 1.
-            minValue = m - rem(m,stepSize);
-            k = minValue/stepSize;
+            minValue = m - rem(m, stepSize);
+            k = minValue / stepSize;
             hM = m - stepSize * k;
             hN = n - stepSize * k;
             
             % Now decrease the degree only in the denominator.
-            hminValue = hN - rem(hN,stepSize);
-            hk = hminValue/stepSize;
+            hminValue = hN - rem(hN, stepSize);
+            hk = hminValue / stepSize;
             startN = hN - stepSize * hk;
             xk = cfInit(f, fHandle, hM, startN);
-            [~,~,~,~,status] = minimaxKernel(f, fHandle, hM, startN, hM+startN, ...
-                                            true, xk, opts, 0);
+            [~,~,~,~,status] = minimaxKernel(f, fHandle, hM, startN, ...
+                                        hM+startN, true, xk, opts, 0);
             % Construct approximations by successively increasing the
             % denominator degree.
-            if(status.success == 1)   
-                while(startN < hN - stepSize && (status.success == 1))
+            if status.success   
+                while ( startN < hN - stepSize && status.success )
                     startN = startN + stepSize;                    
                     xk = refGen(f, status.xk, hM + startN + 2, 0);
                     newlineCounter = newlineCounter + 1;
-                    if(newlineCounter == 10)
+                    if ( newlineCounter == 10 )
                         newlineCounter = 0;
-                        fprintf('\n');
+                        if ~opts.silentFlag
+                            fprintf('\n');
+                        end
                     end
-                    fprintf('(%d,%d) ',hM, startN);
-                    [~,~,~,~,status] = minimaxKernel(f, fHandle, hM, startN, ...
-                                            hM+startN, true, xk, opts, 0);
+                    if ~opts.silentFlag
+                        fprintf('(%d,%d) ',hM, startN);
+                    end
+                    [~,~,~,~,status] = minimaxKernel(f, fHandle, hM, ...
+                                        startN, hM+startN, true, xk, ...
+                                        opts, 0);
                 end
             end
             
-            if(status.success == 1)
-                %xk = refGen(f, status.xk, hM + hN + 2, symFlag);
-                xk = refGen(f, status.xk, hM + hN + 2, 0);
-            else
-                [~,~,status] = minimax(f,hM+hN); xk = status.xk;
+            if ~status.success
+                [~,~,status] = minimax(f, hM + hN);
             end
             
             % Go to the initial degree by now simultaneously increasing
             % both numerator and denominator degree.
             status.success = 1;  
-            while(hM < m - stepSize && (status.success == 1))
+            while ( hM < m - stepSize && status.success )
                     hM = hM + stepSize;
                     hN = hN + stepSize;
                     xk = refGen(f, status.xk, hM + hN + 2, symFlag);
                     newlineCounter = newlineCounter + 1;
                     if(newlineCounter == 10)
                         newlineCounter = 0;
-                        fprintf('\n');
+                        if ~opts.silentFlag
+                            fprintf('\n');
+                        end
                     end
-                    fprintf('(%d,%d) ',hM, hN);
-                    [~,~,~,~,status] = minimaxKernel(f, fHandle, hM, hN, hM+hN, ...
-                                                true, xk, opts, 0);
+                    if ~opts.silentFlag
+                        fprintf('(%d,%d) ', hM, hN);
+                    end
+                    [~,~,~,~,status] = minimaxKernel(f, fHandle, hM, hN, ...
+                                                    hM+hN, true, xk, ...
+                                                    opts, 0);
             end
     
-            if(status.success == 1)
-                %xk = refGen(f, status.xk, m + n + 2, symFlag);
+            if status.success
                 xk = refGen(f, status.xk, m + n + 2, 0);
-                fprintf('(%d,%d)\n',m, n);
+                if ~opts.silentFlag
+                    fprintf('(%d,%d)\n', m, n);
+                end
             else
-                fprintf('\n');
-                text = ['Initialization failed using CDF with step size ', ...
+                if ~opts.silentFlag
+                    fprintf('\n');
+                    text = ['Initialization failed using CDF with step size ', ...
                                 num2str(stepSize)];
-                disp(text);
-                [~,~,status] = minimax(f,m+n); xk = status.xk;
+                    disp(text);
+                end
+                [~,~,status] = minimax(f, m+n); xk = status.xk;
             end     
             
         else % m > n
             % Construction of the 'corner' instance by decreasing the
             % degree in both numerator and denominator.
-            minValue = n - rem(n,stepSize);
-            k = minValue/stepSize;
+            minValue = n - rem(n, stepSize);
+            k = minValue / stepSize;
             startM = m - stepSize * k;
             startN = n - stepSize * k;
             xk = cfInit(f, fHandle, startM, startN);
             [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, startN, ...
-                                       startM+startN, true, xk, opts, 0);
+                                       startM + startN, true, xk, opts, 0);
     
-            if(status.success == 1)   
-                while(startM < m - stepSize && (status.success == 1))
+            if status.success   
+                while ( startM < m - stepSize && status.success )
                     startM = startM + stepSize;
                     startN = startN + stepSize;
                     newlineCounter = newlineCounter + 1;
-                    if(newlineCounter == 10)
+                    if ( newlineCounter == 10 )
                         newlineCounter = 0;
-                        fprintf('\n');
+                        if ~opts.silentFlag
+                            fprintf('\n');
+                        end
                     end
-                    fprintf('(%d,%d) ',startM, startN);
+                    if ~opts.silentFlag
+                        fprintf('(%d,%d) ', startM, startN);
+                    end
                     xk = refGen(f, status.xk, startM + startN + 2, symFlag);
-                    [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, startN, ...
-                                        startM+startN, true, xk, opts, 0);
+                    [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, ...
+                                        startN, startM+startN, true, xk, ...
+                                        opts, 0);
                 end
             end
     
-            if(status.success == 1)
+            if status.success
                 xk = refGen(f, status.xk, m + n + 2, symFlag);
-                fprintf('(%d,%d)\n',m, n);
+                if ~opts.silentFlag
+                    fprintf('(%d,%d)\n', m, n);
+                end
             else
-                fprintf('\n');
-                text = ['Initialization failed using CDF with step size ', ...
-                          num2str(stepSize)];
-                disp(text);
-                [~,~,status] = minimax(f,m+n); xk = status.xk;
+                if ~opts.silentFlag
+                    fprintf('\n');
+                    text = ['Initialization failed using CDF with step size ', ...
+                            num2str(stepSize)];
+                    disp(text);
+                end
+                [~,~,status] = minimax(f, m+n); xk = status.xk;
             end
         end
     end
-    fprintf('\n');
+    if ~opts.silentFlag
+        fprintf('\n');
+    end
 end
 
-function varargout = minimaxKernel(f, fHandle, m, n, N, rationalMode, xk, opts, dialogFlag)
+function varargout = minimaxKernel(f, fHandle, m, n, N, rationalMode, ...
+                                   xk, opts, dialogFlag)
 
 % This core function should only ever be called with a nonempty initial set
 % of xk reference values
@@ -433,10 +487,10 @@ err = normf;
 interpSuccess = 1;
 % Run the main algorithm.
 while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
-    (iter < opts.maxIter) && (diffx > 0) && (interpSuccess == 1))
+    (iter < opts.maxIter) && (diffx > 0) && (interpSuccess == 1) )
     hpre = h;
     % Approximation error is at the level of machine precision, stop.
-    if (abs(abs(h)-abs(err))/normf < 1e-14)
+    if ( abs(abs(h)-abs(err))/normf < 1e-14 )
         break
     end
     % Compute trial function and levelled reference error.
@@ -452,11 +506,13 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
  
         rh = @(x) 0;
         % Update the exchange set using the Remez algorithm with full exchange.
-        [xk, err, err_handle, ~] = exchange(xk, h, 2, f, fHandle, p, rh, N + 2, n);
+        [xk, err, err_handle, ~] = exchange(xk, h, 2, f, fHandle, p, ...
+                                            rh, N + 2, n);
  
         % If overshoot, recompute with one-point exchange.
         if ( err/normf > 1e5 )
-            [xk, err, err_handle, ~] = exchange(xo, h, 1, f, fHandle, p, rh, N + 2, n);
+            [xk, err, err_handle, ~] = exchange(xo, h, 1, f, fHandle, p, ...
+                                                rh, N + 2, n);
         end
  
         % Update max. correction to trial reference and stopping criterion.
@@ -474,7 +530,8 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
     else
         err = inf;
         [p, q, rh, h, interpSuccess, ~] = ...
-            computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, dialogFlag);
+            computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, ...
+                                         dialogFlag, opts.silentFlag);
    
         % Perturb exactly-zero values of the levelled error.
         if ( h == 0 )
@@ -482,7 +539,8 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
         end
          
         if(interpSuccess == 1)
-            [xk, err, err_handle, ~] = exchange(xk, h, 2, f, fHandle, p, rh, N+2, n);
+            [xk, err, err_handle, ~] = exchange(xk, h, 2, f, fHandle, p, ...
+                                                rh, N+2, n);
             diffx = max(abs(xo - xk));
             delta = err - abs(h);
             
@@ -490,7 +548,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
                 % Relative tolerance below machine precision, make it
                 % reasonable.
                 opts.tol = normf*1e-13/norm(err_handle(xk),inf);
-                opts.tol = min( opts.tol, 0.1 );
+                opts.tol = min(opts.tol, 0.1);
             end
         end
     end
@@ -500,7 +558,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
         doPlotIter(xo, xk, err_handle, h, dom);
     end
  
-    if ( opts.displayIter && dialogFlag)
+    if ( opts.displayIter && dialogFlag )
         doDisplayIter(iter, err, h, delta, normf, diffx, m, n);
     end
  
@@ -508,7 +566,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
     iter = iter + 1;
 end
  
-if (n == 0)
+if ( n == 0 )
     % Take best results of all the iterations we ran.
     p = pmin;
     err = errmin;
@@ -518,7 +576,7 @@ end
  
 % Warn the user if we failed to converge.
 if ( abs(abs(h)-abs(err))/abs(err) > opts.tol && ...
-        abs(abs(h)-abs(err))/normf >= 1e-14 && dialogFlag && interpSuccess)
+     abs(abs(h)-abs(err))/normf >= 1e-14 && dialogFlag && interpSuccess )
     warning('CHEBFUN:CHEBFUN:minimax:convergence', ...
         ['Remez algorithm did not converge after ', num2str(iter), ...
          ' iterations to the tolerance ', num2str(opts.tol), '.']);
@@ -546,11 +604,25 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
-function [m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = parseInputs(f, varargin)
+function [m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = ...
+                                             parseInputs(f, varargin)
+
+opts.silentFlag = 0;
+isSilent = 0;
+for k = 1:length(varargin)
+    if ( ischar(varargin{k}) && strcmpi('silent',varargin{k}) )
+        opts.silentFlag = k;
+        isSilent = 1;
+    end
+end
+
+if opts.silentFlag
+    varargin(opts.silentFlag) = [];
+end
 
 % Detect polynomial / rational approximation type and parse degrees.
 polyOutput = true;
-if ( ~mod(nargin, 2) ) % Even number of inputs --> polynomial case.
+if ( ~mod(nargin - isSilent, 2) ) % Even number of inputs --> polynomial case.
     m = varargin{1};
     n = 0;
     rationalMode = false;
@@ -558,7 +630,8 @@ if ( ~mod(nargin, 2) ) % Even number of inputs --> polynomial case.
     varargin = varargin(2:end);
 else                   % Odd number of inputs --> rational case.
     polyOutput = false;
-    [m, n, symFlag] = adjustDegreesForSymmetries(f, varargin{1}, varargin{2});
+    [m, n, symFlag] = adjustDegreesForSymmetries(f, varargin{1}, ...
+                                                 varargin{2});
     if ( n == 0 )
         rationalMode = false;
     else
@@ -571,8 +644,10 @@ N = m + n;
 
 % Parse name-value option pairs.
 if rationalMode
-    opts.tol = 1e-4;                     % Relative tolerance for deciding convergence.
-    opts.maxIter = 10+round(max(m,n)/2); % Maximum number of allowable iterations.
+    opts.tol = 1e-4;                     % Relative tolerance for deciding
+                                         % convergence.
+    opts.maxIter = 10+round(max(m,n)/2); % Maximum number of allowable
+                                         % iterations.
 else
     opts.tol = 1e-14*(N^2 + 10); % Polynomial case is much more robust. 
     opts.maxIter = 30;           % Maximum number of allowable iterations.
@@ -662,7 +737,8 @@ p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
 end
 
 function [p, q, rh, h, interpSuccess,xsupport] = ...
-    computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, dialogFlag)
+    computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, ...
+                                 dialogFlag, silentFlag)
 % computeTrialFunctionRational finds a rational approximation to f at an 
 % iteration of the Remez algorithm. It uses a barycentric representation
 % for improved numerical stability. 
@@ -790,7 +866,7 @@ end
 pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
 
 if isempty(pos)  % Unfortunately, no solution with same signs.
-    if(dialogFlag)
+    if ( dialogFlag && ~silentFlag )
         disp('Trial interpolant too far from optimal...')
     end
     interpSuccess = 0; 
@@ -859,42 +935,6 @@ for jj = 1:length(ii)
 end
 r = reshape(r, size(zz));
 end
-
-function r = revalaaa(zz, zj, fj, wj)
-% Evaluate rational function in barycentric form.
-zv = zz(:);                             % vectorize zz if necessary
-CC = 1./bsxfun(@minus, zv, zj.');       % Cauchy matrix
-r = (CC*(wj.*fj))./(CC*wj);             % vector of values
-
-% Deal with input inf: r(inf) = lim r(zz) = sum(w.*f) / sum(w):
-r(isinf(zv)) = sum(wj.*fj)./sum(wj);
-
-% Deal with NaN:
-ii = find(isnan(r));
-for jj = 1:length(ii)
-    if ( isnan(zv(ii(jj))) || ~any(zv(ii(jj)) == zj) )
-        % r(NaN) = NaN is fine.
-        % The second case may happen if r(zv(ii)) = 0/0 at some point.
-    else
-        % Clean up values NaN = inf/inf at support points.
-        % Find the corresponding node and set entry to correct value:
-        r(ii(jj)) = fj(zv(ii(jj)) == zj);
-    end
-end
-
-% Reshape to input format:
-r = reshape(r, size(zz));
-
-end % End of REVAL().
-
-
-function r = rr(zz,xsupport,wN,wD)        % evaluate r at zz
-zv = zz(:);                               % vectorize zz if necessary
-CC = 1./bsxfun(@minus,zv,xsupport.');     % Cauchy matrix 
-r = -(CC*(wN))./(CC*wD);                  % barycentric approx as vector
-r = reshape(r,size(zz));                  % barycentric approx
-end
-
 
 function [xx, pos] = leja(x, startIndex, nPts) 
 % put NPTS from X in a Leja sequence
@@ -1643,7 +1683,6 @@ end
 
 function op = str2op(op)
     % Convert string inputs to either numeric format or function_handles.
-    %{
     sop = str2num(op); %#ok<ST2NM> % STR2DOUBLE doesn't support str2double('pi')
     if ( ~isempty(sop) )
         op = sop;
@@ -1655,6 +1694,4 @@ function op = str2op(op)
         end
         op = eval(['@(' depVar{:} ')', op]);
     end
-    %}
-    op = inline(vectorize(op));
 end
