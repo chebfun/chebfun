@@ -95,4 +95,18 @@ f = chebfun('exp(x)');
 [p,err] = minimax(f,7);
 pass(14) = (abs(norm(f-p,inf)-err) < 1e-14);
 
+% Test the usage of function handle and string inputs
+[p1,err1] = minimax('exp(x)',5);
+[p2,err2] = minimax(@(x) exp(x), 5);
+[p3,err3] = minimax(chebfun('exp(x)'), 5);
+pass(15) = ((err1 == err2) && (abs(err1 - err3) < 1e-15));
+
+% Test the use of minimax on a singfun object (#1405)
+x = chebfun('x');
+f = sqrt(abs(x-.1));
+[p,err] = minimax(f, 5);
+xx = linspace(-1,1,10000);
+norme = max(abs(f(xx)-p(xx)));
+pass(16) = (abs(err - norme)/err < 1e-4);
+
 end
