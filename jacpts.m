@@ -151,7 +151,8 @@ if ( n < 20 || (n < 100 && ~method_set) || strcmpi(method, 'rec') )
     
 elseif ( strcmpi(method, 'GW') )
     [x, w, v] = gw(n, a, b);  % GW  see [1]
-    w = w/sum(w);
+    % w = w/sum(w);  this is not necessary.
+    % If the above line retained, for (n > = 20) && (a ~= b), sum(w) = 1, which is not true. 
     
 else
     [x, w, v] = asy(n, a, b); % HT  see [2]
