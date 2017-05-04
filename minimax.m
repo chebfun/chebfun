@@ -1,6 +1,6 @@
 function varargout = minimax(f, varargin)
 %MINIMAX   Best polynomial or rational approximation for real valued
-%          continuous functions.
+%          continuous functions. This code supercedes Chebfun's REMEZ. 
 %   P = MINIMAX(F, M) computes the minimax polynomial approximation of
 %   degree M to the real function F using the Remez algorithm. F can
 %   be either a CHEBFUN, a function handle or a string representation
@@ -23,6 +23,7 @@ function varargout = minimax(f, varargin)
 %   [...] = MINIMAX(..., 'init', XK) allows the user to specify the vector
 %   XK as the starting reference.
 %
+%   [...] = MINIMAX(..., 'plot', 'on'), or equivalently 
 %   [...] = MINIMAX(..., 'plotfcns', 'error') plots the error after each
 %   iteration while the algorithm executes.
 %
@@ -675,6 +676,8 @@ for k = 1:2:length(varargin)
         opts.displayIter = true;
     elseif ( strcmpi('plotfcns', varargin{k}) )
         opts.plotIter = true;
+    elseif ( strcmpi('plot', varargin{k}) )
+        opts.plotIter = true;
     elseif ( strcmpi('init', varargin{k}) )
         xk = varargin{k+1};
     else
@@ -1185,6 +1188,8 @@ if ( ~holdState )                        % Return to previous hold state.
     hold off
 end
 xlim(dom)
+err = norm(err_handle(xk),'inf');
+ylim(2*[-err,err])
 legend('Current Ref.', 'Next Ref.', 'Error')
 drawnow
 end
