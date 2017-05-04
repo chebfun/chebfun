@@ -43,8 +43,8 @@ piv = f.pivotValues;
 dom = f.domain;
 
 % Convert rows and columns to chebfuns.
-frows = chebfun(frows, dom(1:2), maxsize);
-fcols = chebfun(fcols, dom(3:4), maxsize);
+frows = simplify(chebfun(frows, dom(1:2), maxsize));
+fcols = simplify(chebfun(fcols, dom(3:4), maxsize));
 
 % Share out scaling:
 sgn = sign( piv ).';

@@ -361,12 +361,21 @@ classdef chebfun
         
         % Interpolate data:
         f = interp1(x, y, method, dom);
+        
+        % Inverse nonuniform fast Fourier transform: 
+        [y, p] = inufft( varargin );
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
         
         % Non-uniform discrete cosine transform:
         y = ndct(u);
+        
+        % Non-uniform fast Fourier transform: 
+        [y, p] = nufft( varargin );
+        
+        % Two-dimensional NUFFT: 
+        f = nufft2( varargin ); 
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
@@ -523,6 +532,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     isPeriodic = false;
     vectorize = false;
     doVectorCheck = true;
+    
     while ( ~isempty(args) )
         if ( isstruct(args{1}) || isa(args{1}, 'chebfunpref') )
             % Preference object input.  (Struct inputs not tied to a keyword
@@ -548,6 +558,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Vector check for function_handles.
             doVectorCheck = false;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'vectorcheck') )
+            % Vector check for function_handles.
+            doVectorCheck = strcmpi(args{2}, 'on');
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'doublelength') )
             % Construct Chebfun twice as long as usually would be constructed.
             flags.doubleLength = true;
@@ -682,6 +696,16 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
                     'Could not parse input argument sequence.');
             end
         end
+    end
+    
+    % Construction from equispaced data requires the number of points to be
+    % specified
+    if ( ~isnumeric(op) && isfield(keywordPrefs, 'enableFunqui') && ...
+            (~isfield(keywordPrefs, 'techPrefs') || ...
+            (isfield(keywordPrefs, 'techPrefs') && ...
+            ~isfield(keywordPrefs.techPrefs,'fixedLength'))) )
+        error('CHEBFUN:CHEBFUN:parseInputs:equi', ...
+            '''equi'' flag requires the number of points to be specified.');
     end
     
     % It doesn't make sense to construct from values and coeffs at the same
@@ -859,6 +883,7 @@ try
                 % be caught in the try-catch statement.
                 error('CHEBFUN:CHEBFUN:vectorCheck:numColumns', ...
                     'Number of columns increases with length(x).');
+                
             end
                 
         end
@@ -899,15 +924,8 @@ catch ME
         rethrow(ME)
         
     else
-        % Try vectorizing.
+        % Try vectorizing. (This is now done silently.)
         op = vectorCheck(op, dom, 1);
-        warning('CHEBFUN:CHEBFUN:vectorcheck:vectorize',...
-        ['Function failed to evaluate on array inputs.\n',...
-        'Vectorizing the function may speed up its evaluation\n',...
-        'and avoid the need to loop over array elements.\n',...
-        'Use ''vectorize'' flag in the CHEBFUN constructor call\n', ...
-        'to avoid this warning message.'])
-    
     end
     
 end

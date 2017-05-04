@@ -122,7 +122,7 @@ else
     if mod(N, 2) == 1
         q = exp(-1i*pi*(N-1)/2*x)*(z.*q + c(1,:));
     else
-        q = exp(-1i*pi*(N/2-1)*x)*q + cos(N/2*pi*z)*c(1,:);
+        q = exp(-1i*pi*(N/2-1)*x)*q + cos(N/2*pi*x)*c(1,:);
     end
 end
 

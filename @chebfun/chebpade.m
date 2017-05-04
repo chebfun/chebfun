@@ -113,7 +113,7 @@ l = max(m, n);
 
 % Limit to fixed number of coefficients if specified.
 if ( M >= 0 )
-    F = chebfun(@(x) feval(F, x), F.ends([1 end]), M + 1);
+    F = chebfun(@(x) feval(F, x), F.domain([1 end]), M + 1);
 elseif ( numel(F.funs) > 1 )
     error('CHEBFUN:CHEBFUN:chebpade:chebpadeClenshawLord:multipleFuns', ...
         ['For a function with multiple funs, the number of coefficients ' ...

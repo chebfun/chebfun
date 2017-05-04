@@ -131,7 +131,7 @@ if ( m == 1 )
 else % system of eqns
     [~, R] = qr(join(v{:}));
     for j = 1:numel(v)
-        v{j} = v{j}/R;
+        v{j} = mrdivide(v{j}, R, 'least-squares');
         v{j} = simplify(v{j});
     end
 end

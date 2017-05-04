@@ -3,22 +3,25 @@ function varargout = roots(varargin)
 %   R = ROOTS(F) returns the zero contours of F as a quasimatrix of chebfuns.
 %   Each column of R is one zero contour. This command only finds contours when
 %   there is a change of sign and it can also group intersecting contours in a
-%   non-optimal way. Contours are computed to, roughly, four digits of
-%   accuracy. In particular, this command cannot reliably compute isolated real
-%   roots of F or zero curves lying close to the boundary of the domain.
+%   non-optimal way.
 %
-%   In the special case when F is of length 1 then the zero contours are found
-%   to full precision.
+%   For a faster plot to graphical accuracy use CONTOUR(F, [0 0]).
 %
-%   R = ROOTS(F, G) returns the isolated points of F and G.
+%   R = ROOTS(F, G, METHOD) allows the underlying rootfinding algorithm to
+%   be specified.  If METHOD = 'ms' or 'marchingsquares', the Marching
+%   Squares algorithm is employed, which is fast but not very robust.
+%   If METHOD = 'resultant', a hidden variable resultant method
+%   based on Bezout resultants is employed, slower but more robust.
+%   See the CHEBFUN2V/ROOTS documentation to see which algorithm is used
+%   when no METHOD is passed.
 %
-%   R = ROOTS(F, G, METHOD) the underlying rootfinding algorithm can be
-%   supplied. If METHOD = 'ms' or METHOD = 'marchingsquares', then the Marching
-%   Squares algorithm is employed. The Marching Squares algorithm is fast but
-%   not particularly robust. If METHOD = 'resultant', then a hidden variable
-%   resultant method based on Bezout resultants is employed. The Resultant
-%   method is slower but far more robust. See the CHEBFUN2V/ROOTS()
-%   documentation to see which algorithm is used when no METHOD is passed.
+% Example:
+%   cheb.xy;
+%   f = x.^2 + y.^2 - 1/4;
+%   roots(x,f)                               % [0 -.5; 0 .5]
+%   c = roots(f);
+%   arclength = sum(abs(diff(c)))            % pi
+%   area = abs(sum(real(c).*diff(imag(c))))  % pi/4
 %
 % See also CHEBFUN2V/ROOTS.
 
