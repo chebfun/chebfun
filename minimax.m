@@ -756,23 +756,35 @@ function [p, q, rh, h, interpSuccess,xsupport] = ...
 % The function values at the current reference points
 fk = fHandle(xk);
 % Take barycentric support points to be alternating values of two reference points
-% (in the diagonal m=n case with m>20, these will be replaced by t = xk(2:2:end))
-xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;  
-xadd = (xk(2:2:end-1)+xk(3:2:end))/2; % when m~=n, we need more support points
+    xsupport = xk(2:2:end);
+    xsuppind = 2:2:length(xk);
+    xadd = xk(1:2:end);
+    xother = xadd; 
+    xotherind = 1:2:length(xk);
+    
+if m~=n % need to add more support points
+    xadd = xother;
+    % take Leja points from the remaining ref pts and add
+    [xadd, ix] = leja(xadd, 1, length(xadd));  
+    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))]; 
+    
+    xother = zeros(m+n+2-max(m,n)-1,1); 
+    xotherind = zeros(m+n+2-max(m,n)-1,1); 
+    xsuppind = zeros(max(m,n)+1,1);
+    iother = 1; isupp = 1;
+    for ii = 1:length(xk)
+        if ~ismember(xk(ii),xsupport)
+            xother(iother) = xk(ii);
+            xotherind(iother) = ii;
+            iother = iother+1;
+        else
+            xsuppind(isupp) = ii;
+            isupp = isupp+1;
+        end
+    end    
+end
+    xsupport = sort(xsupport,'ascend');
 
-if ismember(f.domain(1),xk) == 0      % if endpoints aren't included, add them
-    xadd = [(f.domain(1)+xk(1))/2;xadd]; 
-end
-if ismember(f.domain(end),xk) == 0
-    xadd = [(f.domain(end)+xk(end))/2;xadd];
-end
-num = abs((max(m,n)+1-length(xsupport)));
-[xadd, ~] = leja(xadd, 1, num);  % take Leja points from the remaining ref pts
-
-if m~=n
-    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))]; % add any lacking supp pts
-end
-xsupport = sort(xsupport,'ascend');
 
 if m~=n % force coefficients to lie in null space of Vandermonde
     mndiff = abs(m-n);
@@ -795,74 +807,53 @@ if m~=n % force coefficients to lie in null space of Vandermonde
     [Qmnall,~] = qr(Qmn);
 end
 
-%{
-    C = zeros(length(xk),length(xsupport)); % Cauchy (basis) matrix
-for ii = 1:length(xk)
-    C(ii,:) = 1./(xk(ii)-xsupport);
-end
-%}
     C = 1./bsxfun(@minus,xk,xsupport.');    % Cauchy matrix
     
-% prepare QR factorizations; these lead to symmetric eigenproblem
-if ( m == n )
-    % take support points to be equal to every other reference pts, but keep xsupport for sign check
-    ttol = 1e-10;
-    xsupport = (ttol.*xk(1:2:end-1)+(1-ttol).*xk(2:2:end));      
-    C = 1./bsxfun(@minus, xk, xsupport.');        
-    %xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;      
-    t = xk(2:2:end);
-    % Cstar(ii,ii/2) = |wt'(xi)/sqrt(wx'(xi))|
+    % form matrix Cstar = sqrt(|Delta|)*C
     Xkdiff = abs(bsxfun(@minus, xk, xk.')); Xkdiff(eye(size(Xkdiff))~=0) = 1; % inf to 0
-    Xtdiff = abs(bsxfun(@minus, xk(1:2:end), t.'));
+    Xtdiff = abs(bsxfun(@minus, xother, xsupport.'));
     ST = sum(log(Xtdiff.')); SX = sum(log(Xkdiff));
-    VV = exp(ST.'-0.5*SX(1:2:end).');
-    VV = VV*ones(1,length(t));
-    Div = bsxfun(@minus,xk(1:2:end),t.');
-    C1 = VV./Div; % odd columns of C
+    VV = exp(ST.'-0.5*SX(xotherind).');
+    VV = VV*ones(1,length(xsupport));
+    Div = bsxfun(@minus,xother,xsupport.');
+    C1 = VV./Div; % odd columns of Cstar
     
     % Cstar(ii,jj) = |wt(xi)/sqrt(wx'(xi))|/(xi-tj)
-    Xtdiff = abs(bsxfun(@minus, xk(2:2:end), t.')); Xtdiff(eye(size(Xtdiff))~=0) = 1;
+    Xtdiff = abs(bsxfun(@minus, xsupport, xsupport.')); Xtdiff(eye(size(Xtdiff))~=0) = 1;
     ST = sum(log(Xtdiff.'));SX = sum(log(Xkdiff));
-    C2 = diag(exp(ST.'-0.5*SX(2:2:end).'));
+    C2 = diag(exp(ST.'-0.5*SX(xsuppind).'));
     Cstar = [C1;C2];
-    ix = sort([1:m+1 1:m+1]); ix(2:2:end) = ix(2:2:end)+m+1;
-    Cstar = Cstar(ix,:); % sort rows appropriately
+    Cstar(xsuppind,:) = C2;
+    Cstar(xotherind,:) = C1;    
     
-    % now take QR of Cstar; we need to be careful how to do it as rows have
-    % large dynamical range (though orthogonal columns)    
-    % Householder QR with row sorting, better than [Q,R] = qr(Cstar,0);
+% prepare QR factorizations; these lead to symmetric eigenproblem
+% we need to be careful how to do QR as rows have
+% large dynamical range (though orthogonal columns when m=n)    
+% do Householder QR with row sorting, better than [Q,R] = qr(Cstar,0);
+if ( m == n )
     [~,ix] = sort(norms(Cstar'),'descend');
     [Q,R] = qr(Cstar(ix,:),0);
-    ixx(ix) = 1:length(ix);
-    Q = Q(ixx,:);        
+    ixx(ix) = 1:length(ix);    Q = Q(ixx,:);        
     
     %{
-    nrm = zeros(1,m+1); % Cholesky QR with col-scaling
-    for ii = 1:m+1
-        nrm(ii) = norm(Cstar(:,ii));
-    end
-    Cstar = Cstar/diag(nrm);
-    CTC = Cstar'*Cstar; 
-    R = chol(CTC);
-    Q = Cstar/R;
-    R = R*diag(nrm);
+    nrm = zeros(1,m+1); % Cholesky QR with col-scaling, this works too
+    for ii = 1:m+1, nrm(ii) = norm(Cstar(:,ii));    end
+    Cstar = Cstar/diag(nrm);    CTC = Cstar'*Cstar; 
+    R = chol(CTC);    Q = Cstar/R;    R = R*diag(nrm);
     %}
-else
-    t = xsupport;     
-    % find Delta diag matrix 
-    Delta = zeros( 1,length(xk) );
-    for ii = 1:length(xk)
-        Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
-           - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
-    end
-    Delta = diag(Delta);
-    if ( m > n )
-    [Q,R] = qr(sqrt(abs(Delta))*C*Qmn,0);    
-    [Qall,Rall] = qr(sqrt(abs(Delta))*C*Qmnall,0);
-    else % m<n
-    [Q,R] = qr(sqrt(abs(Delta))*C,0);
-    [Qpart,Rpart] = qr(sqrt(abs(Delta))*C*Qmn,0);
-    end
+elseif ( m > n )
+    [~,ix] = sort(norms(Cstar'),'descend');
+    %[Q,R] = qr(Cstar(ix,:),0);
+    [Q,R] = qr(Cstar(ix,:)*Qmn,0);    
+    [Qall,Rall] = qr(Cstar(ix,:)*Qmnall,0);    
+    ixx(ix) = 1:length(ix);    Q = Q(ixx,:);        Qall = Qall(ixx,:);        
+    
+else % m<n        
+    [~,ix] = sort(norms(Cstar'),'descend');
+    [Q,R] = qr(Cstar(ix,:),0);    
+    [Qpart,Rpart] = qr(Cstar(ix,:)*Qmn,0);    
+    ixx(ix) = 1:length(ix);    
+    Q = Q(ixx,:);        Qpart = Qpart(ixx,:);        
 end
 
 S = diag((-1).^(0:length(xk)-1));
@@ -895,19 +886,30 @@ vt = [alpha;beta];
 % D(x)*node(x), where node(x) = prod(x-xsupport). 
 
 if ( m <= n ) % values of D at xk
-    Dvals = C(:,1:n+1)*vt(m+1+1:end,:); 
+    %Dvals = C(:,1:n+1)*vt(m+1+1:end,:); 
+    bet = vt(m+1+1:end,:);
 else
-    Dvals = C*(Qmn*vt(m+1+1:end,:)); 
+    bet = Qmn*vt(m+1+1:end,:);
 end
+    Dvals = C*bet; 
+    
 node = @(z) prod(z-xsupport); % needed to check sign
 
-nodevec = xk;
-for ii = 1:length(xk)
-    nodevec(ii) = node(xk(ii));   % values of node polynomial
+nodevec = xother;
+for ii = 1:length(xother)
+    nodevec(ii) = node(xother(ii));   % values of node polynomial
 end
 % Find position without sign changes in D*node. Ignore ones with too small
 % Dvals. 
-pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
+%pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
+
+signs = sign(diag(nodevec)*Dvals(xotherind,:));
+checksign = zeros(length(xk),n+1);
+% sign at supp pts
+checksign(1:length(xsupport),:) = diag((-1).^(0:length(xsupport)-1))*bet; 
+
+checksign(length(xsupport)+1:end,:) = signs;
+pos = find(abs(sum(sign(checksign))) == m+n+2 & sum(abs(Dvals))>1e-7);
 
 if isempty(pos)  % Unfortunately, no solution with same signs.
     if ( dialogFlag && ~silentFlag )
@@ -936,14 +938,13 @@ else
 end
 
 D = @(x) 0; N = @(x) 0;    % form function handle rh = N/D 
-for ii = 1:length(t)
-   D = @(x) D(x) + wD(ii)./(x-t(ii));
-   N = @(x) N(x) + wN(ii)./(x-t(ii));   
+for ii = 1:length(xsupport)
+   D = @(x) D(x) + wD(ii)./(x-xsupport(ii));
+   N = @(x) N(x) + wN(ii)./(x-xsupport(ii));   
 end
 D = @(x)-D(x); % flip back sign
 
-%rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
-rh = @(zz) reval(zz, t, N, D, wN, wD);
+rh = @(zz) reval(zz, xsupport, N, D, wN, wD);
 
 interpSuccess = 1; 
 
@@ -953,7 +954,6 @@ interpSuccess = 1;
 if dialogFlag
     x = chebpts(m+n+1,f.domain([1,end]));
     nodex = zeros(length(x),1);
-    node = @(z) prod(z-t); 
     for ii = 1:length(x)    
         nodex(ii) = node(x(ii)); 
     end 
