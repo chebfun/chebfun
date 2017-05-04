@@ -49,6 +49,12 @@ pass(13) = ( r1(1.4) == 2^311*r3(1.4) );
 
 % Make sure the gamma function gives something reasonable:
 r = aaa(@gamma);
-pass(14) = abs(r(1.5) - gamma(1.5)) < 1e-3;
+pass(14) = ( abs(r(1.5) - gamma(1.5)) < 1e-3 );
+
+%
+rng(0); Z = randn(10000,1)+3i*randn(10000,1);
+f = @(z) log(5-z)./(1+z.^2);
+r = aaa(f(Z),Z);
+pass(15) = ( abs(r(0) - f(0)) < tol );
 
 end

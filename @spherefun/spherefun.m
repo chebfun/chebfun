@@ -19,18 +19,19 @@ classdef spherefun < separableApprox
 % at tensor equally-spaced points in the intrinsic spherical coordinate 
 % system, i.e., [-pi,pi]x[0,pi].
 %
-% DISKFUN(F, k) returns a rank k approximation to F.
+% SPHEREFUN(F, k) returns a rank k approximation to F.
 %
-% DISKFUN(F, [m n]) returns a representation of F using a degree m
-% trigonometric approximation of F in the radial direction and a degree n
-% approximation in the angular direction. The result is compressed in low
-% rank form and the rank k is still determined adaptively (satisfying
-% k<=min(m,n)+1).
-%
+% SPHEREFUN(F, [m n]) returns a representation of F using a degree m
+% trigonometric approximation of F in the theta (polar) direction and a
+% degree n trigonometric approximation in the lambda (azimuthal) direction.
+% The result is compressed in low rank form and the rank k is still
+% determined adaptively (satisfying k<=min(m,n)+1).
+% 
 % The SPHEREFUN software system is based on: 
 %
 % A. Townsend, H. Wilber, and G. Wright, Computing with function on
-% spherical and polar geometries I: The sphere, submitted, 2015. 
+% spherical and polar geometries I: The sphere, SIAM. J. Sci. Comput., 38-4
+% (2016), C403-C425.
 %
 % See also CHEBFUN2, DISKFUN, SPHEREFUNV
 

@@ -105,16 +105,16 @@ end
 
 try
     h = f*f1;
-    pass(19) = false;
+    pass(19) = true;
 catch ME
-    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:mtimes:dims');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:dimCheck:dim');
 end
 
 try
     h = f*g;
-    pass(20) = false;
+    pass(20) = true;
 catch ME
-    pass(20) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:mtimes:dims');
+    pass(20) = false;
 end
 
 %% Test on SINGFUN - multiplication by scalar:
@@ -205,10 +205,10 @@ pass(56) = causesDimensionError(@() ones(3, 4)*Q);
 pass(57) = causesDimensionError(@() Q'*ones(2, 3));
 pass(58) = causesDimensionError(@() Q'*ones(3, 3));
 pass(59) = causesDimensionError(@() Q'*ones(4, 3));
-pass(60) = causesDimensionError(@() A*A);
-pass(61) = causesDimensionError(@() A'*A');
-pass(62) = causesDimensionError(@() Q*Q);
-pass(63) = causesDimensionError(@() Q'*Q');
+pass(60) = ~causesDimensionError(@() A*A); % These are now supported!
+pass(61) = ~causesDimensionError(@() A'*A');
+pass(62) = ~causesDimensionError(@() Q*Q);
+pass(63) = ~causesDimensionError(@() Q'*Q');
 
 %% Chebfun2 outerproducts
 % These are the same as in test_kron, just want to ensure that the syntax works!

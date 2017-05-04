@@ -1,12 +1,9 @@
 function Y = sphharm(l, m)
-%SPHHARM   Normalized, real-valued, spherical harmonic of degree L, order 
-%   M at a given set of locations on the sphere.
+%SPHHARM   Real-valued, spherical harmonic of degree L, order M.
 %
-%   Y = sphHarm(L, M) returns the degree L, order M normalized
-%   spherical harmonic on the sphere expressed in longitude-latitude
-%   coordinates (or azimuthal-elevation).  Here
-%        -pi <= lam <= pi   is the longitude (azimuthal) coordinate, and
-%          0 <= th  <= pi   is the latitude (elevation) coordinate.
+%   Y = SPHHARM(L, M) returns the degree L, order M real-valued 
+%   spherical harmonic on the sphere.  Y is normalized so that its two-norm
+%   over the sphere is 1.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -17,12 +14,11 @@ function Y = sphharm(l, m)
 % The degree l must be greater than or equal to the magnitude of the order
 % m:
 if ( l < abs(m) )
-    error('SPHEREFUN:sphHarm', ['The degree of the spherical harmonic '...
-        'must be greater than or equal to the magnitude of the order']);
+    error('CHEBFUN:SPHEREFUN:sphHarm', 'Degree must be >= order for spherical harmonic ');
 end
 
-if ( abs(l) > 75 )
-    error('SPHEREFUN:sphHarm','Only spherical harmonics of degree <= 75.');
+if ( abs(l) > 120 )
+    warning('CHEBFUN:SPHEREFUN:sphHarm:maxDegree','Results may be inaccurate for degrees larger than approximately 120.');
 end
 
 % Developer note: once support for different longitude and latitude domains
@@ -54,8 +50,8 @@ end
 % samples.  
 
 % Construct a matrix of values at the latitude-longitude grid
-[ll,tt] = meshgrid(trigpts( max( 2*abs(m)+2, 4 ), dom(1:2) ),...
-                   linspace( dom(3), dom(4), 2*l+2 ) );
+ll = trigpts( max( 2*abs(m)+2, 4 ), dom(1:2) );
+tt = linspace( dom(3), dom(4), 2*l+2 );
 Y = spherefun( mySphHarm(l,m,ll,tt,coord), dom );
 % Simplify to get the most compressed representation.
 Y = simplify( Y );
@@ -69,8 +65,7 @@ function Y = mySphHarm(l, m, lam, th, coord)
 % following reasons:
 %
 % 1. Stability: it uses the normalized spherical harmonics and the
-% normalization factors are unstable to compute for large l and m.  We
-% should switch to unnormalized spherical harmonics.
+% normalization factors are unstable to compute for large l and m.
 % 
 % 2. Efficiency: the code just uses matlab's `legendre` function for 
 % computing the associated legendre polynomials and this function is dead
@@ -85,28 +80,22 @@ if ( coord == 1 )
 else
     z = cos(th);  % Co-latitude
 end
-    
-% Flatten and transpose th and lam so they work with the legendre function:
-sz = size(z); 
-z = z(:)'; 
-lam = lam(:)';
 
-% Normalization:
-kk = l-abs(m)+1:l+abs(m);
-aa = exp(-sum(log(kk)));
-a = sqrt((2*l + 1)/4/pi * aa * (2 - double(m==0)));
-Y = legendre(l, z);
+% Make lam and z row vectors for what follows.
+z = z.';
+% Make lam row
+lam = lam(:).';
+
+% Get the normalized associated Legendre function.
+Y = (-1)^m/sqrt((1+double(m==0))*pi)*legendre(l, z, 'norm');
 
 % Get the right associated legendre function:
-Y = squeeze(Y(abs(m)+1, :, :));
+Y = squeeze(Y(abs(m)+1, :, :)).';
 
 % Determine if the cos or sin term should be added:
 pos = abs(max(0, sign(m+1)));
 
 % Compute the spherical harmonic:
-Y = (pos*cos(m*lam) + (1-pos)*sin(m*lam)).*(a*Y);
-
-% Reshape so it is the same size as the th and lam that were passed in.
-Y = reshape(Y, sz);
+Y = Y*(pos*cos(m*lam) + (1-pos)*sin(abs(m)*lam));
 
 end

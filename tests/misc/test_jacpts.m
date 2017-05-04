@@ -63,4 +63,9 @@ pass(25) = sum(w) - 2*sqrt(2) < 10*eps;
 pass(26) = sum(w) - 4/3 < 100*eps;
 pass(27) = w*x.^2 - 4/15 < 10*eps;
 
+% Fix a scaling bug when using GW
+[x, w] = jacpts(25, .3, .5, 'GW'); 
+pass(28) = abs(sum(w) - 1.652030414885670) < 100*eps;
+
+
 end

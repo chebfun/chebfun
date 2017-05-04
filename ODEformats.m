@@ -17,7 +17,7 @@ XT = 'xtick'; YT = 'ytick';
 XTL = 'xticklabel'; YTL = 'yticklabel';
 LO = 'location'; NE = 'northeast'; NO = 'north';
 HA = 'HorizontalAlignment'; CT = 'center'; RT = 'right';
-FN = 'fontname';
+FN = 'fontname'; YS = 'ystretch'; LS = 'linestyle';
 purple = [.8 0 1]; green = [0 .7 0];
 ivp = [0 .9 0]; ivpnl = [0 .45 0];
 ivpnllight = [.4 .65 .4];
