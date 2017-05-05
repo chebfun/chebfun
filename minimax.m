@@ -769,13 +769,13 @@ if m~=n % need to add more support points
     xadd = xother;
     % take Leja points from the remaining ref pts and add
     [xadd, ix] = leja(xadd, 1, length(xadd));  
-    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))]; 
-    
+    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))];   
     xother = zeros(m+n+2-max(m,n)-1,1); 
     xotherind = zeros(m+n+2-max(m,n)-1,1); 
     xsuppind = zeros(max(m,n)+1,1);
+    
     iother = 1; isupp = 1;
-    for ii = 1:length(xk)
+    for ii = 1:length(xk) % keep indices for later use
         if ~ismember(xk(ii),xsupport)
             xother(iother) = xk(ii);
             xotherind(iother) = ii;
@@ -788,7 +788,6 @@ if m~=n % need to add more support points
 end
     xsupport = sort(xsupport,'ascend');
 
-
 if m~=n % force coefficients to lie in null space of Vandermonde
     mndiff = abs(m-n);
     Q = ones(length(xsupport),1);        
@@ -796,12 +795,8 @@ if m~=n % force coefficients to lie in null space of Vandermonde
     for ii = 2:mndiff
         Qtmp = diag(xsupport)*Q(:,end);
         Qtmp = Qtmp-Q*(Q'*Qtmp);        % orthogonalize
-        Qtmp = Qtmp-Q*(Q'*Qtmp);        % orthogonalize again (CGS2)
-        %{
-        for jj = 1:size(Q,2) % MGS
-            Qtmp = Qtmp - Q(:,jj)*Q(:,jj)'*Qtmp;
-        end
-        %}
+        Qtmp = Qtmp-Q*(Q'*Qtmp);        % orthogonalize again (CGS2)        
+    % for jj = 1:size(Q,2),Qtmp = Qtmp - Q(:,jj)*Q(:,jj)'*Qtmp; end % or MGS         
         Qtmp = Qtmp/norm(Qtmp);         % normalize
         Q = [Q Qtmp];
     end
@@ -860,12 +855,6 @@ else % m<n
     ixx(ix) = 1:length(ix);    
     Q = Q(ixx,:);        Qpart = Qpart(ixx,:);        
 end
-
-Cstarscale = Cstar;
-for ii = 1:size(Cstar,2)
-    Cstarscale(:,ii) = Cstar(:,ii)/norm(Cstar(:,ii));
-end
-[cond(Cstar) cond(Cstarscale)]
 
 S = diag((-1).^(0:length(xk)-1));
 %Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n, should be O(eps)
@@ -971,8 +960,8 @@ QSQ = Q'*S*diag(fk)*Q;
 QSQ = (QSQ+QSQ')/2; % force symmetry as it's supposed to be
 
 % key operation; this forces (F+hsigma)N=D, where N/D is rational approximant. 
-% The eigenvector VR containing the coefficients for 
-% D(x)= sum_i VR_{i}/(x-xsupport_{i}). 
+% The eigenvector VR for which beta=R\VR contains the coefficients for 
+% D(x)= sum_i beta_{i}/(x-xsupport_{i}). 
 [VR,d] = eig(-QSQ); % symmetric eigenproblem
 beta = R\VR;        % Denominator coefficients in barycentric form
 
@@ -1004,7 +993,6 @@ end
 % Find position without sign changes in D*node. 
 pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
     
-if length(pos)==1, disp('better with remez'), keyboard, end
 if isempty(pos) % still no solution, give up
     if ( dialogFlag && ~silentFlag )
         disp('Trial interpolant too far from optimal...')
