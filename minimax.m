@@ -811,8 +811,9 @@ if m~=n % force coefficients to lie in null space of Vandermonde
 end
 
     C = 1./bsxfun(@minus,xk,xsupport.');    % Cauchy matrix
-    
-    % form matrix Cstar = sqrt(|Delta|)*C
+
+    % form matrix Cstar = sqrt(|Delta|)*C        
+    % Cstar(ii,jj) = |wt(xi)/sqrt(wx'(xi))|/(xi-tj)    
     Xkdiff = abs(bsxfun(@minus, xk, xk.')); Xkdiff(eye(size(Xkdiff))~=0) = 1; % inf to 0
     Xtdiff = abs(bsxfun(@minus, xother, xsupport.'));
     ST = sum(log(Xtdiff.')); SX = sum(log(Xkdiff));
@@ -820,8 +821,8 @@ end
     VV = VV*ones(1,length(xsupport));
     Div = bsxfun(@minus,xother,xsupport.');
     C1 = VV./Div; % odd columns of Cstar
-    
-    % Cstar(ii,jj) = |wt(xi)/sqrt(wx'(xi))|/(xi-tj)
+
+    % diag elements Cstar(ii,jj) = |wt(xi)/sqrt(wx'(xi))|/(xi-tj)    
     Xtdiff = abs(bsxfun(@minus, xsupport, xsupport.')); Xtdiff(eye(size(Xtdiff))~=0) = 1;
     ST = sum(log(Xtdiff.'));SX = sum(log(Xkdiff));
     C2 = diag(exp(ST.'-0.5*SX(xsuppind).'));
@@ -841,15 +842,16 @@ if ( m == n )
     %{
     nrm = zeros(1,m+1); % Cholesky QR with col-scaling, this works too
     for ii = 1:m+1, nrm(ii) = norm(Cstar(:,ii));    end
-    Cstar = Cstar/diag(nrm);    CTC = Cstar'*Cstar; 
+    Cstar = Cstar/diag(nrm);    % this normalized Cstar is orthogonal
+    CTC = Cstar'*Cstar; 
     R = chol(CTC);    Q = Cstar/R;    R = R*diag(nrm);
     %}
 elseif ( m > n )
     [~,ix] = sort(norms(Cstar'),'descend');
-    %[Q,R] = qr(Cstar(ix,:),0);
     [Q,R] = qr(Cstar(ix,:)*Qmn,0);    
     [Qall,Rall] = qr(Cstar(ix,:)*Qmnall,0);    
-    ixx(ix) = 1:length(ix);    Q = Q(ixx,:);        Qall = Qall(ixx,:);        
+    ixx(ix) = 1:length(ix);   
+    Q = Q(ixx,:);        Qall = Qall(ixx,:);        
     
 else % m<n        
     [~,ix] = sort(norms(Cstar'),'descend');
@@ -857,6 +859,109 @@ else % m<n
     [Qpart,Rpart] = qr(Cstar(ix,:)*Qmn,0);    
     ixx(ix) = 1:length(ix);    
     Q = Q(ixx,:);        Qpart = Qpart(ixx,:);        
+end
+
+Cstarscale = Cstar;
+for ii = 1:size(Cstar,2)
+    Cstarscale(:,ii) = Cstar(:,ii)/norm(Cstar(:,ii));
+end
+[cond(Cstar) cond(Cstarscale)]
+
+S = diag((-1).^(0:length(xk)-1));
+%Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n, should be O(eps)
+
+QSQ = Q'*S*diag(fk)*Q;
+QSQ = (QSQ+QSQ')/2; % force symmetry as it's supposed to be
+
+% key operation; this forces (F+hsigma)N=D, where N/D is rational approximant. 
+% The eigenvector VR containing the coefficients for 
+% D(x)= sum_i VR_{i}/(x-xsupport_{i}). 
+[VR,d] = eig(-QSQ); % symmetric eigenproblem
+beta = R\VR;        % Denominator coefficients in barycentric form
+
+% obtain alpha (the Numerator coefficients in bary form) from beta
+if ( m == n )
+    alpha = R\(-Q'*diag(fk)*Q*VR);    
+elseif ( m > n )
+    alpha = Qmnall*((Rall)\((Qall'*diag(-fk)*Q*VR)));
+else % m<n
+    alpha = (Rpart)\(Qpart'*diag(-fk)*Q*VR);    
+end
+vt = [alpha;beta];
+
+% Among the n+1 eigenvalues, only one can be the solution. The correct
+% one needs to have no sign changes in the denominator polynomial
+% D(x)*node(x), where node(x) = prod(x-xsupport). 
+
+if ( m <= n ) % values of D at xk
+    %Dvals = C(:,1:n+1)*vt(m+1+1:end,:); 
+    bet = vt(m+1+1:end,:);
+else
+    bet = Qmn*vt(m+1+1:end,:);
+end
+    Dvals = C*bet; 
+    
+node = @(z) prod(z-xsupport); % needed to check sign
+nodevec = xother;
+for ii = 1:length(xother)
+    nodevec(ii) = node(xother(ii));   % values of node polynomial
+end
+% Find position without sign changes in D*node. 
+% Evaluate this separately for xsupport and xother.
+% Ignore ones with too small Dvals. 
+
+checksign = zeros(length(xk),n+1);
+% sign at supp pts
+checksign(1:length(xsupport),:) = diag((-1).^(max(m,n):max(m,n)+length(xsupport)-1))*bet; 
+% sign at other pts
+signs = sign(diag(nodevec)*Dvals(xotherind,:));
+checksign(length(xsupport)+1:end,:) = signs;
+pos = find(abs(sum(sign(checksign))) == m+n+2 & sum(abs(Dvals))>1e-7);
+
+if isempty(pos)  % Unfortunately, no solution with same signs. Try old remez.
+
+% Take barycentric support points to be alternating values of two reference points
+xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;  
+xadd = (xk(2:2:end-1)+xk(3:2:end))/2; % when m~=n, we need more support points
+
+if ismember(f.domain(1),xk) == 0      % if endpoints aren't included, add them
+    xadd = [(f.domain(1)+xk(1))/2;xadd]; 
+end
+if ismember(f.domain(end),xk) == 0
+    xadd = [(f.domain(end)+xk(end))/2;xadd];
+end
+num = abs((max(m,n)+1-length(xsupport)));
+[xadd, ~] = leja(xadd, 1, num);  % take Leja points from the remaining ref pts
+
+if m~=n
+    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))]; % add any lacking supp pts
+end
+xsupport = sort(xsupport,'ascend');
+
+C = 1./bsxfun(@minus,xk,xsupport.');
+
+% find Delta diag matrix 
+Delta = zeros( 1,length(xk) );
+for ii = 1:length(xk)    
+% wt(ii) = prod(xk(ii)-xsupport); wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
+% Delta = diag(-(wt.^2)./wxdiff); do in a way that avoids underflow, overflow
+    Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
+        - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
+end
+Delta = diag(Delta); 
+
+%DD = diag(1./norms(sqrt(abs(Delta))*C)); % scaling, might help stability
+DD = eye(size(C,2));
+
+% prepare QR factorizations; these lead to symmetric eigenproblem
+if ( m == n )
+    [Q,R] = qr(sqrt(abs(Delta))*C,0);
+elseif ( m > n )
+    [Q,R] = qr(sqrt(abs(Delta))*C*Qmn,0);    
+    [Qall,Rall] = qr(sqrt(abs(Delta))*C*Qmnall,0);
+else % m<n
+    [Q,R] = qr(sqrt(abs(Delta))*C,0);
+    [Qpart,Rpart] = qr(sqrt(abs(Delta))*C*Qmn,0);
 end
 
 S = diag((-1).^(0:length(xk)-1));
@@ -882,39 +987,25 @@ end
 vt = [alpha;beta];
 
 % conditioning check, might help
-% disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) m n])
-
-% Among the n+1 eigenvalues, only one can be the solution. The correct
-% one needs to have no sign changes in the denominator polynomial
-% D(x)*node(x), where node(x) = prod(x-xsupport). 
+% disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) ...
+%     cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
 
 if ( m <= n ) % values of D at xk
-    %Dvals = C(:,1:n+1)*vt(m+1+1:end,:); 
-    bet = vt(m+1+1:end,:);
+    Dvals = C(:,1:n+1)*(DD*vt(m+1+1:end,:)); 
 else
-    bet = Qmn*vt(m+1+1:end,:);
+    Dvals = C*(Qmn*vt(m+1+1:end,:)); 
 end
-    Dvals = C*bet; 
-    
 node = @(z) prod(z-xsupport); % needed to check sign
 
-nodevec = xother;
-for ii = 1:length(xother)
-    nodevec(ii) = node(xother(ii));   % values of node polynomial
+nodevec = xk;
+for ii = 1:length(xk)
+    nodevec(ii) = node(xk(ii));   % values of node polynomial
 end
-% Find position without sign changes in D*node. Ignore ones with too small
-% Dvals. 
-%pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
-
-signs = sign(diag(nodevec)*Dvals(xotherind,:));
-checksign = zeros(length(xk),n+1);
-% sign at supp pts
-checksign(1:length(xsupport),:) = diag((-1).^(0:length(xsupport)-1))*bet; 
-
-checksign(length(xsupport)+1:end,:) = signs;
-pos = find(abs(sum(sign(checksign))) == m+n+2 & sum(abs(Dvals))>1e-7);
-
-if isempty(pos)  % Unfortunately, no solution with same signs.
+% Find position without sign changes in D*node. 
+pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
+    
+if length(pos)==1, disp('better with remez'), keyboard, end
+if isempty(pos) % still no solution, give up
     if ( dialogFlag && ~silentFlag )
         disp('Trial interpolant too far from optimal...')
     end
@@ -924,6 +1015,8 @@ if isempty(pos)  % Unfortunately, no solution with same signs.
 elseif ( length(pos) > 1 ) % more than one solution with no sign changes...
     [~,ix] = min(abs(hpre)-diag(abs(d(pos,pos))));
     pos = pos(ix);
+end
+
 end    
 
 h = -d(pos, pos);                 % levelled reference error.
@@ -949,7 +1042,7 @@ D = @(x)-D(x); % flip back sign
 
 rh = @(zz) reval(zz, xsupport, N, D, wN, wD);
 
-interpSuccess = 1; 
+interpSuccess = 1; % declare success
 
 % Form chebfuns of p and q (note: could be numerically unstable, but
 % provided for convenience)
