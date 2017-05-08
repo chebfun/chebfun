@@ -15,7 +15,8 @@ function varargout = minimax(f, varargin)
 %   [...] = MINIMAX(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the relative equioscillation error.
 %
-%   [...] = MINIMAX(..., 'display', 'iter') displays output at each iteration.
+%   [...] = MINIMAX(..., 'display', 'iter') displays output at each
+%   iteration.
 %
 %   [...] = MINIMAX(..., 'maxiter', MAXITER) sets the maximum number of
 %   allowable iterations to MAXITER.
@@ -30,15 +31,16 @@ function varargout = minimax(f, varargin)
 %   [...] = MINIMAX(..., 'silent') turns off all messages regarding the
 %   execution of the algorithm.
 %
-%   [P, ERR] = MINIMAX(...) and [P, Q, R_HANDLE, ERR] = MINIMAX(...) returns
-%   the maximum error ERR.
+%   [P, ERR] = MINIMAX(...) and [P, Q, R_HANDLE, ERR] = MINIMAX(...)
+%   returns the maximum error estimate ERR.
 %
 %   [P, ERR, STATUS] = MINIMAX(...) and [P, Q, R_HANDLE, ERR, STATUS] =
 %   MINIMAX(...) return a structure array STATUS with the following fields:
-%      STATUS.DELTA - Obtained tolerance.
-%      STATUS.ITER  - Number of iterations performed.
-%      STATUS.DIFFX - Maximum correction in last trial reference.
-%      STATUS.XK    - Last trial reference on which the error equioscillates.
+%       STATUS.DELTA - Obtained tolerance.
+%       STATUS.ITER  - Number of iterations performed.
+%       STATUS.DIFFX - Maximum correction in last trial reference.
+%       STATUS.XK    - Last trial reference on which the error
+%                      equioscillates.
 %
 %   This code is quite reliable for polynomial approximations but may
 %   sometimes have difficulties in the rational case.
@@ -81,7 +83,6 @@ if ( ~isa(f,'chebfun') ) % check if input is chebfun; if not, look for
     end
     
     fHandle = str2op(vectorize(f));
-
     f = chebfun(f, dom, 'splitting', 'on');
 else % f is a chebfun input
     fHandle = @(x) feval(f, x);
@@ -101,7 +102,7 @@ end
 [m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = ...
                                    parseInputs(f, varargin{:});
 
-% If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
+% If m = -1, this means f = odd and input (m,n) = (0,n); return constant 0. 
 if ( m == -1 )
     q = chebfun(1, f.domain([1, end]));
     p = chebfun(0, f.domain([1, end]));
@@ -112,6 +113,7 @@ end
 if ( isempty(xk) ) % no initial reference is given by the user
     % Several initialization attempts are made
     if ( n == 0 ) % polynomial case
+        % Try Chebyshev points
         xk = chebpts(N + 2, f.domain([1, end]));
         [p,err,status] = minimaxKernel(f, fHandle,m, n, N, rationalMode,...
                                        xk, opts, 1);
@@ -123,7 +125,6 @@ if ( isempty(xk) ) % no initial reference is given by the user
         end
     else % rational case
         % A first attempt is using CF as an initial guess                
-        
         try
             xk = cfInit(f, fHandle, m, n);
             [p,q,rh,err,status] = minimaxKernel(f, fHandle,m, n, N, ...
@@ -131,7 +132,8 @@ if ( isempty(xk) ) % no initial reference is given by the user
             varargout = {p, q, rh, err, status};
         catch
             if ~opts.silentFlag
-                disp('CF-based initialization failed, turning to AAA-Lawson');
+                disp(['CF-based initialization failed,' ...
+                    ' turning to AAA-Lawson']);
             end
             status.success = 0; % CF didn't work
         end        
@@ -230,8 +232,9 @@ function xk = AAALawsonInit(f,fHandle, m,n) % AAA-Lawson initialization for
     num = round(NN/length(xk));             
     Z = [];
     for ii = 1:length(xk)-1
-        Z = [Z linspace(xk(ii), xk(ii+1),num)]; % equispaced sampling between
-                                                % each pair of reference pts
+        Z = [Z linspace(xk(ii), xk(ii+1),num)]; % equispaced sampling
+                                                % between each pair of
+                                                % reference pts
     end
     Z = unique(Z); Z = Z(:); F = feval(f, Z);
     [r,~,~,~,xk] = aaamn_lawson(F, Z, m, n); % Do AAA-Lawson with updated
@@ -310,8 +313,8 @@ function xk = cdfInit(f, fHandle, m, n, symFlag, opts, step)
             % Remez (might work sometimes).
             if ~opts.silentFlag
                 fprintf('\n');
-                text = ['Initialization failed using CDF with step size ', ...
-                                            num2str(stepSize)];
+                text = ['Initialization failed using CDF with step', ...
+                                    ' size ', num2str(stepSize)];
                 disp(text);
             end
             [~,~,status] = minimax(f, m+n); xk = status.xk;
@@ -377,9 +380,9 @@ function xk = cdfInit(f, fHandle, m, n, symFlag, opts, step)
                     if ~opts.silentFlag
                         fprintf('(%d,%d) ', hM, hN);
                     end
-                    [~,~,~,~,status] = minimaxKernel(f, fHandle, hM, hN, ...
-                                                    hM+hN, true, xk, ...
-                                                    opts, 0);
+                    [~,~,~,~,status] = minimaxKernel(f, fHandle, hM, ...
+                                                    hN, hM+hN, true, ...
+                                                    xk, opts, 0);
             end
     
             if status.success
@@ -390,8 +393,8 @@ function xk = cdfInit(f, fHandle, m, n, symFlag, opts, step)
             else
                 if ~opts.silentFlag
                     fprintf('\n');
-                    text = ['Initialization failed using CDF with step size ', ...
-                                num2str(stepSize)];
+                    text = ['Initialization failed using CDF with ', ...
+                                'step size ', num2str(stepSize)];
                     disp(text);
                 end
                 [~,~,status] = minimax(f, m+n); xk = status.xk;
@@ -405,8 +408,9 @@ function xk = cdfInit(f, fHandle, m, n, symFlag, opts, step)
             startM = m - stepSize * k;
             startN = n - stepSize * k;
             xk = cfInit(f, fHandle, startM, startN);
-            [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, startN, ...
-                                       startM + startN, true, xk, opts, 0);
+            [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, ...
+                                    startN, startM + startN, true, ...
+                                    xk, opts, 0);
     
             if status.success   
                 while ( startM < m - stepSize && status.success )
@@ -422,10 +426,11 @@ function xk = cdfInit(f, fHandle, m, n, symFlag, opts, step)
                     if ~opts.silentFlag
                         fprintf('(%d,%d) ', startM, startN);
                     end
-                    xk = refGen(f, status.xk, startM + startN + 2, symFlag);
-                    [~,~,~,~,status] = minimaxKernel(f, fHandle, startM, ...
-                                        startN, startM+startN, true, xk, ...
-                                        opts, 0);
+                    xk = refGen(f, status.xk, startM + startN + 2, ...
+                                    symFlag);
+                    [~,~,~,~,status] = minimaxKernel(f, fHandle, ...
+                                        startM, startN, startM+startN, ...
+                                        true, xk, opts, 0);
                 end
             end
     
@@ -437,8 +442,8 @@ function xk = cdfInit(f, fHandle, m, n, symFlag, opts, step)
             else
                 if ~opts.silentFlag
                     fprintf('\n');
-                    text = ['Initialization failed using CDF with step size ', ...
-                            num2str(stepSize)];
+                    text = ['Initialization failed using CDF with ', ...
+                            'step size ', num2str(stepSize)];
                     disp(text);
                 end
                 [~,~,status] = minimax(f, m+n); xk = status.xk;
@@ -458,7 +463,7 @@ function varargout = minimaxKernel(f, fHandle, m, n, N, rationalMode, ...
 normf = opts.normf;
 dom = opts.dom;
 
-% If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
+% If m = -1, this means f = odd and input (m,n) = (0,n); return constant 0. 
 if ( m == -1 && dialogFlag)
     q = chebfun(1, dom);
     p = chebfun(0, dom);
@@ -486,7 +491,8 @@ xo = xk;
 
 % Print header for text output display if requested.
 if ( opts.displayIter && dialogFlag)
-    disp('It.   Max(|Error|)     |ErrorRef|    Delta ErrorRef    Delta Ref      m  n')
+    disp('It.   Max(|Error|)     |ErrorRef|    Delta ErrorRef    ', ...
+        'Delta Ref      m  n')
 end
 
 h = -1;
@@ -494,7 +500,7 @@ err = normf;
 interpSuccess = 1;
 % Run the main algorithm.
 while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
-    (iter < opts.maxIter) && (diffx > 0) && (interpSuccess == 1) )
+    (iter < opts.maxIter) && (diffx > 0) && interpSuccess )
     hpre = h;
     % Approximation error is at the level of machine precision, stop.
     if ( abs(abs(h)-abs(err))/normf < 1e-14 )
@@ -502,7 +508,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
     end
     % Compute trial function and levelled reference error.
     if ( n == 0 )
-        fk = fHandle(xk);     % Evaluate on the exchange set.
+        fk = fHandle(xk);      % Evaluate on the exchange set.
         w = baryWeights(xk);   % Barycentric weights for exchange set.
         [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom);
          
@@ -512,14 +518,15 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
         end
  
         rh = @(x) 0;
-        % Update the exchange set using the Remez algorithm with full exchange.
+        % Update the exchange set using the Remez algorithm
+        % with full exchange rule.
         [xk, err, err_handle, ~] = exchange(xk, h, 2, f, fHandle, p, ...
                                             rh, N + 2, n);
  
-        % If overshoot, recompute with one-point exchange.
+        % If overshoot, recompute with one-point exchange rule.
         if ( err/normf > 1e5 )
-            [xk, err, err_handle, ~] = exchange(xo, h, 1, f, fHandle, p, ...
-                                                rh, N + 2, n);
+            [xk, err, err_handle, ~] = exchange(xo, h, 1, f, fHandle, ...
+                                            p, rh, N + 2, n);
         end
  
         % Update max. correction to trial reference and stopping criterion.
@@ -546,8 +553,8 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
         end
          
         if(interpSuccess == 1)
-            [xk, err, err_handle, ~] = exchange(xk, h, 2, f, fHandle, p, ...
-                                                rh, N+2, n);
+            [xk, err, err_handle, ~] = exchange(xk, h, 2, f, fHandle, ...
+                                            p, rh, N+2, n);
             diffx = max(abs(xo - xk));
             delta = err - abs(h);
             
@@ -617,7 +624,7 @@ function [m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = ...
 opts.silentFlag = 0;
 isSilent = 0;
 for k = 1:length(varargin)
-    if ( ischar(varargin{k}) && strcmpi('silent',varargin{k}) )
+    if ( ischar(varargin{k}) && strcmpi('silent', varargin{k}) )
         opts.silentFlag = k;
         isSilent = 1;
     end
@@ -636,7 +643,7 @@ if ( ~mod(nargin - isSilent, 2) ) % Even number of inputs --> polynomial
     rationalMode = false;
     symFlag = 0;
     varargin = varargin(2:end);
-else                   % Odd number of inputs --> rational case.
+else                              % Odd number of inputs --> rational case.
     polyOutput = false;
     [m, n, symFlag] = adjustDegreesForSymmetries(f, varargin{1}, ...
                                                  varargin{2});
@@ -696,9 +703,10 @@ function [m, n, symFlag] = adjustDegreesForSymmetries(f, m, n)
 %   N to correct the defect of the rational approximation if the target
 %   function is even or odd.  In either case, the Walsh table is covered
 %   with blocks of size 2x2, e.g.  for even function the best rational
-%   approximant is the same for types [m/n], [m+1/n], [m/n+1] and [m+1/n+1],
-%   with m and n even. This strategy is similar to the one proposed by van
-%   Deun and Trefethen for CF approximation in Chebfun (see @chebfun/cf.m).
+%   approximant is the same for types [m/n], [m+1/n], [m/n+1] and
+%   [m+1/n+1], with m and n even. This strategy is similar to the one
+%   proposed by van Deun and Trefethen for CF approximation in Chebfun
+%   (see @chebfun/cf.m).
 
 % Sample piecewise-smooth CHEBFUNs.
 if ( (numel(f.funs) > 1) || (length(f) > 128) )
@@ -712,7 +720,7 @@ c = chebcoeffs(f, length(f));
 c(1) = 2*c(1);
 
 % Check for symmetries and reduce degrees accordingly.
-if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
+if ( max(abs(c(2:2:end)))/vscale(f) < eps )     % f is even.
     symFlag = 1;
     if ( mod(m, 2) == 1 )
         m = max(m - 1, 0);
@@ -752,13 +760,15 @@ function [p, q, rh, h, interpSuccess,xsupport] = ...
 % computeTrialFunctionRational finds a rational approximation to f at an 
 % iteration of the Remez algorithm. It uses a barycentric representation
 % for improved numerical stability. 
-% f: function 
-% xk: approximate reference points
-% m,n: degree
+% f:          function 
+% xk:         approximate reference points
+% m,n:        type
+% hpre:       levelled error at the previous iteration
 
 % The function values at the current reference points
 fk = fHandle(xk);
-% Take barycentric support points to be alternating values of two reference points
+% Take barycentric support points to be alternating values of two
+% reference points
     xsupport = xk(2:2:end);
     xsuppind = 2:2:length(xk);
     xadd = xk(1:2:end);
@@ -768,7 +778,7 @@ fk = fHandle(xk);
 if m~=n % need to add more support points
     xadd = xother;
     % take Leja points from the remaining ref pts and add
-    [xadd, ix] = leja(xadd, 1, length(xadd));  
+    [xadd, ~] = leja(xadd, 1, length(xadd));  
     xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))];   
     xother = zeros(m+n+2-max(m,n)-1,1); 
     xotherind = zeros(m+n+2-max(m,n)-1,1); 
@@ -796,7 +806,11 @@ if m~=n % force coefficients to lie in null space of Vandermonde
         Qtmp = diag(xsupport)*Q(:,end);
         Qtmp = Qtmp-Q*(Q'*Qtmp);        % orthogonalize
         Qtmp = Qtmp-Q*(Q'*Qtmp);        % orthogonalize again (CGS2)        
-    % for jj = 1:size(Q,2),Qtmp = Qtmp - Q(:,jj)*Q(:,jj)'*Qtmp; end % or MGS         
+        %{
+        for jj = 1:size(Q,2)
+            Qtmp = Qtmp - Q(:,jj)*Q(:,jj)'*Qtmp;
+        end % or MGS
+        %}
         Qtmp = Qtmp/norm(Qtmp);         % normalize
         Q = [Q Qtmp];
     end
@@ -809,7 +823,8 @@ end
 
     % form matrix Cstar = sqrt(|Delta|)*C        
     % Cstar(ii,jj) = |wt(xi)/sqrt(wx'(xi))|/(xi-tj)    
-    Xkdiff = abs(bsxfun(@minus, xk, xk.')); Xkdiff(eye(size(Xkdiff))~=0) = 1; % inf to 0
+    Xkdiff = abs(bsxfun(@minus, xk, xk.'));
+    Xkdiff(eye(size(Xkdiff))~=0) = 1;       % inf to 0
     Xtdiff = abs(bsxfun(@minus, xother, xsupport.'));
     ST = sum(log(Xtdiff.')); SX = sum(log(Xkdiff));
     VV = exp(ST.'-0.5*SX(xotherind).');
@@ -818,19 +833,20 @@ end
     C1 = VV./Div; % odd columns of Cstar
 
     % diag elements Cstar(ii,jj) = |wt(xi)/sqrt(wx'(xi))|/(xi-tj)    
-    Xtdiff = abs(bsxfun(@minus, xsupport, xsupport.')); Xtdiff(eye(size(Xtdiff))~=0) = 1;
+    Xtdiff = abs(bsxfun(@minus, xsupport, xsupport.'));
+    Xtdiff(eye(size(Xtdiff))~=0) = 1;
     ST = sum(log(Xtdiff.'));SX = sum(log(Xkdiff));
     C2 = diag(exp(ST.'-0.5*SX(xsuppind).'));
     Cstar = [C1;C2];
     Cstar(xsuppind,:) = C2;
     Cstar(xotherind,:) = C1;    
     
-% prepare QR factorizations; these lead to symmetric eigenproblem
+% prepare QR factorizations; these lead to a symmetric eigenproblem
 % we need to be careful how to do QR as rows have
 % large dynamical range (though orthogonal columns when m=n)    
 % do Householder QR with row sorting, better than [Q,R] = qr(Cstar,0);
 if ( m == n )
-    [~,ix] = sort(norms(Cstar'),'descend');
+    [~,ix] = sort(norms(Cstar'), 'descend');
     [Q,R] = qr(Cstar(ix,:),0);
     ixx(ix) = 1:length(ix);    Q = Q(ixx,:);        
     
@@ -857,13 +873,14 @@ else % m<n
 end
 
 S = diag((-1).^(0:length(xk)-1));
-%Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n, should be O(eps)
+%Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n,
+% should be O(eps)
 
 QSQ = Q'*S*diag(fk)*Q;
 QSQ = (QSQ+QSQ')/2; % force symmetry as it's supposed to be
 
-% key operation; this forces (F+hsigma)N=D, where N/D is rational approximant. 
-% The eigenvector VR containing the coefficients for 
+% key operation; this forces (F+hsigma)N=D, where N/D is rational
+% approximant. The eigenvector VR containing the coefficients for 
 % D(x)= sum_i VR_{i}/(x-xsupport_{i}). 
 [VR,d] = eig(-QSQ); % symmetric eigenproblem
 beta = R\VR;        % Denominator coefficients in barycentric form
@@ -883,7 +900,7 @@ vt = [alpha;beta];
 % D(x)*node(x), where node(x) = prod(x-xsupport). 
 
 if ( m <= n ) % values of D at xk
-    %Dvals = C(:,1:n+1)*vt(m+1+1:end,:); 
+    % Dvals = C(:,1:n+1)*vt(m+1+1:end,:); 
     bet = vt(m+1+1:end,:);
 else
     bet = Qmn*vt(m+1+1:end,:);
@@ -901,39 +918,48 @@ end
 
 checksign = zeros(length(xk),n+1);
 % sign at supp pts
-checksign(1:length(xsupport),:) = diag((-1).^(max(m,n):max(m,n)+length(xsupport)-1))*bet; 
+checksign(1:length(xsupport),:) = ...
+    diag((-1).^(max(m,n):max(m,n)+length(xsupport)-1))*bet; 
 % sign at other pts
 signs = sign(diag(nodevec)*Dvals(xotherind,:));
 checksign(length(xsupport)+1:end,:) = signs;
 pos = find(abs(sum(sign(checksign))) == m+n+2 & sum(abs(Dvals))>1e-7);
 
-if isempty(pos)  % Unfortunately, no solution with same signs. Try old remez.
+if isempty(pos)  % Unfortunately, no solution with same signs.
+                 % Try old remez.
 
-% Take barycentric support points to be alternating values of two reference points
+% Take barycentric support points to be alternating values of two
+% reference points
 xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;  
-xadd = (xk(2:2:end-1)+xk(3:2:end))/2; % when m~=n, we need more support points
+xadd = (xk(2:2:end-1)+xk(3:2:end))/2; % when m~=n, we need more support
+                                      % points
 
-if ismember(f.domain(1),xk) == 0      % if endpoints aren't included, add them
+if ismember(f.domain(1),xk) == 0      % if endpoints aren't included,
+                                      % add them
     xadd = [(f.domain(1)+xk(1))/2;xadd]; 
 end
 if ismember(f.domain(end),xk) == 0
     xadd = [(f.domain(end)+xk(end))/2;xadd];
 end
 num = abs((max(m,n)+1-length(xsupport)));
-[xadd, ~] = leja(xadd, 1, num);  % take Leja points from the remaining ref pts
+[xadd, ~] = leja(xadd, 1, num);  % take Leja points from the
+                                 % remaining ref pts
 
 if m~=n
-    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))]; % add any lacking supp pts
+    % add any lacking supp pts
+    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))];
 end
-xsupport = sort(xsupport,'ascend');
+xsupport = sort(xsupport, 'ascend');
 
 C = 1./bsxfun(@minus,xk,xsupport.');
 
 % find Delta diag matrix 
 Delta = zeros( 1,length(xk) );
 for ii = 1:length(xk)    
-% wt(ii) = prod(xk(ii)-xsupport); wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
-% Delta = diag(-(wt.^2)./wxdiff); do in a way that avoids underflow, overflow
+% wt(ii) = prod(xk(ii)-xsupport);
+% wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
+% Delta = diag(-(wt.^2)./wxdiff); do in a way that avoids
+%                                 underflow, overflow
     Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
         - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
 end
@@ -954,14 +980,15 @@ else % m<n
 end
 
 S = diag((-1).^(0:length(xk)-1));
-%Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n, should be O(eps)
+% Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n,
+% should be O(eps)
 
 QSQ = Q'*S*diag(fk)*Q;
 QSQ = (QSQ+QSQ')/2; % force symmetry as it's supposed to be
 
-% key operation; this forces (F+hsigma)N=D, where N/D is rational approximant. 
-% The eigenvector VR for which beta=R\VR contains the coefficients for 
-% D(x)= sum_i beta_{i}/(x-xsupport_{i}). 
+% key operation; this forces (F+hsigma)N=D, where N/D is rational
+% approximant. The eigenvector VR for which beta=R\VR contains the
+% coefficients for D(x)= sum_i beta_{i}/(x-xsupport_{i}). 
 [VR,d] = eig(-QSQ); % symmetric eigenproblem
 beta = R\VR;        % Denominator coefficients in barycentric form
 
@@ -984,14 +1011,15 @@ if ( m <= n ) % values of D at xk
 else
     Dvals = C*(Qmn*vt(m+1+1:end,:)); 
 end
-node = @(z) prod(z-xsupport); % needed to check sign
+node = @(z) prod(z-xsupport);     % needed to check sign
 
 nodevec = xk;
 for ii = 1:length(xk)
     nodevec(ii) = node(xk(ii));   % values of node polynomial
 end
 % Find position without sign changes in D*node. 
-pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
+pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & ...
+                                        sum(abs(Dvals))>1e-4);  
     
 if isempty(pos) % still no solution, give up
     if ( dialogFlag && ~silentFlag )
@@ -1033,7 +1061,7 @@ rh = @(zz) reval(zz, xsupport, N, D, wN, wD);
 interpSuccess = 1; % declare success
 
 % Form chebfuns of p and q (note: could be numerically unstable, but
-% provided for convenience)
+% provided for convenience).
 % Find values of node polynomial at Chebyshev points
 if dialogFlag
     x = chebpts(m+n+1,f.domain([1,end]));
@@ -1116,9 +1144,6 @@ function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, ...
 
 % Compute extrema of the error.
 if(n == 0) % polynomial case
-    %e_num = diff(f) - diff(p);
-    %rts = roots(e_num, 'nobreaks');
-    %rr = [f.domain(1) ; rts; f.domain(end)];
     % Function handle output for evaluating the error.
     rh = @(x) feval(p,x);
     rr = findExtrema(f, fHandle, rh, xk);
@@ -1129,11 +1154,12 @@ else       % Rational case.
 end
 
 % Select exchange method.
-if ( method == 1 )                           % One-point exchange.
+if ( method == 1 )                             % One-point exchange.
     [~, pos] = max(abs(feval(err_handle, rr)));
     pos = pos(1);
 else                                           % Full exchange.
-    pos = find(abs(err_handle(rr)) >= abs(h)); % Values above levelled error.
+    pos = find(abs(err_handle(rr)) >= abs(h)); % Values above levelled
+                                               % error.
 end
 
 % Add extrema nearest to those which are candidates for exchange to the
@@ -1154,7 +1180,8 @@ s = r(1);    % Points to be kept.
 es = er(1);  % Values to be kept.
 for i = 2:length(r)
     if ( (sign(er(i)) == sign(es(end))) && (abs(er(i)) > abs(es(end))) )
-        % Given adjacent points with the same sign, keep one with largest value.
+        % Given adjacent points with the same sign, keep one with largest
+        % value.
         s(end) = r(i);
         es(end) = er(i);
     elseif ( sign(er(i)) ~= sign(es(end)) )
@@ -1230,8 +1257,9 @@ function xk = findReference(f,fHandle,r,m,n,z)
     % m,n: (m,n) is the type of our rational approximant
     % z: barycentric support points 
     % OUTPUT: reference points xk
-        
-    xk = findExtrema(f,fHandle, r, sort(z,'ascend')); % Find extrema points as usual.
+    
+    % Find extrema points as usual.
+    xk = findExtrema(f,fHandle, r, sort(z,'ascend'));
     
     % Deal with length(xk) not equal to the desired m+n+2.
     if length(xk) > m+n+2 % Reduce reference pts becuse too many found. 
@@ -1240,10 +1268,12 @@ function xk = findReference(f,fHandle,r,m,n,z)
         [~,ix] = sort(xkdiff,'descend'); % Take those with largest gaps.
         xk = [xk(1);xk(1+ix(1:m+n+1))];
         xk = sort(xk,'ascend');        
-    elseif length(xk) < m+n+2 % Increase # of reference pts if too few found. 
+    elseif length(xk) < m+n+2 % Increase # of reference pts
+                              % if too few found. 
 
         xkdiff = diff(xk);                        
-        add = m+n+2-length(xk);  % We need to add this many reference points. 
+        add = m+n+2-length(xk);  % We need to add this many reference
+                                 % points. 
         % Take those with largest gaps and fill midpoints.
         [~,ix] = sort(xkdiff,'descend');
         xk = [xk;(xk(ix(1:add))+xk(ix(1:add)+1))/2];
@@ -1376,14 +1406,16 @@ end
 
 
 
-function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, varargin)
+function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = ...
+                                                aaamn_lawson(F, varargin)
 %AAAMN_Lawson   near-best rational approximation of F. 
 % 
 % R = aaamn_lawson(F) computes a rational aproximant of (default) type
 % (10,10) on the default interval [-1,1]
 %
-% [R, POL, RES, ZER] = aaamn_lawson(...) outputs the poles, residues and zeros
-% of R. The poles, zeros will approximate those of F (not well if R-F is not small)
+% [R, POL, RES, ZER] = aaamn_lawson(...) outputs the poles, residues and
+% zeros of R. The poles, zeros will approximate those of F (not well if
+% R-F is not small)
 % 
 % [R, POL, RES, ZER, z, Z, F, W,WF, ERRVEC, P, Q] = aaamn_lawson(...) 
 % outputs additionally the sample points Z, support points z, values
@@ -1398,8 +1430,8 @@ function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, vara
 % [...] = aaamn_lawson(F,Z,m,n,'plot','on') will plot the error functions
 % as the Lawson iterations proceed. 
 %
-% [...] = aaamn_lawson(F,m,n,'dom',[-1,2]) specifies the domain (this has no effect 
-% if Z is specified)
+% [...] = aaamn_lawson(F,m,n,'dom',[-1,2]) specifies the domain (this has
+% no effect if Z is specified)
 %
 % [...] = aaamn_lawson(F,m,n,'tol',1e-5) specifies the Lawson iterate
 % relative stopping criterion (here to 1e-5)
@@ -1408,9 +1440,9 @@ function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, vara
 % iterations to 10. 
 % 
 % 
-% The algorithm first finds a AAA rational approximant to F \approx r(Z), then
-% attempts to refine the approximant by a Lawson process, i.e. an iterative
-% reweighting. 
+% The algorithm first finds a AAA rational approximant to F \approx r(Z),
+% then attempts to refine the approximant by a Lawson process, i.e. an
+% iterative reweighting. 
 % 
 % This code is designed for computing good reference points for the
 % rational minimax code to follow, but can be used independently for
@@ -1423,11 +1455,13 @@ function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, vara
 %         tol = relative tolerance tol, default: 1e-13 
 %         Lawsoniter: max. iteration number of Lawson updates (default 10)
 %         doplot: 1 to plot error curve history (default 0)
-%     R = AAAMN_Lawson(F, Z, m, n, NAME, VALUE) sets the following parameters:
-%   - 'tol', TOL: relative tolerance for Lawson iteration (default 1e-5)
-%   - 'iter', IT: maximal number of Lawson iterations (default MMAX = max([5 min([20, m, n])])).
+%     R = AAAMN_Lawson(F, Z, m, n, NAME, VALUE) sets the following
+%     parameters:
+%           - 'tol', TOL: relative tolerance for Lawson
+%           iteration (default 1e-5)
+%           - 'iter', IT: maximal number of Lawson iterations
+%           (default MMAX = max([5 min([20, m, n])])).
 %         
-%
 % Output: r = AAA-Lawson approximant to F (function handle)
 %         pol,res,zer = vectors of poles, residues, zeros
 %         errvec = vector of errors at each step
@@ -1439,8 +1473,8 @@ function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, vara
 % Examples:
 %    r = aaamn_lawson(@abs,10,10)
 %    r = aaamn_lawson(@abs,10,10,'plot','on')
-%    [r, pol, res, zer, z, f, w, wf, errvec, p, q] = aaamn_lawson(@abs,10,10,...
-%                                        'plot','on','dom',[-1 2])
+%    [r, pol, res, zer, z, f, w, wf, errvec, p, q] = aaamn_lawson(@abs,...
+%                                        10,10,'plot','on','dom',[-1 2])
 %    r = aaamn_lawson(@exp,4,2,'plot','on','dom',[-1 2])
 %    r = aaamn_lawson(@(x)log(1.1-x),5,5,'plot','on')
 %
@@ -1453,15 +1487,17 @@ function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, vara
 [F, Z, m, n, Lawsoniter, tolLawson, doplot, tol ] = ...
     parseInputslawson(F, varargin{:});
 
-M = length(Z);                            % number of sample points
-mmax = m+1; nmax = n+1;                   % for coding convenience
-if ( (nargin < 6) || isempty(Lawsoniter) )% number of Lawson updates
+M = length(Z);                             % number of sample points
+mmax = m+1; nmax = n+1;                    % for coding convenience
+if ( (nargin < 6) || isempty(Lawsoniter) ) % number of Lawson updates
     Lawsoniter = max([5 min([20,mmax,nmax])]); 
 end 
-if ~isfloat(F), F = feval(F,Z); end        % convert function handle to vector
+if ~isfloat(F), F = feval(F,Z); end        % convert function handle to
+                                           % vector
  Z = Z(:); F = F(:);                       % work with column vectors
  SF = spdiags(F,0,M,M);                    % left scaling matrix
- J = 1:M;                                  % indices that are not support pts
+ J = 1:M;                                  % indices that are not support
+                                           % pts
  z = []; f = []; C = [];                   % initializations
  errvec = []; R = mean(F); 
 for mn = 1:max(mmax,nmax)
@@ -1473,17 +1509,20 @@ for mn = 1:max(mmax,nmax)
   Sf = diag(f);                           % right scaling matrix
   A = SF*C - C*Sf;                        % Loewner matrix
     
-        if ( mn > min(nmax,mmax) ) % nondiagonal case, find projection subspace 
+        if ( mn > min(nmax,mmax) ) % nondiagonal case, find projection
+                                   % subspace 
              if mmax < nmax
              q = f(:);
              else
              q = ones(length(z),1);
              end
-             Q = orthspace(z,mn-min(mmax,nmax),q);   % projection subspace 
-             [~,~,V] = svd(A(J,:)*Q,0);              % SVD on projected subspace
+             Q = orthspace(z,mn-min(mmax,nmax),q);  % projection subspace 
+             [~,~,V] = svd(A(J,:)*Q,0);             % SVD on projected
+                                                    % subspace
              w = Q*V(:,end);
         else             
-             [~,~,V] = svd(A(J,:),0);               % SVD, no projection needed
+             [~,~,V] = svd(A(J,:),0);               % SVD, no projection
+                                                    % needed
              w = V(:,mn);                           % weight vector             
         end     
   wf = w.*f;
@@ -1493,7 +1532,8 @@ for mn = 1:max(mmax,nmax)
   errvec = [errvec; err];                 % max error at sample points
   if ( err < tol*norm(F,inf) ), break, end    % stop if converged
 end
-    r = @(zz) feval(@rrint,zz,z,w,f);            % AAA approximant as function handle
+    r = @(zz) feval(@rrint,zz,z,w,f);            % AAA approximant as
+                                                 % function handle
     Rori = R;
     
 % now start Lawson, in this mode we leave interpolation and work with
@@ -1505,27 +1545,32 @@ end
                 A =[SF*C*Q -C];        
               else % need to redefine Q as not the same as AAA above        
                 q = ones(length(z),1);
-                Q = orthspace(z,mn-min(mmax,nmax),q);     % projection subspace                              
+                Q = orthspace(z,mn-min(mmax,nmax),q);     % projection
+                                                          % subspace                              
                 A =[SF*C -C*Q];                   
               end
           else
             A =[SF*C -C];   % diagonal case
           end
           
-          rate = 1;         % default Lawson rate, will shrink if not converging
+          rate = 1;         % default Lawson rate, will shrink if not
+                            % converging
           nrmincreased = 0; % initialization    
 	      for it = 1:Lawsoniter
               weiold = wei; 
-              wei = wei .* power(abs(F(J)-R(J)),rate); % update Lawson weights
+              wei = wei .* power(abs(F(J)-R(J)),rate); % update Lawson
+                                                       % weights
               wei = wei/sum(wei);                      % normalize 
-              if norm(weiold-wei)/norm(wei)< tolLawson % declare Lawson converged
+              if norm(weiold-wei)/norm(wei)< tolLawson % declare Lawson
+                                                       % converged
                   break
               end
-              D = spdiags(sqrt(wei),0,length(wei),length(wei)); % diagonal weight matrix
+              % diagonal weight matrix
+              D = spdiags(sqrt(wei),0,length(wei),length(wei));
 
-              [~,~,V] = svd(D*A(J,:),0);     % weighted least-squares via SVD
+              [~,~,V] = svd(D*A(J,:),0);  % weighted least-squares via SVD
               
-          if ( mn > min(nmax,mmax) )    % deal with nondiagonal case
+          if ( mn > min(nmax,mmax) )      % deal with nondiagonal case
               if ( mn > nmax )
                 w = Q*V(1:nmax,end); wf = V(nmax+1:end,end);            
               else
@@ -1534,15 +1579,17 @@ end
           else
             w = V(1:mn,end); wf = V(mn+1:2*mn,end);            
           end                      
-            f = wf./w;                          % for compatibility with interpolatory-aaa                        
-            N = C*wf; D = C*w;                  % numerator and denominator               
-            R = F; R(J) = N(J)./D(J);           % rational approximation
+            f = wf./w;                         % for compatibility with
+                                               % interpolatory-aaa                        
+            N = C*wf; D = C*w;                 % numerator and denominator               
+            R = F; R(J) = N(J)./D(J);          % rational approximation
             err = norm(F-R,inf);            
-            errvec = [errvec; err];             % max error at sample points                            
+            errvec = [errvec; err];            % max error at sample points                            
             if ( err < nrmbest )    % adopt best so far
-            nrmbest = norm(F-R,'inf'); 
-            weibest = wei;                      % store best weight
-            r = @(zz) feval(@rrab,zz,z,w,wf,f); % AAA approximant as function handle
+                nrmbest = norm(F-R,'inf'); 
+                weibest = wei;                      % store best weight
+                r = @(zz) feval(@rrab,zz,z,w,wf,f); % AAA approximant as
+                                                    % function handle
             else
                 nrmincreased = nrmincreased + 1;
             end
@@ -1554,7 +1601,8 @@ end
               nrmincreased = 0; 
             end
 
-            if doplot  % plot error functions (hopefully near-equioscillating)
+            if doplot  % plot error functions
+                       % (hopefully near-equioscillating)
                 subplot(2,1,1)
                 plot(Z,F-Rori,'r.','markersize',8)
                 title('AAA error')
@@ -1612,7 +1660,8 @@ if ( isempty(F) )
     error('CHEBFUN:aaamn_lawson:emptyF', 'No function given.')
 elseif ( isa(F, 'chebfun') )
     if ( size(F, 2) ~= 1 )
-        error('CHEBFUN:aaamn_lawson:nColF', 'Input chebfun must have one column.')
+        error('CHEBFUN:aaamn_lawson:nColF', ...
+            'Input chebfun must have one column.')
     end
 end
 
@@ -1651,29 +1700,35 @@ if ( ~isempty(varargin) && isfloat(varargin{1}) )
 end
 
 if ( ~exist('m', 'var') ) 
-     warning('CHEBFUN:aaamn_lawson: type (m,n) not specified, default to (10,10)')
+     warning(['CHEBFUN:aaamn_lawson: type (m,n) not specified,', ...
+         ' default to (10,10)'])
      m = 10; n = 10; 
 end
 
 % Set defaults for other parameters:
-tolLawson = 1e-5;                       % Relative tolerance for Lawson update.
+tolLawson = 1e-5;                       % Relative tolerance for
+                                        % Lawson update.
 tol = 1e-15;                            % AAA tolerance
 Lawsoniter = max([5 min([20, m, n])]);  % Maximum number of terms.
-doplot = 0;                             % Don't plot intermediate functions unless specified
+doplot = 0;                             % Don't plot intermediate functions
+                                        % unless specified
 
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
-    if ( strncmpi(varargin{1}, 'tol', 3) ||  strncmpi(varargin{1}, 'tolLawson', 3) )
+    if ( strncmpi(varargin{1}, 'tol', 3) ||  ...
+            strncmpi(varargin{1}, 'tolLawson', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             tolLawson = varargin{2};   % Lawson tolerance
         end
         varargin([1, 2]) = [];
 
-    elseif ( strncmpi(varargin{1}, 'iter', 4) || strncmpi(varargin{1}, 'maxit', 5))
+    elseif ( strncmpi(varargin{1}, 'iter', 4) || ...
+            strncmpi(varargin{1}, 'maxit', 5))
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             Lawsoniter = varargin{2};  % maximum Lawson iterations
         else
-        warning(['CHEBFUN:aaamn_lawson:iter unspecified, use default itermax ', num2str(Lawsoniter)])
+        warning(['CHEBFUN:aaamn_lawson:iter unspecified,', ...
+            ' use default itermax ', num2str(Lawsoniter)])
         end
         varargin([1, 2]) = [];
         
@@ -1685,15 +1740,16 @@ while ( ~isempty(varargin) )
         if ( isa(F, 'chebfun') )
             if ( ~isequal(dom, F.domain([1, end])) )
                 warning('CHEBFUN:aaamn_lawson:dom', ...
-                    ['Given domain does not match the domain of the chebfun.\n', ...
-                    'Results may be inaccurate.'])
+                    ['Given domain does not match the domain ', ...
+                    'of the chebfun.\n', 'Results may be inaccurate.'])
             end
         end
         
     elseif strncmpi(varargin{1}, 'plot', 4)  % plot error functions
         if isfloat(varargin{2})
             doplot = varargin{2};
-        elseif ( strncmpi(varargin{2}, 'true', 4) || strncmpi(varargin{2}, 'on', 2) )
+        elseif ( strncmpi(varargin{2}, 'true', 4) || ...
+                strncmpi(varargin{2}, 'on', 2) )
             doplot = 1;
         end
         varargin([1, 2]) = [];                
@@ -1725,7 +1781,8 @@ if ( exist('Z', 'var') )
                 'Inputs F and Z must have the same length.')
         end
     else
-        error('CHEBFUN:aaamn_lawson:UnknownF', 'Input for F not recognized.')
+        error('CHEBFUN:aaamn_lawson:UnknownF', ...
+            'Input for F not recognized.')
     end
     
 else
@@ -1766,11 +1823,12 @@ r = reshape(r,size(zz));                  % AAA approx
 end
 
 % find null space for nondiagonal case m~=n
-function Q = orthspace(z,dim,q)       % orthonormal projection space for (m,n)
+function Q = orthspace(z,dim,q)    % orthonormal projection space for (m,n)
 if ( dim == 0 ), Q = eye(length(z)); end 
 if ( nargin < 3 ), q = ones(length(z),1); end
                 Q = q/norm(q);
-                for ii = 2:dim               % orthogonal complement via Lanczos-type process
+                for ii = 2:dim               % orthogonal complement via
+                                             % Lanczos-type process
                 Qtmp = diag(z)*Q(:,end);
                 Qtmp = Qtmp - Q*(Q'*Qtmp);   % orthogonalize
                 Qtmp = Qtmp/norm(Qtmp);      % normalize
@@ -1797,9 +1855,11 @@ cc = fft([vals(end:-1:1);vals(2:end-1)])/n;
 cc(1) = cc(1)/2;
 c = real(cc(1:n+1)); % coeffs of f=err_handle in T
 cU = c(2:end).*(1:length(c)-1).'; % coeffs of df in U
-% simplify; no need to get full accuracy. Then reorder to highest coeffs first. 
+% simplify; no need to get full accuracy.
+% Then reorder to highest coeffs first. 
 len = max( find((abs(cU)/norm(cU)>1e-14)) ); cU = flipud(cU(1:len)); 
-%if ( length(cU)<=1 || norm(cU./max(abs(cU)))<1e-14 ), r = []; return; end % constant function
+%if ( length(cU)<=1 || norm(cU./max(abs(cU)))<1e-14 ), r = []; return; end
+% constant function
 if ( length(cU)<=1 ), r = []; return; end
 if abs(c(end)/c(1))>tol  % resample at finer grid
     n = 2*n;
@@ -1820,21 +1880,22 @@ else
     cU = -cU(2:end)/cU(1)/2;cU(2) = cU(2)+.5;
     C(1,:) = cU.';
     ei = eig(C);
-    ei = real(ei(abs(imag(ei))<1e-5 & abs(ei)<=1+1e-7)); % remove irrelevant roots
+    ei = real(ei(abs(imag(ei))<1e-5 & abs(ei)<=1+1e-7)); 
+    % remove irrelevant roots
 end
 r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
 end
 
 function op = str2op(op)
     % Convert string inputs to either numeric format or function_handles.
-    sop = str2num(op); %#ok<ST2NM> % STR2DOUBLE doesn't support str2double('pi')
+    sop = str2num(op);
     if ( ~isempty(sop) )
         op = sop;
     else
         depVar = symvar(op);
         if ( numel(depVar) ~= 1 )
             error('CHEBFUN:CHEBFUN:str2op:indepvars', ...
-                'Incorrect number of independent variables in string input.');
+             'Incorrect number of independent variables in string input.');
         end
         op = eval(['@(' depVar{:} ')', op]);
     end
