@@ -73,8 +73,10 @@ pass(10) = abs(err1-err2/1e100) < 1e-3;
 
 
 % A function with tiny amplitude
-f1 = chebfun('exp(x)'); [~,~,r1] = minimax(f1,1,3); sample1 = r1(.3)-f1(.3);
-f2 = chebfun('1e-100*exp(x)'); [~,~,r2] = minimax(f2,1,3); sample2 = r2(.3)-f2(.3);
+f1 = chebfun('exp(x)');
+[~,~,r1] = minimax(f1,1,3); sample1 = r1(.3)-f1(.3);
+f2 = chebfun('1e-100*exp(x)');
+[~,~,r2] = minimax(f2,1,3); sample2 = r2(.3)-f2(.3);
 pass(11) = abs(sample1-sample2*1e100) < 1e-3;
 
 
@@ -106,7 +108,11 @@ x = chebfun('x');
 f = sqrt(abs(x-.1));
 [p,err] = minimax(f, 5);
 xx = linspace(-1,1,10000);
-norme = max(abs(f(xx)-p(xx)));
-pass(16) = (abs(err - norme)/err < 1e-4);
+norme1 = max(abs(f(xx)-p(xx)));
+pass(16) = (abs(err - norme1)/err < 1e-4);
+
+[~,~,r,err,~] = minimax(f,4,4,'silent');
+norme2 = max(abs(f(xx)-r(xx)));
+pass(17) = (abs(err - norme2)/err < 1e-4);
 
 end
