@@ -846,7 +846,12 @@ end
 % large dynamical range (though orthogonal columns when m=n)    
 % do Householder QR with row sorting, better than [Q,R] = qr(Cstar,0);
 if ( m == n )
-    [~,ix] = sort(norms(Cstar'), 'descend');
+    nrm = zeros(1, size(Cstar, 1));
+    for ii = 1:length(nrm)
+        nrm(ii) = norm(Cstar(ii,:));
+    end
+    [~,ix] = sort(nrm, 'descend');
+    %[~,ix] = sort(norms(Cstar'), 'descend');
     [Q,R] = qr(Cstar(ix,:),0);
     ixx(ix) = 1:length(ix);    Q = Q(ixx,:);        
     
@@ -858,14 +863,24 @@ if ( m == n )
     R = chol(CTC);    Q = Cstar/R;    R = R*diag(nrm);
     %}
 elseif ( m > n )
-    [~,ix] = sort(norms(Cstar'),'descend');
+    nrm = zeros(1, size(Cstar, 1));
+    for ii = 1:length(nrm)
+        nrm(ii) = norm(Cstar(ii,:));
+    end
+    [~,ix] = sort(nrm, 'descend');
+    %[~,ix] = sort(norms(Cstar'),'descend');
     [Q,R] = qr(Cstar(ix,:)*Qmn,0);    
     [Qall,Rall] = qr(Cstar(ix,:)*Qmnall,0);    
     ixx(ix) = 1:length(ix);   
     Q = Q(ixx,:);        Qall = Qall(ixx,:);        
     
-else % m<n        
-    [~,ix] = sort(norms(Cstar'),'descend');
+else % m<n
+    nrm = zeros(1, size(Cstar, 1));
+    for ii = 1:length(nrm)
+        nrm(ii) = norm(Cstar(ii,:));
+    end
+    [~,ix] = sort(nrm, 'descend');
+    %[~,ix] = sort(norms(Cstar'),'descend');
     [Q,R] = qr(Cstar(ix,:),0);    
     [Qpart,Rpart] = qr(Cstar(ix,:)*Qmn,0);    
     ixx(ix) = 1:length(ix);    
