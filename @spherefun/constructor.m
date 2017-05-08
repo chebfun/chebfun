@@ -265,7 +265,7 @@ end
 % Only information at the poles is given.
 if ( m == 2 ) 
     cols = F(:, 1);
-    rows = F(1, :).';
+    rows = ones(n,1);
     idxPlus = 1;
     idxMinus = [];
     pivotArray = [1 0];

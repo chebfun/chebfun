@@ -114,4 +114,13 @@ f = chebfun2( @(x,y) exp(cos(x.*y)), dom, [m n] );
 [mF, nF] = length(f);
 pass(23) = ( all( f.domain == dom ) && mF == m && nF == n );
 
+% Test that the 'equi' flag outputs an error message if used for
+% adaptive construction of a chebfun2.
+try
+    f = chebfun2(@(x,y) sin(x).*sin(y), 'equi');
+    pass(24) = false;
+catch ME
+    pass(24) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN2:constructor:equi');
+end
+
 end

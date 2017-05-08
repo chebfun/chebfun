@@ -1089,6 +1089,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function f = plus(f, g)
             %+     Addition of ADCHEBFUN objects
             
+            if ( numel(f) ~= numel(g) || numel(f) > 1 )
+                f = vectorizeOp(f, g, @plus);
+                return
+            end
+            
             % If F is not an ADCHEBFUN, we know G is, so add to the CHEBFUN part
             % of G.
             if ( ~isa(f, 'adchebfun') )
@@ -1555,6 +1560,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %
             % F.*G multiplies F and G, where F and G may be ADCHEBFUN or CHEBFUN
             % objects or scalars.
+            
+            if ( numel(f) ~= numel(g) || numel(f) > 1 )
+                f = vectorizeOp(f, g, @times);
+                return
+            end
                         
             if ( isnumeric(g) )                 % ADCHEBFUN.*SCALAR
                 f.func = f.func*g;
@@ -1598,8 +1608,10 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % -  Unary minus of an ADCHEBFUN
             
             % Do the obvious things...
-            f.func = -f.func;
-            f.jacobian = -f.jacobian;         
+            for k = 1:numel(f)
+                f(k).func = -f(k).func;
+                f(k).jacobian = -f(k).jacobian;         
+            end
         end
         
         function f = uplus(f)
@@ -1672,6 +1684,41 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.domain = union(f.domain, f.jacobian.domain);
             f.jacobian.domain = f.domain;
         end
+        
+        function out = vectorizeOp(f, g, op)     
+            % Wrapper to allow for array-valued ADCHEBFUN objects.
+            
+            % Ensure f, g, and out are ADCHEBFUNS:
+            if ( isa(f, 'adchebfun') )
+                out = f;
+                if ( ~isa(g, 'adchebfun') )
+                    g = adchebfun(g, f.domain);
+                end
+            else
+                f = adchebfun(f, g.domain);
+                out = g;
+            end
+            nf = numel(f);
+            ng = numel(g);
+            % Vectorize the operator:
+            if ( ng == nf )
+                for k = 1:ng
+                    out(k) = op(f(k), g(k));
+                end
+            elseif ( ng == 1 )
+                for k = 1:nf
+                    out(k) = op(f(k), g);
+                end 
+            elseif ( nf == 1 )
+                for k = 1:ng
+                   out(k) = op(f, g(k));
+                end         
+            else
+                error('CHEBFUN:ADCHEBFUN:vectorizeOp:dimagree', ...
+                    'Matrix dimensions must agree.');
+            end
+        end
+
         
     end
     

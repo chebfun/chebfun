@@ -1,4 +1,4 @@
-function varargout = conj(varargin)
+function f = conj(f)
 %CONJ   Complex conjugate of a SPHEREFUN.
 %   CONJ(F) returns the complex conjugate of F.  For a complex F, CONJ(F) =
 %   REAL(F) - i*IMAG(F).
@@ -10,7 +10,5 @@ function varargout = conj(varargin)
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-[varargout{1:nargout}] = conj@separableApprox(varargin{:});
 
 end

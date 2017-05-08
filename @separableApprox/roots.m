@@ -5,6 +5,8 @@ function r = roots( f, g, varargin )
 %   there is a change of sign, and it can also group intersecting contours in a
 %   non-optimal way.
 %
+%   For a faster plot to graphical accuracy use CONTOUR(F, [0 0]).
+%
 %   R = ROOTS(F, G) returns the isolated mutual roots of F and G.
 %
 %   R = ROOTS(F, G, METHOD) allows the underlying rootfinding algorithm to
