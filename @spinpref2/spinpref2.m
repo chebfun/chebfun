@@ -33,7 +33,7 @@ classdef spinpref2 < spinpreference
 %     ['movie']                 the solution, 'off' otherwise. 
 %      'off'
 %
-%   scheme                    * Time-stepping scheme. HELP/SPINPSCHEME for the
+%   scheme                    * Time-stepping scheme. HELP/EXPINT for the
 %     ['etdrk4']                list of available schemes.
 %
 %   view                      * Viewpoint specification when 'plot' is 'movie'.

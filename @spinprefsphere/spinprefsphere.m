@@ -32,8 +32,8 @@ classdef spinprefsphere < spinpreference
 %     ['movie']                 the solution, 'off' otherwise. 
 %      'off'
 %
-%   scheme                    * Time-stepping scheme. HELP/SPINPSCHEME for the
-%     ['lirk4']                 list of available schemes.
+%   scheme                    * Time-stepping scheme. HELP/IMEX for the list
+%     ['lirk4']                 of available schemes.
 %
 %   view                      * Viewpoint specification when 'plot' is 'movie'.
 %     [-37.5 30]   

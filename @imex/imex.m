@@ -12,6 +12,8 @@ classdef imex < spinscheme
 %
 %   IMEX RUNGE-KUTTA: 'lirk4'
 %
+%   IMEX-BDF: 'imexbdf4'
+%
 % See also SPINSPHERE, EXPINT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
@@ -35,6 +37,12 @@ classdef imex < spinscheme
                 K.order = 4;
                 K.stages = 5;
                 K.steps = 1;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'imexbdf4') == 1 )
+                K.order = 4;
+                K.stages = 1;
+                K.steps = 4;
                 K.scheme = schemeName;
   
             else
