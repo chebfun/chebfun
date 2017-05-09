@@ -59,10 +59,10 @@ method = 'default';
 method_set = 0;
 
 if ( a <= -1 || b <= -1 )
-    error('CHEBFUN:jacpts:sizeAB', 'Alpha and beta must be greater than -1')
+    error('CHEBFUN:jacpts:sizeAB', 'Alpha and beta must be greater than -1.')
 elseif (a~=b && max(a, b) > 5 )
     warning('CHEBFUN:jacpts:largeAB',...
-        'ALPHA~=BETA and MAX(ALPHA, BETA) > 5. Results may not be accurate')
+        'ALPHA~=BETA and MAX(ALPHA, BETA) > 5. Results may not be accurate.')
 end
 
 
