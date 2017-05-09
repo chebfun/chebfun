@@ -228,8 +228,7 @@ function [x, w, v] = gw(n, a, b)
     TT = diag(bb,1) + diag(aa) + diag(bb,-1); % Jacobi matrix.
     [V, x] = eig( TT );                       % Eigenvalue decomposition.
     x = diag(x);                              % Jacobi points.
-    % Quadrature weights:
-    w = V(1,:).^2*( 2^(ab+1)*gamma(a+1)*gamma(b+1)/gamma(2+ab) ); 
+    w = V(1,:).^2*2^(ab+1)*beta(a+1, b+1);    % Quadrature weights.
     v = sqrt(1-x.^2).*abs(V(1,:))';           % Barycentric weights.
 end
 
