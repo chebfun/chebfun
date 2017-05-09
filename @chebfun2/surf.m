@@ -3,6 +3,9 @@ function varargout = surf(varargin)
 %   SURF(F, C) plots the colored parametric surface defined by F and the matrix
 %   C. The matrix C, defines the colouring of the surface.
 %
+%   SURF(F, 'zebra') gives a "zebra plot", black for values < 0
+%   and white for values >= 0.
+%
 %   SURF(F) uses colors proportional to surface height.
 %
 %   SURF(X, Y, F, ...) is the same as SURF(F, ...) when X and Y are CHEBFUN2
