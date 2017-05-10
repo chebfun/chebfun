@@ -491,8 +491,7 @@ xo = xk;
 
 % Print header for text output display if requested.
 if ( opts.displayIter && dialogFlag)
-    disp('It.   Max(|Error|)     |ErrorRef|    Delta ErrorRef    ', ...
-        'Delta Ref      m  n')
+    disp('It.   Max(|Error|)     |ErrorRef|    Delta ErrorRef    Delta Ref     m  n')
 end
 
 h = -1;
@@ -795,28 +794,15 @@ if m~=n % need to add more support points
             isupp = isupp+1;
         end
     end    
+    
 end
     xsupport = sort(xsupport,'ascend');
-
-if m~=n % force coefficients to lie in null space of Vandermonde
-    mndiff = abs(m-n);
-    Q = ones(length(xsupport),1);        
-    Q = Q/norm(Q);     
-    for ii = 2:mndiff
-        Qtmp = diag(xsupport)*Q(:,end);
-        Qtmp = Qtmp-Q*(Q'*Qtmp);        % orthogonalize
-        Qtmp = Qtmp-Q*(Q'*Qtmp);        % orthogonalize again (CGS2)        
-        %{
-        for jj = 1:size(Q,2)
-            Qtmp = Qtmp - Q(:,jj)*Q(:,jj)'*Qtmp;
-        end % or MGS
-        %}
-        Qtmp = Qtmp/norm(Qtmp);         % normalize
-        Q = [Q Qtmp];
-    end
-    [Q,~] = qr(Q);
-    Qmn = Q(:,mndiff+1:end);            % This is the orthogonal subspace
-    [Qmnall,~] = qr(Qmn);
+    
+if m~=n
+    % projection matrices to force coefficients to lie in null space 
+    % of Vandermonde        
+    Qmn = orthspace(xsupport,abs(m-n),ones(length(xsupport),1));  % projection subspace     
+    [Qmnall,~] = qr(Qmn);            
 end
 
     C = 1./bsxfun(@minus,xk,xsupport.');    % Cauchy matrix
@@ -1846,6 +1832,7 @@ if ( nargin < 3 ), q = ones(length(z),1); end
                                              % Lanczos-type process
                 Qtmp = diag(z)*Q(:,end);
                 Qtmp = Qtmp - Q*(Q'*Qtmp);   % orthogonalize
+                Qtmp = Qtmp - Q*(Q'*Qtmp);   % orthogonalize again (CGS2)                
                 Qtmp = Qtmp/norm(Qtmp);      % normalize
                 Q = [Q Qtmp]; 
                 end
