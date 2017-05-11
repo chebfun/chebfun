@@ -115,4 +115,8 @@ pass(16) = (abs(err - norme1)/err < 1e-4);
 norme2 = max(abs(f(xx)-r(xx)));
 pass(17) = (abs(err - norme2)/err < 1e-4);
 
+x = chebfun('x'); f = 1e40*abs(x);
+[p,q,rh,err] = minimax(f,5,5);
+pass(18) = (err < 1e38);
+
 end

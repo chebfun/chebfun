@@ -1,19 +1,24 @@
 function varargout = minimax(f, varargin)
 %MINIMAX   Best polynomial or rational approximation for real valued
-%          continuous functions. This code supercedes Chebfun's REMEZ. 
+%          continuous functions. This code supersedes REMEZ. 
+%
 %   P = MINIMAX(F, M) computes the minimax polynomial approximation of
 %   degree M to the real function F using the Remez algorithm. F can
 %   be either a CHEBFUN, a function handle or a string representation
-%   of the function to approximate.
+%   of the function to approximate.  P is a CHEBFUN.
 %
 %   [P, Q] = MINIMAX(F, M, N) computes the minimax rational approximation
-%   P/Q of type (M, N).
-%
-%   [P, Q, R_HANDLE] = MINIMAX(F, M, N) additionally returns a function
-%   handle for evaluating P/Q.
+%   P/Q of type (M, N).  P and Q are CHEBFUNs, but in difficult cases
+%   working with P/Q is numerically unstable.
+% 
+%   [P, Q, R_HANDLE] = MINIMAX(F, M, N) additionally returns a numerically
+%   stable function handle for evaluating P/Q (based on a barycentric
+%   representation).
 %
 %   [...] = MINIMAX(..., 'tol', TOL) uses the value TOL as the termination
-%   tolerance on the relative equioscillation error.
+%   tolerance on the relative equioscillation error.  The default is 
+%   approximately 1e-12 for polynomial approximation and 1e-4 for
+%   rational approximation.
 %
 %   [...] = MINIMAX(..., 'display', 'iter') displays output at each
 %   iteration.
@@ -32,32 +37,37 @@ function varargout = minimax(f, varargin)
 %   execution of the algorithm.
 %
 %   [P, ERR] = MINIMAX(...) and [P, Q, R_HANDLE, ERR] = MINIMAX(...)
-%   returns the maximum error estimate ERR.
+%   return the maximum error estimate ERR.
 %
 %   [P, ERR, STATUS] = MINIMAX(...) and [P, Q, R_HANDLE, ERR, STATUS] =
 %   MINIMAX(...) return a structure array STATUS with the following fields:
-%       STATUS.DELTA - Obtained tolerance.
+%       STATUS.DELTA - Tolerance obtained.
 %       STATUS.ITER  - Number of iterations performed.
 %       STATUS.DIFFX - Maximum correction in last trial reference.
 %       STATUS.XK    - Last trial reference on which the error
 %                      equioscillates.
 %
-%   This code is quite reliable for polynomial approximations but may
-%   sometimes have difficulties in the rational case.
+%   This code is highly reliable for polynomial approximation but may
+%   sometimes have difficulties in the rational case, though we believe
+%   it is the most powerful rational minimax code available.
+%
+% Examples:
+%   x = chebfun('x'); f = abs(x);
+%   p = minimax(f, 20); plot(f-p)
+%   [p, q, rh] = minimax(f, 10, 10);
+%   xx = linspace(-1,1,10000); plot(xx, f(xx)-rh(xx))
 %
 % References:
 %
 %   [1] B. Beckermann, S. Filip, Y. Nakatsukasa and L. N. Trefethen,
-%   manuscript in preparation.
+%   "Rational minimax approximation via adaptive barycentric
+%   representations", manuscript in preparation.
 %
 %   [2] R. Pachon and L. N. Trefethen, "Barycentric-Remez algorithms for
 %   best polynomial approximation in the chebfun system", BIT Numerical
 %   Mathematics, 49:721-742, 2009.
 %
-%   [3] R. Pachon, "Algorithms for Polynomial and Rational Approximation".
-%   D. Phil. Thesis, University of Oxford, 2010 (Chapter 6).
-%
-% See also CF.
+% See also AAA, CF, CHEBPADE, PADEAPPROX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -133,7 +143,7 @@ if ( isempty(xk) ) % no initial reference is given by the user
         catch
             if ~opts.silentFlag
                 disp(['CF-based initialization failed,' ...
-                    ' turning to AAA-Lawson']);
+                    ' turning to AAA-Lawson...']);
             end
             status.success = 0; % CF didn't work
         end        
@@ -314,7 +324,7 @@ function xk = cdfInit(f, fHandle, m, n, symFlag, opts, step)
             if ~opts.silentFlag
                 fprintf('\n');
                 text = ['Initialization failed using CDF with step', ...
-                                    ' size ', num2str(stepSize)];
+                                    ' size ', num2str(stepSize) '...'];
                 disp(text);
             end
             [~,~,status] = minimax(f, m+n); xk = status.xk;
