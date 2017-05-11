@@ -799,9 +799,10 @@ end
     xsupport = sort(xsupport,'ascend');
     
 if m~=n
-    % projection matrices to force coefficients to lie in null space 
-    % of Vandermonde        
-    Qmn = orthspace(xsupport,abs(m-n),ones(length(xsupport),1));  % projection subspace     
+    % projection matrices that force coefficients to lie in null space 
+    % of Vandermonde matrix
+    % projection subspace
+    Qmn = orthspace(xsupport,abs(m-n),ones(length(xsupport),1));     
     [Qmnall,~] = qr(Qmn);            
 end
 
