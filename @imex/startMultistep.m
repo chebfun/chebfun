@@ -6,6 +6,9 @@ function [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, ~, S, uInit, NuInit)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Note for developers: multistep algorithms are started with the one-step LIRK4
+% time-stepping scheme.
+
 % Set-up:
 q = K.steps;                      % number of steps 
 nVars = S.numVars;                % number of unknown functions
@@ -23,7 +26,7 @@ NuSol{q} = NuInit{1};
 K = imex('lirk4');
 schemeCoeffs = computeCoeffs(K, dt, L, [], S);
 
-% Do (Q-1) steps:
+% Do (Q-1) steps of LIRK4:
 uOld = uInit;
 NuOld = NuInit;
 for j = 1:(q-1)
