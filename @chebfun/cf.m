@@ -46,7 +46,7 @@ function [p, q, r, s] = cf(f, m, n, M)
 %   [2] L. N. Trefethen and M. H. Gutknecht, "The Caratheodory-Fejer method fpr
 %       real rational approximation", SIAM J. Numer. Anal. 20 (1983), 420-436.
 %
-% See also REMEZ.
+% See also AAA, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

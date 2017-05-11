@@ -39,7 +39,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", arXiv:1612.00337.
 %
-% See also CF, CHEBPADE, PADEAPPROX, RATINTERP, REMEZ
+% See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
