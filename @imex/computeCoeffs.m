@@ -76,7 +76,7 @@ if ( strcmpi(K.scheme, 'lirk4') == 1 )
     lufactors{2, 1} = U;
     lufactors{1, 2} = La;
     lufactors{2, 2} = Ua;  
-elseif ( strcmpi(schemeName, 'imexbdf4') == 1 )
+elseif ( strcmpi(K.scheme, 'imexbdf4') == 1 )
     [L, U] = lu(25*schemeCoeffs.precond - 12*dt*Lap);
     lufactors = cell(2, 1);
     lufactors{1, 1} = L;

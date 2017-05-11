@@ -23,7 +23,7 @@ function [uSol, NuSol] = oneStep(K, dt, schemeCoeffs, gc, gv, nVars, S, uSol, Nu
 
 % Set-up:
 q = K.steps;                      % number of steps (>1 for multistep methods)
-N = sqrt(size(uSol{1}, 1)/nVars); % grid points
+N = sqrt(size(uSol{1}, 1)/nVars); % number of grid points
 
 % Get the values to coeffs and coeffs to values transform:
 v2c = getVals2CoeffsTransform(S);
@@ -65,11 +65,11 @@ if ( strcmpi(K.scheme, 'lirk4') == 1 )
         + dt*(25/24*Na - 49/48*Nb + 125/16*Nc - 85/12*Nd + 1/4*Ne);
 
 % One step of IMEXBDF4:
-elseif ( strcmpi(schemeName, 'imexbdf4') == 1 )
+elseif ( strcmpi(K.scheme, 'imexbdf4') == 1 )
     L = schemeCoeffs.lufactors{1, 1};
     U = schemeCoeffs.lufactors{2, 1};
-    v = U\(L\(48*uSol{1} - 36*uSol{2} + 16*uSol{3} - 3*uSol{4} + ...
-        48*h*NuSol{1} - 72*h*NuSol{2} + 48*h*NuSol{3} - 12*h*NuSol{4}));
+    v = U\(L\P*(48*uSol{1} - 36*uSol{2} + 16*uSol{3} - 3*uSol{4} + ...
+        + 48*dt*NuSol{1} - 72*dt*NuSol{2} + 48*dt*NuSol{3} - 12*dt*NuSol{4}));
 end
 
 % Nonlinear evaluation of the solution at t_{n+1}:
@@ -79,7 +79,7 @@ Nv = gc*vals2coeffs(gv(coeffs2vals(v, N, nVars, c2v)), N, nVars, v2c);
 if ( q == 1 )
     uSol{1} = v;
 else
-    uSol = {sol, uSol{1:end-1}}.';
+    uSol = {v, uSol{1:end-1}}.';
 end
 
 % Update the nonlinear evaluations NUSOL:
