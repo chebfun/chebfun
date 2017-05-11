@@ -21,8 +21,9 @@ function [uSol, NuSol] = oneStep(K, dt, schemeCoeffs, gc, gv, nVars, S, uSol, Nu
 % Note (2): For the moment, we only support the (one-step) LIRK4 scheme and 
 % PDEs with linear part = Laplacian.
 
-% Get the number of gris points:
-N = sqrt(size(uSol{1}, 1)/nVars);
+% Set-up:
+q = K.steps;                      % number of steps (>1 for multistep methods)
+N = sqrt(size(uSol{1}, 1)/nVars); % grid points
 
 % Get the values to coeffs and coeffs to values transform:
 v2c = getVals2CoeffsTransform(S);
@@ -35,13 +36,13 @@ Nv = NuSol{1};
 % Extract the coefficients of the scheme:
 P = schemeCoeffs.precond;
 Lap = schemeCoeffs.linmat;
-L = schemeCoeffs.lufactors{1, 1};
-U = schemeCoeffs.lufactors{2, 1};
-La = schemeCoeffs.lufactors{1, 2};
-Ua = schemeCoeffs.lufactors{2, 2};
 
 % One step of LIRK4:
 if ( strcmpi(K.scheme, 'lirk4') == 1 )
+    L = schemeCoeffs.lufactors{1, 1};
+    U = schemeCoeffs.lufactors{2, 1};
+    La = schemeCoeffs.lufactors{1, 2};
+    Ua = schemeCoeffs.lufactors{2, 2};
     w = P*v;
     wa = w + dt*P*1/4*Nv;
     a = Ua\(La\wa);
@@ -65,12 +66,28 @@ if ( strcmpi(K.scheme, 'lirk4') == 1 )
 
 % One step of IMEXBDF4:
 elseif ( strcmpi(schemeName, 'imexbdf4') == 1 )
-    v = 
+    L = schemeCoeffs.lufactors{1, 1};
+    U = schemeCoeffs.lufactors{2, 1};
+    v = U\(L\(48*uSol{1} - 36*uSol{2} + 16*uSol{3} - 3*uSol{4} + ...
+        48*h*NuSol{1} - 72*h*NuSol{2} + 48*h*NuSol{3} - 12*h*NuSol{4}));
 end
 
-% Update USOL and NUSOL:
-uSol{1} = v;
-NuSol{1} = gc*vals2coeffs(gv(coeffs2vals(v, N, nVars, c2v)), N, nVars, v2c);
+% Nonlinear evaluation of the solution at t_{n+1}:
+Nv = gc*vals2coeffs(gv(coeffs2vals(v, N, nVars, c2v)), N, nVars, v2c);
+
+% Update the solutions USOL:
+if ( q == 1 )
+    uSol{1} = v;
+else
+    uSol = {sol, uSol{1:end-1}}.';
+end
+
+% Update the nonlinear evaluations NUSOL:
+if ( q == 1 )
+    NuSol{1} = Nv;
+else
+    NuSol = {Nv, NuSol{1:end-1}}.';
+end
 
 end
 
