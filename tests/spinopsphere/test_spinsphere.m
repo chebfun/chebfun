@@ -19,7 +19,6 @@ u = spinsphere(S, 32, dt, 'plot', 'off');
 uexact = spinsphere(S, 32, dt/2, 'plot', 'off');
 
 % Compare:
-tic, norm(u - uexact), toc
 pass(1) = norm(u - uexact) < tol;
 
 end
