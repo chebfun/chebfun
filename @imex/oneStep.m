@@ -68,8 +68,8 @@ if ( strcmpi(K.scheme, 'lirk4') == 1 )
 elseif ( strcmpi(K.scheme, 'imexbdf4') == 1 )
     L = schemeCoeffs.lufactors{1, 1};
     U = schemeCoeffs.lufactors{2, 1};
-    v = U\(L\P*(48*uSol{1} - 36*uSol{2} + 16*uSol{3} - 3*uSol{4} + ...
-        + 48*dt*NuSol{1} - 72*dt*NuSol{2} + 48*dt*NuSol{3} - 12*dt*NuSol{4}));
+    v = U\(L\(P*(48*uSol{1} - 36*uSol{2} + 16*uSol{3} - 3*uSol{4} + ...
+        + 48*dt*NuSol{1} - 72*dt*NuSol{2} + 48*dt*NuSol{3} - 12*dt*NuSol{4})));
 end
 
 % Nonlinear evaluation of the solution at t_{n+1}:
