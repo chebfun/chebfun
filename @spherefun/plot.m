@@ -1,12 +1,11 @@
 function varargout = plot(f, varargin)
 %PLOT  Surface plot of a SPHEREFUN.
 %
-%   PLOT(F) if F is a real-valued SPHEREFUN then this is the surface plot 
-%   and is the same as surf(F). If F is complex valued then this returns a 
-%   domain colouring plot of F.
+%   PLOT(F) gives a surface plot of the SPHEREFUN F, the same as SURF(F).
+%   If F is complex-valued, it gives a domain coloring plot.
 %
-%   PLOT(F) if F is a complex-valued SPHEREFUN then we do Wegert's phase 
-%   portrait plots.
+%   PLOT(F, 'zebra') gives a "zebra plot", black for values < 0
+%   and white for values >= 0.
 %
 %   PLOT(F, S) Plotting with option string plots the column and row slices,
 %   and pivot locations used in the construction of F.
@@ -190,8 +189,14 @@ if ( ~isempty(varargin) )
             daspect([1 1 1]);
         end
     else
-        %% Standard surface plot 
-        h = surf(f, varargin{:});
+        %% Standard or zebra surface plot 
+        if strcmp(varargin{1}, 'zebra')
+            h = surf(f);
+            caxis(norm(caxis,inf)*[-1 1])
+            colormap([0 0 0; 1 1 1])
+        else
+            h = surf(f, varargin{:});
+        end
     end
 else
     h = plot@separableApprox(f);

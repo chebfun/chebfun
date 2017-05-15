@@ -92,7 +92,7 @@ function F = sphHarmSum(lam,th,deg,coeffs)
 
 % Make th a row vector to better work with Matlab's Legendre function. Also
 % Legendre operates on cos(th).
-costh = cos(th(:));
+costh = cos(th(:)).';
 % Make lam row
 lam = lam(:).';
 
@@ -103,16 +103,11 @@ F = 1/sqrt(4*pi)*c;
 
 for l = 1:deg
     % Normalization terms for the associated Legendre functions.
-    mm = ones(l+1, 1)*(1:2*l);
-    pp = (0:l)'*ones(1, 2*l);
-    mask = (pp > abs(mm-(2*l+1)/2));
-    kk = mm.*mask + ~mask;
-    aa = exp(-sum(log(kk), 2));
-    a = sqrt(2*(2*l + 1)/4/pi*aa);
-    a(1) = a(1)/sqrt(2);                   % correction for the zero mode.
+    m = (0:l).';
+    a = (-1).^m./sqrt((1+double(m==0))*pi);
 
     % Compute the associated Legendre functions of cos(th) (Co-latitude)
-    G = legendre(l, costh);
+    G = legendre(l, costh, 'norm');
     
     % Extract out the coefficients and then discard the coefficients from
     % the global coeffs vector.
@@ -152,22 +147,16 @@ function F = sphHarmSumFixedDeg(lam,th,l,c)
 
 % Make th a row vector to better work with Matlab's Legendre function. Also
 % Legendre operates on cos(th).
-costh = cos(th(:));
+costh = cos(th(:)).';
 % Make lam row
 lam = lam(:).';
 
 % Normalization terms for the associated Legendre functions.
-
-mm = ones(l+1, 1)*(1:2*l);
-pp = (0:l)'*ones(1, 2*l);
-mask = (pp > abs(mm-(2*l+1)/2));
-kk = mm.*mask + ~mask;
-aa = exp(-sum(log(kk), 2));
-a = sqrt(2*(2*l + 1)/4/pi*aa);
-a(1) = a(1)/sqrt(2);                   % correction for the zero mode.
+m = (0:l).';
+a = (-1).^m./sqrt((1+double(m==0))*pi);
 
 % Compute the associated Legendre functions of cos(th) (Co-latitude)
-F = legendre(l, costh);
+F = legendre(l, costh, 'norm');
 
 % Multiply the random coefficients by the associated Legendre polynomials.
 % We will do one for the positive (including zero) order associated

@@ -9,7 +9,7 @@ g = spherefun(@(x,y,z) -sqrt(15/4/pi)*x.*z);
 pass(1) = norm(f-g,inf) < tol;
 
 f = spherefun.sphharm(2,-1);
-g = spherefun(@(x,y,z) sqrt(15/4/pi)*y.*z);
+g = spherefun(@(x,y,z) -sqrt(15/4/pi)*y.*z);
 pass(2) = norm(f-g,inf) < tol;
 
 f = spherefun.sphharm(3,1);
