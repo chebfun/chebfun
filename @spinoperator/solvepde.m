@@ -80,6 +80,27 @@ dealias = pref.dealias;   % Use a dealiasing procedure if DEALIAS = 1
 iterplot = pref.iterplot; % plot every ITERPLOT iterations if 'movie'
 plotStyle = pref.plot;    % Plotting options
 
+% Operators: linear part L, and nonlinear parts Nc (in coefficient space) and 
+% Nv (in value space). The nonlinear opeartor, acting on the Fourier coeffs
+% is written as 
+%           
+%        N(coeffs) = Nc(fft(Nv(ifft(coeffs)))).
+%          
+% For example, for u_t = Lu + (u^2)_x,
+%
+%        N(coeffs) = 1i*fft(ifft(coeffs)^2) with Nv(u) = u^2 and Nc(u) = 1i*u.
+%
+[L, Nc] = discretize(S, N);
+Nv = S.nonlinearPartVals;
+
+% For PDEs on the sphere, if the constant in front of the Laplacian is real,
+% use IMEX-BDF4 and not LIRK4:
+if ( isDiag(S) == 0 ) % Nondiagona operators = operators on the sphere.
+    if ( isreal(L) == 1 )
+        pref.scheme = 'imexbdf4';
+    end
+end
+
 % Create a time-stepping scheme:
 schemeName = pref.scheme;
 K = [];
@@ -115,19 +136,6 @@ if ( isa(K, 'expint') == 1 )
 else
     M = [];
 end
-
-% Operators: linear part L, and nonlinear parts Nc (in coefficient space) and 
-% Nv (in value space). The nonlinear opeartor, acting on the Fourier coeffs
-% is written as 
-%           
-%        N(coeffs) = Nc(fft(Nv(ifft(coeffs)))).
-%          
-% For example, for u_t = Lu + (u^2)_x,
-%
-%        N(coeffs) = 1i*fft(ifft(coeffs)^2) with Nv(u) = u^2 and Nc(u) = 1i*u.
-%
-[L, Nc] = discretize(S, N);
-Nv = S.nonlinearPartVals;
 
 % Set-up spatial grid for computation:
 compGrid = getGrid(S, N, dom);
@@ -242,7 +250,7 @@ if ( q > 1 )
     [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, NcInit);
 end
 
-% Compute the coefficients of the exponential integrators (phi-functions):
+% Compute the coefficients of the time-stepping schemes:
 schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 
 % Indexes for dealiasing:
