@@ -33,7 +33,9 @@ classdef spinprefsphere < spinpreference
 %      'off'
 %
 %   scheme                    * Time-stepping scheme. HELP/IMEX for the list
-%     ['lirk4']                 of available schemes.
+%     []                        of available schemes. Default is empty, i.e., 
+%                               automatically chosen by the code depending on
+%                               the PDE.
 %
 %   view                      * Viewpoint specification when 'plot' is 'movie'.
 %     [-37.5 30]   
@@ -73,7 +75,6 @@ classdef spinprefsphere < spinpreference
                 pref.iterplot = 1;
                 pref.Nplot = 128;
                 pref.plot = 'movie';
-                pref.scheme = 'lirk4';
             else
                 pref = spinprefsphere();
                 for k = 1:nargin/2

@@ -20,11 +20,11 @@ function [uOut, tOut, computingTime] = solvepde(varargin)
 % OPTION 2.     SOLVEPDE(S, N, DT, PREF), PREF is a SPINPREFERENCE.
 
 % Get the inputs:
-pref = [];
 if ( nargin == 3 ) % OPTION 1
     S = varargin{1};
     N = varargin{2};
     dt = varargin{3};
+    pref = getPreference(S); % get the default preferences
 elseif ( nargin == 4 ) % OPTION 2
     S = varargin{1};
     N = varargin{2};
@@ -34,11 +34,6 @@ end
 
 % Dimension:
 dim = getDimension(S);
-
-% Create a SPINPREFERENCE object if none:
-if ( isempty(pref) == 1 )
-    pref = getPreference(S);
-end
 
 %% Pre-processing:
 
@@ -94,10 +89,13 @@ plotStyle = pref.plot;    % Plotting options
 Nv = S.nonlinearPartVals;
 
 % For PDEs on the sphere, if the constant in front of the Laplacian is real,
-% use IMEX-BDF4 and not LIRK4:
+% use IMEX-BDF4, otherwise use LIRK4 (unless a specific scheme has been given
+% by the user):
 if ( isDiag(S) == 0 ) % Nondiagona operators = operators on the sphere.
-    if ( isreal(L) == 1 )
+    if ( isreal(L) == 1 && isempty(pref.scheme) == 1 )
         pref.scheme = 'imexbdf4';
+    elseif ( isreal(L) == 1 && isempty(pref.scheme) == 1 )
+        pref.scheme = 'lirk4';
     end
 end
 

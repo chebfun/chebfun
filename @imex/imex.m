@@ -10,9 +10,9 @@ classdef imex < spinscheme
 %
 % Available IMEX schemes:
 %
-%   IMEX RUNGE-KUTTA: 'lirk4'
+%   IMEX RUNGE-KUTTA: 'lirk4' (for dispersive PDEs)
 %
-%   IMEX-BDF: 'imexbdf4'
+%   IMEX-BDF: 'imexbdf4' (for diffusive PDEs)
 %
 % See also SPINSPHERE, EXPINT.
 
