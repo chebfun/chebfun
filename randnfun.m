@@ -30,7 +30,7 @@ function f = randnfun(varargin)
 %
 %   f = randnfun(0.1,'norm',[0 10]); plot(cumsum(f))
 %
-% See also RANDNFUN2, RANDNFUNSPHERE.
+% See also RANDNFUN2, RANDNFUNSPHERE, RANDNFUNDISK.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
