@@ -20,8 +20,12 @@ function f = randnfundisk(dt)
 if nargin == 0
     dt = 1;
 end
- 
-fsquare = randnfun2(dt,1.25*[-1 1 -1 1]);
+
+if dt > 1
+    fsquare = randnfun2(dt,1.25*[-1 1 -1 1]);         % correct in principle
+else
+    fsquare = randnfun2(dt,1.25*[-1 1 -1 1],'trig');  % much faster
+end
 
 % Sample fsquare over a polar tensor product grid that is dense enough to
 % resolve fsquare to machine precision.
