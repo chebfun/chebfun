@@ -19,7 +19,7 @@ function f = randnfunsphere(dt,type)
 %   f = randnfunsphere(0.2,'monochromatic'); std2(f), plot(f)
 %   colormap([0 0 0; 1 1 1]), caxis(norm(caxis,inf)*[-1 1])
 %
-% See also RANDNFUN, RANDNFUN2.
+% See also RANDNFUN, RANDNFUN2, RANDNFUNDISK.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

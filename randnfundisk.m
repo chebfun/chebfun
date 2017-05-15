@@ -12,7 +12,7 @@ function f = randnfundisk(dt)
 %   f = randnfundisk(0.5); plot(f)
 %   colormap([0 0 0; 1 0 0]), caxis(norm(caxis,inf)*[-1 1]), axis off
 %
-% See also RANDNFUN, RANDNFUN2, RANDFUNSPHERE.
+% See also RANDNFUN, RANDNFUN2, RANDNFUNSPHERE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -21,7 +21,7 @@ if nargin == 0
     dt = 1;
 end
  
-fsquare = randnfun2(dt,1.25*[-1 1 -1 1],'trig');
+fsquare = randnfun2(dt,1.25*[-1 1 -1 1]);
 
 % Sample fsquare over a polar tensor product grid that is dense enough to
 % resolve fsquare to machine precision.

@@ -1,7 +1,7 @@
 function f = randnfun2(varargin)
 %RANDNFUN2   Random smooth 2D function 
 %   F = RANDNFUN2(DT) returns a smooth CHEBFUN2 on [-1,1,-1,1] with
-%   maximum wave number about 2pi/DT in both the X and Y directions
+%   maximum frequency about 2pi/DT in both the X and Y directions
 %   and standard normal distribution N(0,1) at each point.  F is obtained
 %   by calling RANDNFUN2(T, 'trig') on a domain of dimensions about 20%
 %   greater and restricting the result to [-1,1,-1,1].    
@@ -23,7 +23,7 @@ function f = randnfun2(varargin)
 %   f = randnfun2(0.1); mean2(f), plot(f)
 %   f = randnfun2(0.25); plot(roots(f)), axis equal
 %
-% See also RANDNFUN, RANDNFUNSPHERE.
+% See also RANDNFUN, RANDNFUNSPHERE, RANDNFUNDISK.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
