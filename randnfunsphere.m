@@ -1,15 +1,15 @@
-function f = randnfunsphere(dt,type)
+function f = randnfunsphere(lambda, type)
 %RANDNFUNSPHERE   Random smooth function on the unit sphere
-%   F = RANDNFUNSPHERE(DT) returns a smooth SPHEREFUN of maximum
-%   frequency about 2pi/DT and standard normal distribution N(0,1)
+%   F = RANDNFUNSPHERE(LAMBDA) returns a smooth SPHEREFUN of maximum
+%   frequency about 2pi/LAMBDA and standard normal distribution N(0,1)
 %   at each point.  F is obtained from a combination of spherical
 %   harmonics with random coefficients.
 %
-%   RANDNFUNSPHERE(DT, 'monochrome') is similar, but uses a
+%   RANDNFUNSPHERE(LAMBDA, 'monochrome') is similar, but uses a
 %   fixed-degree expansion so that all components have wave number
-%   about equal to 2pi/DT.
+%   about equal to 2pi/LAMBDA.
 %
-%   RANDNFUNSPHERE() uses the default value DT = 1.
+%   RANDNFUNSPHERE() uses the default value LAMBDA = 1.
 %
 % Examples:
 %
@@ -26,21 +26,21 @@ function f = randnfunsphere(dt,type)
 
 % Parse the inputs
 if nargin == 0
-    dt = 1;
+    lambda = 1;
     type = 'white';
 elseif nargin == 1
-    % User either called randnspherefun(dt) or randnspherefun('monochromatic')
-    if isnumeric( dt )
+    % User either called randnspherefun(lambda) or randnspherefun('monochromatic')
+    if isnumeric( lambda )
         type = 'white';
-    elseif ( ischar( dt ) && strncmpi(dt,'m',1) )
-        dt = 1;
+    elseif ( ischar( lambda ) && strncmpi(lambda,'m',1) )
+        lambda = 1;
         type = 'monochromatic';
     else
         error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnknown', ...
             'Input argument unknown, options are a positive number or the string ''monochromatic''.');
     end
 elseif nargin == 2
-    if ~isnumeric( dt )
+    if ~isnumeric( lambda )
         error('CHEBFUN:SPHEREFUN:randnspherefun:inputUnknown', ...
             'First input argument must be a positive number.');
     end
@@ -53,7 +53,7 @@ elseif nargin == 2
     end
 end
  
-deg = round(pi/dt);
+deg = round(pi/lambda);
 
 % We do not use adaptive construction, but just sample the function on a
 % fine enough grid to exactly resolve it then pass this to the constructor.

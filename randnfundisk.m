@@ -1,11 +1,11 @@
-function f = randnfundisk(dt)
+function f = randnfundisk(lambda)
 %RANDNFUNDISK   Random smooth function on the unit disk
-%   F = RANDNFUNDISK(DT) returns a smooth DISKFUN of maximum
-%   frequency about 2pi/DT and standard normal distribution N(0,1)
-%   at each point.  F is obtained by restricting the output of
-%   RANDNFUN2 to the unit disk.
+%   F = RANDNFUNDISK(LAMBDA) returns a smooth DISKFUN of maximum
+%   frequency about 2pi/LAMBDA and standard normal distribution N(0,1)
+%   at each point.  F is obtained by restricting output of RANDNFUN2
+%   to the unit disk.
 %
-%   RANDNFUNDISK() uses the default value DT = 1.
+%   RANDNFUNDISK() uses the default value LAMBDA = 1.
 %
 % Examples:
 %
@@ -18,13 +18,13 @@ function f = randnfundisk(dt)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if nargin == 0
-    dt = 1;
+    lambda = 1;
 end
 
-if dt > 1
-    fsquare = randnfun2(dt,1.25*[-1 1 -1 1]);         % correct in principle
+if lambda > 1
+    fsquare = randnfun2(lambda,1.25*[-1 1 -1 1]);         % correct in principle
 else
-    fsquare = randnfun2(dt,1.25*[-1 1 -1 1],'trig');  % much faster
+    fsquare = randnfun2(lambda,1.25*[-1 1 -1 1],'trig');  % much faster
 end
 
 % Sample fsquare over a polar tensor product grid that is dense enough to
