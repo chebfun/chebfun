@@ -234,6 +234,10 @@ if ( exist('Z', 'var') )
             error('CHEBFUN:aaa:lengthFZ', ...
                 'Inputs F and Z must have the same length.')
         end
+    elseif ( ischar(F) )
+        % F is given as a string input. Convert it to a function handle.
+        F = str2op(vectorize(F));
+        F = F(Z);
     else
         error('CHEBFUN:aaa:UnknownF', 'Input for F not recognized.')
     end
@@ -405,3 +409,18 @@ if ( ( isResolved == 0 ) && ~mmax_flag )
 end
 
 end % End of AAA_AUTOZ().
+
+function op = str2op(op)
+    % Convert string inputs to either numeric format or function_handles.
+    sop = str2num(op);
+    if ( ~isempty(sop) )
+        op = sop;
+    else
+        depVar = symvar(op);
+        if ( numel(depVar) ~= 1 )
+            error('CHEBFUN:CHEBFUN:str2op:indepvars', ...
+             'Incorrect number of independent variables in string input.');
+        end
+        op = eval(['@(' depVar{:} ')', op]);
+    end
+end % End of STR2OP().
