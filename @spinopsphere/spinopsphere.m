@@ -100,13 +100,22 @@ end
             
         % Ginzburg-Landau equation:
         elseif ( strcmpi(pdechar, 'GL') == 1 )
-            L = @(u) 1e-3*lap(u);
+            L = @(u) 5e-4*lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-            u0 = @(x,y,z) cos(3*x)+cos(3*y)+cos(3*z);
-            tt = pi/8; c = cos(tt); s = sin(tt);
-            u0 = 1/3*spherefun(@(x,y,z) u0(c*x-s*z,y,s*x+c*z)); 
-            tspan = [0 30];
+            u0 = randnfunsphere(.1);
+            u0 = u0/norm(u0, inf);
+            tspan = [0 100];
             
+        % Gierer-Meinhardt model:
+        elseif ( strcmpi(pdechar, 'GM') == 1 )
+            L = @(u,v) [1e-2*lap(u);1e-1*lap(v)];
+            N = @(u,v) [u.^2./v-u;u.^2-v]; 
+            tspan = [0 40];
+            u01 = @(x,y,z) 1+1/3*(cos(20*x)+cos(20*z)+cos(20*y));
+            u0 = chebmatrix([]);
+            u0(1,1) = spherefun(u01); 
+            u0(2,1) = spherefun(u01);
+              
         % Focusing nonlinear Schroedinger equation
         elseif ( strcmpi(pdechar, 'NLS') == 1 )
             L = @(u) 1i*lap(u);
