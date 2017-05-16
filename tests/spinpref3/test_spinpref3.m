@@ -1,4 +1,4 @@
-% Test file for SPINPREF3/SPINPREF3:
+% Test file for SPINPREF3:
 
 function pass = test_spinpref3()
 

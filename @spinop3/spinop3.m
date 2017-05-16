@@ -12,7 +12,7 @@ classdef spinop3 < spinoperator
 %   S = SPINOP3(DOM, TSPAN) creates a SPINOP3 object S on DOM x TSPAN. The other
 %   fields of a SPINOP3 are its linear part S.LIN, its nonlienar part S.NONLIN
 %   and the initial condition S.INIT. The fields can be set via S.PROP = VALUE. 
-%   See Remark 1 and Example 1.
+%   See Remarks 1/2 and Example 1.
 %
 % Remark 1: The linear part has to be of the form 
 %           
@@ -21,7 +21,7 @@ classdef spinop3 < spinoperator
 %           for some numbers A, B, C, D and E.
 %
 % Remark 2: The nonlinear part has to be of the form @(u) f(u), where f is a 
-%           nonlinear function of u that does not involve any derivatives of u.
+%           nonlinear nondifferential operator with constant coefficients.
 %
 % Example 1: To construct a SPINOP3 corresponding to the GL3 equation on 
 %            DOM = [0 100]^3 x TSPAN = [0 10] with random initial condition, one 
@@ -33,7 +33,7 @@ classdef spinop3 < spinoperator
 %            S.nonlin = @(u) u - (1+1.3i)*u.*(abs(u).^2);
 %            S.init = chebfun3(.1*randn(32,32,32), dom);
 %
-% See also SPINOPERATOR, SPINOP, SPINOP2, SPIN3.
+% See also SPINOPERATOR, SPIN3.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -49,6 +49,7 @@ classdef spinpref < spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
+        M            % Number of points for complex means (1x1 INT)
         Ylim         % Limit of the y-axis of the plot (1x2*NVARS DOUBLE)
     end
     

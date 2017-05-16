@@ -1,4 +1,4 @@
-function dim = getDimension(S)
+function dim = getDimension(~)
 %GETDIMENSION   Returns 2 for a SPINOP2.
 %
 % See also SPINOP2.

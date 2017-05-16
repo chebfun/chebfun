@@ -1,4 +1,4 @@
-classdef chebdouble
+classdef (InferiorClasses = {?chebfun}) chebdouble
 %CHEBDOUBLE  Chebyshev double class. For example, DIFF means Chebyshev difference.
 %
 %   PDE15S likes to work with doubles (for speed). However, the problem is that
@@ -636,6 +636,10 @@ classdef chebdouble
             elseif ( isnumeric(u) )
                 v.values = u.*v.values;
                 u = v;
+            elseif ( ~isa(u, 'chebdouble') )
+                u = times(feval(u, chebpts(length(v), v.domain)), v);
+            elseif ( ~isa(v, 'chebdouble') )
+                u = times(u, feval(v, chebpts(length(u), u.domain)));
             else
                 u.values = u.values.*v.values;
                 u.diffOrder = max(u.diffOrder, v.diffOrder);                

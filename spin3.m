@@ -12,8 +12,8 @@ function [uout, tout] = spin3(varargin)
 %   each row representing one variable).
 %
 %   UOUT = SPIN3(S, N, DT) solves the PDE specified by the SPINOP3 S with N grid
-%   points in each direction and a time-step DT. It plots a movie of the
-%   solution as it computes it. See HELP/SPINOP3 and Example 5.
+%   points in each direction and time-step DT. It plots a movie of the solution
+%   as it computes it. See HELP/SPINOP3 and Example 5.
 %
 %   UOUT = SPIN3(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF3 object PREF. See HELP/SPINPREF3 and Example 6.
@@ -40,6 +40,7 @@ function [uout, tout] = spin3(varargin)
 %        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
 %    on [0 100]^3 from t=0 to t=70, with a random initial condition.
+%    The movie plots the real part of u.
 %
 % Example 2: Gray-Scott equations (fingerprints patterns)
 %
@@ -104,7 +105,7 @@ function [uout, tout] = spin3(varargin)
 %   direction, a time-step dt=5e-1, doesn't produce any movie use the
 %   time-stepping scheme PECEC433.
 %
-% See also SPINOP3, SPINPREF3, SPINSCHEME, SPIN, SPIN2.
+% See also SPINOP3, SPINPREF3, EXPINT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -115,8 +116,8 @@ function [uout, tout] = spin3(varargin)
 %  or
 %       SPINOPERATOR.SOLVEPDE(S, N, dt, pref)
 %
-% where S is a SPINOP3 object, N is the number of grid points, DT is the
-% time-step and PREF is a SPINPREF3 oject.
+% where S is a SPINOP3 object, N is the number of grid points in each direction, 
+% DT is the time-step and PREF is a SPINPREF3 oject.
 
 if ( nargin == 1 ) % e.g., u = spin3('gl3')
     try spinop3(varargin{1});

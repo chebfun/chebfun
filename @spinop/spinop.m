@@ -18,7 +18,7 @@ classdef spinop < spinoperator
 % Remark 1: The linear part can be any linear constant-coefficient differential
 %           operator, e.g., @(u) diff(u,3) + u. The nonlinear part has to be
 %           constant-coefficient and of the form @(u) diff(f(u), m) where f is a 
-%           nonlinear function of u that does not involve any derivatives of u, 
+%           nonlinear function of u that does not involve any derivative of u, 
 %           and m is the differentiation order. The following function handles 
 %           are allowed:
 %
@@ -44,7 +44,7 @@ classdef spinop < spinoperator
 %            S.nonlin = @(u) -.5*diff(u.^2);
 %            S.init = chebfun(@(x) 100*sin(x), dom);
 %
-% See also SPINOPERATOR, SPINOP2, SPINOP3, SPIN.
+% See also SPINOPERATOR, SPIN.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

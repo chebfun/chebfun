@@ -7,6 +7,9 @@ classdef spinpref2 < spinpreference
 %     []                        Default is empty, i.e., automatically chosen by 
 %                               the code. 
 %
+%   colormap                  * Color look-up table. See HELP/COLORMAP.
+%     ['parula'] 
+%
 %   dataplot                  * Plotting options when the solution is complex.
 %     ['real']                 
 %      'imag'
@@ -53,6 +56,8 @@ classdef spinpref2 < spinpreference
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         Clim                  % Limits of the colorbar (1x2*NVARS DOUBLE)
+        colormap              % Color look-up table (STRING)
+        M                     % Number of points for complex means (1x1 INT)
         view = [0 90];        % Viewpoint of the plot (1x2 DOUBLE)
     end
     
@@ -63,11 +68,12 @@ classdef spinpref2 < spinpreference
         
         function pref = spinpref2(varargin) 
             if ( nargin == 0 )
+                pref.colormap = 'parula';
                 pref.dataplot = 'real';
                 pref.dealias = 'off';
                 pref.iterplot = 1;
                 pref.M = 32;
-                pref.Nplot = 256;
+                pref.Nplot = 128;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
             else
