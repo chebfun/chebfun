@@ -5,7 +5,7 @@ function g = log(f, pref)
 %
 % See also LOG1P, LOG2, LOG10, EXP, REALLOG.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
 if ( nargin < 2 )

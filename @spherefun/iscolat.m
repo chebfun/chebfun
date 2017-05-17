@@ -5,7 +5,7 @@ function b = iscolat(f)
 %   the North pole = 0 radians latitude, 
 %   South Pole = pi radians latitude.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

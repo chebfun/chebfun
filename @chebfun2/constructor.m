@@ -3,7 +3,7 @@ function g = constructor(g, op, varargin)
 %
 % This code is when functions of two variables are represented as CHEBFUN2
 % objects. A CHEBFUN2 object is a low rank representation and expresses a
-% function as a sum of rank-0 or 1 outerproduct of univariate functions.
+% function as a sum of rank-0 or 1 outer products of univariate functions.
 %
 % The algorithm for constructing a CHEBFUN2 comes in two phases:
 %
@@ -24,7 +24,7 @@ function g = constructor(g, op, varargin)
 %
 % See also CHEBFUN2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % Parse the inputs:
@@ -57,6 +57,11 @@ if ( isa(op, 'chebfun2') )  % CHEBFUN2( CHEBFUN2 )
     return
 end
 
+% The 'equi' flag can be used only with numeric data:
+if ( isEqui && ~isa(op, 'double') )
+    error('CHEBFUN:CHEBFUN2:constructor:equi', ...
+        'The EQUI flag is valid only when constructing from numeric data');
+end
 % Deal with constructions from numeric data:
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     g = constructFromDouble(op, dom, pref, isEqui);
@@ -692,8 +697,13 @@ end
 
 isCoeffs = find(cellfun(@(p) strcmpi(p, 'coeffs'), varargin));
 if ( isCoeffs )
-    varargin(isCoeffs) = [];
-    op = chebfun2.coeffs2vals(op);
+    if ( isTrig )
+        varargin(isCoeffs) = [];
+        op = trigtech.coeffs2vals(trigtech.coeffs2vals( op ).').'; 
+    else
+        varargin(isCoeffs) = [];
+        op = chebfun2.coeffs2vals(op);
+    end
 end
 
 end

@@ -64,7 +64,7 @@ function varargout = solveivp(N, rhs, pref, varargin)
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVP,
 % CHEBFUN/ODE113, CHEBFUN/ODE15S, CHEBFUN/ODE45, CHEBFUN/ODESOL, TREEVAR. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note:
@@ -240,6 +240,21 @@ opts.happinessCheck = pref.happinessCheck;
 
 % Do we want to restart the solver at breakpoints?
 opts.restartSolver = pref.ivpRestartSolver;
+
+% Break out of solver if solution exceeds maximum norm?
+maxNorm = N.maxnorm;
+
+% TODO: Should just need this in case opts.Events is not Inf. Move to end of
+% file?
+    function [position,isterminal,direction] = applyEventsFcn(t,y)
+        position = abs(y(varIndex))-maxNorm(:); % The value that we want to be zero
+        isterminal = 1+0*maxNorm;  % Halt integration in call cases
+        direction = 0;   % The zero can be approached from either direction
+    end
+
+if ( ~isempty(maxNorm) && ~all(isinf(maxNorm) ))
+    opts.Events = @applyEventsFcn;
+end
 
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);

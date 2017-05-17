@@ -9,7 +9,7 @@ function [normF, normloc] = norm(f, p)
 %   The inf norm also returns a second output giving a position where the 
 %   max occurs.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
@@ -29,7 +29,7 @@ else
         
         case {2}  
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented');
+                'Not implemented');
     
         case {'fro'}
             % Developer Note: Instead of normF = sqrt(sum3(f.^2)), which 
@@ -48,32 +48,30 @@ else
             % Frobenius norm of F.
             
         case {inf, 'inf', 'max'}
-            [vals, locs] = minandmax3(f);
-            [normF, idx] = max(abs(vals));
-            normloc = locs(idx, :);
+            if ( isreal(f) )
+                [vals, locs] = minandmax3(f);
+                [normF, idx] = max(abs(vals));
+                normloc = locs(idx, :);
+            else
+                [vals, locs] = minandmax3(conj(f).*f);
+                [normF, idx] = max(sqrt(abs(vals)));
+                normloc = locs(idx, :);                
+            end
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented.');
+                'Not implemented.');
             
         case {'op', 'operator'}
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented.');
+                'Not implemented.');
             
         otherwise
-            if ( isnumeric(p) && isreal(p) )
-                if ( abs(round(p) - p) < eps )
-                    p = round(p); 
-                    f = f.^p;
-                    if ( ~mod(p,2) )
-                        normF = (sum3(f)) .^ (1/p);
-                    else
-                        error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                            'p-norm must have p even for now.');
-                    end
+            if ( isnumeric(p) && isreal(p) )                
+                if ( mod(p, 2) == 0 )
+                    normF = sum3((conj(f).*f).^(p/2))^(1/p);
                 else
-                    error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                        'CHEBFUN3 does not support this norm.');
+                    error('CHEBFUN:CHEBFUN3:norm:norm', 'Not implemented.');
                 end
             else
                 error('CHEBFUN:CHEBFUN3:norm:unknown', 'Unknown norm.');

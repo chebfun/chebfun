@@ -9,7 +9,7 @@ function seedRNG(s)
 %   Users should NOT call this function from their own code, as it may be
 %   removed without warning in a future release.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( verLessThan('matlab', '7.12') )

@@ -9,7 +9,7 @@ function h = rdivide(f, g)
 %
 % See also CHEBFUN3T/LDIVIDE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
@@ -33,14 +33,8 @@ elseif ( isa(f, 'chebfun3t') && isa(g, 'double') )  % CHEBFUN3T ./ double
     h = f .* (1/g);
         
 elseif ( isa(f, 'double') && isa(g, 'chebfun3t') )   
-       [ss, zeroVal] = singleSignTest(g);
-       if ( ( ss == 1 ) && ( zeroVal == 0 ) )
            h = chebfun3t(@(x,y,z) f ./ feval(g, x, y, z), g.domain);
-       else
-          error('CHEBFUN:CHEBFUN3T:rdivide:zero', ...
-              'Attempting to invert a CHEBFUN3T with a root.'); 
-       end
-       
+           
 else
     error('CHEBFUN:CHEBFUN3T:rdivide:badInputs', 'Unrecognised operation.');
     

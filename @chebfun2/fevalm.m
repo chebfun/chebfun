@@ -5,7 +5,7 @@ function varargout = fevalm(varargin)
 % X and Y should be vectors of doubles. This is equivalent to making a meshgrid
 % of the vectors X and Y and then using FEVAL to evaluate at that grid.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = fevalm@separableApprox(varargin{:});

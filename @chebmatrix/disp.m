@@ -3,7 +3,7 @@ function disp(L, name)
 %
 % See also DISPLAY, CHEBMATRIX/SPY.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [m, n] = size(L);

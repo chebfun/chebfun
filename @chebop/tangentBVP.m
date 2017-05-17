@@ -27,7 +27,7 @@ function [t, tau] = tangentBVP(N, u, lambda, told, tauold, x, dSum, prefs)
 %
 % See also: followpath, newtonBVP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % The domain of the problem

@@ -1,7 +1,7 @@
 function y = polyval(p, x)
 %POLYVAL  Evaluate polynomial with CHEBFUN argument.
 %   Y = POLYVAL(P, X) returns the value of a polynomial P evaluated at the
-%   CHEBFUNX. P is a column vector of length N + 1 whose elements are the
+%   CHEBFUN X. P is a column vector of length N + 1 whose elements are the
 %   coefficients of the polynomial in descending powers.
 %        Y = P(1)*X^N + P(2)*X^(N-1) + ... + P(N)*X + P(N+1)
 %
@@ -11,7 +11,7 @@ function y = polyval(p, x)
 % Example:
 %   Evaluate the polynomial p(x) = 3x^2 + 2x + 1:
 %   
-%   p = [3 2 1].;
+%   p = [3 2 1]';
 %   x = chebfun('x');
 %   polyval(p, x)
 %

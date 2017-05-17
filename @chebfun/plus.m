@@ -8,7 +8,7 @@ function f = plus(f, g)
 %   The dimensions of F and G must be compatible. Note that scalar expansion is
 %   _not_ supported if both F and G are CHEBFUN objects.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'chebfun') )   % ??? + CHEBFUN
@@ -82,9 +82,9 @@ else                          % CHEBFUN + CHEBFUN
     if ( xor(f(1).isTransposed, g(1).isTransposed) )
         error('CHEBFUN:CHEBFUN:plus:matdim', ...
             'Matrix dimensions must agree. (One input is transposed).');
-    elseif ( numColumns(f) ~= numColumns(g) )
-        error('CHEBFUN:CHEBFUN:plus:dims', 'Matrix dimensions must agree.')
     end
+        
+    dimCheck(f, g);
     
     if ( numel(f) == 1 && numel(g) == 1 )
         % CHEBFUN case:
@@ -110,13 +110,26 @@ else                          % CHEBFUN + CHEBFUN
     else
         % QUASIMATRIX case:
         
-        % Loop over the columns:
+        % Convert to cell for simplicity
         f = cheb2cell(f);
         g = cheb2cell(g);
-        for k = numel(f):-1:1
-            h(k) = f{k} + g{k};
+        
+        % Loop over the columns:
+        if ( numel(f) == 1 )
+            for k = numel(g):-1:1
+                h(k) = f{1} + g{k};
+            end
+        elseif ( numel(g) == 1 )
+            for k = numel(f):-1:1
+                h(k) = f{k} + g{1};
+            end
+        else % numel(f) = numel(g)
+            for k = numel(f):-1:1
+                h(k) = f{k} + g{k};
+            end
         end
         f = h;
+        
     end
 
 end

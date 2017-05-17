@@ -16,7 +16,7 @@ function f = compose(f, op, g, data, pref)
 %   one can set PREF.REFINEMENTFUNCTION to be a function which takes advantage
 %   of F and possibly OP or G being CHEBTECH objects.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
@@ -42,11 +42,6 @@ pref.chebfuneps = max(eps, pref.chebfuneps);
 pref.sampleTest = false;
 
 if ( nfuns == 2 )
-    
-    if ( size(f, 2) ~= size(g, 2) )
-        error('CHEBFUN:CHEBTECH:compose:dim', ...
-              'Matrix dimensions must agree.')
-    end
 
     % Grab some data from G:
     pref.minSamples = max(pref.minSamples, length(g));

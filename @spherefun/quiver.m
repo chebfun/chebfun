@@ -7,7 +7,7 @@ function varargout = quiver(fx, fy, fz)
 %
 % See also SPHEREFUNV, QUIVER.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Add more options.

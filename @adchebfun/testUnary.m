@@ -3,7 +3,7 @@ function pass = testUnary(funcList, tol)
 %   derivatives and lineary information. Used for most unary operators (e.g.
 %   sin, cos, exp, ...).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,14 +1,13 @@
 function v = sum2(f) 
 %SUM2   Double integral of a SPHEREFUN over its domain.
 %   I = SUM2(F) returns the double definite integral of a SPHEREFUN.
-%
+
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Split f into its plus/minus terms.  The minus terms have integral zero 
 % on the sphere since the rows in this case are anti-periodic with period
 % pi. Thus, we only need to integrate the plus terms.
-
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
-
 
 [cols, d, rows] = cdr(f);
 

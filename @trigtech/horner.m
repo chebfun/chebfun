@@ -24,7 +24,7 @@ function y = horner(x, c, isReal)
 %
 % See also TRIGTECH.FEVAL, TRIGTECH.BARY.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -122,7 +122,7 @@ else
     if mod(N, 2) == 1
         q = exp(-1i*pi*(N-1)/2*x)*(z.*q + c(1,:));
     else
-        q = exp(-1i*pi*(N/2-1)*x)*q + cos(N/2*pi*z)*c(1,:);
+        q = exp(-1i*pi*(N/2-1)*x)*q + cos(N/2*pi*x)*c(1,:);
     end
 end
 

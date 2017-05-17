@@ -3,7 +3,7 @@ function C = mtimes(A, B)
 %
 % See also MPOWER.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Scalar operand is scalar*identity. But it's faster to interpret it as a

@@ -1,5 +1,5 @@
 function out = isreal(f)
-%ISREAL   Test if a CHEBFUN3 object F is Real-valued.
+%ISREAL   Test if a CHEBFUN3 object F is real-valued.
 %   ISREAL(F) returns logical true if F does not have any nonzero imaginary
 %   part and false otherwise.
 %  
@@ -8,7 +8,7 @@ function out = isreal(f)
 %
 % See also CHEBFUN/ISREAL and CHEBFUN2/ISREAL.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )

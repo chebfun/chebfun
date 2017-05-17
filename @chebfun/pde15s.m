@@ -7,8 +7,8 @@ function varargout = pde15s(varargin)
 %   PDEFUN(UU, t, x) with the initial condition U0 and boundary conditions BC
 %   over the time interval T.
 %
-%   [TT, UU] = PDE15s(PDEFUN, T, U0, BC, OPTS, N) returns also the time chunks
-%   TT. If T is a two-vector these will be given by linspace(T(1), T(2), 51).
+%   [TT, UU] = PDE15s(PDEFUN, T, U0, BC) returns also the time chunks TT. If T
+%   is a two-vector these will be given by linspace(T(1), T(2), 51).
 %
 %   [TT, UU, VV, ...] = PDE15s(...), in the case of a coupled systems, will
 %   return the quasimatrices UU, VV, ..., whose columns corresponds to the each
@@ -88,7 +88,7 @@ function varargout = pde15s(varargin)
 %
 % See also PDESET, ODE15S, PDE23T, PDESOLVE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % Loop over the inputs and look for a PDESET struct:

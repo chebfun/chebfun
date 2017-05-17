@@ -15,7 +15,7 @@ function c_jac = jac2jac( c_jac, alpha, beta, gam, delta )
 
 % See also JAC2CHEB, CHEB2JAC.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Move (alpha,beta) to (A,B) so that |A-alpha|<1 and |B-beta|<1:

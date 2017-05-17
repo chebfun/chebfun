@@ -5,7 +5,7 @@ function out = feval(f, x, y, z)
 %
 %   See also SUBSREF.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
@@ -23,7 +23,26 @@ end
 
 [rX, rY, rZ] = rank(f);
 
-if ( strcmpi(x, ':') && strcmpi(y, ':') && strcmpi(z, ':') )   % f(:, :, :)
+if ( isnumeric(x) && isnumeric(y) && isnumeric(z) )  % f(x, y, z)
+    n = size(x);
+    if ( length(n) == 2 && min(n) == 1 )
+        % Inputs are vectors.
+        % TODO: Replace the above with ndims?
+        out = vectorCase(f, x, y, z);
+        
+    elseif ( length(n) == 2 && min(n) > 1 )
+        % TODO: Replace the above with ndims?
+        out = matrixCase(f, x, y, z);
+        if ( size(out) ~= size(x) )
+            out = out.';
+        end
+        
+    elseif length(n) == 3 % The inputs are tensors.
+        % TODO: Replace the above with ndims?
+        out = tensorCase(f, x, y, z, n);
+    end
+    
+elseif ( strcmpi(x, ':') && strcmpi(y, ':') && strcmpi(z, ':') )   % f(:, :, :)
     % Simply return the CHEBFUN3 object itself.
     out = f;
 
@@ -78,25 +97,6 @@ elseif ( isnumeric(x) && isnumeric(y) &&  strcmpi(z, ':') ) % f(x, y, :)
     out = f.tubes * core;
     if ( isa(out, 'chebfun') )
         out = simplify(out); 
-    end
-
-elseif ( isnumeric(x) && isnumeric(y) && isnumeric(z) )  % f(x, y, z)
-    n = size(x);
-    if ( length(n) == 2 && min(n) == 1 )
-        % Inputs are vectors.
-        % TODO: Replace the above with ndims?        
-        out = vectorCase(f, x, y, z);
-        
-    elseif ( length(n) == 2 && min(n) > 1 )
-        % TODO: Replace the above with ndims?
-        out = matrixCase(f, x, y, z);
-        if ( size(out) ~= size(x) )
-            out = out.';
-        end
-
-    elseif length(n) == 3 % The inputs are tensors.
-        % TODO: Replace the above with ndims?
-        out = tensorCase(f, x, y, z, n);
     end
     
 end

@@ -4,7 +4,7 @@ function f = rotate(f, alpha, beta)
 %   Y = ROTATE(F, ALPHA, BETA) rotates F by an angle ALPHA in the (x,z)
 %   plane and BETA in the (x,y) plane.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

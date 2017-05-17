@@ -5,7 +5,7 @@ function b = rhs(disc, f)
 %
 % See also MATRIX, REDUCE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developers note: This method works as follows. 

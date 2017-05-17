@@ -51,7 +51,7 @@ N.lbc = @(t) sin(-2*pi+c*t);
 N.rbc = @(t) sin(2*pi+c*t);
 N.dbc = @(x,u) [u - sin(x) ; diff(u) - c*cos(x)];
 u = N \ 0;
-pass(4) = ( norm(u - exact) < 5e3*tol);
+pass(4) = ( norm(u - exact) < 7e3*tol);
 
 %% Working for non-zero starting time. 
 d = [-2*pi 2*pi 1 2]; c = 3; 

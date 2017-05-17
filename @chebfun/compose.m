@@ -3,22 +3,29 @@ function f = compose(f, op, g, pref)
 %   COMPOSE(F, OP) returns a CHEBFUN representing OP(F), where F is also a
 %   CHEBFUN object and OP is a function handle.
 %
-%   COMPOSE(F, OP, G) returns OP(F, G), where F and G are CHEBFUN objects and OP
-%   is a function handle. The domains and dimensions of F and G should be
-%   compatible.
+%   COMPOSE(F, OP, G) returns OP(F, G), where F and G are CHEBFUN objects 
+%   and OP is a function handle. The domains and dimensions of F and G 
+%   should be compatible.
 %
-%   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G are
-%   also CHEBFUN objects. If the range of F is not contained in the domain of G,
-%   or if F and G do not have the same dimensions, then an error is thrown.
+%   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G 
+%   are also CHEBFUN objects. If the range of F is not contained in the 
+%   domain of G, or if F and G do not have the same dimensions, then an 
+%   error is thrown.
 %
-%   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
-%   the options passed by the CHEBFUNPREF object PREF.
+%   COMPOSE(F, G) where G is a CHEBFUN3 or CHEBFUN3V and F has three real
+%   columns returns a CHEBFUN representing G(F).  Similarly if G is a 
+%   CHEBFUN2 or CHEBFUN2V and F has two real columns.  If F has one column,
+%   then G(F) is iterpreted as G(real(F), imag(F)), regardless of whether F
+%   is real or complex.
 %
-%   Note: If the locations of required breakpoints in the output are known in
-%   advance, they should be applied to F and/or G using RESTRICT() before the
-%   call to COMPOSE().
+%   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) 
+%   use the options passed by the CHEBFUNPREF object PREF.
+%
+%   Note: If the locations of required breakpoints in the output are known 
+%   in advance, they should be applied to F and/or G using RESTRICT() 
+%   before the call to COMPOSE().
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -40,7 +47,7 @@ function f = compose(f, op, g, pref)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% [TODO]: vscale and tolerance?
+% [TODO]: vscale?
 
 % [TODO]: 
 %  The lower level constructors and compose() methods all accept a 'data'
@@ -82,9 +89,6 @@ if ( isa(op, 'chebfun') )
     % Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
     g = op;
     
-%     if ( numColumns(f) ~= numColumns(g) )
-%             error('CHEBFUN:CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
-%     end
     if ( numColumns(f) > 1 && numColumns(g) > 1 )
         error('CHEBFUN:CHEBFUN:compose:trans', ...
             'Cannot compose two array-valued CHEBFUN objects.');
@@ -108,14 +112,96 @@ if ( isa(op, 'chebfun') )
         end
         f = h;
     end
+    
+elseif ( isa(op, 'chebfun2') )
+    if ( size(f, 2) == 1 )
+        % Interpret as OP(real(f), imag(f)), regardless whether f is real- or
+        % complex-valued.
+        f = compose([ real(f), imag(f) ], op);
+    elseif ( size(f, 2) == 2 )
+        % Extract the two columns of f:
+        x = extractColumns(f, 1);
+        y = extractColumns(f, 2);
+        
+        % Make sure each column is real-valued:
+        if ( ~isreal(x) || ~isreal(y) )
+            error('CHEBFUN:CHEBFUN:compose:complex2', ...
+                'CHEBFUN2(f) is defined for a chebfun f with one complex or two real columns.')
+        end
+        
+        % Compose:
+        if ( isPeriodicTech(x) && isPeriodicTech(y) )
+            % OP(f) should be periodic if f is:
+            f = chebfun(@(t) op(feval(x, t), feval(y, t)), x.domain, 'trig');
+        else
+            f = chebfun(@(t) op(feval(x, t), feval(y, t)), x.domain);
+        end
+    else
+        error('CHEBFUN:CHEBFUN:compose:Cheb2ofCheb', ...
+            'CHEBFUN2(f) is defined for a chebfun f with one complex or two real columns.')
+    end
+    
+elseif ( isa(op, 'chebfun2v') )
+    if ( size(f, 2) == 1 )
+        % Interpret as OP(real(f), imag(f)), regardless whether f is real- or
+        % complex-valued.
+        f = compose([ real(f), imag(f) ], op);
+    elseif ( size(f, 2) == 2 )
+        % Call compose for each component of OP.
+        F = compose(f, op(1));
+        for jj = 2:op.nComponents
+            F = [ F, compose(f, op(jj)) ];
+        end
+        f = F;
+    else
+        error('CHEBFUN:CHEBFUN:compose:Cheb2VofCheb', ...
+            'CHEBFUN2V(f) is defined for a chebfun f with one complex or two real columns.')
+    end
+    
+elseif ( isa(op, 'chebfun3') )
+    if ( size(f, 2) == 3 )
+        % Extract the columns of f:
+        x = extractColumns(f, 1);
+        y = extractColumns(f, 2);
+        z = extractColumns(f, 3);
+        
+        % Make sure all components are real-valued.
+        if ( ~isreal(x) || ~isreal(y) || ~isreal(z) )
+            error('CHEBFUN:CHEBFUN:compose:complex3', ...
+                'CHEBFUN3(F) is defined for a chebfun F with three real columns.')
+        end
+        
+        % Compose:
+        if ( isPeriodicTech(x) && isPeriodicTech(y) && isPeriodicTech(z) )
+            % OP(f) should be periodic if f is:
+            f = chebfun(@(t) op(feval(x, t), feval(y, t), feval(z, t)), ...
+                x.domain, 'trig');
+        else
+            f = chebfun(@(t) op(feval(x, t), feval(y, t), feval(z, t)), ...
+                x.domain);
+        end
+    else
+        error('CHEBFUN:CHEBFUN:compose:Cheb3ofCheb', ...
+            'CHEBFUN3(F) is defined for a chebfun F with three columns.')
+    end
+    
+elseif ( isa(op, 'chebfun3v') )
+    if ( size(f, 2) == 3 )
+        % Call compose for each component of OP.
+        F = compose(f, op(1));
+        for jj = 2:op.nComponents
+            F = [ F, compose(f, op(jj)) ];
+        end
+        f = F;
+    else
+       error('CHEBFUN:CHEBFUN:compose:Cheb3VofCheb', ...
+            'CHEBFUN3V(F) is defined for a chebfun F with three columns.')
+    end 
         
 elseif ( opIsBinary )
     % Binary composition:
     
-    if ( numColumns(f) ~= numColumns(g) )
-            error('CHEBFUN:CHEBFUN:compose:dims', ...
-                'Matrix dimensions must agree.')
-    end
+    dimCheck(f, g);
     
     if ( numel(f) == 1 && numel(g) == 1 )
         % Array-valued CHEBFUN case:
@@ -342,18 +428,18 @@ end
 %% Locate breakpoints in G:
 
 % If g has breakpoints, find the corresponding x-points in the domain of f:
-newDom = f.domain;
 if ( numel(g.domain) > 2 )
+    newDom = f.domain;
     gDom = g.domain(2:end-1);
     for k = 1:length(gDom)
         r = roots(f - gDom(k));
         newDom = [newDom, r(:).'];
     end
+    newDom = chebfun.tolUnique(sort(newDom));
+    
+    % Restrict f to the new domain:
+    f = restrict(f, newDom);
 end
-newDom = chebfun.tolUnique(sort(newDom));
-
-% Restrict f to the new domain:
-f = restrict(f, newDom);
 
 %% Call COMPOSE():
 

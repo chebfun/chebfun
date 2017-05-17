@@ -4,20 +4,21 @@ function [normF, normloc] = norm( f, p )
 %    NORM(F) = sqrt(integral of abs(F)^2).
 %    NORM(F, 2) = largest singular value of F.
 %    NORM(F,'fro') is the same as NORM(F).
+%    NORM(F,'nuc') = sum of singular values of F.
 %    NORM(F, 1) = NOT IMPLEMENTED.
 %    NORM(F, inf) = global maximum in absolute value.
 %    NORM(F, 'max') = global maximum in absolute value.
-%    NORM(F, 'min') = NOT IMPLEMENTED
+%    NORM(F, 'min') = NOT IMPLEMENTED.
 %
-% Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a second output,
-% giving a position where the max occurs.
+% Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a 
+% second output, giving a position where the max occurs.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
-    % Default to 2-norm.
-    p = 2;
+    % Default to Frobenius norm.
+    p = 'fro';
 end
 
 if ( isempty( f ) )  
@@ -28,33 +29,45 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
-                'SEPARABLEAPPROX does not support L1-norm');
-            
-        case {2, 'fro'}  % Definite integral of f.^2
+                'SEPARABLEAPPROX does not support L1-norm, yet.');
+
+        case {'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
             normF = sqrt( sum( svd( f ).^2 ) );  
             
-        case {inf, 'inf', 'max'}
-            [Y, X] = minandmax2(f);
-            [normF, idx] = max( abs( Y ) );
-            normloc = X( idx, : );
+        case {inf, 'inf', 'max'}            
+            if ( isreal(f) )
+                [Y, X] = minandmax2(f);
+                [normF, idx] = max(abs(Y));
+                normloc = X(idx, :);
+            else
+                [Y, X] = minandmax2(conj(f).*f);
+                [normF, idx] = max(sqrt(abs(Y)));
+                normloc = X(idx, :);
+            end
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                 'SEPARABLEAPPROX does not support this norm.');
             
-        case {'op', 'operator'}
+        case {2, 'op', 'operator'}
             [C, D, R] = cdr( f ); 
-            L = C * D * R; 
+            L = C * D * R'; 
             s = svd( L ); 
             normF = s(1);      
-            
+
+        case {'nuc', 'nuclear'}
+            [C, D, R] = cdr( f ); 
+            L = C * D * R';             
+            normF = sum(svd( L )); 
+                        
         otherwise
             if ( isnumeric(p) && isreal(p) )
                 if ( abs(round(p) - p) < eps )
-                    p = round(p); f = f.^p;
+                    p = round(p); 
+                    fp = f.^p;
                     if ( ~mod(p,2) )
-                        normF = ( sum2( f ) ).^( 1/p );
+                        normF = ( sum2( fp ) ).^( 1/p );
                     else
                         error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                             'p-norm must have p even for now.');

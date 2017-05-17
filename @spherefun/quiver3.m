@@ -6,7 +6,7 @@ function varargout = quiver3(varargin)
 %
 % See also SPHEREFUNV/QUIVER3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:SPHEREFUN:QUIVER3:notSupported',...

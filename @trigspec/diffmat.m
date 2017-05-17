@@ -10,7 +10,7 @@ function D = diffmat(N, m, flag)
 %   flag is currently only used in the spherefun.poisson and 
 %   spherefun.helmholtz commands.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs.

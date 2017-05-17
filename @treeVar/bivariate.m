@@ -29,7 +29,7 @@ function treeOut = bivariate(leftTree, rightTree, method, type)
 %            expression, obtained once METHOD has operated on LEFTTREE and
 %            RIGHTTREE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Construct a new MATLAB struct to be returned.

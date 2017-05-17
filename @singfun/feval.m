@@ -2,7 +2,7 @@ function val = feval(f, x)
 %FEVAL   Evaluate a SINGFUN.
 %   FEVAL(F, X) evaluates the SINGFUN F at the given points X.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % For evaluation, the underlying SMOOTHFUN, i.e., f.smoothPart, is first

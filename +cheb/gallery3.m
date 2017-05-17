@@ -38,14 +38,15 @@ function varargout = gallery3(name)
 %                [contour(f(:,:,1),0:10:100)]
 %   runge        3D Runge function [slice(f)]
 %   shubert      Function with many local minima.  [scan(f)]
+%   toyfunction  Function from chebfun3 paper with different modal ranks
 %   wagon        3D generalization of "SIAM 100 Digit Challenge" function
 %                [contourf(f(-.16,:,:))]
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
-% See also CHEB.GALLERY, CHEB.GALLERYTRIG and CHEB.GALLERY2.
+% See also CHEB.GALLERY, CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERYDISK, CHEB.GALLERYSPHERE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If the user did not supply an input, return a random function from the
@@ -54,7 +55,8 @@ if ( nargin == 0 )
     names = {'aurentz', 'barth10', 'bessel', 'cassini', 'clebsch', ...
             'doublehelix', 'genz1', 'genz2', 'genz3', 'genz4', ...
             'griewank', 'hoop', 'kummer', 'lattice', 'levy', 'octant', ...
-            'rastrigin', 'rosenbrock', 'runge', 'shubert', 'wagon'};
+            'rastrigin', 'rosenbrock', 'runge', 'shubert', 'toyfunction', ...
+            'wagon'};
     name = names{randi(length(names))};
     clf
 end
@@ -303,7 +305,21 @@ switch lower(name)
             scan(f)
             title(name)
         end
-
+          
+    case 'toyfunction'
+        %Toy function from chebfun3 paper 
+        fa = @(x,y,z) 3*x.^7.*z + y.*z + y.*z.^2 + log(2+y).*z.^3 ...
+            - 2*z.^5;
+        f = chebfun3(fa);
+        % Try e.g. plot(f) or scan(f)
+        if ( nargout == 0 )
+            isolevel = -0.2;
+            isosurface(f, isolevel)
+            view(62, 17)
+            str=sprintf('%s for f = %2.2f', name, isolevel);
+            title(str)
+        end
+        
     case 'wagon'
         % Function from Page 99 of F. Bornemann, D. Laurie, S. Wagon and J. 
         % Waldvogel, The SIAM 100-Digit Challenge, SIAM, 2004.

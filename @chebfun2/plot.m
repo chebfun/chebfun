@@ -1,18 +1,17 @@
 function varargout = plot(varargin)
 %PLOT  Surface plot of a CHEBFUN2.
 %
-%   PLOT(F) if F is a real-valued CHEBFUN2 then this is the surface plot and is
-%   the same as surf(F). If F is a complex valued then this returns a domain
-%   colouring plot of F.
+%   PLOT(F) gives a surface plot of the CHEBFUN2 F, the same as SURF(F).
+%   If F is complex-valued, it gives a phase portrait.
 %
-%   PLOT(F) if F is a complex-valued CHEBFUN2 then we do Wegert's phase portrait
-%   plots.
+%   PLOT(F, 'zebra') gives a "zebra plot", black for values < 0
+%   and white for values >= 0.
 %
 %   PLOT(F, S) Plotting with option string plots the column and row slices, and
 %   pivot locations used in the construction of F.
 %
 %   When the first argument in options is a string giving details about
-%   linestyle, markerstyle or colour then pivot locations are plotted. Various
+%   linestyle, markerstyle or colour, pivot locations are plotted. Various
 %   line types, plot symbols and colors may be obtained with plot(F,S) where S
 %   is a character string made from one element from any or all the following 3
 %   columns, similar as in the usual plot command:
@@ -32,13 +31,13 @@ function varargout = plot(varargin)
 %                               h     hexagram
 %
 %   For phase portraits see: E. Wegert, Visual Complex Functions: An
-%   introduction with Phase Portraits, Springer Basel, 2012, or for MATLAB code
-%   to produce many different styles of phase portraits go to:
+%   Introduction with Phase Portraits, Springer Basel, 2012, or for MATLAB code
+%   to produce many different styles of phase portraits go to
 %   http://www.visual.wegert.com
 %
 % See also SURF, MESH.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = plot@separableApprox(varargin{:});

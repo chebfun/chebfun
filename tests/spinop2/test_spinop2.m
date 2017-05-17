@@ -1,10 +1,10 @@
-% Test file for SPINOP2/SPINOP2:
+% Test file for SPINOP2:
 
 function pass = test_spinop2()
 
 % Construction from STRING for GL2 equation:
 S = spinop2('gl2');
-N = S.nonlinearPart;
+N = S.nonlin;
 pass(1) = strcmpi(func2str(N), '@(u)u-(1+1.5i)*u.*(abs(u).^2)');
 
 % Construction from DOM/TSPAN:

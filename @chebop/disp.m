@@ -3,7 +3,7 @@ function disp(A)
 %
 % See also DISPLAY.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
@@ -30,6 +30,9 @@ else
     if ( ~isempty(A.op) )
         fprintf(':\n')
         [str, args] = formatOperator(A.op);
+        if ( ~isempty(A.opShow) )
+            str = A.opShow;
+        end
         fprintf('      %s\n', str);
         if ( loose )
             fprintf('\n')
@@ -84,6 +87,17 @@ else
         if ( loose )
             fprintf('\n')
         end
+    end
+    
+    if ( ~isempty(A.maxnorm) )
+        mn = A.maxnorm;
+        mn = mn(:)'; % Ensure row vector for printing
+        if ( length(mn) > 1 )
+            maxnormString = ['[' num2str(mn) ']'];
+        else
+            maxnormString = num2str(mn);
+        end
+        fprintf('   enforcing a maximum norm of solution: %s\n', maxnormString);
     end
 
 end

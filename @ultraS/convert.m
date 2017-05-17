@@ -7,7 +7,7 @@ function S = convert(A, K1, K2)
 %   S = CONVERT(A, 0, K2) returns the operator that maps Chebyshev T
 %   coefficients of ultraspherical C^{(K2)} coefficients.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )

@@ -7,7 +7,7 @@ function F = diff(F, k, dim)
 %   DIFF(F, K, DIM) is the K-th derivative of F along the dimension DIM.
 %   DIM = 1 (default) returns the derivative in the 1st input variable.
 %   DIM = 2 returns the derivative in the 2nd variable.
-%   DIM = 3 returns the derivative in the 3rd varialbe.
+%   DIM = 3 returns the derivative in the 3rd variable.
 %
 %   DIFF(F, [K1 K2], [DIM1 DIM2]) means K1-th derivative of F in dimension
 %   DIM1 and K2-th derivative in dimension DIM2. DIM1 and DIM2 can be 1, 2 
@@ -20,7 +20,7 @@ function F = diff(F, k, dim)
 %    
 % See also CHEBFUN3/GRAD, CHEBFUN3/LAP, and CHEBFUN3/BIHARM.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:

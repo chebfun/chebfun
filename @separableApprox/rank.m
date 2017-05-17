@@ -2,12 +2,12 @@ function r = rank(f, tol)
 %RANK      Rank of a SEPARABLEAPPROX.
 %   RANK(F) produces an estimate of the rank of the approximant F.
 %
-%   RANK(F, TOL) is the number of singular values of F greater than TOL/N, where
+%   RANK(F, TOL) is the number of singular values of F greater than TOL*N, where
 %   N is the first singular value of F.
 %
 % See also LENGTH.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

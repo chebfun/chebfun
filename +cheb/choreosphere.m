@@ -20,7 +20,7 @@ function choreosphere
 % [1] H. Montanelli and N. I. Gushterov, Computing planar and spherical
 % choreographies, SIAM Journal on Applied Dynamical Systems 15 (2016),
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 close all

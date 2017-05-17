@@ -2,7 +2,7 @@ function out = innerProduct(f, g)
 %INNERPRODUCT Compute the inner product of two DELTAFUN objects.
 %   INNERPRODUCT(F, G) is the inner-product of two DELTAFUN object F and G. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Trivial cases:

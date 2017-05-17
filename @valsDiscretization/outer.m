@@ -1,7 +1,7 @@
 function F = outer(disc, f, g)
 %OUTER   Outer product operator in VALSDISCRETIZATION.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain the collocation points and associated weights.

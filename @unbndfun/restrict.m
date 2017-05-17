@@ -9,7 +9,7 @@ function g = restrict(f, s)
 %   that is, if length(S) == 2, then the FUN object g is returned. This 
 %   facilitates the use of the result by other functions, e.g. plot etc.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:

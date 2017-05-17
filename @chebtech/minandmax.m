@@ -17,7 +17,7 @@ function [vals, pos] = minandmax(f)
 %
 % See also MIN, MAX.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isreal(f) )
@@ -73,7 +73,12 @@ function [vals, pos] = minandmaxColumn(f, fp, xpts)
     % Initialise output
     pos = [ 0; 0 ];
     vals = [ 0; 0 ];
-
+    
+    if ( length(f) == 1 )
+        vals = feval(f, pos);
+        return
+    end
+    
     % Compute turning points:
     r = roots(fp);
     r = [ -1; r; 1 ];

@@ -1,12 +1,10 @@
 function [x, w, v] = jacpts(n, a, b, int, meth)
-%JACPTS  Gauss-Jacobi Quadrature Nodes and Weights.
+%JACPTS  Gauss-Jacobi quadrature nodes and weights.
 %   X = JACPTS(N, ALPHA, BETA) returns the N roots of the degree N Jacobi
-%   polynomial with parameters ALPHA and BETA (which must both be greater than
-%   or equal -1) where the Jacobi weight function is defined by w(x) =
-%   (1-x)^ALPHA*(1+x)^BETA.
+%   polynomial with parameters ALPHA and BETA (which must both be > -1)
+%   where the Jacobi weight function is w(x) = (1-x)^ALPHA*(1+x)^BETA.
 %
-%   [X, W] = JACPTS(N, ALPHA, BETA) returns also a row vector W of weights for
-%   Gauss-Jacobi quadrature.
+%   [X, W] = JACPTS(N, ALPHA, BETA) returns also a row vector W of weights.
 %
 %   [X, W, V] = JACPTS(N, ALPHA, BETA) returns additionally a column vector V of
 %   weights in the barycentric formula corresponding to the points X.
@@ -18,24 +16,24 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %     to the roots. Default for N < 100.
 %    METHOD = 'ASY' uses the Hale-Townsend fast algorithm based upon asymptotic
 %     formulae, which is fast and accurate. Default for N >= 100.
-%    METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
-%       which is maintained mostly for historical reasons.
+%    METHOD = 'GW' uses the traditional Golub-Welsch eigenvalue method,
+%     which is maintained mostly for historical reasons.
 %
 %   [X, W, V] = JACPTS(N, ALPHA, BETA, [A, B]) scales the nodes and weights for
 %       the finite interval [A,B].
 %
 %   The cases ALPHA = BETA = -.5 and ALPHA = BETA = .5 correspond to
 %   Gauss-Chebyshev nodes and quadrature, and are treated specially (as a closed
-%   form of the nodes and weights is available). ALPHA = BETA = 0 calls LEGPTS,
-%   which is a more efficient code. The others cases with ALPHA = BETA call
-%   ULTRAPTS, which is a faster code.
+%   form expression for the nodes and weights is available). ALPHA = BETA = 0
+%   calls LEGPTS, which is more efficient. The other cases with ALPHA = BETA call
+%   ULTRAPTS, which is also faster.
 % 
 %   When ALPHA ~= BETA and MAX(ALPHA, BETA) > 5 the results may not be accurate. 
 %
 % See also CHEBPTS, LEGPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, TRIGPTS, and
 % ULTRAPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -59,10 +57,10 @@ method = 'default';
 method_set = 0;
 
 if ( a <= -1 || b <= -1 )
-    error('CHEBFUN:jacpts:sizeAB', 'Alpha and beta must be greater than -1')
+    error('CHEBFUN:jacpts:sizeAB', 'Alpha and beta must be greater than -1.')
 elseif (a~=b && max(a, b) > 5 )
     warning('CHEBFUN:jacpts:largeAB',...
-        'ALPHA~=BETA and MAX(ALPHA, BETA) > 5. Results may not be accurate')
+        'ALPHA~=BETA and MAX(ALPHA, BETA) > 5. Results may not be accurate.')
 end
 
 
@@ -151,7 +149,6 @@ if ( n < 20 || (n < 100 && ~method_set) || strcmpi(method, 'rec') )
     
 elseif ( strcmpi(method, 'GW') )
     [x, w, v] = gw(n, a, b);  % GW  see [1]
-    w = w/sum(w);
     
 else
     [x, w, v] = asy(n, a, b); % HT  see [2]
@@ -229,8 +226,7 @@ function [x, w, v] = gw(n, a, b)
     TT = diag(bb,1) + diag(aa) + diag(bb,-1); % Jacobi matrix.
     [V, x] = eig( TT );                       % Eigenvalue decomposition.
     x = diag(x);                              % Jacobi points.
-    % Quadrature weights:
-    w = V(1,:).^2*( 2^(ab+1)*gamma(a+1)*gamma(b+1)/gamma(2+ab) ); 
+    w = V(1,:).^2*2^(ab+1)*beta(a+1, b+1);    % Quadrature weights.
     v = sqrt(1-x.^2).*abs(V(1,:))';           % Barycentric weights.
 end
 

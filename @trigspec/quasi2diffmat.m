@@ -3,7 +3,7 @@ function [L, S] = quasi2diffmat(disc)
 %   L = QUASI2USDIFFMAT(DISC) returns a matrix L corresponding to the
 %   differential operator C{1}*D^[m] + ... C{m+1}*I.
 %
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get info from DISC:

@@ -1,13 +1,13 @@
 function varargout = contour(varargin)
 %CONTOUR  contour plot of a CHEBFUN2.
 %   CONTOUR(F) is a contour plot of F treating the values of F as heights above
-%   a plane. A contour plot are the level curves of F for some values V. The
+%   a plane. A contour plot shows the level curves of F for some values V. The
 %   values V are chosen automatically.
 %
-%   CONTOUR(F, N) draw N contour lines, overriding the automatic number. The
+%   CONTOUR(F, N) draws N contour lines, overriding the automatic number. The
 %   values V are still chosen automatically.
 %
-%   CONTOUR(F, V) draw LENGTH(V) contour lines at the values specified in vector
+%   CONTOUR(F, V) draws LENGTH(V) contour lines at the values specified in vector
 %   V. Use contour(F, [v, v]) to compute a single contour at the level v.
 %
 %   CONTOUR(X, Y, F,...), CONTOUR(X, Y, F ,N, ...), and CONTOUR(X, Y, F, V,...)
@@ -21,11 +21,11 @@ function varargout = contour(varargin)
 %   NUMPTS is not given then we plot on an 200 by 200 grid.
 %
 %   CONTOUR(F, 'PIVOTS', STR) plots the contour lines with the pivot locations
-%   used during constructor.
+%   used during construction.
 %
 % See also CONTOURF.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = contour@separableApprox(varargin{:});

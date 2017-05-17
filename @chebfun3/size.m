@@ -7,7 +7,7 @@ function varargout = size(f, dim)
 %   M = SIZE(F, DIM) returns the size of F along the dimension specified by
 %   the scalar DIM, and is always Inf.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( (nargin == 1) && (nargout <= 1) )

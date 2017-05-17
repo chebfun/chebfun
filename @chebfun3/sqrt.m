@@ -4,7 +4,7 @@ function f = sqrt(f)
 %
 % See also CHEBFUN3/POWER and CHEBFUN3/COMPOSE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
@@ -12,13 +12,14 @@ if ( isempty(f) )
     return
 end
 
-% Positive/negative test.
-[bool, wzero] = singleSignTest(f);
-
-if ( ( bool == 0 ) || ( wzero == 1 ) )
-    error('CHEBFUN:CHEBFUN3:sqrt:notSmooth', ...
-        'A change of sign/zero has been detected, unable to represent the result.');
-end
+if ( isreal(f) )
+    % Positive/negative test.
+    ss = singleSignTest(f);  % Returns TRUE if there is no sign change.
+    if ( ~ss )
+        error('CHEBFUN:CHEBFUN3:sqrt:notSmooth', ...
+            'Sign change detected. Unable to represent the result.'); 
+    end
+end      
 
 f = compose(f, @sqrt); 
 

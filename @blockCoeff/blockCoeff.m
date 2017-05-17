@@ -4,7 +4,7 @@ classdef blockCoeff
 %
 % See also LINOP, CHEBOP, CHEBOPPREF.
     
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,6 +20,7 @@ classdef blockCoeff
     properties ( Access = public )
         coeffs = [];
         domain
+        pref = chebfunpref;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -31,18 +32,21 @@ classdef blockCoeff
             % When called with no arguments, the returned object causes the
             % block's stack to be evaluated with these methods to produce
             % coefficients.
-            if isempty(varargin{1})
+            if ( isempty(varargin{1}) )
                 pref = cheboppref;
                 A.domain = pref.domain;
                 return
                 
             % Calling the constructor with a linBlock argument initiates the
             % process of evaluating the stack with a dummy object of this class.
-            elseif isa(varargin{1},'linBlock')
+            elseif ( isa(varargin{1}, 'linBlock') )
                 L = varargin{1};
                 dummy = blockCoeff([]);
                 dummy.domain = L.domain;
-                A = L.stack( dummy );
+                if ( nargin == 2 )
+                    dummy.pref = varargin{2};
+                end
+                A = L.stack(dummy);
 
             % If the constructor is called with data, just make a regular object
             % out of it. 
@@ -53,6 +57,9 @@ classdef blockCoeff
                 end
                 A.coeffs = f;
                 A.domain = varargin{2};
+                if ( nargin == 3 )
+                    A.pref = varargin{3};
+                end
             end
         end
     end
@@ -65,15 +72,15 @@ classdef blockCoeff
         % These are the basic constructors.
         
         function I = eye(A)
-            I = blockCoeff( chebfun(1, A.domain), A.domain );
+            I = blockCoeff(chebfun(1, A.domain, A.pref), A.domain);
         end
         
         function I = zeros(A)
-            I = blockCoeff( chebfun(0, A.domain), A.domain );
+            I = blockCoeff(chebfun(0, A.domain, A.pref), A.domain);
         end
         
         function F = mult(A, f)
-            F = blockCoeff( f, A.domain );
+            F = blockCoeff(f, A.domain);
         end
         
         function C = cumsum(A, m)
@@ -205,7 +212,7 @@ classdef blockCoeff
         end
         
         function A = uminus(A)
-            A.coeffs = cellfun( @uminus, A.coeffs, 'uniform', false );
+            A.coeffs = cellfun(@uminus, A.coeffs, 'uniform', false);
          end
         
         function A = uplus(A)

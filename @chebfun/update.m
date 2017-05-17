@@ -22,7 +22,7 @@ function update(varargin)
 %
 % See also CHEBFUNROOT().
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 version = 'release';  % 'release' or 'development'?
@@ -59,7 +59,7 @@ cd(installDir)
 % Check they _really_ want to do this!
 if ( ~force )
     
-    fprintf(2, ['Warning!\nUpdating will permenently remove your ', ...
+    fprintf(2, ['Warning!\nUpdating will permanently remove your ', ...
         'Chebfun root directory,\n%s/, and all contents.\n'], installDir);
     yesno = '';
     while ( ~any(strcmp(yesno, {'yes', 'no'}))  )

@@ -13,7 +13,7 @@ function j = besselroots(v, n)
 %   V > 5 --> moderately accurate for the 6 first zeros and good
 %     approximations for the others (McMahon's expansion).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % L. L. Peixoto, 2015

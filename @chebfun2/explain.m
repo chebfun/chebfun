@@ -4,7 +4,7 @@ function explain(f, varargin)
 % EXPLAIN(F), where F is a CHEBFUN2, plays a movie about how the CHEBFUN2
 % constructor constructed F.
 %
-% EXPLAIN(F, MODE) speeds up or slow the movie, depending on the value of MODE.
+% EXPLAIN(F, MODE) speeds up or slows down the movie, depending on the value of MODE.
 % The options for the value of MODE are as follows:
 % 
 %   MODE = S, where S is a numerical value, plays the movie S times faster than
@@ -19,7 +19,7 @@ function explain(f, varargin)
 %   f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); explain(f, 2)
 %   f = chebfun2(@(x,y) cos(x.*y)); explain(f, .5)
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %% Explain only supports chebfun2 on the unit domain

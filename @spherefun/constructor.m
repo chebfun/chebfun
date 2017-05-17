@@ -1,10 +1,9 @@
 function g = constructor(g, op, varargin)
 %CONSTRUCTOR   The main SPHEREFUN constructor.
-%
-% This code is when functions on the surface of the sphere are represented
-% as SPHEREFUN objects. A SPHEREFUN object is a real-valued function as a 
-% sum of rank 1 outerproducts of univariate functions in spherical 
-% coordinates.
+% This code is for generating a SPHEREFUN object that represents a function
+% on the unit sphere. A SPHEREFUN object is a real-valued function that is
+% represented as a sum of rank 1 outerproducts of univariate functions in
+% `doubled-up' spherical coordinates.
 %
 % The algorithm for constructing a SPHEREFUN comes in two phases:
 %
@@ -22,11 +21,11 @@ function g = constructor(g, op, varargin)
 % The algorithm is fully described in:
 %  A. Townsend, H. Wilber, and G. Wright, Computing with function on
 %  spherical and polar geometries I: The sphere, SIAM J. Sci. Comput., 
-%  Accepted, 2016. 
+%  38-4 (2016), C403-C425. 
 %
 % See also SPHEREFUN.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 0 )          % SPHEREFUN( )
@@ -80,7 +79,7 @@ end
 
 % Check for op = @(lam,th) constant function
 [ll, tt] = meshgrid(dom(1:2), dom(3:4));
-if ( numel(op(ll,tt)) == 1 )
+if ( ~vectorize && numel(op(ll,tt)) == 1 )
     op1 = op;
     op = @(ll, tt) op1(ll, tt) + 0*ll;
 end
@@ -266,7 +265,7 @@ end
 % Only information at the poles is given.
 if ( m == 2 ) 
     cols = F(:, 1);
-    rows = F(1, :).';
+    rows = ones(n,1);
     idxPlus = 1;
     idxMinus = [];
     pivotArray = [1 0];

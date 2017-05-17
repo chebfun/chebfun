@@ -4,7 +4,7 @@ function len = length(f)
 %
 % See also SIZE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The length of a TRIGTECH is the length of its vector of values.

@@ -5,7 +5,7 @@ function varargout = xyz
 %   Y = CHEBFUN3(@(X,Y,Z) Y), and
 %   Z = CHEBFUN3(@(X,Y,Z) Z).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 x = chebfun3(@(x,y,z) x);
