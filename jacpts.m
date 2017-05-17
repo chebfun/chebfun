@@ -1,12 +1,10 @@
 function [x, w, v] = jacpts(n, a, b, int, meth)
-%JACPTS  Gauss-Jacobi Quadrature Nodes and Weights.
+%JACPTS  Gauss-Jacobi quadrature nodes and weights.
 %   X = JACPTS(N, ALPHA, BETA) returns the N roots of the degree N Jacobi
-%   polynomial with parameters ALPHA and BETA (which must both be greater than
-%   or equal -1) where the Jacobi weight function is defined by w(x) =
-%   (1-x)^ALPHA*(1+x)^BETA.
+%   polynomial with parameters ALPHA and BETA (which must both be > -1)
+%   where the Jacobi weight function is w(x) = (1-x)^ALPHA*(1+x)^BETA.
 %
-%   [X, W] = JACPTS(N, ALPHA, BETA) returns also a row vector W of weights for
-%   Gauss-Jacobi quadrature.
+%   [X, W] = JACPTS(N, ALPHA, BETA) returns also a row vector W of weights.
 %
 %   [X, W, V] = JACPTS(N, ALPHA, BETA) returns additionally a column vector V of
 %   weights in the barycentric formula corresponding to the points X.
@@ -18,17 +16,17 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %     to the roots. Default for N < 100.
 %    METHOD = 'ASY' uses the Hale-Townsend fast algorithm based upon asymptotic
 %     formulae, which is fast and accurate. Default for N >= 100.
-%    METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
-%       which is maintained mostly for historical reasons.
+%    METHOD = 'GW' uses the traditional Golub-Welsch eigenvalue method,
+%     which is maintained mostly for historical reasons.
 %
 %   [X, W, V] = JACPTS(N, ALPHA, BETA, [A, B]) scales the nodes and weights for
 %       the finite interval [A,B].
 %
 %   The cases ALPHA = BETA = -.5 and ALPHA = BETA = .5 correspond to
 %   Gauss-Chebyshev nodes and quadrature, and are treated specially (as a closed
-%   form of the nodes and weights is available). ALPHA = BETA = 0 calls LEGPTS,
-%   which is a more efficient code. The others cases with ALPHA = BETA call
-%   ULTRAPTS, which is a faster code.
+%   form expression for the nodes and weights is available). ALPHA = BETA = 0
+%   calls LEGPTS, which is more efficient. The other cases with ALPHA = BETA call
+%   ULTRAPTS, which is also faster.
 % 
 %   When ALPHA ~= BETA and MAX(ALPHA, BETA) > 5 the results may not be accurate. 
 %
