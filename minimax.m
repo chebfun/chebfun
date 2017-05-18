@@ -209,12 +209,19 @@ function xk = cfInit(f, fHandle, m, n)
     warning off
     if ( numel(f.funs) == 1 )
         [p, q] = cf(f, m, n);
+        pqh = @(x) feval(p, x)./feval(q, x);
+        [xk, ~, ~, flag] = exchange([], 0, 2, f, fHandle, p, pqh, m+n+2, n);
     else
-        [p, q] = cf(f, m, n, 50*(m+n) );
+        try
+            [p, q] = cf(f, m, n, 50*(m+n) );
+            pqh = @(x) feval(p, x)./feval(q, x);
+            [xk, ~, ~, flag] = exchange([], 0, 2, f, fHandle, p, pqh, ...
+                                        m+n+2, n);
+        catch ME  % an error occured when callign cf (ignore it)
+            flag = 0;
+        end
     end
     warning on
-    pqh = @(x) feval(p, x)./feval(q, x);
-    [xk, ~, ~, flag] = exchange([], 0, 2, f, fHandle, p, pqh, m+n+2, n);
 
     % If the above procedure failed to produce a reference
     % with enough oscillation points, use polynomial Remez.
