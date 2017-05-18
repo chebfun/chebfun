@@ -90,7 +90,7 @@ end
 
 % Plot the coeffs:
 NN = length(xx);
-ms = 4 + 80/sqrt(NN+4);
+ms = 3 + 50/sqrt(NN+8);
 h = semilogy(xx, yy, '.','markersize',ms);    % args{:}); 
 hold on
 
