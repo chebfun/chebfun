@@ -10,10 +10,6 @@ function varargout = plotcoeffs(f, varargin)
 %
 %   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries objects.
 %
-%   Note: to make the PLOTCOEFFS easier to read, zero coefficients have a small
-%   value added to them (typically EPS*VSCALE(F)) so that the curve displayed is
-%   continuous.
-%
 % See also CHEBCOEFFS, PLOT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
@@ -37,11 +33,12 @@ end
 loglogPlot = false;
 doBar = false;
 domain = [-1,1];
+ms = NaN;
 
 % Copy input arguments:
 args = varargin;
 
-% Check inputs for 'loglog' or 'barplot'.
+% Check inputs for 'loglog' or 'barplot' or 'domain' or 'markersize'
 j = 1;
 while ( j <= length(args) )
     if ( strcmpi(args{j}, 'loglog') )
@@ -53,6 +50,9 @@ while ( j <= length(args) )
     elseif ( strcmpi(args{j}, 'domain') )
         domain = args{j+1};
         args(j:j+1) = [];        
+    elseif ( strcmpi(args{j}, 'markersize') )
+        ms = args{j+1};
+        args(j:j+1) = [];
     else
         j = j + 1;
     end
@@ -71,8 +71,8 @@ if ( vscl > 0 )
         absCoeffs(absCoeffs < min(eps*vscl)/100) = 0;
     else
         % Min of eps*vscale and the minimum non-zero coefficient:
-        absCoeffs(~absCoeffs) = min( min(eps*vscl), ...
-                                 0 ); %min(absCoeffs(logical(absCoeffs))) );                             
+%       absCoeffs(~absCoeffs) = min( min(eps*vscl), ...
+%                                0 ); %min(absCoeffs(logical(absCoeffs))) );                             
     end
 else
     % Add eps for zero CHEBTECHs:
@@ -88,13 +88,17 @@ if ( any(doBar) )
     [xx, yy] = padData(xx,yy);
 end
 
-% Plot the coeffs:
-NN = length(xx);
-ms = 3 + 50/sqrt(NN+8);
-%h = semilogy(xx, yy, '.','markersize',ms);    % args{:}); 
-%h = semilogy(xx, yy, '.','markersize',ms,args{:}); 
-h = semilogy(xx, yy, args{:}); 
-%args
+% Plot the coefficients:
+if isnan(ms)
+    NN = length(xx);
+    ms = 3 + 50/sqrt(NN+8);
+end
+linetype_specified = ( mod(length(args),2) == 1 );
+if linetype_specified
+    h = semilogy(xx, yy, args{1}, 'markersize', ms, args{2:end}); 
+else
+    h = semilogy(xx, yy, '.', 'markersize', ms, args{:}); 
+end
 hold on
 
 % Do a loglog plot:

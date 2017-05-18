@@ -1,6 +1,6 @@
 function varargout = plotcoeffs(f, varargin)
-%PLOTCOEFFS   Display Trigonometric coefficients graphically.
-%   PLOTCOEFFS(F) plots the Trigonometric coefficients of a TRIGTECH F on a
+%PLOTCOEFFS   Display trigonometric coefficients graphically.
+%   PLOTCOEFFS(F) plots the trigonometric coefficients of a TRIGTECH F on a
 %   semilogy scale.  If F is an array-valued TRIGTECH then a curve is plotted
 %   for each component (column) of F.
 %
@@ -11,11 +11,7 @@ function varargout = plotcoeffs(f, varargin)
 %   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries
 %   objects.
 %
-%   Note: to make the COEFPLOT easier to read, zero coefficients have a small
-%   value added to them (typically EPS*VSCALE(F)) so that the curve displayed
-%   is continuous.
-%
-% See also PLOT.
+% See also TRIGCOEFFS, PLOT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -31,11 +27,12 @@ end
 % Set defaults:
 loglogPlot = false;
 domain = [-1, 1];
+ms = NaN;
 
 % Copy input arguments:
 args = varargin;
 
-% Check inputs for 'loglog'.
+% Check inputs for 'loglog' or 'domain' or 'markersize'
 j = 1;
 while ( j <= length(args) )
     if ( strcmpi(args{j}, 'loglog') )
@@ -43,6 +40,9 @@ while ( j <= length(args) )
         args(j) = [];
     elseif ( strcmpi(args{j}, 'domain') )
         domain = args{j+1};
+        args(j:j+1) = [];
+    elseif ( strcmpi(args{j}, 'markersize') )
+        ms = args{j+1};
         args(j:j+1) = [];
     else
         j = j + 1;
@@ -69,17 +69,31 @@ end
 % Add a tiny amount to zeros to make plots look nicer:
 if ( vscale(f) > 0 )
     % (Min of eps*vscale and the minimum non-zero coefficient)
-    absCoeffs(~absCoeffs) = min( min(eps*vscale(f)), ...
-                                 min(absCoeffs(logical(absCoeffs))) );                             
+  % absCoeffs(~absCoeffs) = min( min(eps*vscale(f)), ...
+  %                              min(absCoeffs(logical(absCoeffs))) );                             
 else
     % (add eps for zero CHEBTECHs)
     absCoeffs = absCoeffs + eps;
 end
 
+if isnan(ms)
+    NN = length(coeffIndex);
+    ms = 3 + 50/sqrt(NN+8);
+end
+
 if ( ~loglogPlot )
     % Plot the coefficients:
     normalizedWaveNumber = coeffIndex*(2*pi)/diff(domain);
-    h = semilogy(normalizedWaveNumber, absCoeffs, args{:});
+linetype_specified = ( mod(length(args),2) == 1 );
+if linetype_specified
+    h = semilogy(normalizedWaveNumber, absCoeffs, ...
+                         args{1}, 'markersize', ms, args{2:end});
+else
+    h = semilogy(normalizedWaveNumber, absCoeffs, ...
+                         '.', 'markersize', ms, args{:});
+end
+
+  % h = semilogy(normalizedWaveNumber, absCoeffs, args{:});
     if ( ~holdState )
         xlim([min(normalizedWaveNumber(1),-1) -min(normalizedWaveNumber(1),-1)]);
         xlim([min(normalizedWaveNumber(1),-1) -min(normalizedWaveNumber(1),-1)]);
