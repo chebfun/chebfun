@@ -66,34 +66,31 @@ else
     coeffIndex = -(n-1)/2:(n-1)/2;
 end
 
-% Add a tiny amount to zeros to make plots look nicer:
-if ( vscale(f) > 0 )
-    % (Min of eps*vscale and the minimum non-zero coefficient)
-  % absCoeffs(~absCoeffs) = min( min(eps*vscale(f)), ...
-  %                              min(absCoeffs(logical(absCoeffs))) );                             
-else
-    % (add eps for zero CHEBTECHs)
+if ( vscale(f) == 0 )
     absCoeffs = absCoeffs + eps;
 end
 
 if isnan(ms)
     NN = length(coeffIndex);
-    ms = 3 + 50/sqrt(NN+8);
+    ms = 2 + 50/sqrt(NN+8);
+    if loglogPlot
+        ms = ms+1;
+    end
 end
+
+linetype_specified = ( mod(length(args),2) == 1 );
 
 if ( ~loglogPlot )
     % Plot the coefficients:
     normalizedWaveNumber = coeffIndex*(2*pi)/diff(domain);
-linetype_specified = ( mod(length(args),2) == 1 );
-if linetype_specified
-    h = semilogy(normalizedWaveNumber, absCoeffs, ...
+    if linetype_specified
+        h = semilogy(normalizedWaveNumber, absCoeffs, ...
                          args{1}, 'markersize', ms, args{2:end});
-else
-    h = semilogy(normalizedWaveNumber, absCoeffs, ...
+    else
+        h = semilogy(normalizedWaveNumber, absCoeffs, ...
                          '.', 'markersize', ms, args{:});
-end
+    end
 
-  % h = semilogy(normalizedWaveNumber, absCoeffs, args{:});
     if ( ~holdState )
         xlim([min(normalizedWaveNumber(1),-1) -min(normalizedWaveNumber(1),-1)]);
         xlim([min(normalizedWaveNumber(1),-1) -min(normalizedWaveNumber(1),-1)]);
@@ -102,7 +99,7 @@ end
     xlabelStr = 'Wave number';
 else
     if ( isEven )
-        % In this case the negative cofficients have an additional term
+        % In this case the negative coefficients have an additional term
         % corresponding to the cos(N/2*x) coefficient. We will store
         % the constant mode coefficient in both vectors.
         cPos = absCoeffs(n/2+1:n,:);
@@ -116,9 +113,16 @@ else
     waveNumber = [coeffIndexPos nan coeffIndexNeg];
     normalizedWaveNumber = waveNumber*(2*pi)/diff(domain);
 
-    % Plot the coefficients for the positive and negative fourier modes
+    % Plot the coefficients for the positive and negative Fourier modes
     % separately.
-    h = loglog(normalizedWaveNumber, [cPos ; nan(1, m) ; cNeg], args{:});
+%   h = loglog(normalizedWaveNumber, [cPos ; nan(1, m) ; cNeg], args{:});
+    if linetype_specified
+        h = semilogy(normalizedWaveNumber, [cPos ; nan(1, m) ; cNeg], ...
+                         args{1}, 'markersize', ms, args{2:end});
+    else
+        h = semilogy(normalizedWaveNumber, [cPos ; nan(1, m) ; cNeg], ...
+                         '.', 'markersize', ms, args{:});
+    end
 
     % Set the string for the x-axis label.  In this case we will be
     % plotting the absolute value of the wave number + 1 (since we can't

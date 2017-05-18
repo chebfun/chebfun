@@ -69,10 +69,6 @@ vscl = vscale(f);
 if ( vscl > 0 )
     if ( doBar )
         absCoeffs(absCoeffs < min(eps*vscl)/100) = 0;
-    else
-        % Min of eps*vscale and the minimum non-zero coefficient:
-%       absCoeffs(~absCoeffs) = min( min(eps*vscl), ...
-%                                0 ); %min(absCoeffs(logical(absCoeffs))) );                             
     end
 else
     % Add eps for zero CHEBTECHs:
@@ -91,7 +87,10 @@ end
 % Plot the coefficients:
 if isnan(ms)
     NN = length(xx);
-    ms = 3 + 50/sqrt(NN+8);
+    ms = 2 + 50/sqrt(NN+8);
+    if loglogPlot
+        ms = ms+1;
+    end
 end
 linetype_specified = ( mod(length(args),2) == 1 );
 if linetype_specified
