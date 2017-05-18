@@ -72,10 +72,7 @@ end
 
 if isnan(ms)
     NN = length(coeffIndex);
-    ms = 2 + 50/sqrt(NN+8);
-    if loglogPlot
-        ms = ms+1;
-    end
+    ms = 2.5 + 50/sqrt(NN+8);
 end
 
 linetype_specified = ( mod(length(args),2) == 1 );
