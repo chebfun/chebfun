@@ -217,7 +217,7 @@ function xk = cfInit(f, fHandle, m, n)
             pqh = @(x) feval(p, x)./feval(q, x);
             [xk, ~, ~, flag] = exchange([], 0, 2, f, fHandle, p, pqh, ...
                                         m+n+2, n);
-        catch ME  % an error occured when callign cf (ignore it)
+        catch ME  % an error occured when calling cf (ignore it)
             flag = 0;
         end
     end
