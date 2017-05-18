@@ -94,7 +94,7 @@ ms = 3 + 50/sqrt(NN+8);
 %h = semilogy(xx, yy, '.','markersize',ms);    % args{:}); 
 %h = semilogy(xx, yy, '.','markersize',ms,args{:}); 
 h = semilogy(xx, yy, args{:}); 
-args
+%args
 hold on
 
 % Do a loglog plot:

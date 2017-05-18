@@ -48,7 +48,7 @@ if ( nargin < 2 )
     tol = p.chebfuneps;
 end
 
-% Recast TOL as a row vector.k
+% Recast TOL as a row vector.
 if ( size(tol, 2) ~= m )
     tol = max(tol)*ones(1, m);
 end
