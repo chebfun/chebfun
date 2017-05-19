@@ -91,7 +91,17 @@ if isnan(ms)
 end
 linetype_specified = ( mod(length(args),2) == 1 );
 if linetype_specified
-    h = semilogy(xx, yy, args{1}, 'markersize', ms, args{2:end}); 
+    h = semilogy(xx, yy, args{1}, 'markersize', ms, args{2:end});
+    warningFlag = strcmp(get(h,'Marker'),'none');
+    if warningFlag
+        diffVec = find(yy ~= 0);
+        if ( length(diffVec) > 1 )
+            if ( min(diff(diffVec)) >= 2 )
+                warning('CHEBFUN:plotcoeffs', ['No lines will appear ', ...
+                  'because of zero values. Use ''.'' or ''.-'' instead.']);
+            end
+        end
+    end
 else
     h = semilogy(xx, yy, '.', 'markersize', ms, args{:}); 
 end

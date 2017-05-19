@@ -83,6 +83,16 @@ if ( ~loglogPlot )
     if linetype_specified
         h = semilogy(normalizedWaveNumber, absCoeffs, ...
                          args{1}, 'markersize', ms, args{2:end});
+        warningFlag = strcmp(get(h,'Marker'),'none');
+        if warningFlag
+            diffVec = find(absCoeffs ~= 0);
+            if ( length(diffVec) > 1 )
+                if ( min(diff(diffVec)) >= 2 )
+                warning('CHEBFUN:plotcoeffs', ['No lines will appear ', ...
+                  'because of zero values. Use ''.'' or ''.-'' instead.']);
+                end
+            end
+        end
     else
         h = semilogy(normalizedWaveNumber, absCoeffs, ...
                          '.', 'markersize', ms, args{:});
