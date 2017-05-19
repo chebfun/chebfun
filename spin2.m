@@ -68,9 +68,9 @@ function [uout, tout] = spin2(varargin)
 %
 %    on [0 30]^2 from t=0 to t=800, with initial condition
 %
-%       u0(x,y) = 1 - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
-%       v0(x,y) = .9/(.1^2+.9^2) + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=50.
+%       u0(x,y) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
+%       v0(x,y) = b/(a+b)^2 + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
+%           with G=50, a=0.1 and b=0.9.
 %
 % Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
 %

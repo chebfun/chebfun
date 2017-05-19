@@ -68,9 +68,9 @@ function [uout, tout] = spin3(varargin)
 %
 %    on [0 30]^3 from t=0 to t=400, with initial condition
 %
-%       u0(x,y,z) = 1 - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
+%       u0(x,y,z) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
 %       v0(x,y,z) = exp(-2*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)) +
-%                       .9/(.1^2+.9^2), with G=50.
+%                       b/(a+b)^2, with G=50, a=0.1 and b=0.9.
 %
 % Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
 %
