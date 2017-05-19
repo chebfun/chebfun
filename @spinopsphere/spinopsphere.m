@@ -106,7 +106,7 @@ end
             u0 = u0/norm(u0, inf);
             tspan = [0 100];
             
-        % Gierer-Meinhardt model:
+        % Gierer-Meinhardt equations:
         elseif ( strcmpi(pdechar, 'GM') == 1 )
             L = @(u,v) [1e-2*lap(u);1e-1*lap(v)];
             N = @(u,v) [u.^2./v-u;u.^2-v]; 

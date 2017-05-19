@@ -6,21 +6,22 @@ function [uout, tout] = spinsphere(varargin)
 %   and plots a movie of the solution as it computes it; it is a demo mode.
 %   The space and time intervals and the initial condition are chosen to produce
 %   beautiful movies. Strings available include 'AC' for Allen-Cahn equation, 
-%   'GL' for Ginzburg-Landau equation and 'NLS' for nonlinear Schrodinger 
-%   equation. See Remark 1 and Examples 1-3. The output UOUT is a SPHEREFUN 
-%   corresponding to the solution at the final time (a CHEBMATRIX for systems 
-%   of equations, each row representing one variable).
+%   'GL' for Ginzburg-Landau equation, 'GM' for Gierer-Meinhardt equations and 
+%   'NLS' for nonlinear Schrodinger equation. See Remark 1 and Examples 1-4. 
+%   The output UOUT is a SPHEREFUN corresponding to the solution at the final 
+%   time (a CHEBMATRIX for systems of equations, each row representing one 
+%   variable).
 %
 %   UOUT = SPINSPHERE(S, N, DT) solves the PDE specified by the SPINOPSPHERE S 
 %   with N grid points in each direction and time-step DT. It plots a movie of 
-%   the solution as it computes it. See HELP/SPINOPSPHERE and Example 4.
+%   the solution as it computes it. See HELP/SPINOPSPHERE and Example 5.
 %
 %   UOUT = SPINSPHERE(S, N, DT, PREF) allows one to use the preferences 
 %   specified by the SPINPREFSPHERE object PREF. See HELP/SPINPREFSPHERE and 
-%   Example 5.
+%   Example 6.
 %
 %   UOUT = SPINSPHERE(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) 
-%   is an alternative to the previous syntax. See Example 5.
+%   is an alternative to the previous syntax. See Example 6.
 %
 %   [UOUT, TOUT] = SPINSPHERE(...) also returns the times chunks TOUT at which 
 %   UOUT was computed.
@@ -29,6 +30,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    - 'AC' for Allen-Cahn equation,
 %    - 'GL' for Ginzburg-Landau equation,
+%    - 'GM' for Gierer-Meinhardt equations,
 %    - 'NLS' for focusing nonlinear Schroedinger equation.
 %
 % Example 1: Allen-Cahn equation
@@ -49,16 +51,25 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    solves the Ginzburg-Landau equation
 %
-%        u_t = 1e-3*laplacian(u) + u - (1+1.5i)*u*|u|^2,
+%        u_t = 5e-4*laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on the sphere from t=0 to t=30, with initial condition
-%
-%      u0(x,y,z) = cos(3*x) + cos(3*y) + cos(3*z), rotated by pi/8
-%          around the y-axis.
-%        
+%    on the sphere from t=0 to t=30 with a RANDNFUNSPHERE initial condition.   
 %    The movie plots the real part of u.
 %
-% Example 3: Focusing nonlinear Schroedinger equation
+% Example 3: Gierer-Meinhardt equations
+%
+%        u = spinsphere('GM);
+%
+%    solves the Gierer-Meinhardt equations,
+%
+%       u_t = 1e-2*laplacian(u) + u.^2/v - u,
+%       v_t = 1e-1*aplacian(v) + u^2 - v,
+%
+%    on the sphere from t=0 to t=40, with initial condition
+%
+%       u0(x,y,z) = v0(x,y,z) = 1+1/3*(cos(20*x)+cos(20*z)+cos(20*y)).
+%
+% Example 4: Focusing nonlinear Schroedinger equation
 %
 %        u = spinsphere('NLS');
 %
