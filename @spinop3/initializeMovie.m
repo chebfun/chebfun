@@ -91,7 +91,7 @@ for k = 1:nVars
     set(p{1,k}, 'edgecolor', 'none', 'facecolor', 'interp')
     ax = p{1,k}.Parent;
     set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
-    axis equal, axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)])
+    axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)])
     colorbar, colormap(pref.colormap)
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
     drawnow

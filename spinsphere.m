@@ -150,18 +150,19 @@ S = spinopsphere(pdechar);
 if ( strcmpi(pdechar, 'AC') == 1 )
     dt = 1e-1;
     N = 256;
-    pref.iterplot = 4;
+    pref.iterplot = 2;
 elseif ( strcmpi(pdechar, 'GL') == 1 )
     dt = 1e-1;
     N = 256;
-    pref.iterplot = 4;
+    pref.iterplot = 2;
 elseif ( strcmpi(pdechar, 'GM') == 1 )
     dt = 1e-1;
     N = 128;
-    pref.iterplot = 4;
+    pref.iterplot = 2;
 elseif ( strcmpi(pdechar, 'NLS') == 1 )
     dt = 5e-3;
     N = 128;
+    pref.iterplot = 2;
     pref.colormap = 'jet';
 end
 

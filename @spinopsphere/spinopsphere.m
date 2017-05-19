@@ -120,7 +120,7 @@ end
         elseif ( strcmpi(pdechar, 'NLS') == 1 )
             L = @(u) 1i*lap(u);
             N = @(u) 1i*u.*abs(u).^2;
-            tspan = [0 10];
+            tspan = [0 2];
             A = 2; B = 1;
             u0 = @(lam,th) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A;
             u0 = spherefun(u0);
