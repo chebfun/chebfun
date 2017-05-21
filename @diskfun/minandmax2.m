@@ -167,6 +167,22 @@ elseif ( length(f) >= maxsize )
     
 end
 
+% If the location of the max/min is outside of [0,1]x[-pi,pi], which can happen
+% because Diskfun is based on the double Fourier sphere method, then
+% translate back to [0,pi]x[-pi,pi] using BMC symmetry:
+
+% check minimum:
+if ( X(1,1) < 0 )
+    X(1,1) = X(1,1)+pi;
+    X(1,2) = -X(1,2);
+end
+
+% check maximum:
+if ( X(2,1) < 0 )
+    X(2,1) = X(2,1)+pi;
+    X(2,2) = -X(2,2);
+end
+
 
 end
 
