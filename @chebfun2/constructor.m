@@ -422,7 +422,7 @@ elseif ( isempty( depvar ) )
     
     op = @(x,y) str2double(op) + 0*x;
     
-else 
+eflse 
     error('CHEBFUN2:STR2OP','Function as string has too many independent variables.');
 end
 
