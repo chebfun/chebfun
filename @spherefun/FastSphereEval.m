@@ -111,9 +111,25 @@ for idx = 1:numel(ii)
     Aij(:,:,idx) = temp(:,:,ic2(idx));
 end
 
+% Old code:
+% for idx = 1:numel(ii)
+%     Aij(:,:,idx) = YY(:,:,ii(idx))*XX(:,:,jj(idx));
+% end
+
+% % Faster code that avoids some of the repeated matrix-matrix vector
+% % products:
+% Aij(:,:,1) = YY(:,:,ii(1))*XX(:,:,jj(1));
+% for idx = 2:numel(ii)
+%     if ( ii(idx) == ii(idx-1) ) && ( jj(idx) == jj(idx-1) )
+%         Aij(:,:,idx) = Aij(:,:,idx-1);
+%     else
+%         Aij(:,:,idx) = YY(:,:,ii(idx))*XX(:,:,jj(idx));
+%     end
+% end
+
 U2 = permute(U2, [3 2 1]);
-SA = sum(Aij.*repmat(U2,[15 1 1]),2);
-SA = permute(SA,[3 1 2]);
+SA = sum(Aij.*repmat(U2,[K1 1 1]), 2);
+SA = permute(SA, [3 1 2]);
 vals = sum(SA.*U1, 2);
 
 % Reshape "vals" to the same shape as LAMBDA and THETA:
