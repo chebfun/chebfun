@@ -77,7 +77,7 @@ th = pi/2-th;  % Adjust elevation angle since matlab uses latitude.
 
 if strcmpi(method, 'nufft')       % NUFFT evaluation using 2D NUFFT
     
-    g = real( FastSphereEval(f, lam, th) );
+    g = real( fastSphereEval(f, lam, th) );
     f = spherefun( g );
     
 elseif strcmpi(method, 'feval')   % FEVAL evalutation using Horner

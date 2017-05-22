@@ -70,7 +70,12 @@ classdef spherefun < separableApprox
     %% HIDDEN METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods (Access = public, Static = false, Hidden = true)
-       f = projectOntoBMCI(f);
+        % Project a spherefun to have exact BMC-I symmetry so that it is 
+        % a continuous function on the sphere.
+        f = projectOntoBMCI(f);
+       
+        % Fast evaluation of a spherefun using non-uniform fft.
+        vals = fastSphereEval( f, lambda, theta );
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,13 +111,14 @@ classdef spherefun < separableApprox
         
         % Plot the outline of the landmasses of earth
         h = plotEarth(linespec);
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private Static methods implemented by SPHEREFUN class.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods (Access = private, Static = true)
-        
+        % Fast evaluation of a spherefun using non-uniform fft.
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

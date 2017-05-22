@@ -1,34 +1,27 @@
-function vals = FastSphereEval( f, lambda, theta )
-% FASTSPHEREEVAL        Fast Spherefun evaluation
+function vals = fastSphereEval( f, lambda, theta )
+% FASTSPHEREEVAL        Fast evaluation of a spherefun
 %
-% VALS = FASTSPHEREEVAL(C, LAMBDA, THETA):
+% VALS = FASTSPHEREEVAL(F, LAMBDA, THETA) evaluates the spherefun F at
+% the points (LAMBDA,THETA), where LAMBDA is longitude, with
+% -pi<=LAMBA<=pi, and THETA is co-latitude, with 0<=THETA<=PI. Returns the
+% values of F at these points in the array VALS.
 %
-%     C = 2D Fourier coefficients,
-%     (LAMBDA,THETA) = Evaluation points in spherical coordinates
-%     VALS = Values of Fourier series with coefficients C at (LAMBDA,THETA)
-%
-%  The transform costs O(K2*m*n*log(m*n) + K1*K2*N ) operations.
-%
-%  This is a fast transform analogue to the direct algorithm:
-% [M, N] = size( x );
-% [m, n] = size( c );
-% Y = zeros(M, N);
-% mm = -floor(m/2):floor(m/2);
-% nn = -floor(n/2):floor(n/2);
-% for j = 1:M
-%     for k = 1:N
-%         Y(j,k) = exp(1i*theta(j,k)*mm)*c*exp(1i*lambda(j,k)*nn');
-%     end
-% end
+% This is a fast transform analogue to the direct algorithm evaluation of
+% F using Horner's rule. The evaluation costs O(m*n*log(m*n) + N) 
+% operations.
 %
 % The algorithm in this MATLAB script is based on the paper:
 %
 % [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier transform
-% based on low rank approximation", in preparation, 2016.
+% based on low rank approximation", submitted, 2016.
 %
-% This paper related the NUFFT to a FFT by low rank approximation.
-%
-% Author: Alex Townsend, January 2017.
+% See also SPHEREFUN/FEVAL and SPHEREFUN/ROTATE.
+
+% Primary author: Alex Townsend, January 2017.
+
+% Copyright 2017 by The University of Oxford and The CHEBFUN Developers.
+% See http://www.chebfun.org/ for CHEBFUN information.
+
 
 % Convert to NUFFT2D convention (from Spherefun's convention):
 lambda = -lambda/2/pi;
