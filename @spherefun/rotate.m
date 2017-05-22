@@ -40,7 +40,7 @@ end
 % order will change. The degree l is given by the bandlimit n, while the
 % order is given by the bandlimit of m.
 [m,n] = length(f);
-n = max(m,n);      % Using this sampling we should exactly recover the rotated f.
+n = ceil(2*max(m,n));% Using this sampling we should exactly recover the rotated f.
 n = n + mod(n,2);  % Number of columns must be even.
 m = n/2 + 1 - mod(n/2,2);   % Number of rows must be odd
 
