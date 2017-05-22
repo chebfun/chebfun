@@ -102,9 +102,15 @@ YY = permute(FFT_cols,[3 2 1]);
 [ii, jj] = ind2sub( [m,n], yt(:)+m*(xt(:)-1) );
 Aij = zeros(K1, K2, numel(ii) );
 
-for idx = 1:numel(ii)
-    Aij(:,:,idx) = YY(:,:,ii(idx))*XX(:,:,jj(idx));
+[c,unused,ic2] = unique([ii jj],'rows');
+temp = zeros(K1, K2, size(c,1));
+for idx = 1:size(c,1)
+    temp(:,:,idx) = YY(:,:,c(idx,1))*XX(:,:,c(idx,2));
 end
+for idx = 1:numel(ii)
+    Aij(:,:,idx) = temp(:,:,ic2(idx));
+end
+
 U2 = permute(U2, [3 2 1]);
 SA = sum(Aij.*repmat(U2,[15 1 1]),2);
 SA = permute(SA,[3 1 2]);
