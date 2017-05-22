@@ -100,40 +100,33 @@ YY = permute(FFT_cols,[3 2 1]);
 % Spread the love out from equispaced points to actual evaluation
 % points. Do this K1*K2 times for an accurate transform:
 [ii, jj] = ind2sub( [m,n], yt(:)+m*(xt(:)-1) );
-Aij = zeros(K1, K2, numel(ii) );
+% Aij = zeros(K1, K2, numel(ii) );
 
-[c,unused,ic2] = unique([ii jj],'rows');
-temp = zeros(K1, K2, size(c,1));
+% Convert to cell for speed:
+XXX = cell(size(XX,3),1);
+for k = 1:length(XXX)
+    XXX{k} = XX(:,:,k);
+end
+YYY = cell(size(YY,3),1);
+for k = 1:length(YYY)
+    YYY{k} = YY(:,:,k);
+end
+% Do only unique multiplications:
+[c, ~, ic2] = unique([ii jj], 'rows');
+temp = cell(size(c,1),1);
 for idx = 1:size(c,1)
-    temp(:,:,idx) = YY(:,:,c(idx,1))*XX(:,:,c(idx,2));
+    temp{idx} = (YYY{c(idx,1)}*XXX{c(idx,2)}).';
 end
+% Recover A:
+Aij = zeros(numel(ii),K1);
 for idx = 1:numel(ii)
-    Aij(:,:,idx) = temp(:,:,ic2(idx));
+    Aij(idx,:) = U2(idx,:)*temp{ic2(idx)};
 end
-
-% Old code:
-% for idx = 1:numel(ii)
-%     Aij(:,:,idx) = YY(:,:,ii(idx))*XX(:,:,jj(idx));
-% end
-
-% % Faster code that avoids some of the repeated matrix-matrix vector
-% % products:
-% Aij(:,:,1) = YY(:,:,ii(1))*XX(:,:,jj(1));
-% for idx = 2:numel(ii)
-%     if ( ii(idx) == ii(idx-1) ) && ( jj(idx) == jj(idx-1) )
-%         Aij(:,:,idx) = Aij(:,:,idx-1);
-%     else
-%         Aij(:,:,idx) = YY(:,:,ii(idx))*XX(:,:,jj(idx));
-%     end
-% end
-
-U2 = permute(U2, [3 2 1]);
-SA = sum(Aij.*repmat(U2,[K1 1 1]), 2);
-SA = permute(SA, [3 1 2]);
-vals = sum(SA.*U1, 2);
+vals = sum(Aij.*U1, 2);
 
 % Reshape "vals" to the same shape as LAMBDA and THETA:
 vals = reshape( vals, M, N);
+
 end
 
 function cfs = Bessel_cfs(K, gam)
