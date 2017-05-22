@@ -53,7 +53,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u_t = 5e-4*laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on the sphere from t=0 to t=30 with a RANDNFUNSPHERE initial condition.   
+%    on the sphere from t=0 to t=100 with a RANDNFUNSPHERE initial condition.   
 %    The movie plots the real part of u.
 %
 % Example 3: Gierer-Meinhardt equations
@@ -77,7 +77,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u_t = 1i*laplacian(u) + 1i*u|u|^2,
 %
-%    on the sphere from t=0 to t=10, with initial condition
+%    on the sphere from t=0 to t=2, with initial condition
 %
 %     u0(lam, th) = (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A 
 %                  + 4*Y_6^6(lam, th), with A=2 and B=1.
