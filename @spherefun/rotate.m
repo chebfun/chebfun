@@ -87,7 +87,7 @@ elseif strcmpi(method, 'feval')   % FEVAL evalutation using Horner
     
 else
     
-    error('SPHEREFUN::METHOD', 'Unrecognized algorithm.')
+    error('Unrecognized algorithm.')
 
 end
 
