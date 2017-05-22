@@ -50,8 +50,8 @@ if ( ~isempty(varargin) )
         end
         N = 100; % Used to generate solid disk as well as plot slicing lines
         th = trigpts(N, dom); th=[th; dom(2)];
-        % If the plot is not being added to another then plot a solid
-        % disk so the lines are more easily discernable.
+        % If the plot is not being added to another then plot a unit circle
+        % so the disk is more easily discernable.
         if ( ~holdState )
             % Generate a unit disk
             N = 200;
@@ -180,6 +180,18 @@ if ( ~isempty(varargin) )
             h = surf(f);
             caxis(norm(caxis,inf)*[-1 1])
             colormap([0 0 0; 1 1 1])
+       
+            % Add unit circle to zebra plot
+            holdState = ishold; 
+            circ = exp(1i*pi*linspace(-1,1,101));
+            hold on 
+            plot(real(circ), imag(circ), 'k-', 'Linewidth', .3)
+            hold off
+            if holdState
+                hold on;
+            else
+                hold off;
+            end
         else
             h = surf(f, varargin{:});
         end
