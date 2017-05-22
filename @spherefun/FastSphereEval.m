@@ -78,7 +78,7 @@ er = n*(lambda-xj);
 gam = norm(er, inf);
 % K2 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
 K2 = 15;
-U2 = (ChebP(K2-1,er/gam)*Bessel_cfs(K2, gam));
+U2 = (ChebP(K2-1,er/gam)*Bessel_cfs(K2, gam)).';
 V2 = ChebP(K2-1, 2*nn'/n);
 
 % Business end of the transform.   (Everything above could be considered
@@ -115,14 +115,13 @@ end
 [c, ~, ic2] = unique([ii jj], 'rows');
 temp = cell(size(c,1),1);
 for idx = 1:size(c,1)
-    temp{idx} = (YYY{c(idx,1)}*XXX{c(idx,2)}).';
+    temp{idx} = (YYY{c(idx,1)}*XXX{c(idx,2)});
 end
 % Recover A:
-Aij = zeros(numel(ii),K1);
+vals = zeros(numel(ii),1);
 for idx = 1:numel(ii)
-    Aij(idx,:) = U2(idx,:)*temp{ic2(idx)};
+    vals(idx) = U1(idx,:)*(temp{ic2(idx)}*U2(:,idx));
 end
-vals = sum(Aij.*U1, 2);
 
 % Reshape "vals" to the same shape as LAMBDA and THETA:
 vals = reshape( vals, M, N);
