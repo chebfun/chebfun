@@ -24,13 +24,13 @@ classdef spinop3 < spinoperator
 %           nonlinear nondifferential operator with constant coefficients.
 %
 % Example 1: To construct a SPINOP3 corresponding to the GL3 equation on 
-%            DOM = [0 100]^3 x TSPAN = [0 10] with random initial condition, one 
+%            DOM = [0 100]^3 x TSPAN = [0 70] with random initial condition, one 
 %            can type
 %
-%            dom = [0 100 0 100 0 100]; tspan = [0 10];
+%            dom = [0 100 0 100 0 100]; tspan = [0 70];
 %            S = spinop3(dom, tspan);
 %            S.lin = @(u) lap(u);
-%            S.nonlin = @(u) u - (1+1.3i)*u.*(abs(u).^2);
+%            S.nonlin = @(u) u - (1+1.5i)*u.*(abs(u).^2);
 %            S.init = chebfun3(.1*randn(32,32,32), dom);
 %
 % See also SPINOPERATOR, SPIN3.
@@ -131,24 +131,24 @@ end
         elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
             N = @(u,v) [3*(.1 - u + u.^2.*v); 3*(.9 - u.^2.*v)];
-            G = 30;
+            G = 50;
             dom = G*[0 1 0 1 0 1];
             tspan = [0 400];
-            u01 = @(x,y,z) 1 - exp(-2*((x-G/2.15).^2 + (y-G/2.15).^2 + ...
-                (z-G/2.15).^2));
+            u01 = @(x,y,z) 1 - exp(-2*((x-G/2.15).^2 + (y-G/2.15).^2 ...
+                + (z-G/2.15).^2));
             u01 = chebfun3(u01, dom, 'trig');
-            u02 = @(x,y,z) .9/(.1+.9)^2 + exp(-2*((x-G/2).^2 + ...
-                2*(y-G/2).^2 + 2*(z-G/2).^2));
+            u02 = @(x,y,z) .9/(.1+.9)^2 + exp(-2*((x-G/2).^2 + 2*(y-G/2).^2 ...
+                + 2*(z-G/2).^2));
             u02 = chebfun3(u02, dom, 'trig');
             u0 = [u01; u02];
             
         % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH3') == 1 )
             L = @(u) -2*lap(u) - biharm(u);
-            N = @(u) -.9*u + u.^2 - u.^3;
+            N = @(u) -.9*u - u.^3;
             G = 20;
             dom = G*[0 1 0 1 0 1];
-            tspan = [0 200];
+            tspan = [0 400];
             vals = .1*randn(32, 32, 32);
             u0 = chebfun3(vals, dom, 'trig');
 

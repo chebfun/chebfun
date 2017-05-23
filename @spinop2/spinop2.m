@@ -130,9 +130,9 @@ end
         elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
             N = @(u,v) [3*(.1 - u + u.^2.*v); 3*(.9 - u.^2.*v)];
-            G = 30;
+            G = 50;
             dom = G*[0 1 0 1];
-            tspan = [0 600];
+            tspan = [0 800];
             u01 = @(x,y) 1 - exp(-2*((x-G/2.15).^2 + (y-G/2.15).^2));
             u01 = chebfun2(u01, dom, 'trig');
             u02 = @(x,y) .9/(.1+.9)^2 + exp(-2*((x-G/2).^2 + 2*(y-G/2).^2));
@@ -142,10 +142,10 @@ end
         % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH2') == 1 )
             L = @(u) -2*lap(u) - biharm(u);
-            N = @(u) -.9*u + u.^2 - u.^3;
-            G = 30;
+            N = @(u) -.9*u - u.^3;
+            G = 50;
             dom = G*[0 1 0 1];
-            tspan = [0 300];
+            tspan = [0 800];
             u0 = randnfun2(4, dom, 'trig');
             u0 = u0/norm(u0, inf);    
             

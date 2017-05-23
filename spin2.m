@@ -42,7 +42,7 @@ function [uout, tout] = spin2(varargin)
 %    on [0 100]^2 from t=0 to t=100, with a RANDNFUN2 initial condition. 
 %    The movie plots the real part of u.
 %
-% Example 2: Gray-Scott equations (fingerprints patterns)
+% Example 2: Gray-Scott equations (pattern formation - fingerprints)
 %
 %       u = spin2('GS2');
 %
@@ -57,7 +57,7 @@ function [uout, tout] = spin2(varargin)
 %       v0(x,y) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2)),
 %           with G=1.25.
 %
-% Example 3: Schnakenberg equations (pattern formation)
+% Example 3: Schnakenberg equations (pattern formation - dots)
 %
 %       u = spin2('Schnak2');
 %
@@ -66,21 +66,21 @@ function [uout, tout] = spin2(varargin)
 %       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
 %       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
 %
-%    on [0 30]^2 from t=0 to t=600, with initial condition
+%    on [0 50]^2 from t=0 to t=800, with initial condition
 %
 %       u0(x,y) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
 %       v0(x,y) = b/(a+b)^2 + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=30, a=0.1 and b=0.9.
+%           with G=50, a=0.1 and b=0.9.
 %
-% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
+% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection rolls)
 %
 %       u = spin2('SH2');
 %
 %    solves the Swift-Hohenberg equation
 %
-%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
+%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u - u^3,
 %
-%    on [0 30]^2 from t=0 to t=300, with a RANDNFUN2 initial condition.
+%    on [0 50]^2 from t=0 to t=800, with a RANDNFUN2 initial condition.
 %
 % Example 5: PDE specified by a SPINOP2
 %
@@ -161,6 +161,7 @@ S = spinop2(pdechar);
 if ( strcmpi(pdechar, 'GL2') == 1 )
     dt = 1e-1;
     N = 128;
+    pref.Clim = [-1 1];
     pref.iterplot = 2;
     pref.Nplot = 256;
 elseif ( strcmpi(pdechar, 'GS2') == 1 )
@@ -178,8 +179,8 @@ elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
 elseif ( strcmpi(pdechar, 'SH2') == 1 )
     dt = 1;
     N = 128;
-    pref.Clim = [-.4 1.2];
-    pref.iterplot = 2;
+    pref.Clim = [-.4 .4];
+    pref.iterplot = 4;
     pref.Nplot = 256;
 end
 

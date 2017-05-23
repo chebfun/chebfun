@@ -42,7 +42,7 @@ function [uout, tout] = spin3(varargin)
 %    on [0 100]^3 from t=0 to t=70, with a random initial condition.
 %    The movie plots the real part of u.
 %
-% Example 2: Gray-Scott equations (fingerprints patterns)
+% Example 2: Gray-Scott equations (pattern formation - fingerprints)
 %
 %       u = spin3('GS3');
 %
@@ -51,13 +51,13 @@ function [uout, tout] = spin3(varargin)
 %       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
 %       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 .75]^3 from t=0 to t=3000, with initial condition
+%    on [0 0.75]^3 from t=0 to t=3000, with initial condition
 %
 %       u0(x,y,z) = 1 - exp(-180*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
 %       v0(x,y,z) = exp(-180*((x-G/2)^2 + 2*(y-G/2)^2 + 2(z-G/2)^2)),
 %           with G=.75.
 %
-% Example 3: Schnakenberg equations (pattern formation)
+% Example 3: Schnakenberg equations (pattern formation - dots)
 %
 %       u = spin3('Schnak3');
 %
@@ -66,21 +66,21 @@ function [uout, tout] = spin3(varargin)
 %       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
 %       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
 %
-%    on [0 30]^3 from t=0 to t=400, with initial condition
+%    on [0 50]^3 from t=0 to t=400, with initial condition
 %
 %       u0(x,y,z) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
-%       v0(x,y,z) = exp(-2*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)) +
-%                       b/(a+b)^2, with G=50, a=0.1 and b=0.9.
+%       v0(x,y,z) = b/(a+b)^2 + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)),
+%           with G=50, a=0.1 and b=0.9.
 %
-% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
+% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection rolls)
 %
 %       u = spin3('SH3');
 %
 %    solves the Swift-Hohenberg equation
 %
-%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
+%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u - u^3,
 %
-%    on [0 20]^3 from t=0 to t=200,  with a random initial condition.
+%    on [0 20]^3 from t=0 to t=400, with a random initial condition.
 %
 % Example 5: PDE specified by a SPINOP3
 %
@@ -89,7 +89,7 @@ function [uout, tout] = spin3(varargin)
 %       S.lin = @(u) lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
 %       S.init = chebfun3(.1*randn(32, 32, 32), dom, 'trig')
-%       u = spin3(S, 64, 2e-1);
+%       u = spin3(S, 64, 1e-1);
 %
 %   is equivalent to u = spin3('GL3');
 %
@@ -158,24 +158,29 @@ function [S, N, dt, pref] = parseInputs(pdechar)
 pref = spinpref3();
 S = spinop3(pdechar);
 if ( strcmpi(pdechar, 'GL3') == 1 )
-    dt = 2e-1;
+    dt = 1e-1;
     N = 32;
-    pref.Nplot = 80;
+    pref.Clim = [-1 1];
+    pref.iterplot = 2;
+    pref.Nplot = 64;
 elseif ( strcmpi(pdechar, 'GS3') == 1 )
     dt = 4;
-    pref.iterplot = 8;
     N = 32;
-    pref.Nplot = 80;
+    pref.Clim = [.3 1 0 .35];
+    pref.iterplot = 5;
+    pref.Nplot = 64;
 elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
     dt = 5e-1;
-    pref.iterplot = 10;
     N = 32;
-    pref.Nplot = 80;
+    pref.Clim = [.7 1.7 .65 1.1];
+    pref.iterplot = 6;
+    pref.Nplot = 64;
 elseif ( strcmpi(pdechar, 'SH3') == 1 )
     dt = 1;
-    pref.iterplot = 2;
     N = 32;
-    pref.Nplot = 100;
+    pref.Clim = [-.4 .4];
+    pref.iterplot = 4;
+    pref.Nplot = 64;
 end
 
 end

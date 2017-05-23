@@ -33,7 +33,7 @@ function [uout, tout] = spinsphere(varargin)
 %    - 'GM' for Gierer-Meinhardt equations,
 %    - 'NLS' for focusing nonlinear Schroedinger equation.
 %
-% Example 1: Allen-Cahn equation
+% Example 1: Allen-Cahn equation (metastable solutions)
 %
 %        u = spinsphere('AC');
 %
@@ -45,7 +45,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u0(x, y, z) = cos(cosh(5*x.*z) - 10*y).
 %
-% Example 2: Ginzburg-Landau equation 
+% Example 2: Ginzburg-Landau equation (spiral waves)
 %
 %        u = spinsphere('GL');
 %
@@ -56,7 +56,7 @@ function [uout, tout] = spinsphere(varargin)
 %    on the sphere from t=0 to t=100 with a RANDNFUNSPHERE initial condition.   
 %    The movie plots the real part of u.
 %
-% Example 3: Gierer-Meinhardt equations
+% Example 3: Gierer-Meinhardt equations (pattern formation - dots)
 %
 %        u = spinsphere('GM);
 %
@@ -70,7 +70,7 @@ function [uout, tout] = spinsphere(varargin)
 %       u0(x,y,z) = 1 + .1*(cos(20*x) + cos(20*y) + cos(20*z)),
 %       v0(x,y,z) = 1 - .1*(cos(20*x) + cos(20*y) + cos(20*z)).
 %
-% Example 4: Focusing nonlinear Schroedinger equation
+% Example 4: Nonlinear Schroedinger equation (spherical harmonic + breather)
 %
 %        u = spinsphere('NLS');
 %
@@ -163,11 +163,13 @@ S = spinopsphere(pdechar);
 if ( strcmpi(pdechar, 'AC') == 1 )
     dt = 1e-1;
     N = 128;
+    pref.Clim = [-1 1];
     pref.iterplot = 2;
     pref.Nplot = 256;
 elseif ( strcmpi(pdechar, 'GL') == 1 )
     dt = 1e-1;
     N = 128;
+    pref.Clim = [-1 1];
     pref.iterplot = 2;
     pref.Nplot = 256;
 elseif ( strcmpi(pdechar, 'GM') == 1 )
@@ -181,6 +183,7 @@ elseif ( strcmpi(pdechar, 'NLS') == 1 )
     N = 128;
     pref.colormap = 'jet';
     pref.dataplot = 'abs';
+    pref.Clim = [0 1];
     pref.iterplot = 1;
     pref.Nplot = 256;
 end
