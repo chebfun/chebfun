@@ -22,7 +22,7 @@ pass(2) = ( norm( f1 - f3 ) < tol );
 pass(3) = ( norm( f3 - f4 ) < tol );
 f5 = chebfun2( '2' );
 f6 = chebfun2( @(x,y) 2 );
-pass(4) = ( norm( f5 - f6 ) < tol && norm( f5 - f6 ) == 0 );
+pass(4) = ( norm( f5 - f6 ) < tol && norm( f5 - 2 ) == 0 );
 
 g = @(x,y) cos(x).*y + x.*sin(y); 
 f = chebfun2( g );
