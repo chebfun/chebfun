@@ -22,7 +22,7 @@ function varargout = chebpade(F, m, n, varargin)
 %   then R_HANDLE is returned, while P and Q are returned if two output
 %   arguments are specified. 
 %
-% See also PADEAPPROX.
+% See also AAA, CF, MINIMAX, PADEAPPROX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,5 +1,5 @@
 function [x, w, v] = hermpts(n, varargin)
-%HERMPTS   Hermite points and Gauss-Hermite Quadrature Weights.
+%HERMPTS   Hermite points and Gauss-Hermite quadrature weights.
 %   HERMPTS(N) returns N Hermite points X in (-inf, inf). By default these are
 %   roots of the 'physicist'-type Hermite polynomials, which are orthogonal with
 %   respect to the weight exp(-x.^2).

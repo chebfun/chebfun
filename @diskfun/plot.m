@@ -1,8 +1,11 @@
 function varargout = plot( f, varargin )
 %PLOT  Surface plot of a DISKFUN.
-%   PLOT(F) creates a surface plot and is the same as surf(F) if F is a 
-%   real-valued DISKFUN. If F is complex valued then this returns a domain 
-%   colouring plot of F.
+%
+%   PLOT(F) gives a surface plot of the DISKFUN F, the same as SURF(F).
+%   If F is complex-valued, it gives a phase portrait.
+%
+%   PLOT(F, 'zebra') gives a "zebra plot", black for values < 0
+%   and white for values >= 0.
 %
 %   PLOT(F, S) with option string plots the column and row slices, and 
 %   pivot locations used in the construction of F.
@@ -171,8 +174,15 @@ if ( ~isempty(varargin) )
             hold off
         end
     else
-        %% Standard surface plot
-        h = surf(f, varargin{:});
+
+        %% Standard or zebra surface plot 
+        if strcmp(varargin{1}, 'zebra')
+            h = surf(f);
+            caxis(norm(caxis,inf)*[-1 1])
+            colormap([0 0 0; 1 1 1])
+        else
+            h = surf(f, varargin{:});
+        end
     end
 else
     h = plot@separableApprox(f);

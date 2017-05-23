@@ -1,5 +1,5 @@
 function [x, w, v] = lobpts(n, varargin)
-%LOBPTS   Gauss-Legendre-Lobatto Quadrature Nodes and Weights.
+%LOBPTS   Gauss-Legendre-Lobatto quadrature nodes and weights.
 %  LOBPTS(N) returns N Legendre-Lobatto points X in [-1,1].
 %
 %  [X, W] = LOBPTS(N) returns also a row vector W of weights for
