@@ -89,23 +89,24 @@ function [uout, tout] = spinsphere(varargin)
 %
 %       tspan = [0 100];
 %       S = spinopsphere(tspan);
-%       S.lin = @(u) 1e-3*lap(u);
+%       S.lin = @(u) 5e-4*lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-%       S.init = spherefun(.1*randn(128));
-%       u = spinsphere(S, 128, 2e-1);
+%       S.init = randnfunsphere(.1);
+%       S.init = S.init/norm(S.init, inf);
+%       u = spinsphere(S, 128, 1e-1);
 %
 %   is equivalent to u = spinsphere('GL');
 %
 % Example 6: Using preferences
 %
-%       pref = spinprefsphere('Clim', [-2 2]);
+%       pref = spinprefsphere('Clim', [-1 1]);
 %       S = spinopsphere('ac');
-%       u = spinsphere(S, 64, 2e-1, pref);
+%       u = spinsphere(S, 128, 1e-1, pref);
 %   or simply,
-%       u = spinsphere(S, 64, 2e-1, 'Clim', [-2 2]);
+%       u = spinsphere(S, 128, 1e-1, 'Clim', [-1 1]);
 %
-%   solves the Allen-Cahn equation using N=64 grid points in each direction,
-%   a time-step dt=2e-1 and set the limits of the colobar to [-2 2].
+%   solves the Allen-Cahn equation using N=128 grid points in each direction,
+%   a time-step dt=1e-1 and set the limits of the colobar to [-1 1].
 %
 % See also SPINOPSPHERE, SPINPREFSPHERE, IMEX.
 

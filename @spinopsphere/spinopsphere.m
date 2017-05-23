@@ -104,7 +104,7 @@ end
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
             u0 = randnfunsphere(.1);
             u0 = u0/norm(u0, inf);
-            tspan = [0 20];
+            tspan = [0 100];
             
         % Gierer-Meinhardt equations:
         elseif ( strcmpi(pdechar, 'GM') == 1 )

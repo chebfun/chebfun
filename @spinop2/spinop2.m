@@ -24,10 +24,10 @@ classdef spinop2 < spinoperator
 %           nonlinear nondifferential operator with constant coefficients.
 %
 % Example 1: To construct a SPINOP2 corresponding to the GL2 equation on 
-%            DOM = [0 200]^2 x TSPAN = [0 10] with initial condition 
+%            DOM = [0 200]^2 x TSPAN = [0 100] with initial condition 
 %            u0(x,y) = cos(pi*x/100)*sin(y*pi/100), one can type
 %
-%            dom = [0 200 0 200]; tspan = [0 10];
+%            dom = [0 200 0 200]; tspan = [0 100];
 %            S = spinop2(dom, tspan);
 %            S.lin = @(u) lap(u);
 %            S.nonlin = @(u) u - (1+1.5i)*u.*(abs(u).^2);

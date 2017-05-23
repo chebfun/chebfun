@@ -39,7 +39,7 @@ function [uout, tout] = spin2(varargin)
 %
 %        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on [0 100]^2 from t=0 to t=100, with a random initial condition. 
+%    on [0 100]^2 from t=0 to t=100, with a RANDNFUN2 initial condition. 
 %    The movie plots the real part of u.
 %
 % Example 2: Gray-Scott equations (fingerprints patterns)
@@ -51,7 +51,7 @@ function [uout, tout] = spin2(varargin)
 %       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
 %       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 1.25]^2 from t=0 to t=8000, with initial condition
+%    on [0 1.25]^2 from t=0 to t=6000, with initial condition
 %
 %       u0(x,y) = 1 - exp(-150*((x-G/2.05)^2 + (y-G/2.05)^2)),
 %       v0(x,y) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2)),
@@ -66,11 +66,11 @@ function [uout, tout] = spin2(varargin)
 %       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
 %       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
 %
-%    on [0 30]^2 from t=0 to t=800, with initial condition
+%    on [0 30]^2 from t=0 to t=600, with initial condition
 %
 %       u0(x,y) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
 %       v0(x,y) = b/(a+b)^2 + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=50, a=0.1 and b=0.9.
+%           with G=30, a=0.1 and b=0.9.
 %
 % Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
 %
@@ -80,7 +80,7 @@ function [uout, tout] = spin2(varargin)
 %
 %       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
 %
-%    on [0 20]^2 from t=0 to t=200, with a random initial condition.
+%    on [0 30]^2 from t=0 to t=300, with a RANDNFUN2 initial condition.
 %
 % Example 5: PDE specified by a SPINOP2
 %
@@ -88,8 +88,9 @@ function [uout, tout] = spin2(varargin)
 %       S = spinop2(dom, tspan);
 %       S.lin = @(u) lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-%       S.init = chebfun2(.1*randn(128, 128), dom, 'trig')
-%       u = spin2(S, 64, 2e-1);
+%       S.init = randnfun2(4, dom, 'trig');
+%       S.init = S.init/norm(S.init, inf);
+%       u = spin2(S, 128, 1e-1);
 %
 %   is equivalent to u = spin2('GL2');
 %
@@ -97,12 +98,12 @@ function [uout, tout] = spin2(varargin)
 %
 %       pref = spinpref2('plot', 'off', 'scheme', 'pecec433');
 %       S = spinop2('sh2');
-%       u = spin2(S, 64, 5e-1, pref);
+%       u = spin2(S, 128, 5e-1, pref);
 %   or simply,
-%       u = spin2(S, 64, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
+%       u = spin2(S, 128, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
 %
-%   solves the Swift-Hohenberg equation using N=64 grid points in each
-%   direction, a time-step dt=5e-1, doesn't produce any movie use the
+%   solves the Swift-Hohenberg equation using N=128 grid points in each
+%   direction, a time-step dt=5e-1, doesn't produce any movie and uses the
 %   time-stepping scheme PECEC433.
 %
 % See also SPINOP2, SPINPREF2, EXPINT.
