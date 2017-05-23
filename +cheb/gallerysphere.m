@@ -170,7 +170,7 @@ switch lower(name)
         % Compute a random spherefun
         f = randnfunsphere(0.079,'monochromatic');
         fa = f;
-        type = 1;
+        type = 4;
         clrmap = gray(2);
         % Set the color axis so that the transition from white to black is
         % exactly at the value zero.
@@ -238,10 +238,8 @@ end
 ptitle = [name ', rank = ' num2str(length(f))];
 % Determine the type of plot to make
 if type==1
-    % Otherwise, plot the function.
-    %plot(f)
+    % Plot the function with a grid
     surf(f,'grid','k-')
-    plot(f)
     axis off, title(ptitle)
 elseif type==2
     contour(f)
@@ -251,8 +249,7 @@ elseif type==3
     contour(f,cntrlvl,'k-'), hold off
     axis off, title(ptitle)
 else
-%     plot(f)
-    surf(f,'grid','k-')
+    plot(f)
     axis off, title(ptitle)
 end
 
