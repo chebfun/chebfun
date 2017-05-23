@@ -7,9 +7,6 @@ function r = roots( f )
 %   to, roughly, four digits of precision. In particular, this command 
 %   cannot reliably compute isolated real roots of F. 
 %
-%   In the special case when F is of length 1 then the zero contours are 
-%   found to full precision.
-%  
 % See also CHEBFUN2/ROOTS.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
@@ -22,11 +19,9 @@ if ( isempty( f ) )
 end
 
 % Convert f to a chebfun2 on a larger domain so that we can properly
-% pick up roots that go accross -pi to pi in lambda or over the north
-% and south poles.  This will allow us to account for the inherent
-% periodicity of the sphere.
-rts = roots@separableApprox( chebfun2(f,[-pi-0.1 pi 0 pi]) );
-% rts = roots@separableApprox( chebfun2(f,1.5*[-pi pi -pi pi]) );
+% pick up roots that go accross -pi to pi in lambda.  This will allow us 
+% to account for the inherent periodicity of the sphere.
+rts = roots@separableApprox( chebfun2(f,[-pi-2*pi/100 pi 0 pi]) );
 
 % If no roots were found, then there is nothing more to do
 if ( isempty( rts ) )
@@ -56,10 +51,15 @@ for k = 1:size(vals, 2)
         AX = cos(lam).*sin(th);
         AY = sin(lam).*sin(th);
         AZ = cos(th);
-        r{cnt} = chebfun([AX, AY, AZ]);
-        cnt = cnt + 1;
+        % If there is a contour right on the poles then don't include it
+        % as a contour.
+        if norm(abs(AZ)-1,inf) > 1e4*eps
+            r{cnt} = chebfun([AX, AY, AZ]);
+            cnt = cnt + 1;
+        end
     end
 end
+% Remove the empty elements of r.
 r = r(1:cnt-1);
 
 end

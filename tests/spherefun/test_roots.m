@@ -30,16 +30,20 @@ end
 % Zero contour at the equator
 f = spherefun(@(x,y,z) z);
 r = roots(f);
-% First component of roots should be cos(pi*lam) (or it's negative).
-r1true = chebfun(@(lam) cos(pi*lam));
-pass(3) = ( ( norm(r{1}(:,1)-r1true) < tol ) || ...
-            ( norm(r{1}(:,1)+r1true) < tol ) );
-% Second component of roots should be sin(pi*lam) (or it's negative).
-r2true = chebfun(@(lam) sin(pi*lam));
-pass(4) = ( ( norm(r{1}(:,2)-r2true) < tol ) || ...
-            ( norm(r{1}(:,2)+r2true) < tol ) );
 % Third component of roots should be zero.
-pass(5) = ( norm(r{1}(:,3)) < tol );
+pass(3) = ( norm(r{1}(:,3)) < tol );
+
+% Zero contour along the y-axis
+f = spherefun(@(x,y,z) x);
+r = roots(f);
+% First component of roots should be zero.
+pass(4) = ( norm(r{1}(:,1)) < tol );
+
+% Zero contour across the x-axis
+f = spherefun(@(x,y,z) y);
+r = roots(f);
+% First component of roots should be zero.
+pass(5) = ( norm(r{1}(:,2)) < tol );
 
 % Check that the roots are actually zero curves of f.
 f = spherefun(@(x,y,z) 2*sinh(5*x.*y.*z)); r = roots(f);
