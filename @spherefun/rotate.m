@@ -1,6 +1,5 @@
 function f = rotate(f, phi, theta, psi, method)
-%ROTATE     Rotates a SPHEREFUN using Euler angles
-% 
+%ROTATE   Rotates a SPHEREFUN using Euler angles
 %   Y = ROTATE(F, PHI, THETA, PSI) rotates F using Euler angles phi, theta, 
 %   and psi with the ZXZ convention:  Rotate first about the z-axis by an
 %   angle phi, then about the (orginal) x-axis by an angle 0<=theta<=pi, 
@@ -17,17 +16,17 @@ function f = rotate(f, phi, theta, psi, method)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if nargin == 1
+if ( nargin == 1 )
     return
-elseif nargin == 2
+elseif ( nargin == 2 )
     theta = 0;
     psi = 0;
-elseif nargin == 3
+elseif ( nargin == 3 )
     psi = 0;
 end
 
 [m, n] = length(f);
-if nargin == 4
+if ( nargin == 4 )
     if ( min(m,n) > 200 ) 
         method = 'nufft';
     else
@@ -44,13 +43,12 @@ end
 
 % f is bandlimited of degree (m,n) so its rotation will be bandlimited will
 % limit at most max(m,n). This follows from spherical harmonic theory as th
-% rotation of a spherical harmonic of degree l is of degree l, only the
-% order will change. The degree l is given by the bandlimit n, while the
-% order is given by the bandlimit of m. Numerically, we need 2*max(m,n).
-% Why?
-n = 2*max(m,n); % Using this sampling we should exactly recover the rotated f.
-n = n + mod(n,2);  % Number of columns must be even.
-m = n/2 + 1 - mod(n/2,2); % Number of rows must be odd
+% rotation of a spherical harmonic of degree l is of degree l, only the order
+% will change. The degree l is given by the bandlimit n, while the order is
+% given by the bandlimit of m. Numerically, we need 2*max(m,n). Why?
+n = 2*max(m,n);             % Using this sampling we should exactly recover the rotated f.
+n = n + mod(n,2);           % Number of columns must be even.
+m = n/2 + 1 - mod(n/2,2);   % Number of rows must be odd
 
 % Sampling grid.
 [lam,th] = meshgrid(trigpts(n,[-pi pi]),linspace(0,pi,m));
@@ -74,13 +72,13 @@ w = R(3,1)*x + R(3,2)*y + R(3,3)*z;
 % Get the spherical coordinates of the rotated grid
 [lam, th] = cart2sph(u, v, w);
 th = pi/2-th;  % Adjust elevation angle since matlab uses latitude.
-
-if strcmpi(method, 'nufft')       % NUFFT evaluation using 2D NUFFT
+ 
+if ( strcmpi(method, 'nufft') )     % NUFFT evaluation using 2D NUFFT
     
     g = real( fastSphereEval(f, lam, th) );
     f = spherefun( g );
     
-elseif strcmpi(method, 'feval')   % FEVAL evalutation using Horner
+elseif ( strcmpi(method, 'feval') ) % FEVAL evalutation using Horner
    
     g = feval(f, lam, th);
     f = spherefun( g );
@@ -93,6 +91,7 @@ end
 
 end
 
+% % Slowest of all rotates (never used):
 % function y = rotateColat(f, lam, th, phi, theta, psi)
 %     x = cos(lam).*sin(th);
 %     y = sin(lam).*sin(th);
