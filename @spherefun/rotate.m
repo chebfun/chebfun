@@ -27,7 +27,9 @@ end
 
 [m, n] = length(f);
 if ( nargin == 4 )
-    if ( min(m,n) > 200 ) 
+    % Use the fast transform only when the number lengths of both columns
+    % are greater than 64 and the rank of f is greater than 2.
+    if ( min(m,n) > 64 && numel(cdr(f)) > 2) 
         method = 'nufft';
     else
         method = 'feval';
