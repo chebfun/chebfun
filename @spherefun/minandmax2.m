@@ -1,10 +1,10 @@
 function [Y, X] = minandmax2( f )
 %MINANDMAX2   Find global minimum and maximum of a SPHEREFUN.
 %   M = minandmax2(F) returns the minimum and maximum value of a SPHEREFUN
-%   over its domain. M is a vector of length 2 such that 
+%   over its domain. M is a vector of length 2 such that
 %   M(1) = min(f(lambda,theta)) and M(2) = max(f(lambda,theta)).
 %
-%   [M, LOC] = minandmax2(F) also returns the position of the minimum and 
+%   [M, LOC] = minandmax2(F) also returns the position of the minimum and
 %   maximum. For example,
 %
 %       F(LOC(1,1),LOC(1,2)) = M(1)  and  F(LOC(2,1),LOC(2,2)) = M(2)
@@ -16,7 +16,7 @@ function [Y, X] = minandmax2( f )
 
 % check for empty SPHEREFUN.
 if ( isempty( f ) )
-    Y = []; 
+    Y = [];
     X = [];
     return
 end
@@ -24,18 +24,18 @@ end
 
 
 
-[C, D, R] = cdr(f); 
+[C, D, R] = cdr(f);
 f = C*D*R.';
 % Maximum possible sample matrix size:
-maxsize = 4e3; 
+maxsize = 4e3;
 
 % Is the function the zero function?
-if ( iszero( f )  ) 
+if ( iszero( f )  )
     dom = f.domain;
     X = [ (dom(2) + dom(1))/2 (dom(4) + dom(3))/2 ];
     X = [ X ; X ];
     Y = [0 ; 0];
-    return; 
+    return;
 end
 
 % Extract low rank representation:
@@ -92,9 +92,9 @@ elseif ( length(f) <= maxsize )
     % We seek a fast initial guess. So we first truncate the SPHEREFUN.
     ypts = [trigpts(length(fcols), fcols.domain);pi];
     xpts = [trigpts(length(frows), frows.domain);pi];
-    cvals = feval(fcols, ypts); 
-    rvals = feval(frows, xpts); 
-
+    cvals = feval(fcols, ypts);
+    rvals = feval(frows, xpts);
+    
     A = cvals*rvals.';
     % Maximum entry in discretisation.
     [ignored, ind] = min( A(:) ); %#ok<ASGLU>
@@ -116,7 +116,7 @@ elseif ( length(f) <= maxsize )
     try
         
         % If the optimization toolbox is available then use it to get a better maximum.
-
+        
         warnstate = warning;
         warning('off'); %#ok<WNOFF> % Disable verbose warnings from fmincon.
         options = optimset('Display', 'none', 'TolFun', eps, 'TolX', eps, ...
@@ -151,7 +151,7 @@ elseif ( length(f) <= maxsize )
             f_mapped = @(x) feval(f, map1(x(1)), map2(x(2)));
             [mn, Y(1)] = fminsearch(@(x) f_mapped(x), Z(1, :), options);
             [mx, Y(2)] = fminsearch(@(x) -f_mapped(x), Z(2, :), options);
-            Y(2) = -Y(2);            
+            Y(2) = -Y(2);
             X(1:2,1) = map1([mn(1) ; mx(1)]);
             X(1:2,2) = map2([mn(2) ; mx(2)]);
             warning(warnstate);
@@ -171,11 +171,27 @@ elseif ( length(f) >= maxsize )
     
 end
 
+% If the location of the max/min is outside of [-pi,pi]^2, which can happen
+% because Spherefun is based on the double Fourier sphere method, then
+% translate back to [0,pi]x[-pi,pi] using BMC symmetry:
+
+% check minimum:
+if ( X(1,1) < 0 )
+    X(1,1) = X(1,1)+pi;
+    X(1,2) = -X(1,2);
+end
+
+% check maximum:
+if ( X(2,1) < 0 )
+    X(2,1) = X(2,1)+pi;
+    X(2,2) = -X(2,2);
+end
+
 
 end
 
-%%% 
-% Use the approach below when bivariate rootfinding is fully implemented. 
+%%%
+% Use the approach below when bivariate rootfinding is fully implemented.
 %%%
 % % Use bivariate rootfinding to find all the local extrema:
 % F = gradient( f );
