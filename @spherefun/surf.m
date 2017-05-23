@@ -9,7 +9,7 @@ function varargout = surf(f, varargin)
 %   projections specified by the string type:
 %     'sphere'          : 3D plot on the sphere (default)
 %     'equirectangular' : Standard latitude-longitude cylindrical projection
-%     'hammer'          : Hammer (or Hammer-Aitoff) pseudoazimuthal projection 
+%     'hammer'          : Hammer (or Hammer-Aitoff) pseudoazimuthal projection
 %     'albers'          : Albers conic projection
 %     'eckert2'         : Eckert II pseudocylindrical projection
 %     'winkel3'         : Winkel III (or tripel) pseudoazimuthal projection
@@ -18,11 +18,18 @@ function varargout = surf(f, varargin)
 %   SURF(...,'NUMPOINTS',N) plots F using an N-by-N latitude-longitude
 %   sample grid.
 %
-%   SURF(..., 'PropertyName', PropertyValue,...) sets the value of the 
-%   specified surface property. Multiple property values can be set with a 
+%   SURF(..., 'PropertyName', PropertyValue,...) sets the value of the
+%   specified surface property. Multiple property values can be set with a
 %   single statement. See surf for more details.
 %
 %   H = SURF(...) returns a handle to a surface plot object.
+%
+%   Examples:
+%      f = cheb.gallerysphere('vortices');
+%      surf(f,'grid','k-')
+%
+%      f = spherefun.sphharm(4,0) + sqrt(5/7)*spherefun.sphharm(4,4);
+%      surf(f,'projection','hammer','grid','k-')
 %
 % See also SEPARABLEAPPROX/SURF, PLOT.
 
@@ -56,7 +63,7 @@ plotType = 'sphere';
 defaultOpts = {'facecolor', 'interp', 'edgealpha', .5, 'edgecolor', 'none'};
 
 % Number of points to plot
-j = 1; 
+j = 1;
 argin = {};
 while ( ~isempty(varargin) )
     if strcmpi(varargin{1}, 'numpts')
@@ -82,82 +89,75 @@ if ( isempty(argin) )
 end
 
 if ( isa(f,'spherefun') )
+    % Default now is everything uses colatitude.
+    l = linspace(-pi, pi, minPlotNum);
+    t = linspace(0, pi, minPlotNum);
+    C = fevalm(f, l, t);
     
-%     if ( ((nargin == 1) || ...
-%             ( (nargin > 1) && ~isempty(argin) && ...
-%             ~isa(argin{1}, 'separableApprox')) || ...
-%             ((nargin == 3) && isempty(argin))) || ...
-%             ((nargin == 2) ) )
-
-        % Default now is everything uses colatitude.
-        l = linspace(-pi, pi, minPlotNum);
-        t = linspace(0, pi, minPlotNum);
-        C = fevalm(f, l, t); 
-        
-        % Longitude-colatitude evaluation points
-        [ll, tt] = meshgrid(l, t);
-
-        % Make some corrections to C for prettier plotting.
-        if ( norm(C - C(1,1),inf) < 1e-10 )
-            % If vals are very close up to round off then the color scale is
-            % hugely distorted. This fixes that.
-            [n, m] = size(C);
-            C = C(1,1)*ones(n, m);
-        end
-
-        % Meshgrid for plotting lines of longitude.
-        [llgl, ttgl] = meshgrid(linspace(-pi, pi, numGridPtsLam+1),...
-                              linspace(0, pi, minPlotNum));
-        % Meshgrid for plotting lines of latitude.
-        [llgt, ttgt] = meshgrid(linspace(-pi, pi, minPlotNum),...
-                              linspace(0, pi, numGridPtsTh+1));
-
-        
-        % Plot on the surface of the sphere: 3D plot
-        if strcmpi(plotType,'sphere')
-            [xx,yy,zz] = sph2cart(ll,pi/2 - tt,ones(size(ll)));        
-            h = surf(xx, yy, zz, C, defaultOpts{:}, argin{:});
-            if addGrid == 1
-                [xxg,yyg,zzg] = sph2cart(llgl,pi/2-ttgl,1+0*llgl);
-                hold on;
-                plot3(xxg,yyg,zzg,gridLineType);
-                [xxg,yyg,zzg] = sph2cart(llgt,pi/2-ttgt,1+0*llgt);
-                plot3(xxg',yyg',zzg',gridLineType);
-                if ~plotOnHold
-                    hold off;
-                end
-            end
-            xlim([-1 1])
-            ylim([-1 1]) 
-            zlim([-1 1])
-        else
-            % Compute the mapped points
-            [xh,yh] = sph2map(plotType,ll,tt);
-            h = surf(xh, yh, 0*xh, C, defaultOpts{:}, argin{:});
-            if addGrid == 1
-                [xg,yg] = sph2map(plotType,llgl,ttgl);
-                hold on;
-                plot(xg,yg,gridLineType);
-                [xg,yg] = sph2map(plotType,llgt',ttgt');
-                plot(xg,yg,gridLineType);
-                if ~plotOnHold
-                    hold off;
-                end
-            end
+    % Longitude-colatitude evaluation points
+    [ll, tt] = meshgrid(l, t);
+    
+    % Make some corrections to C for prettier plotting.
+    if ( norm(C - C(1,1),inf) < 1e-10 )
+        % If vals are very close up to round off then the color scale is
+        % hugely distorted. This fixes that.
+        [n, m] = size(C);
+        C = C(1,1)*ones(n, m);
+    end
+    
+    % Meshgrid for plotting lines of longitude.
+    [llgl, ttgl] = meshgrid(linspace(-pi, pi, numGridPtsLam+1),...
+        linspace(0, pi, minPlotNum));
+    % Meshgrid for plotting lines of latitude.
+    [llgt, ttgt] = meshgrid(linspace(-pi, pi, minPlotNum),...
+        linspace(0, pi, numGridPtsTh+1));
+    
+    
+    % Plot on the surface of the sphere: 3D plot
+    if strcmpi(plotType,'sphere')
+        [xx,yy,zz] = sph2cart(ll,pi/2 - tt,ones(size(ll)));
+        h = surf(xx, yy, zz, C, defaultOpts{:}, argin{:});
+        if addGrid == 1
+            [xxg,yyg,zzg] = sph2cart(llgl,pi/2-ttgl,1+0*llgl);
+            hold on;
+            plot3(xxg,yyg,zzg,gridLineType);
+            [xxg,yyg,zzg] = sph2cart(llgt,pi/2-ttgt,1+0*llgt);
+            plot3(xxg',yyg',zzg',gridLineType);
             if ~plotOnHold
-                view(2)
-                axis('tight','off');
+                hold off;
             end
         end
-        % Make the aspect ratio equal if the plot is not currently being
-        % held.
-        if ( ~plotOnHold )
-            daspect([1 1 1]);
-        end        
-%     else
-%         % Pass this along to the surf function in separableApprox.
-%         h = surf@separableApprox(f, varargin{:});
-%     end
+        xlim([-1 1])
+        ylim([-1 1])
+        zlim([-1 1])
+    else
+        % Compute the mapped points
+        [xh,yh] = sph2map(plotType,ll,tt);
+        h = surf(xh, yh, 0*xh, C, defaultOpts{:}, argin{:});
+        if addGrid == 1
+            [xg,yg] = sph2map(plotType,llgl,ttgl);
+            hold on;
+            plot(xg,yg,gridLineType);
+            [xg,yg] = sph2map(plotType,llgt',ttgt');
+            plot(xg,yg,gridLineType);
+            if ~plotOnHold
+                hold off;
+            end
+        end
+        if ~plotOnHold
+            view(2)
+            axis('tight','off');
+        end
+    end
+    % Make the aspect ratio equal if the plot is not currently being
+    % held.
+    if ( ~plotOnHold )
+        daspect([1 1 1]);
+    end
+    %     else
+    %         % Pass this along to the surf function in separableApprox.
+    %         h = surf@separableApprox(f, varargin{:});
+    %     end
 end
 
 if ( nargout > 0 )
@@ -167,10 +167,10 @@ end
 end
 
 function [xh,yh] = sph2map(type,lam,th)
-%SPH2MAP 2D map projection from standar spherical coordinates.  
+%SPH2MAP 2D map projection from standar spherical coordinates.
 %
 % [XH,YH] = sph2map(TYPE,LAM,TH) maps points on the surface of the sphere
-%   represented in spherical coordiantes to points in the 2D coordinate 
+%   represented in spherical coordiantes to points in the 2D coordinate
 %   system defined by the type.  Options for type are
 %   'HAMMER'
 %   'ALBERS'

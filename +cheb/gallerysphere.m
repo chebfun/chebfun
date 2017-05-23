@@ -238,13 +238,10 @@ end
 ptitle = [name ', rank = ' num2str(length(f))];
 % Determine the type of plot to make
 if type==1
-<<<<<<< HEAD
     % Otherwise, plot the function.
     %plot(f)
     surf(f,'grid','k-')
-=======
     plot(f)
->>>>>>> origin
     axis off, title(ptitle)
 elseif type==2
     contour(f)
