@@ -413,8 +413,17 @@ if ( numel(depvar) > 2)
 elseif ( numel(depvar) == 1 )
     % Treat as a complex variable:
     op = eval(['@(' real(depvar{1}) + 1i*imag(depvar{1}) ')' op]);
-else
+
+elseif ( numel(depvar) == 2 ) 
+
     op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
+
+elseif ( isempty( depvar ) ) 
+    
+    op = @(x,y) str2double(op) + 0*x;
+    
+else 
+    error('CHEBFUN2:STR2OP','Function as string has too many independent variables.');
 end
 
 end

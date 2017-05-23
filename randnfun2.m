@@ -1,40 +1,40 @@
 function f = randnfun2(varargin)
 %RANDNFUN2   Random smooth 2D function 
-%   F = RANDNFUN2(DT) returns a smooth CHEBFUN2 on [-1,1,-1,1] with
-%   maximum wave number about 2pi/DT in both the X and Y directions
+%   F = RANDNFUN2(LAMBDA) returns a smooth CHEBFUN2 on [-1,1,-1,1] with
+%   maximum frequency about 2pi/LAMBDA in both the X and Y directions
 %   and standard normal distribution N(0,1) at each point.  F is obtained
 %   by calling RANDNFUN2(T, 'trig') on a domain of dimensions about 20%
 %   greater and restricting the result to [-1,1,-1,1].    
 %
-%   F = RANDNFUN2(DT, DOM) returns a result with domain DOM = [A,B,C,D].
+%   F = RANDNFUN2(LAMBDA, DOM) returns a result with domain DOM = [A,B,C,D].
 %
-%   F = RANDNFUN2(DT, 'norm') normalizes the output by dividing it
-%   by SQRT(DT).  (This may change.)
+%   F = RANDNFUN2(LAMBDA, 'norm') normalizes the output by dividing it
+%   by SQRT(LAMBDA).  (This may change.)
 %
-%   RANDNFUN(DT, 'trig') returns a random doubly periodic function.
+%   RANDNFUN(LAMBDA, 'trig') returns a random doubly periodic function.
 %   This is defined by a finite bivariate Fourier series with independent
 %   normally distributed coefficients of equal variance.
 %
-%   F = RANDNFUN2() uses the default value DT = 1.  Combinations such
-%   as RANDNFUN2(DOM), RANDNFUN2('norm', DT) are allowed.
+%   F = RANDNFUN2() uses the default value LAMBDA = 1.  Combinations such
+%   as RANDNFUN2(DOM), RANDNFUN2('norm', LAMBDA) are allowed.
 %
 % Examples:
 %
 %   f = randnfun2(0.1); mean2(f), plot(f)
 %   f = randnfun2(0.25); plot(roots(f)), axis equal
 %
-% See also RANDNFUN, RANDNFUNSPHERE.
+% See also RANDNFUN, RANDNFUNSPHERE, RANDNFUNDISK.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-[dt, dom, normalize, trig] = parseInputs(varargin{:});
+[lambda, dom, normalize, trig] = parseInputs(varargin{:});
 
 if trig    % periodic case: random bivariate Fourier series
 
-    m = round(diff(dom(1:2))/dt);
+    m = round(diff(dom(1:2))/lambda);
     m2 = 2*m+1;
-    n = round(diff(dom(3:4))/dt);
+    n = round(diff(dom(3:4))/lambda);
     n2 = 2*n+1;
     c = randn(n2, m2) + 1i*randn(n2, m2);   % random coefficients on a square
     [x,y] = meshgrid(-m:m,-n:n);
@@ -45,27 +45,27 @@ if trig    % periodic case: random bivariate Fourier series
     f = chebfun2(c, dom, 'coeffs', 'trig');
     f = real(f);
     if normalize
-        f = f/sqrt(dt);                     % normalize for 2D white noise
+        f = f/sqrt(lambda);                     % normalize for 2D white noise
     end
 
 else       % nonperiodic case: call periodic case and restrict
 
-    if dt == inf
+    if lambda == inf
         f = chebfun2(randn, dom);    % random constant function
         if normalize
-            f = f/sqrt(dt);          % zero function
+            f = f/sqrt(lambda);          % zero function
         end
         return
     end
     
-    m = round(1.2*(dom(2)-dom(1))/dt+2);
-    n = round(1.2*(dom(4)-dom(3))/dt+2);
-    dom2 = [ dom(1) dom(1)+m*dt dom(3) dom(3)+n*dt ];
+    m = round(1.2*(dom(2)-dom(1))/lambda+2);
+    n = round(1.2*(dom(4)-dom(3))/lambda+2);
+    dom2 = [ dom(1) dom(1)+m*lambda dom(3) dom(3)+n*lambda ];
 
     if normalize
-        f = randnfun2(dt, dom2, 'norm', 'trig');
+        f = randnfun2(lambda, dom2, 'norm', 'trig');
     else
-        f = randnfun2(dt, dom2, 'trig');
+        f = randnfun2(lambda, dom2, 'trig');
     end
     
            % restrict the result to the prescribed domain
@@ -75,9 +75,9 @@ else       % nonperiodic case: call periodic case and restrict
 end
 end
 
-function [dt, dom, normalize, trig] = parseInputs(varargin)
+function [lambda, dom, normalize, trig] = parseInputs(varargin)
 
-dt = NaN;  
+lambda = NaN;  
 dom = NaN;
 normalize = 0;
 trig = 0;
@@ -95,12 +95,12 @@ for j = 1:nargin
     elseif ~isscalar(v)
         dom = v;
     else
-        dt = v;
+        lambda = v;
     end
 end
 
-if isnan(dt)
-   dt = 1;               % default space scale
+if isnan(lambda)
+   lambda = 1;               % default space scale
 end
 if isnan(dom)
    dom = [-1 1 -1 1];    % default domain

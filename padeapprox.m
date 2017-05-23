@@ -21,7 +21,7 @@ function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol)
 %   [1] P. Gonnet, S. Guettel, and L. N. Trefethen, "ROBUST PADE APPROXIMATION 
 %       VIA SVD", SIAM Rev., 55:101-117, 2013.
 %
-% See also CHEBPADE.
+% See also AAA, CF, CHEBPADE, MINIMAX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
