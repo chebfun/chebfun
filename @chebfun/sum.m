@@ -133,11 +133,16 @@ end
 function out = sumSubDom(f, a, b)
     d1 = f.domain(1);
     d2 = f.domain(end);
+    
+    if ( ~isreal(a) || ~isreal(b) )
+        error('CHEBFUN:CHEBFUN:sum:sumSubDom:complex', ...
+            'Chebfun/sum does not support complex limits of integration.');
+    end
 
     if ( isnumeric(a) && isnumeric(b) )
 
         % Validate the subdomain:
-        if ( (a < d1) || (b > d2) )
+        if ( (min(a,b) < d1) || (max(a,b) > d2) )
             error('CHEBFUN:CHEBFUN:sum:sumSubDom:ab', 'Not a valid subdomain.');
             
         elseif ( (a == d1) && (b == d2) )
