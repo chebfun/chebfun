@@ -161,17 +161,20 @@ pref = spinprefsphere();
 S = spinopsphere(pdechar);
 if ( strcmpi(pdechar, 'AC') == 1 )
     dt = 1e-1;
-    N = 256;
-    pref.iterplot = 2;
-elseif ( strcmpi(pdechar, 'GL') == 1 )
-    dt = 1e-1;
-    N = 256;
-    pref.iterplot = 2;
-elseif ( strcmpi(pdechar, 'GM') == 1 )
-    dt = 2e-1;
     N = 128;
     pref.iterplot = 2;
+    pref.Nplot = 256;
+elseif ( strcmpi(pdechar, 'GL') == 1 )
+    dt = 1e-1;
+    N = 128;
+    pref.iterplot = 2;
+    pref.Nplot = 256;
+elseif ( strcmpi(pdechar, 'GM') == 1 )
+    dt = 2e-1;
+    N = 64;
     pref.Clim = [0 3 0.5 2];
+    pref.iterplot = 2;
+    pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'NLS') == 1 )
     dt = 1e-2;
     N = 128;

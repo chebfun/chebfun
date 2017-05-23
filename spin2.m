@@ -158,19 +158,28 @@ function [S, N, dt, pref] = parseInputs(pdechar)
 pref = spinpref2();
 S = spinop2(pdechar);
 if ( strcmpi(pdechar, 'GL2') == 1 )
-    dt = 2e-1;
-    N = 64;
+    dt = 1e-1;
+    N = 128;
+    pref.iterplot = 2;
+    pref.Nplot = 256;
 elseif ( strcmpi(pdechar, 'GS2') == 1 )
-    dt = 4;
-    pref.iterplot = 8;
+    dt = 5;
     N = 64;
+    pref.Clim = [.3 1 0 .35];
+    pref.iterplot = 6;
+    pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
     dt = 5e-1;
-    pref.iterplot = 10;
     N = 64;
+    pref.Clim = [.7 1.7 .65 1.1];
+    pref.iterplot = 6;
+    pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'SH2') == 1 )
     dt = 1;
-    N = 64;
+    N = 128;
+    pref.Clim = [-.4 1.2];
+    pref.iterplot = 2;
+    pref.Nplot = 256;
 end
 
 end
