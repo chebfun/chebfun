@@ -57,9 +57,6 @@ if ( ~isempty(varargin) )
             N = 200;
             th = trigpts(N, dom(1:2)); th=[th; dom(2)];
             r = exp(1i*th);
-            
-            %clr = [255 255 204]/255;
-            %fill(real(r),imag(r), clr, 'Edgecolor', 'None'); 
             plot(real(r),imag(r),'--', 'Linewidth', .5); 
         end
                 
@@ -185,11 +182,8 @@ if ( ~isempty(varargin) )
             holdState = ishold; 
             circ = exp(1i*pi*linspace(-1,1,101));
             hold on 
-            plot(real(circ), imag(circ), 'k-', 'Linewidth', .3)
-            hold off
-            if holdState
-                hold on;
-            else
+            plot(real(circ), imag(circ), 'k-','Color',0.2*[1 1 1])
+            if ~holdState
                 hold off;
             end
         else
