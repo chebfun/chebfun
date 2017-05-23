@@ -85,7 +85,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    The movie plots the absolute value of u.
 %
-% Example 4: PDE specified by a SPINOPSPHERE
+% Example 5: PDE specified by a SPINOPSPHERE
 %
 %       tspan = [0 100];
 %       S = spinopsphere(tspan);
@@ -96,7 +96,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %   is equivalent to u = spinsphere('GL');
 %
-% Example 5: Using preferences
+% Example 6: Using preferences
 %
 %       pref = spinprefsphere('Clim', [-2 2]);
 %       S = spinopsphere('ac');
