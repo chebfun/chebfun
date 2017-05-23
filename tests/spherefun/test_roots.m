@@ -41,4 +41,12 @@ pass(4) = ( ( norm(r{1}(:,2)-r2true) < tol ) || ...
 % Third component of roots should be zero.
 pass(5) = ( norm(r{1}(:,3)) < tol );
 
+% Check that the roots are actually zero curves of f.
+f = spherefun(@(x,y,z) 2*sinh(5*x.*y.*z)); r = roots(f);
+for j=1:length(r)
+    t = sample(r{j});
+    fvals = f(t(:,1),t(:,2),t(:,3));
+    pass(5+j) = ( norm(fvals,inf) < 1e-3 );
+end
+
 end
