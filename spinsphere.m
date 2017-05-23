@@ -62,12 +62,13 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    solves the Gierer-Meinhardt equations,
 %
-%       u_t = 1e-2*laplacian(u) + u.^2/v - u,
-%       v_t = 1e-1*aplacian(v) + u^2 - v,
+%       u_t = 4e-3*laplacian(u) + u.^2/v - u,
+%       v_t = 4e-2*aplacian(v) + u^2 - v,
 %
-%    on the sphere from t=0 to t=40, with initial condition
+%    on the sphere from t=0 to t=80, with initial condition
 %
-%       u0(x,y,z) = v0(x,y,z) = 1+1/3*(cos(20*x)+cos(20*z)+cos(20*y)).
+%       u0(x,y,z) = 1 + .1*(cos(20*x) + cos(20*y) + cos(20*z)),
+%       v0(x,y,z) = 1 - .1*(cos(20*x) + cos(20*y) + cos(20*z)).
 %
 % Example 4: Focusing nonlinear Schroedinger equation
 %
@@ -77,12 +78,12 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u_t = 1i*laplacian(u) + 1i*u|u|^2,
 %
-%    on the sphere from t=0 to t=2, with initial condition
+%    on the sphere from t=0 to t=3, with initial condition
 %
-%     u0(lam, th) = (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A 
-%                  + 4*Y_6^6(lam, th), with A=2 and B=1.
+%     u0(lam, th) = .1*(2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A 
+%                  + Y_8^6(lam, th), with A=1 and B=1.
 %
-%    The movie plots the real value of u.
+%    The movie plots the absolute value of u.
 %
 % Example 4: PDE specified by a SPINOPSPHERE
 %
@@ -167,14 +168,17 @@ elseif ( strcmpi(pdechar, 'GL') == 1 )
     N = 256;
     pref.iterplot = 2;
 elseif ( strcmpi(pdechar, 'GM') == 1 )
-    dt = 1e-1;
+    dt = 2e-1;
     N = 128;
     pref.iterplot = 2;
+    pref.Clim = [0 3 0.5 2];
 elseif ( strcmpi(pdechar, 'NLS') == 1 )
-    dt = 5e-3;
+    dt = 1e-2;
     N = 128;
-    pref.iterplot = 2;
     pref.colormap = 'jet';
+    pref.dataplot = 'abs';
+    pref.iterplot = 1;
+    pref.Nplot = 256;
 end
 
 end
