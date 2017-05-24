@@ -43,7 +43,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    on the sphere from t=0 to t=60, with initial condition
 %
-%        u0(x, y, z) = cos(cosh(5*x.*z) - 10*y).
+%        u0(x, y, z) = cos(cosh(5*x*z) - 10*y).
 %
 % Example 2: Ginzburg-Landau equation (spiral waves)
 %
@@ -62,8 +62,8 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    solves the Gierer-Meinhardt equations,
 %
-%       u_t = 4e-3*laplacian(u) + u.^2/v - u,
-%       v_t = 4e-2*laplacian(v) + u^2 - v,
+%       u_t = 1e-2*laplacian(u) + u^2/v - u,
+%       v_t = 1e-1*laplacian(v) + u^2 - v,
 %
 %    on the sphere from t=0 to t=80, with initial condition
 %
@@ -105,8 +105,8 @@ function [uout, tout] = spinsphere(varargin)
 %   or simply,
 %       u = spinsphere(S, 128, 1e-1, 'Clim', [-1 1]);
 %
-%   solves the Allen-Cahn equation using N=128 grid points in each direction,
-%   a time-step dt=1e-1 and set the limits of the colobar to [-1 1].
+%   solves the Allen-Cahn equation using N=64 grid points in each direction
+%   and a time-step dt=2e-1 and sets the limits of the colorbar to [-2 2].
 %
 % See also SPINOPSPHERE, SPINPREFSPHERE, IMEX.
 
@@ -120,7 +120,7 @@ function [uout, tout] = spinsphere(varargin)
 %       SPINOPERATOR.SOLVEPDE(S, N, dt, pref)
 %
 % where S is a SPINOPSPHERE object, N is the number of grid points in each 
-% direction, DT is the time-step and PREF is a SPINPREFSPHERE oject.
+% direction, DT is the time-step and PREF is a SPINPREFSPHERE object.
 
 if ( nargin == 1 ) % e.g., u = spinsphere('gl')
     try spinopsphere(varargin{1});
