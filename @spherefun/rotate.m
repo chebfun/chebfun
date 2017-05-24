@@ -80,6 +80,11 @@ if ( strcmpi(method, 'nufft') )     % NUFFT evaluation using 2D NUFFT
     g = real( fastSphereEval(f, lam, th) );
     f = spherefun( g );
     
+elseif ( strcmpi(method, 'nufft2') ) % FEVAL evalutation using Horner
+   
+    g = real( fastSphereEval2(f, lam, th) );
+    f = spherefun( g );
+
 elseif ( strcmpi(method, 'feval') ) % FEVAL evalutation using Horner
    
     g = feval(f, lam, th);

@@ -1,4 +1,4 @@
-function vals = fastSphereEval(f, lambda, theta )
+function vals = fastSphereEval2(f, lambda, theta )
 %FASTSPHEREEVAL     Fast evaluation of a spherefun
 %   VALS = FASTSPHEREEVAL(F, LAMBDA, THETA) evaluates the spherefun F at the
 %   points (LAMBDA, THETA), where LAMBDA is longitude, with -pi<=LAMBA<=pi, and
@@ -66,7 +66,7 @@ er = n*(lambda-xj);
 gam = norm(er, inf);
 % K2 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
 K2 = 15;
-U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) ).';
+U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) );
 V2 = chebT(K2-1, 2*nn'/n);
 
 % Business end of the transform. (Everything above could be considered
@@ -88,7 +88,7 @@ YY = permute(FFT_cols,[3 2 1]);
 % Convert to cell for speed:
 X = cell(n,1);
 for k = 1:n
-    X{k} = XX(:,:,k);
+    X{k} = XX(:,:,k).';
 end
 Y = cell(size(YY,3),1);
 for k = 1:m
@@ -101,18 +101,22 @@ end
 
 % Do only unique multiplications:
 [c, ~, ic] = unique([ii, jj], 'rows');
-YX = cell(size(c,1), 1);
 Y = Y(c(:,1));
 X = X(c(:,2));
 vals = zeros(M, N);
-for idx = 1:size(c,1)
-    YX{idx} = Y{idx} * X{idx};
-end
+[srt_ic,idic] = sort(ic);
+temp = diff(srt_ic);
+aa = find(temp);
+cnt = 1;
 
-% Recover A:
-for idx = 1:M*N
-   vals(idx) = U1(idx,:) * (YX{ic(idx)} * U2(:,idx));
+for idx = 1:size(c,1)-1
+    kk = idic(cnt:aa(idx));
+    vals(kk) = sum((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}),2);
+    cnt = aa(idx)+1;
 end
+idx = size(c,1);
+kk = idic(cnt:end);
+vals(kk) = sum((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}),2);
 
 end
 
