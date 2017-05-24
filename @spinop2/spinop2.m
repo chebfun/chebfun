@@ -24,10 +24,10 @@ classdef spinop2 < spinoperator
 %           nonlinear nondifferential operator with constant coefficients.
 %
 % Example 1: To construct a SPINOP2 corresponding to the GL2 equation on 
-%            DOM = [0 200]^2 x TSPAN = [0 10] with initial condition 
+%            DOM = [0 200]^2 x TSPAN = [0 100] with initial condition 
 %            u0(x,y) = cos(pi*x/100)*sin(y*pi/100), one can type
 %
-%            dom = [0 200 0 200]; tspan = [0 10];
+%            dom = [0 200 0 200]; tspan = [0 100];
 %            S = spinop2(dom, tspan);
 %            S.lin = @(u) lap(u);
 %            S.nonlin = @(u) u - (1+1.5i)*u.*(abs(u).^2);
@@ -110,19 +110,19 @@ end
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
             dom = [0 100 0 100];
             tspan = [0 100];
-            vals = .1*randn(128, 128);
-            u0 = chebfun2(vals, dom, 'trig');
+            u0 = randnfun2(4, dom, 'trig');
+            u0 = u0/norm(u0, inf);
             
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS2') == 1 )
-            L = @(u,v) [2e-5*lap(u); 1e-5*lap(v)];
+            L = @(u,v) [3e-4*lap(u); 1.5e-4*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
-            G = 1.25;
+            G = 3;
             dom = G*[0 1 0 1];
-            tspan = [0 8000];
-            u01 = @(x,y) 1 - exp(-150*((x-G/2.05).^2 + (y-G/2.05).^2));
+            tspan = [0 6000];
+            u01 = @(x,y) 1 - exp(-100*((x-G/2.05).^2 + (y-G/2.05).^2));
             u01 = chebfun2(u01, dom, 'trig');
-            u02 = @(x,y) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2));
+            u02 = @(x,y) exp(-100*((x-G/2).^2 + 2*(y-G/2).^2));
             u02 = chebfun2(u02, dom, 'trig');
             u0 = [u01; u02];
     
@@ -130,9 +130,9 @@ end
         elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
             N = @(u,v) [3*(.1 - u + u.^2.*v); 3*(.9 - u.^2.*v)];
-            G = 30;
+            G = 50;
             dom = G*[0 1 0 1];
-            tspan = [0 800];
+            tspan = [0 500];
             u01 = @(x,y) 1 - exp(-2*((x-G/2.15).^2 + (y-G/2.15).^2));
             u01 = chebfun2(u01, dom, 'trig');
             u02 = @(x,y) .9/(.1+.9)^2 + exp(-2*((x-G/2).^2 + 2*(y-G/2).^2));
@@ -142,12 +142,12 @@ end
         % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH2') == 1 )
             L = @(u) -2*lap(u) - biharm(u);
-            N = @(u) -.9*u + u.^2 - u.^3;
-            G = 20;
+            N = @(u) -.9*u - u.^3;
+            G = 50;
             dom = G*[0 1 0 1];
-            tspan = [0 200];
-            vals = .1*randn(64, 64);
-            u0 = chebfun2(vals, dom, 'trig');       
+            tspan = [0 800];
+            u0 = randnfun2(4, dom, 'trig');
+            u0 = u0/norm(u0, inf);    
             
         else
             error('SPINOP2:parseInputs', 'Unrecognized PDE.')

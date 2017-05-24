@@ -39,25 +39,24 @@ function [uout, tout] = spin2(varargin)
 %
 %        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on [0 100]^2 from t=0 to t=100, with a random initial condition. 
+%    on [0 100]^2 from t=0 to t=100, with a RANDNFUN2 initial condition. 
 %    The movie plots the real part of u.
 %
-% Example 2: Gray-Scott equations (fingerprints patterns)
+% Example 2: Gray-Scott equations (pattern formation - fingerprints)
 %
 %       u = spin2('GS2');
 %
 %    solves the Gray-Scott equations
 %
-%       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
-%       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
+%       u_t = 3e-4*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
+%       v_t = 1.5e-4*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 1.25]^2 from t=0 to t=8000, with initial condition
+%    on [0 3]^2 from t=0 to t=6000, with initial condition
 %
-%       u0(x,y) = 1 - exp(-150*((x-G/2.05)^2 + (y-G/2.05)^2)),
-%       v0(x,y) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=1.25.
+%       u0(x,y) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2)),
+%       v0(x,y) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2)), with G=3.
 %
-% Example 3: Schnakenberg equations (pattern formation)
+% Example 3: Schnakenberg equations (pattern formation - dots)
 %
 %       u = spin2('Schnak2');
 %
@@ -66,21 +65,21 @@ function [uout, tout] = spin2(varargin)
 %       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
 %       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
 %
-%    on [0 30]^2 from t=0 to t=800, with initial condition
+%    on [0 50]^2 from t=0 to t=500, with initial condition
 %
 %       u0(x,y) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
 %       v0(x,y) = b/(a+b)^2 + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
 %           with G=50, a=0.1 and b=0.9.
 %
-% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
+% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection rolls)
 %
 %       u = spin2('SH2');
 %
 %    solves the Swift-Hohenberg equation
 %
-%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
+%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u - u^3,
 %
-%    on [0 20]^2 from t=0 to t=200, with a random initial condition.
+%    on [0 50]^2 from t=0 to t=800, with a RANDNFUN2 initial condition.
 %
 % Example 5: PDE specified by a SPINOP2
 %
@@ -88,8 +87,9 @@ function [uout, tout] = spin2(varargin)
 %       S = spinop2(dom, tspan);
 %       S.lin = @(u) lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-%       S.init = chebfun2(.1*randn(128, 128), dom, 'trig')
-%       u = spin2(S, 64, 2e-1);
+%       S.init = randnfun2(4, dom, 'trig');
+%       S.init = S.init/norm(S.init, inf);
+%       u = spin2(S, 128, 1e-1);
 %
 %   is equivalent to u = spin2('GL2');
 %
@@ -97,12 +97,12 @@ function [uout, tout] = spin2(varargin)
 %
 %       pref = spinpref2('plot', 'off', 'scheme', 'pecec433');
 %       S = spinop2('sh2');
-%       u = spin2(S, 64, 5e-1, pref);
+%       u = spin2(S, 128, 5e-1, pref);
 %   or simply,
-%       u = spin2(S, 64, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
+%       u = spin2(S, 128, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
 %
-%   solves the Swift-Hohenberg equation using N=64 grid points in each
-%   direction, a time-step dt=5e-1, doesn't produce any movie use the
+%   solves the Swift-Hohenberg equation using N=128 grid points in each
+%   direction, a time-step dt=5e-1, doesn't produce any movie and uses the
 %   time-stepping scheme PECEC433.
 %
 % See also SPINOP2, SPINPREF2, EXPINT.
@@ -158,19 +158,29 @@ function [S, N, dt, pref] = parseInputs(pdechar)
 pref = spinpref2();
 S = spinop2(pdechar);
 if ( strcmpi(pdechar, 'GL2') == 1 )
-    dt = 2e-1;
-    N = 64;
+    dt = 1e-1;
+    N = 128;
+    pref.Clim = [-1 1];
+    pref.iterplot = 2;
+    pref.Nplot = 256;
 elseif ( strcmpi(pdechar, 'GS2') == 1 )
-    dt = 4;
-    pref.iterplot = 8;
+    dt = 6;
     N = 64;
+    pref.Clim = [.3 .8 0 .35];
+    pref.iterplot = 5;
+    pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
     dt = 5e-1;
-    pref.iterplot = 10;
     N = 64;
+    pref.Clim = [.7 1.7 .65 1.05];
+    pref.iterplot = 10;
+    pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'SH2') == 1 )
     dt = 1;
-    N = 64;
+    N = 128;
+    pref.Clim = [-.4 .4];
+    pref.iterplot = 4;
+    pref.Nplot = 256;
 end
 
 end

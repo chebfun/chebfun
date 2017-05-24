@@ -12,7 +12,6 @@ function y = feval(f, x, y, z)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 if ( nargin == 3 )      % Spherical coordinates used.
     lambda = x;
     theta = y;
@@ -39,7 +38,7 @@ elseif ( nargin == 4 ) % Cartesian coordinates used.
             theta = pi/2 - theta;
         end
         y = feval@separableApprox(f, lambda, theta);
-        
+
         if ( (size(lambda, 1) == 1) && (size(theta,1) == 1) )
             y = y.';
         end
