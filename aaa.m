@@ -39,7 +39,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", arXiv:1612.00337.
 %
-% See also CF, CHEBPADE, PADEAPPROX, RATINTERP, REMEZ
+% See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -234,6 +234,10 @@ if ( exist('Z', 'var') )
             error('CHEBFUN:aaa:lengthFZ', ...
                 'Inputs F and Z must have the same length.')
         end
+    elseif ( ischar(F) )
+        % F is given as a string input. Convert it to a function handle.
+        F = str2op(vectorize(F));
+        F = F(Z);
     else
         error('CHEBFUN:aaa:UnknownF', 'Input for F not recognized.')
     end
@@ -405,3 +409,18 @@ if ( ( isResolved == 0 ) && ~mmax_flag )
 end
 
 end % End of AAA_AUTOZ().
+
+function op = str2op(op)
+    % Convert string inputs to either numeric format or function_handles.
+    sop = str2num(op);
+    if ( ~isempty(sop) )
+        op = sop;
+    else
+        depVar = symvar(op);
+        if ( numel(depVar) ~= 1 )
+            error('CHEBFUN:CHEBFUN:str2op:indepvars', ...
+             'Incorrect number of independent variables in string input.');
+        end
+        op = eval(['@(' depVar{:} ')', op]);
+    end
+end % End of STR2OP().

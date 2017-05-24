@@ -24,7 +24,7 @@ piv = f.pivotValues;
 d = 1./piv; 
 
 % Set infinite values to zero.
-d( d == inf ) = 0;  
+d( abs(d) == inf ) = 0;  
 
 % Output:
 if ( nargout <= 1 )
