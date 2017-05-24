@@ -23,10 +23,6 @@ end
 if ( nargin == 1 )
     I = sum(f);
 else
-    if ( (a > f.domain(end)) || (b < f.domain(1)) )
-        error('CHEBFUN:CHEBFUN:integral:domain', ['In integral(f,a,b) ', ...
-            'the interval [a,b] must be a subset of the domain of f.']);
-    end
     I = sum(f, a, b);
 end
 
