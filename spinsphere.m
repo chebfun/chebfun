@@ -63,7 +63,7 @@ function [uout, tout] = spinsphere(varargin)
 %    solves the Gierer-Meinhardt equations,
 %
 %       u_t = 4e-3*laplacian(u) + u.^2/v - u,
-%       v_t = 4e-2*aplacian(v) + u^2 - v,
+%       v_t = 4e-2*laplacian(v) + u^2 - v,
 %
 %    on the sphere from t=0 to t=80, with initial condition
 %
@@ -176,7 +176,7 @@ elseif ( strcmpi(pdechar, 'GM') == 1 )
     dt = 2e-1;
     N = 64;
     pref.Clim = [0 3 0.5 2];
-    pref.iterplot = 2;
+    pref.iterplot = 4;
     pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'NLS') == 1 )
     dt = 1e-2;

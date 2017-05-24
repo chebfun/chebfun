@@ -39,7 +39,7 @@ function [uout, tout] = spin3(varargin)
 %
 %        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on [0 100]^3 from t=0 to t=70, with a random initial condition.
+%    on [0 50]^3 from t=0 to t=100, with a random initial condition.
 %    The movie plots the real part of u.
 %
 % Example 2: Gray-Scott equations (pattern formation - fingerprints)
@@ -48,14 +48,13 @@ function [uout, tout] = spin3(varargin)
 %
 %    solves the Gray-Scott equations
 %
-%       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
-%       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
+%       u_t = 3e-4*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
+%       v_t = 1.5e-4*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 0.75]^3 from t=0 to t=3000, with initial condition
+%    on [0 2]^3 from t=0 to t=6000, with initial condition
 %
-%       u0(x,y,z) = 1 - exp(-180*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
-%       v0(x,y,z) = exp(-180*((x-G/2)^2 + 2*(y-G/2)^2 + 2(z-G/2)^2)),
-%           with G=.75.
+%       u0(x,y,z) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2 + (z-G/2.15)^2)),
+%       v0(x,y,z) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)), with G=2.
 %
 % Example 3: Schnakenberg equations (pattern formation - dots)
 %
@@ -66,11 +65,11 @@ function [uout, tout] = spin3(varargin)
 %       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
 %       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
 %
-%    on [0 50]^3 from t=0 to t=400, with initial condition
+%    on [0 25]^3 from t=0 to t=500, with initial condition
 %
-%       u0(x,y,z) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
+%       u0(x,y,z) = (a+b) - exp(-2*((x-G/2.05)^2 + (y-G/2.05)^2 + (z-G/2.15)^2)),
 %       v0(x,y,z) = b/(a+b)^2 + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)),
-%           with G=50, a=0.1 and b=0.9.
+%           with G=25, a=0.1 and b=0.9.
 %
 % Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection rolls)
 %
@@ -80,16 +79,16 @@ function [uout, tout] = spin3(varargin)
 %
 %       u_t = -2*laplacian(u) - biharmonic(u) - .9*u - u^3,
 %
-%    on [0 20]^3 from t=0 to t=400, with a random initial condition.
+%    on [0 25]^3 from t=0 to t=800, with a random initial condition.
 %
 % Example 5: PDE specified by a SPINOP3
 %
-%       dom = [0 100 0 100 0 100]; tspan = [0 70];
+%       dom = [0 100 0 100 0 100]; tspan = [0 100];
 %       S = spinop3(dom, tspan);
 %       S.lin = @(u) lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
 %       S.init = chebfun3(.1*randn(32, 32, 32), dom, 'trig')
-%       u = spin3(S, 64, 1e-1);
+%       u = spin3(S, 32, 1e-1);
 %
 %   is equivalent to u = spin3('GL3');
 %
@@ -164,16 +163,16 @@ if ( strcmpi(pdechar, 'GL3') == 1 )
     pref.iterplot = 2;
     pref.Nplot = 64;
 elseif ( strcmpi(pdechar, 'GS3') == 1 )
-    dt = 4;
+    dt = 6;
     N = 32;
-    pref.Clim = [.3 1 0 .35];
+    pref.Clim = [.3 .8 0 .35];
     pref.iterplot = 5;
     pref.Nplot = 64;
 elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
     dt = 5e-1;
     N = 32;
-    pref.Clim = [.7 1.7 .65 1.1];
-    pref.iterplot = 6;
+    pref.Clim = [.7 1.7 .65 1.05];
+    pref.iterplot = 10;
     pref.Nplot = 64;
 elseif ( strcmpi(pdechar, 'SH3') == 1 )
     dt = 1;

@@ -48,14 +48,13 @@ function [uout, tout] = spin2(varargin)
 %
 %    solves the Gray-Scott equations
 %
-%       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
-%       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
+%       u_t = 3e-4*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
+%       v_t = 1.5e-4*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 1.25]^2 from t=0 to t=6000, with initial condition
+%    on [0 3]^2 from t=0 to t=6000, with initial condition
 %
-%       u0(x,y) = 1 - exp(-150*((x-G/2.05)^2 + (y-G/2.05)^2)),
-%       v0(x,y) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=1.25.
+%       u0(x,y) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2)),
+%       v0(x,y) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2)), with G=3.
 %
 % Example 3: Schnakenberg equations (pattern formation - dots)
 %
@@ -66,7 +65,7 @@ function [uout, tout] = spin2(varargin)
 %       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
 %       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
 %
-%    on [0 50]^2 from t=0 to t=800, with initial condition
+%    on [0 50]^2 from t=0 to t=500, with initial condition
 %
 %       u0(x,y) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
 %       v0(x,y) = b/(a+b)^2 + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
@@ -165,16 +164,16 @@ if ( strcmpi(pdechar, 'GL2') == 1 )
     pref.iterplot = 2;
     pref.Nplot = 256;
 elseif ( strcmpi(pdechar, 'GS2') == 1 )
-    dt = 5;
+    dt = 6;
     N = 64;
-    pref.Clim = [.3 1 0 .35];
-    pref.iterplot = 6;
+    pref.Clim = [.3 .8 0 .35];
+    pref.iterplot = 5;
     pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
     dt = 5e-1;
     N = 64;
-    pref.Clim = [.7 1.7 .65 1.1];
-    pref.iterplot = 6;
+    pref.Clim = [.7 1.7 .65 1.05];
+    pref.iterplot = 10;
     pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'SH2') == 1 )
     dt = 1;
