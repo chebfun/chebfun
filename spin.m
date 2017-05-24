@@ -57,7 +57,7 @@ function [uout, tout] = spin(varargin)
 %
 %           u_t = 1e-3*u_xx - u*u_x,
 %
-%   on [-1 1] from t=0 to t=15, with initial condition
+%   on [-1 1] from t=0 to t=20, with initial condition
 %
 %       u0(x) = (1-x^2)*exp(-30*(x+1/2)^2.
 %
@@ -74,7 +74,7 @@ function [uout, tout] = spin(varargin)
 %    on [-1 1] from t=0 to t=30, with initial condition
 %
 %       u0(x) = exp(-100*(x+.5)^2),
-%       v0(x) = exp(-100*(x)^2),
+%       v0(x) = exp(-100*x^2),
 %       w0(x) = exp(-100*(x-.5)^2).
 %
 % Example 4: Cahn-Hilliard equation (metastable solutions)
@@ -101,8 +101,7 @@ function [uout, tout] = spin(varargin)
 %    on [-50 50] from t=0 to t=12000, with initial condition
 %
 %       u0(x) = 1 - 1/2*sin(pi*(x-L)/(2*L))^100,
-%       v0(x) = 1/4*sin(pi*(x-L)/(2*L))^100,
-%           with L=50.
+%       v0(x) = 1/4*sin(pi*(x-L)/(2*L))^100, with L=50.
 %
 % Example 6: Korteweg-de Vries equation (two-soliton solution)
 %
@@ -149,12 +148,12 @@ function [uout, tout] = spin(varargin)
 %
 %       u_t = i*u_xx + i*|u|^2*u,
 %
-%    on [-pi pi] from t=0 to t=18, with initial condition
+%    on [-pi pi] from t=0 to t=20, with initial condition
 %
 %       u0(x) = 2*B^2/(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A,
-%           with A=2 and B=1.
+%           with A=1 and B=1.
 %
-%    The movie plots the absolute value of u.
+%    The movie plots the real value of u.
 %
 % Example 10: PDE specified by a SPINOP
 %
@@ -236,7 +235,7 @@ if ( strcmpi(pdechar, 'AC') == 1 )
     N = 256;
 elseif ( strcmpi(pdechar, 'Burg') == 1 )
     dt = 5e-3;
-    N = 1024;
+    N = 512;
 elseif ( strcmpi(pdechar, 'BZ') == 1 )
     dt = 1e-2;
     N = 256;
@@ -245,20 +244,22 @@ elseif ( strcmpi(pdechar, 'CH') == 1 )
     N = 256;
 elseif ( strcmpi(pdechar, 'GS') == 1 )
     dt = 5;
-    N = 256;
+    N = 512;
 elseif ( strcmpi(pdechar, 'KdV') == 1 )
     dt = 3e-6;
-    N = 256;
+    N = 512;
 elseif ( strcmpi(pdechar, 'KS') == 1 )
     dt = 5e-2;
     N = 256;
 elseif ( strcmpi(pdechar, 'Niko') == 1 )
-    dt = 1e-1;
+    dt = 5e-2;
     N = 256;
 elseif ( strcmpi(pdechar, 'NLS') == 1 )
-    dt = 1.5e-3;
+    dt = 1e-3;
     N = 256;
-    pref.dataplot = 'abs';
+    pref.dataplot = 'real';
+    pref.Ylim = [-2 3];
+    pref.iterplot = 200;
 end
 
 end

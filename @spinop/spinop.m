@@ -130,7 +130,7 @@ end
             L = @(u) 1e-3*diff(u, 2);
             N = @(u) -.5*diff(u.^2);
             dom = [-1 1];
-            tspan = [0 15];
+            tspan = [0 20];
             u0 = chebfun('(1-x.^2).*exp(-30.*(x+1/2).^2)', dom, 'trig');
             
         % Belousov-Zhabotinsky equation:
@@ -140,7 +140,7 @@ end
             dom = [-1 1];
             tspan = [0 30];
             u01 = chebfun(@(x) exp(-100*(x+.5).^2), dom, 'trig');
-            u02 = chebfun(@(x) exp(-100*(x).^2), dom, 'trig');
+            u02 = chebfun(@(x) exp(-100*x.^2), dom, 'trig');
             u03 = chebfun(@(x) exp(-100*(x-.5).^2), dom, 'trig');
             u0 = [u01; u02; u03];
             
@@ -194,8 +194,8 @@ end
             L = @(u) 1i*diff(u, 2);
             N = @(u) 1i*abs(u).^2.*u;
             dom = [-pi pi];
-            tspan = [0 18];
-            A = 2; B = 1;
+            tspan = [0 20];
+            A = 1; B = 1;
             u0 = @(x) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A;
             u0 = chebfun(u0, dom, 'trig');
              
