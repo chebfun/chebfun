@@ -904,12 +904,9 @@ try
             end
         end
         
-        % Try and transpose:
-        op = @(x) op(x).';
-        warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
-                ['Chebfun input should return a COLUMN array.\n', ...
-                 'Attempting to transpose.'])
-             
+        % Try and vectorize:
+        op = vectorCheck(op, dom, 1);
+
     elseif ( any(sv == 1) )
         % The operator always returns a scalar:
         op = @(x) repmat(op(x), length(x), 1);
