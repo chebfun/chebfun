@@ -1,4 +1,4 @@
-function vals = fastSphereEval(f, lambda, theta )
+function vals = fastSphereEval(f, lambda, theta)
 %FASTSPHEREEVAL     Fast evaluation of a spherefun
 %   VALS = FASTSPHEREEVAL(F, LAMBDA, THETA) evaluates the spherefun F at the
 %   points (LAMBDA, THETA), where LAMBDA is longitude, with -pi<=LAMBA<=pi, and
@@ -66,7 +66,7 @@ er = n*(lambda-xj);
 gam = norm(er, inf);
 % K2 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
 K2 = 15;
-U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) ).';
+U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) );
 V2 = chebT(K2-1, 2*nn'/n);
 
 % Business end of the transform. (Everything above could be considered
@@ -88,7 +88,7 @@ YY = permute(FFT_cols,[3 2 1]);
 % Convert to cell for speed:
 X = cell(n,1);
 for k = 1:n
-    X{k} = XX(:,:,k);
+    X{k} = XX(:,:,k).';
 end
 Y = cell(size(YY,3),1);
 for k = 1:m
@@ -101,18 +101,26 @@ end
 
 % Do only unique multiplications:
 [c, ~, ic] = unique([ii, jj], 'rows');
-YX = cell(size(c,1), 1);
 Y = Y(c(:,1));
 X = X(c(:,2));
 vals = zeros(M, N);
-for idx = 1:size(c,1)
-    YX{idx} = Y{idx} * X{idx};
+% Determine wthe (ii,jj) values that do the same multiplications involving
+% Y and X so we can vectorize these operations.
+[srt_ic,idic] = sort(ic);
+breaks = find(diff(srt_ic));
+cnt = 1;
+ov = ones(rk,1);
+for idx = 1:size(c,1)-1
+    % Get the (ii,jj) values that use the same X and Y.
+    kk = idic(cnt:breaks(idx));
+    % Do the inner product:
+    vals(kk) = ((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}))*ov;
+    cnt = breaks(idx)+1;
 end
-
-% Recover A:
-for idx = 1:M*N
-   vals(idx) = U1(idx,:) * (YX{ic(idx)} * U2(:,idx));
-end
+% Do the last set of values.
+idx = size(c,1);
+kk = idic(cnt:end);
+vals(kk) = ((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}))*ov;
 
 end
 

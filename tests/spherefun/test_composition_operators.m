@@ -15,7 +15,7 @@ y = spherefun(@(x,y,z) y);
 z = spherefun(@(x,y,z) z);
 exact = @(x,y,z) (cos(x.*y) + sin(x.*y) + z -.1).*sin(z.*(x-.1).*(y+.4)); 
 g = spherefun(@(x,y,z) exact(x,y,z)); 
-pass(1) = ( norm( g - f.*sin(z.*(x-.1).*(y+.4)) ) < tol );
+pass(1) = ( norm( g - f.*sin(z.*(x-.1).*(y+.4)) ) < 2*tol );
 
 % Cosine
 exact = @(x,y,z) cos(cos(x.*y) + sin(x.*y) + z -.1); 

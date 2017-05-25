@@ -43,19 +43,22 @@ end
 %     return
 % end
 
-% f is bandlimited of degree (m,n) so its rotation will be bandlimited will
-% limit at most max(m,n). This follows from spherical harmonic theory as th
-% rotation of a spherical harmonic of degree l is of degree l, only the order
-% will change. The degree l is given by the bandlimit n, while the order is
-% given by the bandlimit of m. Numerically, we need 2*max(m,n). Why?
-n = 2*max(m,n);             % Using this sampling we should exactly recover the rotated f.
-n = n + mod(n,2);           % Number of columns must be even.
-m = n/2 + 1 - mod(n/2,2);   % Number of rows must be odd
+% f is bandlimited of degree (n,m) so its rotation will be bandlimited will
+% limit at most max(n,m). This follows from spherical harmonic theory as
+% the rotation of a spherical harmonic of degree l is of degree l, only the
+% order will change. The degree l is given by the bandlimit m, while the
+% order is given by the bandlimit of n.
+n = max(m,n);             % Using this sampling we should exactly recover the rotated f.
+m = n + mod(n,2);         % Number of columns must be even.
+% Set the number of rows in the sampled grid equal to n/2+2 so that the 
+% doubled up grid will have n rows (n/2+2 because the pole is included in
+% the sampled grid, and the doubled up grid does not contain -pi).
+n = ceil(n/2)+2;
 
 % Sampling grid.
-[lam,th] = meshgrid(trigpts(n,[-pi pi]),linspace(0,pi,m));
+[lam,th] = meshgrid(trigpts(m,[-pi pi]),linspace(0,pi,n));
 lam(1,:) = 0;
-lam(m,:) = 0;
+lam(n,:) = 0;
 x = cos(lam).*sin(th);
 y = sin(lam).*sin(th);
 z = cos(th);
@@ -80,11 +83,6 @@ if ( strcmpi(method, 'nufft') )     % NUFFT evaluation using 2D NUFFT
     g = real( fastSphereEval(f, lam, th) );
     f = spherefun( g );
     
-elseif ( strcmpi(method, 'nufft2') ) % FEVAL evalutation using Horner
-   
-    g = real( fastSphereEval2(f, lam, th) );
-    f = spherefun( g );
-
 elseif ( strcmpi(method, 'feval') ) % FEVAL evalutation using Horner
    
     g = feval(f, lam, th);
@@ -95,6 +93,9 @@ else
     error('Unrecognized algorithm.')
 
 end
+
+% Simplify the result
+f = simplify(f);
 
 end
 
