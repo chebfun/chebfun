@@ -119,11 +119,6 @@ for idx = 1:size(c,1)
     vals(kk) = sum((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}), 2);
     cnt = breaks(idx)+1;
 end
-
-% Do the last set of values.
-idx = size(c,1);
-kk = idic(cnt:end);
-vals(kk) = ((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}))*ov;
 end
 
 function cfs = besselCoeffs(K, gam)
