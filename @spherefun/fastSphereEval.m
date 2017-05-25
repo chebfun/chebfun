@@ -1,4 +1,4 @@
-function vals = fastSphereEval(f, lambda, theta )
+function vals = fastSphereEval(f, lambda, theta)
 %FASTSPHEREEVAL     Fast evaluation of a spherefun
 %   VALS = FASTSPHEREEVAL(F, LAMBDA, THETA) evaluates the spherefun F at the
 %   points (LAMBDA, THETA), where LAMBDA is longitude, with -pi<=LAMBA<=pi, and
@@ -10,7 +10,7 @@ function vals = fastSphereEval(f, lambda, theta )
 %
 %   The algorithm in this MATLAB script is based on the paper:
 %    [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier transform
-%    based on low rank approximation", submitted, 2016.
+%    based on low rank approximation", submitted, 2017.
 %
 % See also SPHEREFUN/FEVAL and SPHEREFUN/ROTATE.
 
@@ -34,7 +34,7 @@ n = n + (1-mod(n,2));
 
 % Low rank approximation for the coefficients of F:
 [C, D, R] = coeffs2(f, n, m);
-rk = size(D,1);
+rk = size(D, 1);
 
 % Make columns:
 lambda = lambda(:);
@@ -66,7 +66,7 @@ er = n*(lambda-xj);
 gam = norm(er, inf);
 % K2 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
 K2 = 15;
-U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) ).';
+U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) );
 V2 = chebT(K2-1, 2*nn'/n);
 
 % Business end of the transform. (Everything above could be considered
@@ -74,12 +74,14 @@ V2 = chebT(K2-1, 2*nn'/n);
 FFT_cols = zeros(m,rk,K1);
 for s = 1:K1
     % Transform in the "col" variable:
-    FFT_cols(:,:,s) = fft( ifftshift(bsxfun(@times, C, V1(:,s)),1) );
+    CV1 = bsxfun(@times, C, V1(:,s));
+    FFT_cols(:,:,s) = fft( ifftshift(CV1, 1) );
 end
 FFT_rows = zeros(rk,n,K2);
 for r = 1:K2
     % Transform in the "row" variable:
-    FFT_rows(:,:,r) = D*fft(ifftshift(bsxfun(@times,R,V2(:,r)).',2),[],2);
+    RV2 = bsxfun(@times, R, V2(:,r)).';
+    FFT_rows(:,:,r) = D*fft( ifftshift(RV2,2), [], 2 );
 end
 
 % Permute:
@@ -88,7 +90,7 @@ YY = permute(FFT_cols,[3 2 1]);
 % Convert to cell for speed:
 X = cell(n,1);
 for k = 1:n
-    X{k} = XX(:,:,k);
+    X{k} = XX(:,:,k).';
 end
 Y = cell(size(YY,3),1);
 for k = 1:m
@@ -98,22 +100,25 @@ end
 % Spread the love out from equispaced points to actual evaluation points. Do
 % this K1*K2 times for an accurate transform:
 [ii, jj] = ind2sub([m,n], yt(:)+m*(xt(:)-1));
-
 % Do only unique multiplications:
 [c, ~, ic] = unique([ii, jj], 'rows');
-YX = cell(size(c,1), 1);
 Y = Y(c(:,1));
 X = X(c(:,2));
+
+% Determine the (ii,jj) values that do the same multiplications involving
+% Y and X so we can vectorize these operations.
+[srt_ic, idic] = sort(ic);
+breaks = find(diff(srt_ic)); 
+breaks(end+1) = numel(idic); % Include the endpoint
+cnt = 1;
+vals = zeros(M, N); % Allocate storage for output.
 for idx = 1:size(c,1)
-    YX{idx} = Y{idx} * X{idx};
+    % Get the (ii,jj) values that use the same X and Y.
+    kk = idic(cnt:breaks(idx));
+    % Do the inner product:
+    vals(kk) = sum((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}), 2);
+    cnt = breaks(idx)+1;
 end
-
-% Recover A:
-vals = zeros(M, N);
-for idx = 1:M*N
-   vals(idx) = U1(idx,:) * (YX{ic(idx)} * U2(:,idx));
-end
-
 end
 
 function cfs = besselCoeffs(K, gam)
