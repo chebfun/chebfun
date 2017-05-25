@@ -74,12 +74,14 @@ V2 = chebT(K2-1, 2*nn'/n);
 FFT_cols = zeros(m,rk,K1);
 for s = 1:K1
     % Transform in the "col" variable:
-    FFT_cols(:,:,s) = fft( ifftshift(bsxfun(@times, C, V1(:,s)),1) );
+    CV1 = bsxfun(@times, C, V1(:,s));
+    FFT_cols(:,:,s) = fft( ifftshift(CV1, 1) );
 end
 FFT_rows = zeros(rk,n,K2);
 for r = 1:K2
     % Transform in the "row" variable:
-    FFT_rows(:,:,r) = D*fft(ifftshift(bsxfun(@times,R,V2(:,r)).',2),[],2);
+    RV2 = bsxfun(@times, R, V2(:,r)).';
+    FFT_rows(:,:,r) = D*fft( ifftshift(RV2,2), [], 2 );
 end
 
 % Permute:
@@ -98,18 +100,17 @@ end
 % Spread the love out from equispaced points to actual evaluation points. Do
 % this K1*K2 times for an accurate transform:
 [ii, jj] = ind2sub([m,n], yt(:)+m*(xt(:)-1));
-
 % Do only unique multiplications:
 [c, ~, ic] = unique([ii, jj], 'rows');
 Y = Y(c(:,1));
 X = X(c(:,2));
-vals = zeros(M, N);
-% Determine wthe (ii,jj) values that do the same multiplications involving
+% Determine the (ii,jj) values that do the same multiplications involving
 % Y and X so we can vectorize these operations.
-[srt_ic,idic] = sort(ic);
+[srt_ic, idic] = sort(ic);
 breaks = find(diff(srt_ic)); 
 breaks(end+1) = numel(idic); % Include the endpoint
 cnt = 1;
+vals = zeros(M, N); % Allocate storage for output.
 for idx = 1:size(c,1)
     % Get the (ii,jj) values that use the same X and Y.
     kk = idic(cnt:breaks(idx));
