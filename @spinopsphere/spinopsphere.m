@@ -100,7 +100,7 @@ end
             
         % Ginzburg-Landau equation:
         elseif ( strcmpi(pdechar, 'GL') == 1 )
-            L = @(u) 5e-4*lap(u);
+            L = @(u) 1e-3*lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
             u0 = randnfunsphere(.1);
             u0 = u0/norm(u0, inf);

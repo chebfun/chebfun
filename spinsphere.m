@@ -51,7 +51,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    solves the Ginzburg-Landau equation
 %
-%        u_t = 5e-4*laplacian(u) + u - (1+1.5i)*u*|u|^2,
+%        u_t = 1e-3*laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
 %    on the sphere from t=0 to t=100 with a RANDNFUNSPHERE initial condition.   
 %    The movie plots the real part of u.
