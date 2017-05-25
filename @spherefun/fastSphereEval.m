@@ -107,20 +107,16 @@ vals = zeros(M, N);
 % Determine wthe (ii,jj) values that do the same multiplications involving
 % Y and X so we can vectorize these operations.
 [srt_ic,idic] = sort(ic);
-breaks = find(diff(srt_ic));
+breaks = find(diff(srt_ic)); 
+breaks(end+1) = numel(idic); % Include the endpoint
 cnt = 1;
-ov = ones(rk,1);
-for idx = 1:size(c,1)-1
+for idx = 1:size(c,1)
     % Get the (ii,jj) values that use the same X and Y.
     kk = idic(cnt:breaks(idx));
     % Do the inner product:
-    vals(kk) = ((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}))*ov;
+    vals(kk) = sum((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}), 2);
     cnt = breaks(idx)+1;
 end
-% Do the last set of values.
-idx = size(c,1);
-kk = idic(cnt:end);
-vals(kk) = ((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}))*ov;
 
 end
 
