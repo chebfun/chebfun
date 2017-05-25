@@ -10,7 +10,7 @@ function vals = fastSphereEval(f, lambda, theta)
 %
 %   The algorithm in this MATLAB script is based on the paper:
 %    [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier transform
-%    based on low rank approximation", submitted, 2016.
+%    based on low rank approximation", submitted, 2017.
 %
 % See also SPHEREFUN/FEVAL and SPHEREFUN/ROTATE.
 
@@ -34,7 +34,7 @@ n = n + (1-mod(n,2));
 
 % Low rank approximation for the coefficients of F:
 [C, D, R] = coeffs2(f, n, m);
-rk = size(D,1);
+rk = size(D, 1);
 
 % Make columns:
 lambda = lambda(:);
@@ -104,7 +104,8 @@ end
 Y = Y(c(:,1));
 X = X(c(:,2));
 vals = zeros(M, N);
-% Determine wthe (ii,jj) values that do the same multiplications involving
+
+% Determine the (ii,jj) values that do the same multiplications involving
 % Y and X so we can vectorize these operations.
 [srt_ic,idic] = sort(ic);
 breaks = find(diff(srt_ic));
@@ -117,6 +118,7 @@ for idx = 1:size(c,1)-1
     vals(kk) = ((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}))*ov;
     cnt = breaks(idx)+1;
 end
+
 % Do the last set of values.
 idx = size(c,1);
 kk = idic(cnt:end);
