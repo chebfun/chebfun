@@ -98,7 +98,7 @@ function [uout, tout] = spin(varargin)
 %       u_t = diff(u,2) + 2e-2*(1-u) - u*v^2,
 %       v_t = 1e-2*diff(u,2) - 8.62e-2*v + u*v^2,
 %
-%    on [-50 50] from t=0 to t=12000, with initial condition
+%    on [-50 50] from t=0 to t=8000, with initial condition
 %
 %       u0(x) = 1 - 1/2*sin(pi*(x-L)/(2*L))^100,
 %       v0(x) = 1/4*sin(pi*(x-L)/(2*L))^100, with L=50.
@@ -124,7 +124,7 @@ function [uout, tout] = spin(varargin)
 %
 %       u_t = -u*u_x - u_xx - u_xxxx,
 %
-%    on [0 32*pi] from t=0 to t=300, with intial condition
+%    on [0 32*pi] from t=0 to t=200, with intial condition
 %
 %       u0(x) = cos(x/16)*(1 + sin(x/16)).
 %
@@ -157,7 +157,7 @@ function [uout, tout] = spin(varargin)
 %
 % Example 10: PDE specified by a SPINOP
 %
-%       dom = [0 32*pi]; tspan = [0 300];
+%       dom = [0 32*pi]; tspan = [0 200];
 %       S = spinop(dom, tspan);
 %       S.lin = @(u) -diff(u,2)-diff(u,4);
 %       S.nonlin = @(u) -.5*diff(u.^2);
@@ -243,17 +243,19 @@ elseif ( strcmpi(pdechar, 'CH') == 1 )
     dt = 2e-2;
     N = 256;
 elseif ( strcmpi(pdechar, 'GS') == 1 )
-    dt = 5;
+    dt = 2;
     N = 512;
 elseif ( strcmpi(pdechar, 'KdV') == 1 )
     dt = 3e-6;
     N = 512;
 elseif ( strcmpi(pdechar, 'KS') == 1 )
-    dt = 5e-2;
+    dt = 1e-2;
     N = 256;
+    pref.iterplot = 100;
 elseif ( strcmpi(pdechar, 'Niko') == 1 )
-    dt = 5e-2;
+    dt = 2.5e-2;
     N = 256;
+    pref.iterplot = 40;
 elseif ( strcmpi(pdechar, 'NLS') == 1 )
     dt = 1e-3;
     N = 256;

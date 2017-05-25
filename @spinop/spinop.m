@@ -158,7 +158,7 @@ end
             N = @(u,v) [2e-2*(1 - u) - u.*v.^2; -8.62e-2*v + u.*v.^2];
             G = 50;
             dom = G*[-1 1];
-            tspan = [0 12000];
+            tspan = [0 8000];
             u01 = chebfun(@(x) 1 - 1/2*sin(pi*(x-G)/(2*G)).^100, dom, 'trig');
             u02 = chebfun(@(x) 1/4*sin(pi*(x-G)/(2*G)).^100, dom, 'trig');
             u0 = [u01; u02];
@@ -178,7 +178,7 @@ end
             L = @(u) -diff(u, 2) - diff(u, 4);
             N = @(u) -.5*diff(u.^2);
             dom = [0 32*pi];
-            tspan = [0 300];
+            tspan = [0 200];
             u0 = chebfun('cos(x/16).*(1 + sin((x-1)/16))', dom, 'trig');
             
         % Nikolaevskiy equation:
