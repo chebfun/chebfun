@@ -1,4 +1,4 @@
-function vals = fastSphereEval(f, lambda, theta )
+function vals = fastSphereEval(f, lambda, theta)
 %FASTSPHEREEVAL     Fast evaluation of a spherefun
 %   VALS = FASTSPHEREEVAL(F, LAMBDA, THETA) evaluates the spherefun F at the
 %   points (LAMBDA, THETA), where LAMBDA is longitude, with -pi<=LAMBA<=pi, and
@@ -23,9 +23,6 @@ function vals = fastSphereEval(f, lambda, theta )
 lambda = -lambda/(2*pi);
 theta  = -theta/(2*pi);
 
-% Working tolerance:
-% tol = 10*eps; % This is hardcoded in choice of K1 and K2 below.
-
 % Get size of evaluation points and Fourier coefficients:
 [M, N] = size(lambda);
 [n, m] = length(f);
@@ -38,7 +35,7 @@ rk = size(D,1);
 
 % Make columns:
 lambda = lambda(:);
-theta = theta(:);
+theta  = theta(:);
 
 % Assign each evaluation point to its closest point on a 2D equispaced grid:
 xj = round(n*lambda)/n;
@@ -55,7 +52,6 @@ nn = -floor(n/2):floor(n/2);
 % Find low rank approximation to Ay = U1*V1.':
 er = m*(theta-yj);
 gam = norm(er, inf);
-% K1 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)))
 K1 = 15;
 U1 = chebT(K1-1,er/gam) * besselCoeffs(K1, gam);
 V1 = chebT(K1-1, 2*mm'/m);
@@ -64,7 +60,6 @@ V1 = chebT(K1-1, 2*mm'/m);
 % Find low rank approximation to Ax = U2*V2.':
 er = n*(lambda-xj);
 gam = norm(er, inf);
-% K2 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
 K2 = 15;
 U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) ).';
 V2 = chebT(K2-1, 2*nn'/n);
@@ -74,7 +69,7 @@ V2 = chebT(K2-1, 2*nn'/n);
 FFT_cols = zeros(m,rk,K1);
 for s = 1:K1
     % Transform in the "col" variable:
-    FFT_cols(:,:,s) = fft( ifftshift(bsxfun(@times, C, V1(:,s)),1) );
+    FFT_cols(:,:,s) = fft(ifftshift(bsxfun(@times, C, V1(:,s)),1) );
 end
 FFT_rows = zeros(rk,n,K2);
 for r = 1:K2
@@ -132,9 +127,12 @@ end
 function T = chebT(n, x)
 % Evaluate Chebyshev polynomials of degree 0,...,n at points in x. Use the
 % three-term recurrence relation:
-N = size(x, 1);
+N = size(x,1);
 T = zeros(N, n+1);
 T(:,1) = 1;
+if ( n == 1 )
+    return
+end
 T(:,2) = x;
 twoX = 2*x;
 for k = 2:n

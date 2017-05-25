@@ -71,8 +71,7 @@ function [f, pfun] = nufft1(c, omega, tol)
 %         tilde{F}_1*c = \tilde{F}_2^T*c.
 
 N = size(omega,1);
-[~, t, gam] = algorithmicParameters(omega/N, size(c,1));
-K = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
+[~, t, ~, K] = algorithmicParameters(omega/N, size(c,1), tol);
 [u, v] = constructAK(omega/N, (0:N-1)', K);
 
     function pc = p(c)
@@ -87,14 +86,13 @@ f = p(c);
 pfun = @p;
 end
 
-function [f, pfun] = nufft2( c, x, tol )
+function [f, pfun] = nufft2(c, x, tol)
 %NUFFT2    Compute the nonuniform FFT of type 2
 % This is equivalent to tilde{F}_2*c. We write
 %          tilde{F}_2*c \approx (A_K.*F)*c,
 % where A_K is a rank K matrix and F is the DFT matrix.
 
-[~, t, gam] = algorithmicParameters(x, size(c,1));
-K = ceil(5*(gam+eps)*exp(lambertw(log(10/tol)/(gam+eps)/7)));
+[~, t, ~, K] = algorithmicParameters(x, size(c,1), tol);
 [u, v] = constructAK(x, (0:size(c,1)-1)', K);
 
     function pc = p(c)
@@ -113,8 +111,7 @@ function [f, p] = nufft3(c, x, omega, tol)
 % This is equivalent to tilde{F}_3*c. 
 
 N = size(x, 1); 
-[s, t, gam] = algorithmicParameters(x, size(c,1));
-K = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7))); % Optimal K
+[s, t, ~, K] = algorithmicParameters(x, size(c,1), tol);
 t_vec = t - 1; 
 
 % Construct low rank approximation to A.*B, see [1]: 
@@ -138,14 +135,22 @@ end
 p = [];
 end
 
-function [s, t, gam] = algorithmicParameters(x, N)
+function [s, t, gam, K] = algorithmicParameters(x, N, tol)
 % Find algorithmic parameters:
 %  s/N = closest equispaced gridpoint to x
 %  t/N = closest equispaced FFT sample to x
 %  gam = perturbation parameter
+%  K   = rank parameter
 s = round(N*x);
 t = mod(s, N) + 1;
 gam = norm(N*x - s, inf);
+if ( nargout > 3 )
+	% lw = lambertw(log(10/tol)/gam/7); % Requires symbolic toolbox.
+    % Instead Use the asymptotic approximation [NIST, (4.13.10)]
+    xi = log(log(10/tol)/gam/7);
+    lw = xi - log(xi) + log(xi)/xi + .5*log(xi)^2/xi^2 - log(xi)/xi^2;
+    K = ceil(5*gam*exp(lw));
+end
 end
 
 function [u, v] = constructAK(x, omega, K)
@@ -165,7 +170,7 @@ function cfs = besselCoeffs(K, gam)
 % the domain [-gam, gam]x[0,2*pi] are given by Lemma A.2 of Townsend's DPhil
 % thesis.
 arg = -gam*pi/2;
-[pp,qq] = meshgrid(0:K-1);
+[pp, qq] = meshgrid(0:K-1);
 cfs = 4*(1i).^qq.*besselj((pp+qq)/2,arg).*besselj((qq-pp)/2, arg);
 cfs(2:2:end,1:2:end) = 0;
 cfs(1:2:end,2:2:end) = 0;

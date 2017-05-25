@@ -1,4 +1,4 @@
-function f = nufft2( c, x, y, tol)
+function f = nufft2(c, x, y, tol)
 %CHEBFUN.NUFFT2   Two-dimensional nonuniform fast Fourier transform.
 %   F = CHEBFUN.NUFFT2( C ) is the same as fft2( C ).
 %
@@ -50,7 +50,11 @@ yt = mod(round(m*y),m)+1;
 % Find low rank approximation to Ay = U1*V1.': 
 er  = m*(y-yj);
 gam = norm(er, inf); 
-K1  = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
+% lw = lambertw(log(10/tol)/gam/7); % Requires symbolic toolbox.
+% Instead Use the asymptotic approximation [NIST, (4.13.10)]
+xi = log(log(10/tol)/gam/7);
+lw = xi - log(xi) + log(xi)/xi + .5*log(xi)^2/xi^2 - log(xi)/xi^2;
+K1 = ceil(5*gam*exp(lw));
 scl = exp(-1i*pi*er);
 U1  = repmat(scl,1,K1).*(chebT(K1-1,er/gam)*besselCoeffs(K1, gam));
 V1  = chebT(K1-1, 2*(0:m-1)'/m-1);
@@ -59,7 +63,11 @@ V1  = chebT(K1-1, 2*(0:m-1)'/m-1);
 % Find low rank approximation to Ay = U1*V1.': 
 er  = n*(x-xj);
 gam = norm(er, inf); 
-K2  = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
+% lw = lambertw(log(10/tol)/gam/7); % Requires symbolic toolbox.
+% Instead Use the asymptotic approximation [NIST, (4.13.10)]
+xi = log(log(10/tol)/gam/7);
+lw = xi - log(xi) + log(xi)/xi + .5*log(xi)^2/xi^2 - log(xi)/xi^2;
+K2 = ceil(5*gam*exp(lw));
 scl = exp(-1i*pi*er);
 U2  = repmat(scl,1,K2).*(chebT(K2-1,er/gam)*besselCoeffs(K2, gam));
 V2  = chebT(K2-1, 2*(0:n-1)'/n-1);
