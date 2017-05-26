@@ -177,7 +177,7 @@ elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
 elseif ( strcmpi(pdechar, 'SH3') == 1 )
     dt = 1;
     N = 32;
-    pref.Clim = [-.4 .4];
+    pref.Clim = [-.4 .5];
     pref.iterplot = 4;
     pref.Nplot = 64;
 end
