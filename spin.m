@@ -5,8 +5,8 @@ function [uout, tout] = spin(varargin)
 %   UOUT = SPIN(PDECHAR) solves the PDE specified by the string PDECHAR, and
 %   plots a movie of the solution as it computes it; it is a demo mode.
 %   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'AC' for Allen-Cahn equation,
-%   'KS' for Kuramoto-Sivashinsky equation and 'KdV' for Korteweg-de Vries
+%   beautiful movies. Strings available include 'AC' for the Allen-Cahn equation,
+%   'KS' for the Kuramoto-Sivashinsky equation and 'KdV' for the Korteweg-de Vries
 %   equation. Many other PDEs are available, see Remark 1 and Examples 1-9. The
 %   output UOUT is a CHEBFUN corresponding to the solution at the final time
 %   (a CHEBMATRIX for systems of equations, each row representing one variable).
@@ -26,14 +26,14 @@ function [uout, tout] = spin(varargin)
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
 %
-%    - 'AC' for Allen-Cahn equation,
-%    - 'Burg' for viscous Burgers equation,
-%    - 'BZ' for Belousov-Zhabotinsky equation,
-%    - 'CH' for Cahn-Hilliard equation,
-%    - 'GS' for Gray-Scott equations,
-%    - 'KdV' for Korteweg-de Vries equation,
-%    - 'KS' for Kuramoto-Sivashinsky equation,
-%    - 'Niko' for Nikolaevskiy equation,
+%    - 'AC' for the Allen-Cahn equation,
+%    - 'Burg' for the viscous Burgers equation,
+%    - 'BZ' for the Belousov-Zhabotinsky equation,
+%    - 'CH' for the Cahn-Hilliard equation,
+%    - 'GS' for the Gray-Scott equations,
+%    - 'KdV' for the Korteweg-de Vries equation,
+%    - 'KS' for the Kuramoto-Sivashinsky equation,
+%    - 'Niko' for the Nikolaevskiy equation,
 %    - 'NLS' for the focusing nonlinear Schroedinger equation.
 %
 % Example 1: Allen-Cahn equation (metastable solutions)
