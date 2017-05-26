@@ -113,9 +113,22 @@ end
             u0 = randnfun2(4, dom, 'trig');
             u0 = u0/norm(u0, inf);
             
-        % Gray-Scott equations:
+        % Gray-Scott equations (1):
         elseif ( strcmpi(pdechar, 'GS2') == 1 )
             L = @(u,v) [3e-4*lap(u); 1.5e-4*lap(v)];
+            N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
+            G = 3;
+            dom = G*[0 1 0 1];
+            tspan = [0 6000];
+            u01 = @(x,y) 1 - exp(-100*((x-G/2.05).^2 + (y-G/2.05).^2));
+            u01 = chebfun2(u01, dom, 'trig');
+            u02 = @(x,y) exp(-100*((x-G/2).^2 + 2*(y-G/2).^2));
+            u02 = chebfun2(u02, dom, 'trig');
+            u0 = [u01; u02];
+            
+        % Gray-Scott equations (2):
+        elseif ( strcmpi(pdechar, 'GS2spots') == 1 )
+            L = @(u,v) [3e-4*lap(u); 0.5e-4*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
             G = 3;
             dom = G*[0 1 0 1];

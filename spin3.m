@@ -56,7 +56,7 @@ function [uout, tout] = spin3(varargin)
 %       u0(x,y,z) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2 + (z-G/2.15)^2)),
 %       v0(x,y,z) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)), with G=2.
 %
-% Example 3: Schnakenberg equations (pattern formation - dots)
+% Example 3: Schnakenberg equations (pattern formation - spots)
 %
 %       u = spin3('Schnak3');
 %

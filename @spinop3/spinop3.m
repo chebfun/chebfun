@@ -115,7 +115,7 @@ end
             
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS3') == 1 )
-            L = @(u,v) [3e-4*lap(u); 1.5e-4*lap(v)];
+            L = @(u,v) [3e-4*lap(u); 0.5e-4*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
             G = 2;
             dom = G*[0 1 0 1 0 1];

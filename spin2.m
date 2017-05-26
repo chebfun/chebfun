@@ -27,7 +27,8 @@ function [uout, tout] = spin2(varargin)
 % Remark 1: Available (case-insensitive) strings PDECHAR are
 %
 %    - 'GL2' for Ginzburg-Landau equation,
-%    - 'GS2' for Gray-Scott equations,
+%    - 'GS2' for Gray-Scott equations (fingerprints),
+%    - 'GS2spots' for Gray-Scott equations (spots),
 %    - 'Schnak2' for Schnakenberg equations,
 %    - 'SH2' for Swift-Hohenberg equation.
 %
@@ -56,7 +57,21 @@ function [uout, tout] = spin2(varargin)
 %       u0(x,y) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2)),
 %       v0(x,y) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2)), with G=3.
 %
-% Example 3: Schnakenberg equations (pattern formation - dots)
+% Example 2 (bis): Gray-Scott equations (pattern formation - spots)
+%
+%       u = spin2('GS2spots');
+%
+%    solves the Gray-Scott equations
+%
+%       u_t = 3e-4*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
+%       v_t = 0.5e-4*laplacian(v) - 9.5e-2*v + u*v^2,
+%
+%    on [0 3]^2 from t=0 to t=6000, with initial condition
+%
+%       u0(x,y) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2)),
+%       v0(x,y) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2)), with G=3.
+%
+% Example 3: Schnakenberg equations (pattern formation - spots)
 %
 %       u = spin2('Schnak2');
 %
@@ -166,7 +181,13 @@ if ( strcmpi(pdechar, 'GL2') == 1 )
 elseif ( strcmpi(pdechar, 'GS2') == 1 )
     dt = 6;
     N = 64;
-    pref.Clim = [.3 .8 0 .35];
+    pref.Clim = [.3 .9 0 .35];
+    pref.iterplot = 5;
+    pref.Nplot = 128;
+elseif ( strcmpi(pdechar, 'GS2spots') == 1 )
+    dt = 6;
+    N = 64;
+    pref.Clim = [.15 .5 0 .6];
     pref.iterplot = 5;
     pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
