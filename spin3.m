@@ -163,7 +163,7 @@ if ( strcmpi(pdechar, 'GL3') == 1 )
     pref.iterplot = 2;
     pref.Nplot = 64;
 elseif ( strcmpi(pdechar, 'GS3') == 1 )
-    dt = 6;
+    dt = 5;
     N = 32;
     pref.Clim = [.3 .8 0 .35];
     pref.iterplot = 5;
