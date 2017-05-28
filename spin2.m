@@ -5,8 +5,8 @@ function [uout, tout] = spin2(varargin)
 %   UOUT = SPIN2(PDECHAR) solves the PDE specified by the string PDECHAR, and
 %   plots a movie of the solution as it computes it; it is a demo mode.
 %   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'GL2' for Ginzburg-Landau
-%   equation and 'GS2' for Gray-Scott equations. Many other PDEs are available,
+%   beautiful movies. Strings available include 'GL2' for the Ginzburg-Landau
+%   equation and 'GS2' for the Gray-Scott equations. Many other PDEs are available,
 %   see Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding
 %   to the solution at the final time (a CHEBMATRIX for systems of equations,
 %   each row representing one variable).
@@ -15,14 +15,22 @@ function [uout, tout] = spin2(varargin)
 %   points in each direction and time-step DT. It plots a movie of the solution
 %   as it computes it. See HELP/SPINOP2 and Example 5.
 %
-%   UOUT = SPIN2(S, N, DT, PREF) allows one to use the preferences specified by
-%   the SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.
-%
-%   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
-%   alternative to the previous syntax. See Example 6.
-%
 %   [UOUT, TOUT] = SPIN2(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
+%
+%   Users of SPIN2 will quickly find they want to vary aspects of the plotting.
+%   The fully general syntax for this involves using preferences specified by
+%   a SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.  However for
+%   many purposes it is most convenient to use the syntax
+%
+%   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...).
+%
+%   SPIN2(..., 'iterplot',4) plots only every 4th time step (for speed)
+%   SPIN2(..., 'Nplot', 256) plots frames of a 128x128 movie at double resolution
+%   SPIN2(..., 'dataplot', 'abs') plots absolute value, e.g. of a complex function
+%   SPIN2(..., 'Clim', [a b]) changes colorbar limits to [a b] 
+%   SPIN2(..., 'colormap', 'jet') changes the colormap
+%   SPIN2(..., 'view', [0 45]) changes the view angle from the default [0 90]
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
 %
@@ -38,10 +46,14 @@ function [uout, tout] = spin2(varargin)
 %
 %    solves the Ginzburg-Landau equation
 %
-%        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
+%       u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
 %    on [0 100]^2 from t=0 to t=100, with a RANDNFUN2 initial condition. 
-%    The movie plots the real part of u.
+%    The movie plots the real part of u.  For a movie of the absolute
+%    value of u rather than the real part, execute
+%
+%       S = spinop2('GL2');
+%       u = spin2(S, 128, 1e-1, 'dataplot', 'abs')
 %
 % Example 2: Gray-Scott equations (pattern formation - fingerprints)
 %
