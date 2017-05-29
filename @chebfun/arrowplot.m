@@ -48,17 +48,16 @@ else
     ystretch = 1;
 end
 
-% Did the user pass in markersize argument? This needs to be treated slightly
+% Did the user pass a markersize argument? This needs to be treated slightly
 % differently, as it's not officially an option for Matlab annotations, so we
-% workaround it by grabbing the value to pass to 'HeadLength' and 'HeadWidth'/
+% work around it by grabbing the value to pass to 'HeadLength' and 'HeadWidth'/
 findMS = find(strcmpi(varargin,'markersize'));
 if ~isempty(findMS)
     markerSize = varargin{findMS + 1};
     varargin(findMS:findMS+1) = [];
 else
-    markerSize = 7;
+    markerSize = 6;
 end
-
 
 % Evaluate the derivative of input CHEBFUNs to get slope information
 fp = diff(f);
@@ -86,9 +85,8 @@ else
     pp = plot(f,varargin{:});
 end
 
-
 % Loop through the pieces, and plot arrows at the end. Don't plot any arrows in
-% case where the CHEBFUN column is a zero chebfun:
+% the case where the CHEBFUN column is a zero chebfun:
 isz = iszero(f);
 for aCounter=1:length(fend)
     h(aCounter) = annotation('arrow','Visible','off');
@@ -103,7 +101,7 @@ for aCounter=1:length(fend)
 end
 
 % Return a handle to the graphic objects if method called with an output. Note
-% that we need to concat the lines in PP and arrows in H.
+% that we need to concatenate the lines in PP and arrows in H.
 if ( nargout == 1)
     varargout{1} = [pp(:); h(:)];
 end
