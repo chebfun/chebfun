@@ -57,4 +57,11 @@ f = @(z) log(5-z)./(1+z.^2);
 r = aaa(f(Z),Z);
 pass(15) = ( abs(r(0) - f(0)) < tol );
 
+% Test behavior for string inputs:
+Z = linspace(-1,1,10001);
+r1 = aaa(@(x) abs(x), Z);
+r2 = aaa('abs(x)', Z);
+x = -1 +2*rand(1);
+pass(16) = ( r1(x) == r2(x) );
+
 end

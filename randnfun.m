@@ -1,25 +1,25 @@
 function f = randnfun(varargin)
 %RANDNFUN   Random smooth function
-%   F = RANDNFUN(DT) returns a smooth CHEBFUN on [-1,1] with maximum
-%   frequency about 2pi/DT and standard normal distribution N(0,1)
+%   F = RANDNFUN(LAMBDA) returns a smooth CHEBFUN on [-1,1] with maximum
+%   frequency about 2pi/LAMBDA and standard normal distribution N(0,1)
 %   at each point.  F can be regarded as one sample path of a Gaussian
-%   process.  It is obtained by calling RANDNFUN(DT, 'trig') on an interval
-%   of length about 20% longer and restricting the result to [-1,1].
+%   process.  It is obtained by calling RANDNFUN(LAMBDA, 'trig') on an
+%   interval about 20% longer and restricting the result to [-1,1].
 %
-%   RANDNFUN(DT, DOM) returns a result with domain DOM = [A, B].
+%   RANDNFUN(LAMBDA, DOM) returns a result with domain DOM = [A, B].
 %
-%   RANDNFUN(DT, N) returns a quasimatrix with N independent columns.
+%   RANDNFUN(LAMBDA, N) returns a quasimatrix with N independent columns.
 %
-%   RANDNFUN(DT, 'norm') normalizes the output by dividing it
-%   by SQRT(DT), so that white noise is approached in the limit DT -> 0.
+%   RANDNFUN(LAMBDA, 'norm') normalizes the output by dividing it by
+%   SQRT(LAMBDA), so white noise is approached in the limit LAMBDA -> 0.
 %
-%   RANDNFUN(DT, 'trig') returns a random periodic function.  This
-%   is defined by a a finite Fourier series with independent normally
+%   RANDNFUN(LAMBDA, 'trig') returns a random periodic function.  This
+%   is defined by a finite Fourier series with independent normally
 %   distributed coefficients of equal variance.
 %
-%   F = RANDNFUN() uses the default value DT = 1.  Combinations such
-%   as RANDNFUN(DOM), RANDNFUN('norm', DT) are allowed so long as
-%   DT, if present, precedes N, if present.
+%   RANDNFUN() uses the default value LAMBDA = 1.  Combinations such
+%   as RANDNFUN(DOM), RANDNFUN('norm', LAMBDA) are allowed so long as
+%   LAMBDA, if present, precedes N, if present.
 %
 % Examples:
 %
@@ -30,39 +30,39 @@ function f = randnfun(varargin)
 %
 %   f = randnfun(0.1,'norm',[0 10]); plot(cumsum(f))
 %
-% See also RANDNFUN2.
+% See also RANDNFUN2, RANDNFUNSPHERE, RANDNFUNDISK.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-[dt, n, dom, normalize, trig] = parseInputs(varargin{:});
+[lambda, n, dom, normalize, trig] = parseInputs(varargin{:});
 
 if trig    % periodic case: random Fourier series
 
-    m = round(diff(dom)/dt);
+    m = round(diff(dom)/lambda);
     c = randn(2*m+1, n) + 1i*randn(2*m+1, n);
     c = (c + flipud(conj(c)))/2;
     f = chebfun(c/sqrt(2*m+1), dom, 'trig', 'coeffs');
     if normalize
-        f = f/sqrt(dt);
+        f = f/sqrt(lambda);
     end
 
 else       % nonperiodic case: call periodic case and restrict
 
-    if dt == inf
-        f = chebfun(randn, dom);    % random constant function
+    if lambda == inf    
+        f = chebfun(randn, dom);        % random constant function
         if normalize
-            f = f/sqrt(dt);         % zero function
+            f = f/sqrt(lambda);         % zero function
         end
         return
     end
 
-    m = round(1.2*diff(dom)/dt+2);
-    dom2 = dom(1) + [0 m*dt];
+    m = round(1.2*diff(dom)/lambda+2);
+    dom2 = dom(1) + [0 m*lambda];
     if normalize
-        f = randnfun(dt, n, dom2, 'norm', 'trig');
+        f = randnfun(lambda, n, dom2, 'norm', 'trig');
     else
-        f = randnfun(dt, n, dom2, 'trig');
+        f = randnfun(lambda, n, dom2, 'trig');
     end
 
            % restrict the result to the prescribed interval
@@ -74,9 +74,9 @@ else       % nonperiodic case: call periodic case and restrict
 end
 end
 
-function [dt, n, dom, normalize, trig] = parseInputs(varargin)
+function [lambda, n, dom, normalize, trig] = parseInputs(varargin)
 
-dt = NaN;
+lambda = NaN;
 n = NaN;
 dom = NaN;
 normalize = 0;
@@ -94,15 +94,15 @@ for j = 1:nargin
         end
     elseif ~isscalar(v)
         dom = v;
-    elseif isnan(dt)
-        dt = v;
+    elseif isnan(lambda)
+        lambda = v;
     else
         n = v;
     end
 end
 
-if isnan(dt)
-   dt = 1;          % default space scale
+if isnan(lambda)
+   lambda = 1;      % default space scale
 end
 if isnan(n)
    n = 1;           % default number of columns

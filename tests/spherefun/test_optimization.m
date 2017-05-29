@@ -51,4 +51,15 @@ end
 %%
 pass = err < tol;
 
+%% Check double wrapping is hidden:
+j = length(pass);
+
+f = spherefun(@(x,y,z) exp(x));
+[m,loc] = max2(f);
+pass(j+1) = (loc(1)==0);
+
+f = spherefun(@(x,y,z) exp(x));
+[m,loc] = min2(f);
+pass(j+2) = (loc(1)==0);
+
 end

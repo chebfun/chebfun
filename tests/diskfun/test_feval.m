@@ -43,13 +43,28 @@ X = rand(10,1)-.5;
 Y = rand(10,1)-.5;
 pass(9) = norm(g(X,Y)-f(X,Y), inf) < tol; 
 
+%feval for tensors
+f = @(x,y,z) sin(x.*y).*(z.^2); 
+D = diskfun(@(x,y)sin(x.*y));
+g = @(x,y, z) feval(D, x,y).*z.^2;
+gp = @(t,r, z) feval(D, t, r, 'polar').*z.^2; 
+[tt,rr,zz] = meshgrid(linspace(-pi,pi,10),linspace(0,1,10),linspace(0,1,10));
+xx = rr.*cos(tt);
+yy = rr.*sin(tt);
+
+gv = g(xx,yy,zz);
+fv = f(xx,yy,zz);
+gpv = gp(tt,rr,zz);
+pass(10) = norm(gv(:)-fv(:), inf) < tol;
+pass(11) = norm(gpv(:)-fv(:),inf) < tol; 
+
 
 % Check for the appropriate error flag.
 try
     y = g(1,1);
-    pass(10) = false;
+    pass(12) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:FEVAL:pointsNotOnDisk');
+    pass(12) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:FEVAL:pointsNotOnDisk');
 end
  
 end 
