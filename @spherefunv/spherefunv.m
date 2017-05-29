@@ -4,7 +4,7 @@ classdef spherefunv
 % SPHEREFUNV(F, G, H) constructs a SPHEREFUNV with three components from the
 % function handles F, G, and H. These can also be SPHEREFUN objects or any
 % other object that the SPHEREFUN constructor accepts.  Each component is
-% represented as a SPHEREFUN. The domain of F, G, and H in instrinsic
+% represented as a SPHEREFUN. The domain of F, G, and H in intrinsic
 % coordinates is [-pi,pi]x[0 pi].
 %
 % See also SPHEREFUN. 
@@ -112,7 +112,7 @@ classdef spherefunv
                      'function handles or spherefun objects.'])
             end
             
-            % Check the domains of all the spherfuns are the same:
+            % Check the domains of all the spherefuns are the same:
             pass = zeros(numel(fh)-1,1);
             for jj = 2:numel(fh)
                pass(jj-1) = domainCheck(fh{1}, fh{jj});   
