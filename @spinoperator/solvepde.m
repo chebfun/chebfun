@@ -91,10 +91,10 @@ Nv = S.nonlinearPartVals;
 % For PDEs on the sphere, if the constant in front of the Laplacian is real,
 % use IMEX-BDF4, otherwise use LIRK4 (unless a specific scheme has been given
 % by the user):
-if ( isDiag(S) == 0 ) % Nondiagona operators = operators on the sphere.
+if ( isDiag(S) == 0 ) % Nondiagonal operators = operators on the sphere.
     if ( isreal(L) == 1 && isempty(pref.scheme) == 1 )
         pref.scheme = 'imexbdf4';
-    elseif ( isreal(L) == 1 && isempty(pref.scheme) == 1 )
+    elseif ( isreal(L) == 0 && isempty(pref.scheme) == 1 )
         pref.scheme = 'lirk4';
     end
 end
