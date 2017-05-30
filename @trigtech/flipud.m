@@ -1,6 +1,6 @@
 function f = flipud(f)
 %FLIPUD   Flip/reverse a TRIGTECH object.
-%   G = FLIPUD(F) returns G such that G(x) = F(-x) for all x in [-PI,PI].
+%   G = FLIPUD(F) returns G such that G(x) = F(-x) for all x in [-1,1].
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -13,7 +13,6 @@ if mod(size(f.coeffs,1),2)
     % Odd length is easy, just flip the coefficients
     f.coeffs = flipud(f.coeffs);
 else
-    
     % Even length requires keeping the first coefficient in place and 
     % flipping the remaining ones.  This follows since we interpret the 
     % first coefficient to correspond to the 1/2*cos(-N/2 x) mode.
