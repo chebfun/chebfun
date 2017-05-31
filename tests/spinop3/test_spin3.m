@@ -4,7 +4,7 @@ function pass = test_spin3()
 
 tol = 1e-4;
 
-%% GL3:
+%% GL:
 
 % Create a SPINOP3:
 S = spinop3('GL');
@@ -29,7 +29,7 @@ zz = pts{3};
 scale = max(max(max(abs(uexact(xx,yy,zz)))));
 pass(1) = max(max(max(abs(u(xx,yy,zz) - uexact(xx,yy,zz)))))/scale < tol;
 
-%% GS3:
+%% GS:
 
 % Create a SPINOP3:
 S = spinop3('GS');

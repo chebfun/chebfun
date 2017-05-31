@@ -29,7 +29,7 @@ function [err, time] = spincomp(pdechar, tspan, u0, pref)
 %    pref.scheme = {'pec423', 'pecec433', 'pec524', 'pecec534', 'pec625', ...
 %       'pecec635', 'pec726', 'pecec736'};
 %    pref.N = 128;
-%    spincomp('GS2', tspan, u0, pref)
+%    spincomp('GS', tspan, u0, pref)
 %
 % See also SPIN, SPIN2, SPIN3, SPINPREF, SPINPREF2, SPINPREF3, SPINSCHEME.
 %

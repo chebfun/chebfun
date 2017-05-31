@@ -52,7 +52,7 @@ function [uout, tout] = spin2(varargin)
 %    The movie plots the real part of u.  For a movie of the absolute
 %    value of u rather than the real part, execute
 %
-%       S = spinop2('GL2');
+%       S = spinop2('GL');
 %       u = spin2(S, 128, 1e-1, 'dataplot', 'abs')
 %
 % Example 2: Gray-Scott equations (pattern formation - fingerprints)
@@ -146,7 +146,7 @@ function [uout, tout] = spin2(varargin)
 % where S is a SPINOP2 object, N is the number of grid points in each direction, 
 % DT is the time-step and PREF is a SPINPREF2 oject.
 
-if ( nargin == 1 ) % e.g., u = spin2('gl2')
+if ( nargin == 1 ) % e.g., u = spin2('GL')
     try spinop2(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPIN2 for the list of PDEs.')

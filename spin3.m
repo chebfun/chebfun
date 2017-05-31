@@ -117,7 +117,7 @@ function [uout, tout] = spin3(varargin)
 % where S is a SPINOP3 object, N is the number of grid points in each direction, 
 % DT is the time-step and PREF is a SPINPREF3 oject.
 
-if ( nargin == 1 ) % e.g., u = spin3('gl3')
+if ( nargin == 1 ) % e.g., u = spin3('GL')
     try spinop3(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPIN3 for the list of PDEs.')
