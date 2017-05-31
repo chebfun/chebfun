@@ -1,12 +1,12 @@
 function [uout, tout] = spinsphere(varargin)
-%SPINSPHERE  Solve a time-dependent PDE on the sphere with the double Fourier 
-%sphere method and IMEX time-stepping algorithms.
+%SPINSPHERE  Solve stiff PDEs on the sphere, double Fourier sphere method and 
+%implicit-explicit schemes.
 %
 %   UOUT = SPINSPHERE(PDECHAR) solves the PDE specified by the string PDECHAR,
-%   and plots a movie of the solution as it computes it; it is a demo mode.
-%   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'AC' for Allen-Cahn equation, 
-%   'GL' for Ginzburg-Landau equation, 'GM' for Gierer-Meinhardt equations and 
+%   and plots a movie of the solution as it computes it. Strings available 
+%   include 'AC' for the Allen-Cahn equation, 
+%   'GL' for the Ginzburg-Landau equation, 'GM' for the Gierer-Meinhardt equations 
+%   and 
 %   'NLS' for nonlinear Schrodinger equation. See Remark 1 and Examples 1-4. 
 %   The output UOUT is a SPHEREFUN corresponding to the solution at the final 
 %   time (a CHEBMATRIX for systems of equations, each row representing one 
@@ -26,7 +26,7 @@ function [uout, tout] = spinsphere(varargin)
 %   [UOUT, TOUT] = SPINSPHERE(...) also returns the times chunks TOUT at which 
 %   UOUT was computed.
 %
-% Remark 1: Available (case-insensitive) strings PDECHAR are
+% Remark 1: List of PDEs (case-insensitive)
 %
 %    - 'AC' for Allen-Cahn equation,
 %    - 'GL' for Ginzburg-Landau equation,

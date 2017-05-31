@@ -6,8 +6,8 @@ classdef spinop2 < spinoperator
 %   operator and N is a nonlinear operator. 
 %
 %   S = SPINOP2(PDECHAR) creates a SPINOP2 object S defined by the string 
-%   PDECHAR. Strings available include 'GL2' for Ginzburg-Landau equation and 
-%   'GS2' for Gray-Scott equations. Other PDEs are available, see HELP/SPIN2.
+%   PDECHAR. Strings available include 'GL' for Ginzburg-Landau equation and 
+%   'GS' for Gray-Scott equations. Other PDEs are available, see HELP/SPIN2.
 %
 %   S = SPINOP2(DOM, TSPAN) creates a SPINOP2 object S on DOM x TSPAN. The other
 %   fields of a SPINOP2 are its linear part S.LIN, its nonlienar part S.NONLIN
@@ -23,7 +23,7 @@ classdef spinop2 < spinoperator
 % Remark 2: The nonlinear part has to be of the form @(u) f(u), where f is a 
 %           nonlinear nondifferential operator with constant coefficients.
 %
-% Example 1: To construct a SPINOP2 corresponding to the GL2 equation on 
+% Example 1: To construct a SPINOP2 corresponding to the GL equation on 
 %            DOM = [0 200]^2 x TSPAN = [0 100] with initial condition 
 %            u0(x,y) = cos(pi*x/100)*sin(y*pi/100), one can type
 %
@@ -105,7 +105,7 @@ end
         %   U0.
             
         % Ginzburg-Landau equation:
-        if ( strcmpi(pdechar, 'GL2') == 1 )
+        if ( strcmpi(pdechar, 'GL') == 1 )
             L = @(u) lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
             dom = [0 100 0 100];
@@ -114,7 +114,7 @@ end
             u0 = u0/norm(u0, inf);
             
         % Gray-Scott equations (1):
-        elseif ( strcmpi(pdechar, 'GS2') == 1 )
+        elseif ( strcmpi(pdechar, 'GS') == 1 )
             L = @(u,v) [3e-4*lap(u); 1.5e-4*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
             G = 3;
@@ -127,7 +127,7 @@ end
             u0 = [u01; u02];
             
         % Gray-Scott equations (2):
-        elseif ( strcmpi(pdechar, 'GS2spots') == 1 )
+        elseif ( strcmpi(pdechar, 'GSspots') == 1 )
             L = @(u,v) [3e-4*lap(u); 0.5e-4*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
             G = 3;
@@ -140,7 +140,7 @@ end
             u0 = [u01; u02];
     
         % Schnakenberg equations:
-        elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
+        elseif ( strcmpi(pdechar, 'SCHNAK') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
             N = @(u,v) [3*(.1 - u + u.^2.*v); 3*(.9 - u.^2.*v)];
             G = 50;
@@ -153,7 +153,7 @@ end
             u0 = [u01; u02];
     
         % Swift-Hohenberg equation:
-        elseif ( strcmpi(pdechar, 'SH2') == 1 )
+        elseif ( strcmpi(pdechar, 'SH') == 1 )
             L = @(u) -2*lap(u) - biharm(u);
             N = @(u) -.9*u - u.^3;
             G = 50;

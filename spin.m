@@ -1,19 +1,17 @@
 function [uout, tout] = spin(varargin)
-%SPIN  Solve a time-dependent PDE in 1D with periodicity in space, using a
-%Fourier spectral method and an exponential integrator time-stepping scheme.
+%SPIN  Solve stiff PDEs in 1D periodic domains, Fourier spectral method and 
+%exponential integrators.
 %
 %   UOUT = SPIN(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution as it computes it; it is a demo mode.
-%   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'AC' for the Allen-Cahn equation,
-%   'KS' for the Kuramoto-Sivashinsky equation and 'KdV' for the Korteweg-de Vries
-%   equation. Many other PDEs are available, see Remark 1 and Examples 1-9. The
-%   output UOUT is a CHEBFUN corresponding to the solution at the final time
-%   (a CHEBMATRIX for systems of equations, each row representing one variable).
+%   plots a movie of the solution. Possible strings include 'AC', 'KS' and 'KdV' 
+%   for the Allen-Cahn, Kuramoto-Sivashinsky and Korteweg-de Vries equations. 
+%   Many other PDEs are available, see Remark 1 and Examples 1-9. The output 
+%   UOUT is a CHEBFUN corresponding to the solution at the final time (a CHEBMATRIX for systems of 
+%   equations, each row representing one variable).
 %
 %   UOUT = SPIN(S, N, DT) solves the PDE specified by the SPINOP S with N grid
-%   points and time-step DT. It plots a movie of the solution as it computes it.
-%   See HELP/SPINOP and Example 10.
+%   points and time-step DT, and plots a movie of the solution as it computes 
+%   it. See HELP/SPINOP and Example 10.
 %
 %   UOUT = SPIN(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF object PREF. See HELP/SPINPREF and Example 11.
@@ -24,7 +22,7 @@ function [uout, tout] = spin(varargin)
 %   [UOUT, TOUT] = SPIN(...) also returns the time chunks TOUT at which UOUT
 %   was computed.
 %
-% Remark 1: Available (case-insensitive) strings PDECHAR are
+% Remark 1: List of PDEs (case-insensitive)
 %
 %    - 'AC' for the Allen-Cahn equation,
 %    - 'Burg' for the viscous Burgers equation,

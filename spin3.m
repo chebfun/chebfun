@@ -1,12 +1,11 @@
 function [uout, tout] = spin3(varargin)
-%SPIN3  Solve a time-dependent PDE in 3D with periodicity in space, using a
-%Fourier spectral method and an exponential integrator time-stepping scheme.
+%SPIN3  Solve stiff PDEs in 3D periodic domains, Fourier spectral method and 
+%exponential integrators.
 %
 %   UOUT = SPIN3(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution as it computes it; it is a demo mode.
-%   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'GL3' for Ginzburg-Landau
-%   equation and 'GS3' for Gray-Scott equations. Many other PDEs are available,
+%   plots a movie of the solution as it computes it. Strings available include 
+%   'GL' for the Ginzburg-Landau
+%   equation and 'GS' for the Gray-Scott equations. Many other PDEs are available,
 %   see Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN3 corresponding
 %   to the solution at the final time (a CHEBMATRIX for systems of equations,
 %   each row representing one variable).
@@ -24,16 +23,16 @@ function [uout, tout] = spin3(varargin)
 %   [UOUT, TOUT] = SPIN3(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
 %
-% Remark 1: Available (case-insensitive) strings PDECHAR are
+% Remark 1: List of PDEs (case-insensitive)
 %
-%    - 'GL3' for Ginzburg-Landau equation,
-%    - 'GS3' for Gray-Scott equations,
-%    - 'Schnak3' for Schnakenberg equations,
-%    - 'SH3' for Swift-Hohenberg equation.
+%    - 'GL' for Ginzburg-Landau equation,
+%    - 'GS' for Gray-Scott equations,
+%    - 'SCHNAK' for Schnakenberg equations,
+%    - 'SH' for Swift-Hohenberg equation.
 %
 % Example 1: Ginzburg-Landau equation (spiral waves)
 %
-%       u = spin3('GL3');
+%       u = spin3('GL');
 %
 %    solves the Ginzburg-Landau equation
 %
@@ -44,7 +43,7 @@ function [uout, tout] = spin3(varargin)
 %
 % Example 2: Gray-Scott equations (pattern formation - fingerprints)
 %
-%       u = spin3('GS3');
+%       u = spin3('GS');
 %
 %    solves the Gray-Scott equations
 %
@@ -58,7 +57,7 @@ function [uout, tout] = spin3(varargin)
 %
 % Example 3: Schnakenberg equations (pattern formation - spots)
 %
-%       u = spin3('Schnak3');
+%       u = spin3('SCHNAK');
 %
 %    solves the Schnakenberg equations
 %
@@ -73,7 +72,7 @@ function [uout, tout] = spin3(varargin)
 %
 % Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection rolls)
 %
-%       u = spin3('SH3');
+%       u = spin3('SH');
 %
 %    solves the Swift-Hohenberg equation
 %
@@ -90,7 +89,7 @@ function [uout, tout] = spin3(varargin)
 %       S.init = chebfun3(.1*randn(32, 32, 32), dom, 'trig')
 %       u = spin3(S, 32, 1e-1);
 %
-%   is equivalent to u = spin3('GL3');
+%   is equivalent to u = spin3('GL');
 %
 % Example 6: Using preferences
 %
@@ -156,25 +155,25 @@ function [S, N, dt, pref] = parseInputs(pdechar)
 
 pref = spinpref3();
 S = spinop3(pdechar);
-if ( strcmpi(pdechar, 'GL3') == 1 )
+if ( strcmpi(pdechar, 'GL') == 1 )
     dt = 1e-1;
     N = 32;
     pref.Clim = [-1 1];
     pref.iterplot = 2;
     pref.Nplot = 64;
-elseif ( strcmpi(pdechar, 'GS3') == 1 )
+elseif ( strcmpi(pdechar, 'GS') == 1 )
     dt = 5;
     N = 32;
     pref.Clim = [.3 .8 0 .35];
     pref.iterplot = 5;
     pref.Nplot = 64;
-elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
+elseif ( strcmpi(pdechar, 'SCHNAK') == 1 )
     dt = 5e-1;
     N = 32;
     pref.Clim = [.7 1.7 .65 1.05];
     pref.iterplot = 10;
     pref.Nplot = 64;
-elseif ( strcmpi(pdechar, 'SH3') == 1 )
+elseif ( strcmpi(pdechar, 'SH') == 1 )
     dt = 1;
     N = 32;
     pref.Clim = [-.4 .5];

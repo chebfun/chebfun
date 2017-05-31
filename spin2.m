@@ -1,15 +1,12 @@
 function [uout, tout] = spin2(varargin)
-%SPIN2  Solve a time-dependent PDE in 2D with periodicity in space, using a
-%Fourier spectral method and an exponential integrator time-stepping scheme.
+%SPIN2  Solve stiff PDEs in 2D periodic domains, Fourier spectral method and 
+%exponential integrators.
 %
 %   UOUT = SPIN2(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution as it computes it; it is a demo mode.
-%   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'GL2' for the Ginzburg-Landau
-%   equation and 'GS2' for the Gray-Scott equations. Many other PDEs are available,
-%   see Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding
-%   to the solution at the final time (a CHEBMATRIX for systems of equations,
-%   each row representing one variable).
+%   plots a movie of the solution. Possible strings include 'GL' and 'GS' for 
+%   the Ginzburg-Landau and Gray-Scott equations. Other PDEs are available, see 
+%   Remark 1. The output UOUT is a CHEBFUN2 corresponding to the solution at the final time (a 
+%   CHEBMATRIX for systems of equations, each row representing one variable).
 %
 %   UOUT = SPIN2(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
 %   points in each direction and time-step DT. It plots a movie of the solution
@@ -20,29 +17,32 @@ function [uout, tout] = spin2(varargin)
 %
 %   Users of SPIN2 will quickly find they want to vary aspects of the plotting.
 %   The fully general syntax for this involves using preferences specified by
-%   a SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.  However for
-%   many purposes it is most convenient to use the syntax
+%   a SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.  
 %
-%   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...).
+%   However for many purposes it is most convenient to use the syntax
 %
-%   SPIN2(..., 'iterplot',4) plots only every 4th time step (for speed)
-%   SPIN2(..., 'Nplot', 256) plots frames of a 128x128 movie at double resolution
-%   SPIN2(..., 'dataplot', 'abs') plots absolute value, e.g. of a complex function
-%   SPIN2(..., 'Clim', [a b]) changes colorbar limits to [a b] 
-%   SPIN2(..., 'colormap', 'jet') changes the colormap
-%   SPIN2(..., 'view', [0 45]) changes the view angle from the default [0 90]
+%   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
 %
-% Remark 1: Available (case-insensitive) strings PDECHAR are
+%   For example:
 %
-%    - 'GL2' for Ginzburg-Landau equation,
-%    - 'GS2' for Gray-Scott equations (fingerprints),
-%    - 'GS2spots' for Gray-Scott equations (spots),
-%    - 'Schnak2' for Schnakenberg equations,
-%    - 'SH2' for Swift-Hohenberg equation.
+%   UOUT = SPIN2(S, N, DT, 'iterplot',4) plots only every 4th time step (for speed)
+%   UOUT = SPIN2(..., 'Nplot', 256) plots frames of a 128x128 movie at double resolution
+%   UOUT = SPIN2(..., 'dataplot', 'abs') plots absolute value, e.g. of a complex function
+%   UOUT = SPIN2(..., 'Clim', [a b]) changes colorbar limits to [a b] 
+%   UOUT = SPIN2(..., 'colormap', 'jet') changes the colormap
+%   UOUT = SPIN2(..., 'view', [0 45]) changes the view angle from the default [0 90]
+%
+% Remark 1: List of PDEs (case-insensitive)
+%
+%    - 'GL' for Ginzburg-Landau equation,
+%    - 'GS' for Gray-Scott equations (fingerprints),
+%    - 'GSspots' for Gray-Scott equations (spots),
+%    - 'SCHNAK' for Schnakenberg equations,
+%    - 'SH' for Swift-Hohenberg equation.
 %
 % Example 1: Ginzburg-Landau equation (spiral waves)
 %
-%       u = spin2('GL2');
+%       u = spin2('GL');
 %
 %    solves the Ginzburg-Landau equation
 %
@@ -57,7 +57,7 @@ function [uout, tout] = spin2(varargin)
 %
 % Example 2: Gray-Scott equations (pattern formation - fingerprints)
 %
-%       u = spin2('GS2');
+%       u = spin2('GS');
 %
 %    solves the Gray-Scott equations
 %
@@ -71,7 +71,7 @@ function [uout, tout] = spin2(varargin)
 %
 % Example 2 (bis): Gray-Scott equations (pattern formation - spots)
 %
-%       u = spin2('GS2spots');
+%       u = spin2('GSspots');
 %
 %    solves the Gray-Scott equations
 %
@@ -85,7 +85,7 @@ function [uout, tout] = spin2(varargin)
 %
 % Example 3: Schnakenberg equations (pattern formation - spots)
 %
-%       u = spin2('Schnak2');
+%       u = spin2('Schnak');
 %
 %    solves the Schnakenberg equations
 %
@@ -100,7 +100,7 @@ function [uout, tout] = spin2(varargin)
 %
 % Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection rolls)
 %
-%       u = spin2('SH2');
+%       u = spin2('SH');
 %
 %    solves the Swift-Hohenberg equation
 %
@@ -118,7 +118,7 @@ function [uout, tout] = spin2(varargin)
 %       S.init = S.init/norm(S.init, inf);
 %       u = spin2(S, 128, 1e-1);
 %
-%   is equivalent to u = spin2('GL2');
+%   is equivalent to u = spin2('GL');
 %
 % Example 6: Using preferences
 %
@@ -184,31 +184,31 @@ function [S, N, dt, pref] = parseInputs(pdechar)
 
 pref = spinpref2();
 S = spinop2(pdechar);
-if ( strcmpi(pdechar, 'GL2') == 1 )
+if ( strcmpi(pdechar, 'GL') == 1 )
     dt = 1e-1;
     N = 128;
     pref.Clim = [-1 1];
     pref.iterplot = 2;
     pref.Nplot = 256;
-elseif ( strcmpi(pdechar, 'GS2') == 1 )
+elseif ( strcmpi(pdechar, 'GS') == 1 )
     dt = 6;
     N = 64;
     pref.Clim = [.3 .9 0 .35];
     pref.iterplot = 5;
     pref.Nplot = 128;
-elseif ( strcmpi(pdechar, 'GS2spots') == 1 )
+elseif ( strcmpi(pdechar, 'GSspots') == 1 )
     dt = 6;
     N = 64;
     pref.Clim = [.15 .5 0 .6];
     pref.iterplot = 5;
     pref.Nplot = 128;
-elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
+elseif ( strcmpi(pdechar, 'SCHNAK') == 1 )
     dt = 5e-1;
     N = 64;
     pref.Clim = [.7 1.7 .65 1.05];
     pref.iterplot = 10;
     pref.Nplot = 128;
-elseif ( strcmpi(pdechar, 'SH2') == 1 )
+elseif ( strcmpi(pdechar, 'SH') == 1 )
     dt = 1;
     N = 128;
     pref.Clim = [-.4 .5];

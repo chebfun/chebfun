@@ -1,6 +1,5 @@
 classdef spinop < spinoperator
-%SPINOP   Class for representing the spatial part of 1D differential operators 
-%for time-dependent PDEs.
+%SPINOP   Class for representing 1D differential operators in SPIN.
 %   SPINOP is a class for representing the spatial part S of a time-dependent 
 %   PDE of the form u_t = S(u) = Lu + N(u) in 1D, where L is a linear 
 %   operator and N is a nonlinear operator. 
@@ -8,7 +7,7 @@ classdef spinop < spinoperator
 %   S = SPINOP(PDECHAR) creates a SPINOP object S defined by the string PDECHAR.
 %   Strings available include 'AC' for Allen-Cahn equation, 'KS' for 
 %   Kuramoto-Sivashinsky equation, and 'KdV' for Korteweg-de Vries equation. 
-%   Many other PDEs are available, see HELP/SPIN.
+%   Other PDEs are available, see HELP/SPIN.
 %
 %   S = SPINOP(DOM, TSPAN) creates a SPINOP object S on DOM x TSPAN. The other
 %   fields of a SPINOP are its linear part S.LIN, its nonlienar part S.NONLIN 

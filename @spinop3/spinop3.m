@@ -6,8 +6,8 @@ classdef spinop3 < spinoperator
 %   operator and N is a nonlinear operator. 
 %
 %   S = SPINOP3(PDECHAR) creates a SPINOP3 object S defined by the string 
-%   PDECHAR. Strings available include 'GL3' for Ginzburg-Landau equation and 
-%   'GS3' for Gray-Scott equations. Other PDEs are available, see HELP/SPIN3.
+%   PDECHAR. Strings available include 'GL' for Ginzburg-Landau equation and 
+%   'GS' for Gray-Scott equations. Other PDEs are available, see HELP/SPIN3.
 %
 %   S = SPINOP3(DOM, TSPAN) creates a SPINOP3 object S on DOM x TSPAN. The other
 %   fields of a SPINOP3 are its linear part S.LIN, its nonlienar part S.NONLIN
@@ -23,7 +23,7 @@ classdef spinop3 < spinoperator
 % Remark 2: The nonlinear part has to be of the form @(u) f(u), where f is a 
 %           nonlinear nondifferential operator with constant coefficients.
 %
-% Example 1: To construct a SPINOP3 corresponding to the GL3 equation on 
+% Example 1: To construct a SPINOP3 corresponding to the GL equation on 
 %            DOM = [0 100]^3 x TSPAN = [0 70] with random initial condition, one 
 %            can type
 %
@@ -105,7 +105,7 @@ end
         %   U0.
             
         % Ginzburg-Landau equation:
-        if ( strcmpi(pdechar, 'GL3') == 1 )
+        if ( strcmpi(pdechar, 'GL') == 1 )
             L = @(u) lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
             dom = [0 50 0 50 0 50];
@@ -114,7 +114,7 @@ end
             u0 = chebfun3(vals, dom, 'trig');
             
         % Gray-Scott equations:
-        elseif ( strcmpi(pdechar, 'GS3') == 1 )
+        elseif ( strcmpi(pdechar, 'GS') == 1 )
             L = @(u,v) [3e-4*lap(u); 0.5e-4*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
             G = 2;
@@ -128,7 +128,7 @@ end
             u0 = [u01; u02];
        
         % Schnakenberg equations:
-        elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
+        elseif ( strcmpi(pdechar, 'SCHNAK') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
             N = @(u,v) [3*(.1 - u + u.^2.*v); 3*(.9 - u.^2.*v)];
             G = 25;
@@ -143,7 +143,7 @@ end
             u0 = [u01; u02];
             
         % Swift-Hohenberg equation:
-        elseif ( strcmpi(pdechar, 'SH3') == 1 )
+        elseif ( strcmpi(pdechar, 'SH') == 1 )
             L = @(u) -2*lap(u) - biharm(u);
             N = @(u) -.9*u - u.^3;
             G = 25;

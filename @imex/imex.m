@@ -1,7 +1,7 @@
 classdef imex < spinscheme
 %IMEX   Class for representing implicit-explicit schemes.
-%   IMEX is a class for representing implicit-explicit (IMEX) schemes. IMEX
-%   schemes are used for the time integration with SPINSPHERE.
+%   IMEX is a class for representing implicit-explicit schemes, which are used 
+%   for the time integration in SPINSPHERE.
 %
 % Construction: 
 %
@@ -10,11 +10,11 @@ classdef imex < spinscheme
 %
 % Available IMEX schemes:
 %
-%   IMEX RUNGE-KUTTA: 'lirk4' (for dispersive PDEs)
+%   IMEX RUNGE-KUTTA: 'lirk4' (for both diffusive and dispersive PDEs)
 %
-%   IMEX BDF: 'imexbdf4' (for diffusive PDEs)
+%   IMEX BDF: 'imexbdf4' (for diffusive PDEs only)
 %
-% See also SPINSPHERE, EXPINT.
+% See also SPINSPHERE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
