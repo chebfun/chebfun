@@ -19,6 +19,9 @@ function vals = fastSphereEval(f, lambda, theta)
 
 % Primary author: Alex Townsend, January 2017.
 
+% Working accuracy: 
+tol = 10*eps;
+
 % Convert to NUFFT2D convention (from Spherefun's convention):
 lambda = -lambda/(2*pi);
 theta  = -theta/(2*pi);
@@ -52,17 +55,33 @@ nn = -floor(n/2):floor(n/2);
 % Find low rank approximation to Ay = U1*V1.':
 er = m*(theta-yj);
 gam = norm(er, inf);
-K1 = 15;
-U1 = chebT(K1-1,er/gam) * besselCoeffs(K1, gam);
-V1 = chebT(K1-1, 2*mm'/m);
+
+% Faster version of 
+% K1 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
+xi = log(log(10/tol)/gam/7);
+lw = xi - log(xi) + log(xi)/xi + .5*log(xi)^2/xi^2 - log(xi)/xi^2;
+K1 = ceil(5*gam*exp(lw));
+
+% Low rank factors for Ay: 
+Dy = diag((1i).^(0:K1-1));
+U1 = real( chebT(K1-1,er/gam) * besselCoeffs(K1, gam) * Dy );
+V1 = chebT(K1-1, 2*mm'/m) / Dy;
 
 % Ax = exp(-2*pi*1i*n*(x(:)-xj(:))*nn/n);
 % Find low rank approximation to Ax = U2*V2.':
 er = n*(lambda-xj);
 gam = norm(er, inf);
-K2 = 15;
-U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) );
-V2 = chebT(K2-1, 2*nn'/n);
+
+% Faster version of 
+% K2 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
+xi = log(log(10/tol)/gam/7);
+lw = xi - log(xi) + log(xi)/xi + .5*log(xi)^2/xi^2 - log(xi)/xi^2;
+K2 = ceil(5*gam*exp(lw));
+
+% Low rank factors for Ax:
+Dx = diag((1i).^(0:K2-1));
+U2 = real( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) * Dx );
+V2 = chebT(K2-1, 2*nn'/n) / Dx;
 
 % Business end of the transform. (Everything above could be considered
 % precomputation.)
@@ -79,9 +98,17 @@ for r = 1:K2
     FFT_rows(:,:,r) = D*fft( ifftshift(RV2,2), [], 2 );
 end
 
+% Since we know the final result is going to be real, as all spherefun 
+% objects are real-valued, we can remove the imaginary components of 
+% FFT_rows and FFT_cols: 
+FFT_rows = real(FFT_rows); 
+FFT_cols = real(FFT_cols); 
+
 % Permute:
-XX = permute(FFT_rows,[1 3 2]);
-YY = permute(FFT_cols,[3 2 1]);
+XX = permute(FFT_rows, [1 3 2]);
+YY = permute(FFT_cols, [3 2 1]);
+% XX = permute(FFT_rows,[1 3 2]);
+% YY = permute(FFT_cols,[3 2 1]);
 % Convert to cell for speed:
 X = cell(n,1);
 for k = 1:n
