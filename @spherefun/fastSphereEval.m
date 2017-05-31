@@ -133,12 +133,13 @@ X = X(c(:,2));
 breaks = find(diff(srt_ic)); 
 breaks(end+1) = numel(idic); % Include the endpoint
 cnt = 1;
+ov = ones(size(YY,2),1);
 vals = zeros(M, N); % Allocate storage for output.
 for idx = 1:size(c,1)
     % Get the (ii,jj) values that use the same X and Y.
     kk = idic(cnt:breaks(idx));
     % Do the inner product:
-    vals(kk) = sum((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}), 2);
+    vals(kk) = ((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}))*ov;
     cnt = breaks(idx)+1;
 end
 end
