@@ -5,13 +5,13 @@ function [uout, tout] = spin(varargin)
 %   UOUT = SPIN(PDECHAR) solves the PDE specified by the string PDECHAR, and
 %   plots a movie of the solution. Possible strings include 'AC', 'KS' and 'KdV' 
 %   for the Allen-Cahn, Kuramoto-Sivashinsky and Korteweg-de Vries equations. 
-%   Many other PDEs are available, see Remark 1 and Examples 1-9. The output 
-%   UOUT is a CHEBFUN corresponding to the solution at the final time (a CHEBMATRIX for systems of 
-%   equations, each row representing one variable).
+%   Other PDEs are available, see Remark 1 and Examples 1-9. The output UOUT is 
+%   a CHEBFUN corresponding to the solution at the final time (a CHEBMATRIX for 
+%   systems of equations, each row representing one variable).
 %
 %   UOUT = SPIN(S, N, DT) solves the PDE specified by the SPINOP S with N grid
-%   points and time-step DT, and plots a movie of the solution as it computes 
-%   it. See HELP/SPINOP and Example 10.
+%   points and time-step DT, and plots a movie of the solution. See HELP/SPINOP 
+%   and Example 10.
 %
 %   UOUT = SPIN(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF object PREF. See HELP/SPINPREF and Example 11.

@@ -5,12 +5,13 @@ function [uout, tout] = spin2(varargin)
 %   UOUT = SPIN2(PDECHAR) solves the PDE specified by the string PDECHAR, and
 %   plots a movie of the solution. Possible strings include 'GL' and 'GS' for 
 %   the Ginzburg-Landau and Gray-Scott equations. Other PDEs are available, see 
-%   Remark 1. The output UOUT is a CHEBFUN2 corresponding to the solution at the final time (a 
-%   CHEBMATRIX for systems of equations, each row representing one variable).
+%   Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding to 
+%   the solution at the final time (a CHEBMATRIX for systems of equations, each 
+%   row representing one variable).
 %
 %   UOUT = SPIN2(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
-%   points in each direction and time-step DT. It plots a movie of the solution
-%   as it computes it. See HELP/SPINOP2 and Example 5.
+%   points in each direction and time-step DT, and plots a movie of the solution. 
+%   See HELP/SPINOP2 and Example 5.
 %
 %   [UOUT, TOUT] = SPIN2(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
@@ -34,11 +35,11 @@ function [uout, tout] = spin2(varargin)
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
-%    - 'GL' for Ginzburg-Landau equation,
-%    - 'GS' for Gray-Scott equations (fingerprints),
-%    - 'GSspots' for Gray-Scott equations (spots),
-%    - 'SCHNAK' for Schnakenberg equations,
-%    - 'SH' for Swift-Hohenberg equation.
+%    - 'GL' for the Ginzburg-Landau equation,
+%    - 'GS' for the Gray-Scott equations (fingerprints),
+%    - 'GSspots' for the Gray-Scott equations (spots),
+%    - 'SCHNAK' for the Schnakenberg equations,
+%    - 'SH' for the Swift-Hohenberg equation.
 %
 % Example 1: Ginzburg-Landau equation (spiral waves)
 %

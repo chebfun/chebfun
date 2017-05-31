@@ -3,18 +3,15 @@ function [uout, tout] = spinsphere(varargin)
 %implicit-explicit schemes.
 %
 %   UOUT = SPINSPHERE(PDECHAR) solves the PDE specified by the string PDECHAR,
-%   and plots a movie of the solution as it computes it. Strings available 
-%   include 'AC' for the Allen-Cahn equation, 
-%   'GL' for the Ginzburg-Landau equation, 'GM' for the Gierer-Meinhardt equations 
-%   and 
-%   'NLS' for nonlinear Schrodinger equation. See Remark 1 and Examples 1-4. 
-%   The output UOUT is a SPHEREFUN corresponding to the solution at the final 
-%   time (a CHEBMATRIX for systems of equations, each row representing one 
-%   variable).
+%   and plots a movie of the solution. Possible strings include 'AC' and 'GL'
+%   for the Allen-Cahn and Ginzburg-Landau equations. Other PDEs are available, 
+%   see Remark 1 and Examples 1-4. The output UOUT is a SPHEREFUN corresponding
+%   to the solution at the final time (a CHEBMATRIX for systems of equations, 
+%   each row representing one variable).
 %
 %   UOUT = SPINSPHERE(S, N, DT) solves the PDE specified by the SPINOPSPHERE S 
-%   with N grid points in each direction and time-step DT. It plots a movie of 
-%   the solution as it computes it. See HELP/SPINOPSPHERE and Example 5.
+%   with N grid points in each direction (longitude/latitude) and time-step DT, 
+%   and plots a movie of the solution. See HELP/SPINOPSPHERE and Example 5.
 %
 %   UOUT = SPINSPHERE(S, N, DT, PREF) allows one to use the preferences 
 %   specified by the SPINPREFSPHERE object PREF. See HELP/SPINPREFSPHERE and 
@@ -28,10 +25,10 @@ function [uout, tout] = spinsphere(varargin)
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
-%    - 'AC' for Allen-Cahn equation,
-%    - 'GL' for Ginzburg-Landau equation,
-%    - 'GM' for Gierer-Meinhardt equations,
-%    - 'NLS' for focusing nonlinear Schroedinger equation.
+%    - 'AC' for the Allen-Cahn equation,
+%    - 'GL' for the Ginzburg-Landau equation,
+%    - 'GM' for the Gierer-Meinhardt equations,
+%    - 'NLS' for the focusing nonlinear Schroedinger equation.
 %
 % Example 1: Allen-Cahn equation (metastable solutions)
 %

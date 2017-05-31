@@ -3,16 +3,15 @@ function [uout, tout] = spin3(varargin)
 %exponential integrators.
 %
 %   UOUT = SPIN3(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution as it computes it. Strings available include 
-%   'GL' for the Ginzburg-Landau
-%   equation and 'GS' for the Gray-Scott equations. Many other PDEs are available,
-%   see Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN3 corresponding
-%   to the solution at the final time (a CHEBMATRIX for systems of equations,
-%   each row representing one variable).
+%   plots a movie of the solution. Possible strings include 'GL' and 'GS' for 
+%   the Ginzburg-Landau and Gray-Scott equations. Other PDEs are available, see 
+%   Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN3 corresponding to 
+%   the solution at the final time (a CHEBMATRIX for systems of equations, each 
+%   row representing one variable).
 %
 %   UOUT = SPIN3(S, N, DT) solves the PDE specified by the SPINOP3 S with N grid
-%   points in each direction and time-step DT. It plots a movie of the solution
-%   as it computes it. See HELP/SPINOP3 and Example 5.
+%   points in each direction and time-step DT, and plots a movie of the solution. 
+%   See HELP/SPINOP3 and Example 5.
 %
 %   UOUT = SPIN3(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF3 object PREF. See HELP/SPINPREF3 and Example 6.
@@ -25,10 +24,10 @@ function [uout, tout] = spin3(varargin)
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
-%    - 'GL' for Ginzburg-Landau equation,
-%    - 'GS' for Gray-Scott equations,
-%    - 'SCHNAK' for Schnakenberg equations,
-%    - 'SH' for Swift-Hohenberg equation.
+%    - 'GL' for the Ginzburg-Landau equation,
+%    - 'GS' for the Gray-Scott equations,
+%    - 'SCHNAK' the for Schnakenberg equations,
+%    - 'SH' for the Swift-Hohenberg equation.
 %
 % Example 1: Ginzburg-Landau equation (spiral waves)
 %
