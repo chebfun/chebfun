@@ -1,11 +1,9 @@
 function [err, time] = spincomp(S, N, dt, pref)
-%SPINCOMP  Compare time-stepping schemes.
-%   SPINCOMP(S, N, DT, PREF) compares the time-stepping listed in PREF.SCHEME
-%   applied to the PDE specified by the SPINOPERATOR S using a fixed number N of 
-%   grid points and several different time-steps stored in DT. The results are 
-%   shown in a pair of log-log plots. Note that PREF is a SPINPREFERENCE object,
-%   i.e., a SPINPREF/SPINPREF2/SPINPREF3/SPINPREFSPHERE object, and that S can
-%   S can be SPINOP/SPINOP2/SPINOP3/SPINOPSPHERE object. 
+%SPINCOMP  Compare time-stepping schemes in 1D/2D/3D.
+%   SPINCOMP(S, N, DT, PREF) compares the time-stepping schemes in PREF.SCHEME
+%   applied to the PDE specified by the SPINOP/SPINOP2/SPINOP3 S, using a fixed 
+%   number N of grid points and different time-steps DT. The results are shown
+%   in a pair of log-log plots. PREF is a SPINPREF/SPINPREF2/SPINPREF3 object.
 %
 %   [ERR, TIME] = SPINCOMP(S, N, DT, PREF) returns the errors and the computer
 %   times. 
@@ -24,7 +22,7 @@ function [err, time] = spincomp(S, N, dt, pref)
 %
 % Example 2: Compare the PREDICTOR-CORRECTOR schemes for 2D Gray-Scott equations
 %
-%   G = 1.25; dom = G*[0 1 0 1]; tspan = [0 10];
+%   G = 3; dom = G*[0 1 0 1]; tspan = [0 10];
 %   u01 = chebfun2(@(x,y) 1-exp(-150*((x-G/2).^2 + (y-G/2).^2)), dom, 'trig');
 %   u02 = chebfun2(@(x,y) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2)), dom, 'trig');
 %   u0 = chebmatrix(u01);
@@ -36,7 +34,7 @@ function [err, time] = spincomp(S, N, dt, pref)
 %      'pecec635', 'pec726', 'pecec736'};
 %   spincomp(S, N, dt, pref);
 %
-% See also SPINOP, SPINOP2, SPINOP3, SPINOPSPHERE, SPINSCHEME.
+% See also SPINOP, SPINOP2, SPINOP3, SPINSCHEME.
 %
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
