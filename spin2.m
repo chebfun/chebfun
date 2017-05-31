@@ -198,8 +198,8 @@ elseif ( strcmpi(pdechar, 'GS') == 1 )
     pref.iterplot = 5;
     pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'GSspots') == 1 )
-    dt = 6;
-    N = 64;
+    dt = 3;
+    N = 96;
     pref.Clim = [.15 .5 0 .6];
     pref.iterplot = 5;
     pref.Nplot = 128;
