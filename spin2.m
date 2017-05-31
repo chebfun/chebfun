@@ -3,14 +3,14 @@ function [uout, tout] = spin2(varargin)
 %exponential integrators.
 %
 %   UOUT = SPIN2(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution. Possible strings include 'GL' and 'GS' for 
+%   plays a movie of the solution. Possible strings include 'GL' and 'GS' for 
 %   the Ginzburg-Landau and Gray-Scott equations. Other PDEs are available, see 
 %   Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding to 
 %   the solution at the final time (a CHEBMATRIX for systems of equations, each 
 %   row representing one variable).
 %
 %   UOUT = SPIN2(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
-%   points in each direction and time-step DT, and plots a movie of the solution. 
+%   points in each direction and time-step DT, and plays a movie of the solution. 
 %   See HELP/SPINOP2 and Example 5.
 %
 %   [UOUT, TOUT] = SPIN2(...) also returns the times chunks TOUT at which UOUT
@@ -25,12 +25,13 @@ function [uout, tout] = spin2(varargin)
 %
 %   For example:
 %
-%   UOUT = SPIN2(S, N, DT, 'iterplot', 4) plots only every 4th time step (for speed)
-%   UOUT = SPIN2(S, N, DT, 'Nplot', 256) plots frames of a 128x128 movie at double resolution
-%   UOUT = SPIN2(S, N, DT, 'dataplot', 'abs') plots absolute value
 %   UOUT = SPIN2(S, N, DT, 'Clim', [a b]) changes colorbar limits to [a b] 
 %   UOUT = SPIN2(S, N, DT, 'colormap', 'jet') changes the colormap
-%   UOUT = SPIN2(S, N, DT, 'view', [0 45]) changes the view angle from the default [0 90]
+%   UOUT = SPIN2(S, N, DT, 'dataplot', 'abs') plots absolute value
+%   UOUT = SPIN2(S, N, DT, 'iterplot', 4) plots only every 4th time step 
+%   UOUT = SPIN2(S, N, DT, 'Nplot', 256) plays a movie at 256x256 resolution
+%   UOUT = SPIN2(S, N, DT, 'plot', 'off') for no movie
+%   UOUT = SPIN2(S, N, DT, 'view', [a b]) changes the view angle to [a b]
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
@@ -49,11 +50,11 @@ function [uout, tout] = spin2(varargin)
 %       u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
 %    on [0 100]^2 from t=0 to t=100, with a RANDNFUN2 initial condition. 
-%    The movie plots the real part of u.  For a movie of the absolute
+%    The movie shows the real part of u.  For a movie of the absolute
 %    value of u rather than the real part, execute
 %
 %       S = spinop2('GL');
-%       u = spin2(S, 128, 1e-1, 'dataplot', 'abs')
+%       u = spin2(S, 128, 1e-1, 'dataplot', 'abs');
 %
 % Example 2: Gray-Scott equations (pattern formation - fingerprints)
 %
@@ -123,13 +124,13 @@ function [uout, tout] = spin2(varargin)
 % Example 6: Using preferences
 %
 %       pref = spinpref2('plot', 'off', 'scheme', 'pecec433');
-%       S = spinop2('sh2');
+%       S = spinop2('SH');
 %       u = spin2(S, 128, 5e-1, pref);
 %   or simply,
 %       u = spin2(S, 128, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
 %
 %   solves the Swift-Hohenberg equation using N=128 grid points in each
-%   direction, a time-step dt=5e-1, doesn't produce any movie and uses the
+%   direction, a time-step dt=5e-1, doesn't play any movie and uses the
 %   time-stepping scheme PECEC433.
 %
 % See also SPINOP2, SPINPREF2, EXPINT.

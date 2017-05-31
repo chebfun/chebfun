@@ -3,24 +3,35 @@ function [uout, tout] = spin(varargin)
 %exponential integrators.
 %
 %   UOUT = SPIN(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution. Possible strings include 'AC', 'KS' and 'KdV' 
+%   plays a movie of the solution. Possible strings include 'AC', 'KS' and 'KdV' 
 %   for the Allen-Cahn, Kuramoto-Sivashinsky and Korteweg-de Vries equations. 
 %   Other PDEs are available, see Remark 1 and Examples 1-9. The output UOUT is 
 %   a CHEBFUN corresponding to the solution at the final time (a CHEBMATRIX for 
 %   systems of equations, each row representing one variable).
 %
 %   UOUT = SPIN(S, N, DT) solves the PDE specified by the SPINOP S with N grid
-%   points and time-step DT, and plots a movie of the solution. See HELP/SPINOP 
+%   points and time-step DT, and plays a movie of the solution. See HELP/SPINOP 
 %   and Example 10.
 %
 %   UOUT = SPIN(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF object PREF. See HELP/SPINPREF and Example 11.
 %
-%   UOUT = SPIN(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
-%   alternative to the previous syntax. See Example 11.
-%
 %   [UOUT, TOUT] = SPIN(...) also returns the time chunks TOUT at which UOUT
 %   was computed.
+%
+%   Users of SPIN will quickly find they want to vary aspects of the plotting.
+%   The fully general syntax for this involves using preferences specified by
+%   a SPINPREF object PREF. See HELP/SPINPREF and Example 11. However for many 
+%   purposes it is most convenient to use the syntax
+%
+%   UOUT = SPIN(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
+%
+%   For example:
+%
+%   UOUT = SPIN(S, N, DT, 'dataplot', 'abs') plots absolute value
+%   UOUT = SPIN(S, N, DT, 'iterplot', 4) plots only every 4th time step 
+%   UOUT = SPIN(S, N, DT, 'Nplot', 1024) plays a movie at 1024 resolution
+%   UOUT = SPIN(S, N, DT, 'plot', 'off') for no movie
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
@@ -151,7 +162,7 @@ function [uout, tout] = spin(varargin)
 %       u0(x) = 2*B^2/(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A,
 %           with A=1 and B=1.
 %
-%    The movie plots the real value of u.
+%    The movie shows the real value of u.
 %
 % Example 10: PDE specified by a SPINOP
 %
@@ -160,21 +171,21 @@ function [uout, tout] = spin(varargin)
 %       S.lin = @(u) -diff(u,2)-diff(u,4);
 %       S.nonlin = @(u) -.5*diff(u.^2);
 %       S.init = chebfun(@(x) cos(x/16).*(1 + sin(x/16)), dom, 'trig');
-%       u = spin(S, 256, 5e-2);
+%       u = spin(S, 256, 1e-2);
 %
 %   is equivalent to u = spin('KS');
 %
 % Example 11: Using preferences
 %
 %       pref = spinpref('plot', 'waterfall', 'scheme', 'pecec433');
-%       S = spinop('kdv');
+%       S = spinop('KDV');
 %       u = spin(S, 256, 1e-5, pref);
 %   or simply,
 %       u = spin(S, 256, 1e-5, 'plot', 'waterfall', 'scheme', 'pecec433');
 %
 %   solves the KdV equation using N=256 grid points, a time-step dt=1e-5,
-%   produces a WATERFALL plot as opposed to a movie and use the time-stepping
-%   scheme PECEC433.
+%   produces a WATERFALL plot as opposed to playing a movie, and uses the 
+%   time-stepping scheme PECEC433.
 %
 % See also SPINOP, SPINPREF, EXPINT.
 

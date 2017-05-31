@@ -1,6 +1,6 @@
 classdef spinprefsphere < spinpreference
 %SPINPRESPHERE   Class for managing preferences when solving a PDE on the
-%sphere with SPINOPSPHERE.
+%sphere with SPINSPHERE.
 %
 % Available preferences ([] = defaults):
 %

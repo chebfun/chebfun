@@ -3,7 +3,7 @@ function [uout, tout] = spinsphere(varargin)
 %implicit-explicit schemes.
 %
 %   UOUT = SPINSPHERE(PDECHAR) solves the PDE specified by the string PDECHAR,
-%   and plots a movie of the solution. Possible strings include 'AC' and 'GL'
+%   and plays a movie of the solution. Possible strings include 'AC' and 'GL'
 %   for the Allen-Cahn and Ginzburg-Landau equations. Other PDEs are available, 
 %   see Remark 1 and Examples 1-4. The output UOUT is a SPHEREFUN corresponding
 %   to the solution at the final time (a CHEBMATRIX for systems of equations, 
@@ -11,18 +11,32 @@ function [uout, tout] = spinsphere(varargin)
 %
 %   UOUT = SPINSPHERE(S, N, DT) solves the PDE specified by the SPINOPSPHERE S 
 %   with N grid points in each direction (longitude/latitude) and time-step DT, 
-%   and plots a movie of the solution. See HELP/SPINOPSPHERE and Example 5.
+%   and plays a movie of the solution. See HELP/SPINOPSPHERE and Example 5.
 %
 %   UOUT = SPINSPHERE(S, N, DT, PREF) allows one to use the preferences 
 %   specified by the SPINPREFSPHERE object PREF. See HELP/SPINPREFSPHERE and 
 %   Example 6.
 %
-%   UOUT = SPINSPHERE(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) 
-%   is an alternative to the previous syntax. See Example 6.
-%
 %   [UOUT, TOUT] = SPINSPHERE(...) also returns the times chunks TOUT at which 
 %   UOUT was computed.
 %
+%   Users of SPINSPHERE will quickly find they want to vary aspects of the 
+%   plotting. The fully general syntax for this involves using preferences 
+%   specified by a SPINPREFSPHERE object PREF. See HELP/SPINPREFSPHERE and 
+%   Example 6. However for many purposes it is most convenient to use the syntax
+%
+%   UOUT = SPINSPHERE(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
+%
+%   For example:
+%
+%   UOUT = SPINSPHERE(S, N, DT, 'Clim', [a b]) changes colorbar limits to [a b] 
+%   UOUT = SPINSPHERE(S, N, DT, 'colormap', 'jet') changes the colormap
+%   UOUT = SPINSPHERE(S, N, DT, 'dataplot', 'abs') plots absolute value
+%   UOUT = SPINSPHERE(S, N, DT, 'iterplot', 4) plots only every 4th time step 
+%   UOUT = SPINSPHERE(S, N, DT, 'Nplot', 256) plays a movie at 256x256 resolution
+%   UOUT = SPINSPHERE(S, N, DT, 'plot', 'off') for no movie
+%   UOUT = SPINSPHERE(S, N, DT, 'view', [a b]) changes the view angle to [a b]
+
 % Remark 1: List of PDEs (case-insensitive)
 %
 %    - 'AC' for the Allen-Cahn equation,
@@ -51,7 +65,7 @@ function [uout, tout] = spinsphere(varargin)
 %        u_t = 1e-3*laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
 %    on the sphere from t=0 to t=100 with a RANDNFUNSPHERE initial condition.   
-%    The movie plots the real part of u.
+%    The movie shows the real part of u.
 %
 % Example 3: Gierer-Meinhardt equations (pattern formation - dots)
 %
@@ -80,13 +94,13 @@ function [uout, tout] = spinsphere(varargin)
 %     u0(lam, th) = .1*(2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A 
 %                  + Y_8^6(lam, th), with A=1 and B=1.
 %
-%    The movie plots the absolute value of u.
+%    The movie shows the absolute value of u.
 %
 % Example 5: PDE specified by a SPINOPSPHERE
 %
 %       tspan = [0 100];
 %       S = spinopsphere(tspan);
-%       S.lin = @(u) 5e-4*lap(u);
+%       S.lin = @(u) 1e-3*lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
 %       S.init = randnfunsphere(.1);
 %       S.init = S.init/norm(S.init, inf);
@@ -97,13 +111,13 @@ function [uout, tout] = spinsphere(varargin)
 % Example 6: Using preferences
 %
 %       pref = spinprefsphere('Clim', [-1 1]);
-%       S = spinopsphere('ac');
+%       S = spinopsphere('AC');
 %       u = spinsphere(S, 128, 1e-1, pref);
 %   or simply,
 %       u = spinsphere(S, 128, 1e-1, 'Clim', [-1 1]);
 %
-%   solves the Allen-Cahn equation using N=64 grid points in each direction
-%   and a time-step dt=2e-1 and sets the limits of the colorbar to [-2 2].
+%   solves the Allen-Cahn equation using N=128 grid points in each direction
+%   and a time-step dt=1e-1, and sets the limits of the colorbar to [-1 1].
 %
 % See also SPINOPSPHERE, SPINPREFSPHERE, IMEX.
 

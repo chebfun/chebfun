@@ -3,24 +3,38 @@ function [uout, tout] = spin3(varargin)
 %exponential integrators.
 %
 %   UOUT = SPIN3(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution. Possible strings include 'GL' and 'GS' for 
+%   plays a movie of the solution. Possible strings include 'GL' and 'GS' for 
 %   the Ginzburg-Landau and Gray-Scott equations. Other PDEs are available, see 
 %   Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN3 corresponding to 
 %   the solution at the final time (a CHEBMATRIX for systems of equations, each 
 %   row representing one variable).
 %
 %   UOUT = SPIN3(S, N, DT) solves the PDE specified by the SPINOP3 S with N grid
-%   points in each direction and time-step DT, and plots a movie of the solution. 
+%   points in each direction and time-step DT, and plays a movie of the solution. 
 %   See HELP/SPINOP3 and Example 5.
 %
 %   UOUT = SPIN3(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF3 object PREF. See HELP/SPINPREF3 and Example 6.
 %
-%   UOUT = SPIN3(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
-%   alternative to the previous syntax. See Example 6.
-%
 %   [UOUT, TOUT] = SPIN3(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
+%
+%   Users of SPIN3 will quickly find they want to vary aspects of the plotting.
+%   The fully general syntax for this involves using preferences specified by
+%   a SPINPREF3 object PREF. See HELP/SPINPREF3 and Example 6. However for many 
+%   purposes it is most convenient to use the syntax
+%
+%   UOUT = SPIN3(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
+%
+%   For example:
+%
+%   UOUT = SPIN3(S, N, DT, 'Clim', [a b]) changes colorbar limits to [a b] 
+%   UOUT = SPIN3(S, N, DT, 'colormap', 'jet') changes the colormap
+%   UOUT = SPIN3(S, N, DT, 'dataplot', 'abs') plots absolute value
+%   UOUT = SPIN3(S, N, DT, 'iterplot', 4) plots only every 4th time step 
+%   UOUT = SPIN3(S, N, DT, 'Nplot', 64) plays a movie at 64x64x64 resolution
+%   UOUT = SPIN3(S, N, DT, 'plot', 'off') for no movie
+%   UOUT = SPIN3(S, N, DT, 'slices', {1 [2 3] 5}) for slices at x=1, y=2,3, z=5
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
@@ -38,7 +52,7 @@ function [uout, tout] = spin3(varargin)
 %        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
 %    on [0 50]^3 from t=0 to t=100, with a random initial condition.
-%    The movie plots the real part of u.
+%    The movie shows the real part of u.
 %
 % Example 2: Gray-Scott equations (pattern formation - fingerprints)
 %
@@ -81,7 +95,7 @@ function [uout, tout] = spin3(varargin)
 %
 % Example 5: PDE specified by a SPINOP3
 %
-%       dom = [0 100 0 100 0 100]; tspan = [0 100];
+%       dom = [0 50 0 50 0 50]; tspan = [0 100];
 %       S = spinop3(dom, tspan);
 %       S.lin = @(u) lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
@@ -93,7 +107,7 @@ function [uout, tout] = spin3(varargin)
 % Example 6: Using preferences
 %
 %       pref = spinpref3('plot', 'off', 'scheme', 'pecec433');
-%       S = spinop3('sh3');
+%       S = spinop3('SH');
 %       u = spin3(S, 32, 5e-1, pref);
 %   or simply,
 %       u = spin3(S, 32, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
