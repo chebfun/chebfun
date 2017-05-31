@@ -4,10 +4,10 @@ function pass = test_spin2()
 
 tol = 1e-4;
 
-%% GL2:
+%% GL:
 
 % Create a SPINOP2:
-S = spinop2('gl2');
+S = spinop2('GL');
 dom = S.domain;
 T = 20;
 S.tspan = [0 T];
@@ -25,10 +25,10 @@ uexact = spin2(S, 64, dt/2, 'plot', 'off');
 scale = max(max(abs(uexact(xx,yy))));
 pass(1) = max(max(abs(u(xx,yy) - uexact(xx,yy))))/scale < tol;
 
-%% GS2:
+%% GS:
 
 % Create a SPINOP2:
-S = spinop2('gs2');
+S = spinop2('GS');
 T = 100;
 S.tspan = [0 T];
 

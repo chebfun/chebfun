@@ -7,7 +7,7 @@ tol = 1e-4;
 %% GL3:
 
 % Create a SPINOP3:
-S = spinop3('gl3');
+S = spinop3('GL');
 dom = S.domain;
 T = 20;
 S.tspan = [0 T];
@@ -32,7 +32,7 @@ pass(1) = max(max(max(abs(u(xx,yy,zz) - uexact(xx,yy,zz)))))/scale < tol;
 %% GS3:
 
 % Create a SPINOP3:
-S = spinop3('gs3');
+S = spinop3('GS');
 T = 100;
 S.tspan = [0 T];
 
