@@ -10,9 +10,9 @@ classdef imex < spinscheme
 %
 % Available IMEX schemes:
 %
-%   IMEX RUNGE-KUTTA: 'lirk4' (for both diffusive and dispersive PDEs)
-%
 %   IMEX BDF: 'imexbdf4' (for diffusive PDEs only)
+%
+%   IMEX RUNGE-KUTTA: 'lirk4' (for both diffusive and dispersive PDEs)
 %
 % See also SPINSPHERE.
 
@@ -33,18 +33,18 @@ classdef imex < spinscheme
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % IMEX RUNGE-KUTTA:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            if ( strcmpi(schemeName, 'lirk4') == 1 )
+            if ( strcmpi(schemeName, 'imexbdf4') == 1 )
+                K.order = 4;
+                K.stages = 1;
+                K.steps = 4;
+                K.scheme = schemeName;
+            
+            elseif ( strcmpi(schemeName, 'lirk4') == 1 )
                 K.order = 4;
                 K.stages = 5;
                 K.steps = 1;
                 K.scheme = schemeName;
                 
-            elseif ( strcmpi(schemeName, 'imexbdf4') == 1 )
-                K.order = 4;
-                K.stages = 1;
-                K.steps = 4;
-                K.scheme = schemeName;
-  
             else
                 error('IMEX:constructor', 'Unrecognized scheme.')
             end

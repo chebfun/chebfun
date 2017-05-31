@@ -18,20 +18,19 @@ function [uout, tout] = spin2(varargin)
 %
 %   Users of SPIN2 will quickly find they want to vary aspects of the plotting.
 %   The fully general syntax for this involves using preferences specified by
-%   a SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.  
-%
-%   However for many purposes it is most convenient to use the syntax
+%   a SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6. However for many 
+%   purposes it is most convenient to use the syntax
 %
 %   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
 %
 %   For example:
 %
-%   UOUT = SPIN2(S, N, DT, 'iterplot',4) plots only every 4th time step (for speed)
-%   UOUT = SPIN2(..., 'Nplot', 256) plots frames of a 128x128 movie at double resolution
-%   UOUT = SPIN2(..., 'dataplot', 'abs') plots absolute value, e.g. of a complex function
-%   UOUT = SPIN2(..., 'Clim', [a b]) changes colorbar limits to [a b] 
-%   UOUT = SPIN2(..., 'colormap', 'jet') changes the colormap
-%   UOUT = SPIN2(..., 'view', [0 45]) changes the view angle from the default [0 90]
+%   UOUT = SPIN2(S, N, DT, 'iterplot', 4) plots only every 4th time step (for speed)
+%   UOUT = SPIN2(S, N, DT, 'Nplot', 256) plots frames of a 128x128 movie at double resolution
+%   UOUT = SPIN2(S, N, DT, 'dataplot', 'abs') plots absolute value
+%   UOUT = SPIN2(S, N, DT, 'Clim', [a b]) changes colorbar limits to [a b] 
+%   UOUT = SPIN2(S, N, DT, 'colormap', 'jet') changes the colormap
+%   UOUT = SPIN2(S, N, DT, 'view', [0 45]) changes the view angle from the default [0 90]
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
