@@ -10,7 +10,9 @@ classdef imex < spinscheme
 %
 % Available IMEX schemes:
 %
-%   IMEX RUNGE-KUTTA: 'lirk4'
+%   IMEX RUNGE-KUTTA: 'lirk4' (for dispersive PDEs)
+%
+%   IMEX-BDF: 'imexbdf4' (for diffusive PDEs)
 %
 % See also SPINSPHERE, EXPINT.
 
@@ -35,6 +37,12 @@ classdef imex < spinscheme
                 K.order = 4;
                 K.stages = 5;
                 K.steps = 1;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'imexbdf4') == 1 )
+                K.order = 4;
+                K.stages = 1;
+                K.steps = 4;
                 K.scheme = schemeName;
   
             else
