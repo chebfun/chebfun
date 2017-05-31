@@ -5,15 +5,14 @@ classdef spherefun < separableApprox
 %   functions should be smooth.
 %
 % SPHEREFUN(F) constructs a SPHEREFUN object representing the function F on
-% the unit. F can have the following form:
+% the unit sphere. F can have the following form:
 %    1. A function handle in (x,y,z), e.g., @(x,y,z) x.*y.*z + cos(x).
-%    2. A function handle in spherical coordinates (lambdda,theta), where
+%    2. A function handle in spherical coordinates (lambda,theta), where
 %       lambda is the azimuthal variable and satisfies -pi <= lambda <= pi
 %       and theta is the polar angle and satisfies 0 <= theta < pi,
 %       e.g., @(lambda,theta) cos(cos(lambda).*sin(theta))
 %    3. A matrix of numbers. 
-% If F is a function handle then it should allow for vectorized 
-% evaluations.
+% If F is a function handle then it should allow for vectorized evaluations.
 %
 % If F is a matrix, F = (f_ij), the numbers fij are used as function values
 % at tensor equally-spaced points in the intrinsic spherical coordinate 
@@ -29,7 +28,7 @@ classdef spherefun < separableApprox
 % 
 % The SPHEREFUN software system is based on: 
 %
-% A. Townsend, H. Wilber, and G. Wright, Computing with function on
+% A. Townsend, H. Wilber, and G. Wright, Computing with functions in
 % spherical and polar geometries I: The sphere, SIAM. J. Sci. Comput., 38-4
 % (2016), C403-C425.
 %

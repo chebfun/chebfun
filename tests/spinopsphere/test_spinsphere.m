@@ -8,7 +8,7 @@ tol = 1e-4;
 
 % Create a SPINOPSPHERE:
 S = spinopsphere('gl');
-dt = 1e-2;
+dt = 1e-3;
 S.tspan = [0 100*dt];
 S.init = spherefun(@(x,y,z) cos(x) + cos(y) + cos(z));
 

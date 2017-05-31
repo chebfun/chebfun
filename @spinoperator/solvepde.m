@@ -11,8 +11,8 @@
 
 %% Parse inputs:
 
-% SOLVEPDE has been called by SPIN/SPIN2/SPIN3. The inputs have been parsed in
-% those files and are expeceted to be:
+% SOLVEPDE has been called by SPIN/SPIN2/SPIN3/SPINSPHERE. The inputs have been 
+% parsed in those files and are expeceted to be:
 %
 % OPTION 1.     SOLVEPDE(S, N, DT), S is a SPINOPERATOR object, N is the number
 %               of grid points and DT is the time-step.
@@ -91,7 +91,7 @@ Nv = S.nonlinearPartVals;
 % For PDEs on the sphere, if the constant in front of the Laplacian is real,
 % use IMEX-BDF4, otherwise use LIRK4 (unless a specific scheme has been given
 % by the user):
-if ( isDiag(S) == 0 ) % Nondiagona operators = operators on the sphere.
+if ( isDiag(S) == 0 ) % Nondiagonal operators = operators on the sphere.
     if ( isreal(L) == 1 && isempty(pref.scheme) == 1 )
         pref.scheme = 'imexbdf4';
     elseif ( isreal(L) == 0 && isempty(pref.scheme) == 1 )
