@@ -1,4 +1,4 @@
-function [uOut, tOut, computingTime] = solvepde(varargin)
+    function [uOut, tOut, computingTime] = solvepde(varargin)
 %SOLVEPDE   Solve a PDE defined by a SPINOP, SPINOP2, SPINOP3 or SPINOPSPHERE.
 %   SOLVEPDE is called by SPIN, SPIN2, SPIN3 and SPINSPHERE. It is not called
 %   directly by the user. Appropriate help texts can be found in SPIN, SPIN2,

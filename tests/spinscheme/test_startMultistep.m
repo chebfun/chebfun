@@ -8,7 +8,7 @@ tol = 1e-10;
 
 % Solve 1D KDV equation with a one-step method (ETDRK4) and with a multistep
 % method (PECEC736) which needs to do 5 initialization time-steps:
-S = spinop('kdv');
+S = spinop('KDV');
 dt = 1e-7;
 N = 256;
 S.tspan = [0 10*dt];
@@ -26,7 +26,7 @@ pass(1) = norm(u - umulti, inf)/norm(u, inf) < tol;
 
 % Solve 2D GS equation with a one-step method (ETDRK4) and with a multistep
 % method (PECEC736) which needs to do 5 initialization time-steps:
-S = spinop2('gs2');
+S = spinop2('GS');
 dt = 1e-2;
 N = 64;
 S.tspan = [0 10*dt];
@@ -44,7 +44,7 @@ pass(2) = norm(u-umulti, inf)/norm(u, inf) < tol;
 
 % Solve the AC equation with a one-step method (LIRK4) and with a multistep
 % method (IMEXBDF4) which needs to do 3 initialization time-steps:
-S = spinopsphere('ac');
+S = spinopsphere('AC');
 dt = 5e-4;
 N = 128;
 S.tspan = [0 10*dt];
