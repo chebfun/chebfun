@@ -36,7 +36,7 @@ function [uout, tout] = spinsphere(varargin)
 %   UOUT = SPINSPHERE(S, N, DT, 'Nplot', 256) plays a movie at 256x256 resolution
 %   UOUT = SPINSPHERE(S, N, DT, 'plot', 'off') for no movie
 %   UOUT = SPINSPHERE(S, N, DT, 'view', [a b]) changes the view angle to [a b]
-
+%
 % Remark 1: List of PDEs (case-insensitive)
 %
 %    - 'AC' for the Allen-Cahn equation,
