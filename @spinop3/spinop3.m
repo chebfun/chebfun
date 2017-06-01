@@ -115,15 +115,16 @@ end
             
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS') == 1 )
-            L = @(u,v) [3e-4*lap(u); 1.5e-4*lap(v)];
-            N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
-            G = 2;
+            L = @(u,v) [2e-5*lap(u); 1e-5*lap(v)];
+            F = 0.030; K = 0.057; 
+            N = @(u,v) [F*(1 - u) - u.*v.^2; -(F+K)*v + u.*v.^2];
+            G = 0.5;
             dom = G*[0 1 0 1 0 1];
-            tspan = [0 6000];
-            u01 = @(x,y,z) 1 - exp(-100*((x-G/2.05).^2 + (y-G/2.05).^2 + ...
+            tspan = [0 5000];
+            u01 = @(x,y,z) 1 - exp(-500*((x-G/2.05).^2 + (y-G/2.05).^2 + ...
                 (z-G/2.15).^2));
             u01 = chebfun3(u01, dom, 'trig');
-            u02 = @(x,y,z) exp(-100*((x-G/2).^2 + 2*(y-G/2).^2 + 2*(z-G/2).^2));
+            u02 = @(x,y,z) exp(-500*((x-G/2).^2 + 2*(y-G/2).^2 + 2*(z-G/2).^2));
             u02 = chebfun3(u02, dom, 'trig');
             u0 = [u01; u02];
        

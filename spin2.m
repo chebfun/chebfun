@@ -94,8 +94,8 @@ function [uout, tout] = spin2(varargin)
 %
 %    solves the Schnakenberg equations
 %
-%       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
-%       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
+%       u_t = laplacian(u) + 3*(a - u + u^2*v),
+%       v_t = 10*laplacian(v) + 3*(b - u^2*v),
 %
 %    on [0 50]^2 from t=0 to t=500, with initial condition
 %

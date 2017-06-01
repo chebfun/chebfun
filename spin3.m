@@ -60,13 +60,15 @@ function [uout, tout] = spin3(varargin)
 %
 %    solves the Gray-Scott equations
 %
-%       u_t = 3e-4*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
-%       v_t = 1.5e-4*laplacian(v) - 9.5e-2*v + u*v^2,
+%       u_t = 2e-5*laplacian(u) + F*(1-u)*u - u*v^2,
+%       v_t = 1e-5*laplacian(v) - (F+K)*v + u*v^2,
 %
-%    on [0 2]^3 from t=0 to t=6000, with initial condition
+%    on [0 0.5]^3 from t=0 to t=5000, with initial condition
 %
-%       u0(x,y,z) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2 + (z-G/2.15)^2)),
-%       v0(x,y,z) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)), with G=2.
+%       u0(x,y,z) = 1 - exp(-500*((x-1/2.05)^2 + (y-1/2.05)^2 + (z-1/2.15)^2)),
+%       v0(x,y,z) = exp(-500*((x-1/2)^2 + 2*(y-1/2)^2 + 2*(z-1/2)^2)), 
+%
+%    with F=0.030 and K=0.057.
 %
 % Example 3: Schnakenberg equations (pattern formation - spots)
 %
@@ -74,8 +76,8 @@ function [uout, tout] = spin3(varargin)
 %
 %    solves the Schnakenberg equations
 %
-%       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
-%       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
+%       u_t = laplacian(u) + 3*(a - u + u^2*v),
+%       v_t = 10*laplacian(v) + 3*(b - u^2*v),
 %
 %    on [0 25]^3 from t=0 to t=500, with initial condition
 %
@@ -177,8 +179,8 @@ if ( strcmpi(pdechar, 'GL') == 1 )
 elseif ( strcmpi(pdechar, 'GS') == 1 )
     dt = 5;
     N = 32;
-    pref.Clim = [.3 .8 0 .35];
-    pref.iterplot = 5;
+    pref.Clim = [.25 .8 0 .35];
+    pref.iterplot = 10;
     pref.Nplot = 64;
 elseif ( strcmpi(pdechar, 'SCHNAK') == 1 )
     dt = 5e-1;
