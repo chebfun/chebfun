@@ -26,7 +26,7 @@ function [uout, tout] = spin2(varargin)
 %   For example:
 %
 %   UOUT = SPIN2(S, N, DT, 'Clim', [a b]) changes colorbar limits to [a b] 
-%   UOUT = SPIN2(S, N, DT, 'colormap', 'jet') changes the colormap
+%   UOUT = SPIN2(S, N, DT, 'colormap', 'jet') changes the colormap to 'jet'
 %   UOUT = SPIN2(S, N, DT, 'dataplot', 'abs') plots absolute value
 %   UOUT = SPIN2(S, N, DT, 'iterplot', 4) plots only every 4th time step 
 %   UOUT = SPIN2(S, N, DT, 'Nplot', 256) plays a movie at 256x256 resolution
@@ -36,7 +36,7 @@ function [uout, tout] = spin2(varargin)
 % Remark 1: List of PDEs (case-insensitive)
 %
 %    - 'GL' for the Ginzburg-Landau equation,
-%    - 'GS' for the Gray-Scott equations (fingerprints),
+%    - 'GS' for the Gray-Scott equations (stripes),
 %    - 'GSspots' for the Gray-Scott equations (spots),
 %    - 'SCHNAK' for the Schnakenberg equations,
 %    - 'SH' for the Swift-Hohenberg equation.
@@ -56,37 +56,41 @@ function [uout, tout] = spin2(varargin)
 %       S = spinop2('GL');
 %       u = spin2(S, 128, 1e-1, 'dataplot', 'abs');
 %
-% Example 2: Gray-Scott equations (pattern formation - fingerprints)
+% Example 2: Gray-Scott equations (pattern formation - stripes)
 %
 %       u = spin2('GS');
 %
 %    solves the Gray-Scott equations
 %
-%       u_t = 3e-4*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
-%       v_t = 1.5e-4*laplacian(v) - 9.5e-2*v + u*v^2,
+%       u_t = 2e-5*laplacian(u) + F*(1-u) - u*v^2,
+%       v_t = 1e-5*laplacian(v) - (F+K)*v + u*v^2,
 %
-%    on [0 3]^2 from t=0 to t=6000, with initial condition
+%    on [0 1]^2 from t=0 to t=5000, with initial condition
 %
-%       u0(x,y) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2)),
-%       v0(x,y) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2)), with G=3.
+%       u0(x,y) = 1 - exp(-100*((x-1/2.05)^2 + (y-1/2.05)^2)),
+%       v0(x,y) = exp(-100*((x-1/2)^2 + 2*(y-1/2)^2)),
 %
+%    with F=0.030 and K=0.057.
+% 
 % Example 2 (bis): Gray-Scott equations (pattern formation - spots)
 %
 %       u = spin2('GSspots');
 %
 %    solves the Gray-Scott equations
 %
-%       u_t = 3e-4*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
-%       v_t = 0.5e-4*laplacian(v) - 9.5e-2*v + u*v^2,
+%       u_t = 2e-5*laplacian(u) + F*(1-u) - u*v^2,
+%       v_t = 1e-5*laplacian(v) - (F+K)*v + u*v^2,
 %
-%    on [0 3]^2 from t=0 to t=6000, with initial condition
+%    on [0 1]^2 from t=0 to t=5000, with initial condition
 %
-%       u0(x,y) = 1 - exp(-100*((x-G/2.05)^2 + (y-G/2.05)^2)),
-%       v0(x,y) = exp(-100*((x-G/2)^2 + 2*(y-G/2)^2)), with G=3.
+%       u0(x,y) = 1 - exp(-100*((x-1/2.05)^2 + (y-1/2.05)^2)),
+%       v0(x,y) = exp(-100*((x-1/2)^2 + 2*(y-1/2)^2)), 
+%
+%    with F=0.026 and K=0.059.
 %
 % Example 3: Schnakenberg equations (pattern formation - spots)
 %
-%       u = spin2('Schnak');
+%       u = spin2('SCHNAK');
 %
 %    solves the Schnakenberg equations
 %
@@ -192,16 +196,16 @@ if ( strcmpi(pdechar, 'GL') == 1 )
     pref.iterplot = 2;
     pref.Nplot = 256;
 elseif ( strcmpi(pdechar, 'GS') == 1 )
-    dt = 6;
+    dt = 5;
     N = 64;
-    pref.Clim = [.3 .9 0 .35];
-    pref.iterplot = 5;
+    pref.Clim = [.25 .8 0 .35];
+    pref.iterplot = 10;
     pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'GSspots') == 1 )
-    dt = 3;
-    N = 96;
-    pref.Clim = [.15 .5 0 .6];
-    pref.iterplot = 5;
+    dt = 2;
+    N = 64;
+    pref.Clim = [.25 .85 0 .35];
+    pref.iterplot = 25;
     pref.Nplot = 128;
 elseif ( strcmpi(pdechar, 'SCHNAK') == 1 )
     dt = 5e-1;

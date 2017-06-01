@@ -29,12 +29,12 @@ function [uout, tout] = spin3(varargin)
 %   For example:
 %
 %   UOUT = SPIN3(S, N, DT, 'Clim', [a b]) changes colorbar limits to [a b] 
-%   UOUT = SPIN3(S, N, DT, 'colormap', 'jet') changes the colormap
+%   UOUT = SPIN3(S, N, DT, 'colormap', 'jet') changes the colormap to 'jet'
 %   UOUT = SPIN3(S, N, DT, 'dataplot', 'abs') plots absolute value
 %   UOUT = SPIN3(S, N, DT, 'iterplot', 4) plots only every 4th time step 
 %   UOUT = SPIN3(S, N, DT, 'Nplot', 64) plays a movie at 64x64x64 resolution
 %   UOUT = SPIN3(S, N, DT, 'plot', 'off') for no movie
-%   UOUT = SPIN3(S, N, DT, 'slices', {1 [2 3] 5}) for slices at x=1, y=2,3, z=5
+%   UOUT = SPIN3(S, N, DT, 'slices', {1 [2 3] 5}) for slices at x=1, y=2&3, z=5
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
@@ -54,7 +54,7 @@ function [uout, tout] = spin3(varargin)
 %    on [0 50]^3 from t=0 to t=100, with a random initial condition.
 %    The movie shows the real part of u.
 %
-% Example 2: Gray-Scott equations (pattern formation - fingerprints)
+% Example 2: Gray-Scott equations (pattern formation - stripes)
 %
 %       u = spin3('GS');
 %
