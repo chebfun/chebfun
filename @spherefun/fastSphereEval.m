@@ -86,31 +86,25 @@ U2 = real( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) * Dx );
 V2 = chebT(K2-1, 2*nn'/n) * invDx;
 
 % Business end of the transform. (Everything above could be considered
-% precomputation.)
+% precomputation.) Note that since we know the final result is going to be
+% real, as all spherefun objects are real-valued, we can remove the
+% imaginary components of FFT_rows and FFT_cols:
 FFT_cols = zeros(m,rk,K1);
 for s = 1:K1
     % Transform in the "col" variable:
     CV1 = bsxfun(@times, C, V1(:,s));
-    FFT_cols(:,:,s) = fft( ifftshift(CV1, 1) );
+    FFT_cols(:,:,s) = real( fft( ifftshift(CV1, 1) ) );
 end
 FFT_rows = zeros(rk,n,K2);
 for r = 1:K2
     % Transform in the "row" variable:
     RV2 = bsxfun(@times, R, V2(:,r)).';
-    FFT_rows(:,:,r) = D*fft( ifftshift(RV2,2), [], 2 );
+    FFT_rows(:,:,r) = real( D*fft( ifftshift(RV2,2), [], 2 ) );
 end
-
-% Since we know the final result is going to be real, as all spherefun 
-% objects are real-valued, we can remove the imaginary components of 
-% FFT_rows and FFT_cols: 
-FFT_rows = real(FFT_rows); 
-FFT_cols = real(FFT_cols); 
 
 % Permute:
 XX = permute(FFT_rows, [1 3 2]);
 YY = permute(FFT_cols, [3 2 1]);
-% XX = permute(FFT_rows,[1 3 2]);
-% YY = permute(FFT_cols,[3 2 1]);
 % Convert to cell for speed:
 X = cell(n,1);
 for k = 1:n
@@ -142,7 +136,7 @@ for idx = 1:size(c,1)
     kk = idic(cnt:breaks(idx));
     % Do the inner product:
     A = U1(kk,:)*Y{idx};
-    vals(kk) = (U2(kk,:).*(A*X{idx}))*ov;
+    vals(kk) = (U2(kk,:).*(A*X{idx}))*ov;  % This is faster than sum2
     cnt = breaks(idx)+1;
 end
 end
