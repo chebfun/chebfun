@@ -114,7 +114,7 @@ YY = permute(FFT_cols, [3 2 1]);
 % Convert to cell for speed:
 X = cell(n,1);
 for k = 1:n
-    X{k} = XX(:,:,k).';
+    X{k} = XX(:,:,k);
 end
 Y = cell(size(YY,3),1);
 for k = 1:m
@@ -135,13 +135,14 @@ X = X(c(:,2));
 breaks = find(diff(srt_ic)); 
 breaks(end+1) = numel(idic); % Include the endpoint
 cnt = 1;
-ov = ones(size(YY,2),1);
+ov = ones(K2,1);
 vals = zeros(M, N); % Allocate storage for output.
 for idx = 1:size(c,1)
     % Get the (ii,jj) values that use the same X and Y.
     kk = idic(cnt:breaks(idx));
     % Do the inner product:
-    vals(kk) = ((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}))*ov;
+    A = U1(kk,:)*Y{idx};
+    vals(kk) = (U2(kk,:).*(A*X{idx}))*ov;
     cnt = breaks(idx)+1;
 end
 end
