@@ -59,7 +59,7 @@ for k = 1:nVars
     subplot(1, nVars, k)
     p{1,k} = surf(xxx, yyy, vvv, 'edgecolor', 'none', 'facecolor', 'interp');
     set(p{1,k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
-    axis equal, axis([dom(1) dom(2) dom(3) dom(4)])
+    axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2))
     colorbar, colormap(pref.colormap)
     xlabel('x'), ylabel('y'), set(gca, FS, fs), box on

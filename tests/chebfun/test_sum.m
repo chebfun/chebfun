@@ -230,4 +230,24 @@ I_exact = 0.139402792640331;
 pass(34) = abs(I(1)-I_exact) < 1e1*eps*get(f,'vscale') && ...
     isinf(I(2));
 
+%%
+
+% Complex limits are not supported
+f = chebfun(@sin);
+try
+    sum(f, [0 1i]);
+    pass(35) = false;
+catch
+    pass(35) = true;
+end
+
+% Invalid subdomains in reverse order
+t = chebfun(@(t) t, [0 1]);
+try
+    sum(t, 0, -1)
+    pass(36) = false;
+catch
+    pass(36) = true;
+end
+
 end

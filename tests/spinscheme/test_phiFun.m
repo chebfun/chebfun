@@ -1,4 +1,4 @@
-% Test file for SPINCHEME/PHIFUN:
+% Test file for EXPINT/PHIFUN:
 
 function pass = test_phiFun()
 

@@ -1,4 +1,3 @@
-close all, clear all
 set(0,'DefaultAxesXGrid','on','DefaultAxesYGrid','on')
 set(0, 'defaultfigureposition', [380 320 540 200]);
 set(0, 'defaultaxeslinewidth',  0.7);
@@ -19,7 +18,7 @@ LO = 'location'; NE = 'northeast'; NO = 'north';
 HA = 'HorizontalAlignment'; CT = 'center'; RT = 'right';
 FN = 'fontname'; YS = 'ystretch'; LS = 'linestyle';
 purple = [.8 0 1]; green = [0 .7 0];
-ivp = [0 .9 0]; ivpnl = [0 .45 0];
+ivp = [.15 .8 0]; ivpnl = [0 .35 0];
 ivpnllight = [.4 .65 .4];
 bvp = [0 0 1]; bvpnl = [0 0 .5];
 ibvp = [.85 0 .8]; ibvp0 = [.5 0 .4];

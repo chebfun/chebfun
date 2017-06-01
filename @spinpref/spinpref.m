@@ -26,7 +26,7 @@ classdef spinpref < spinpreference
 %      'waterfall'              command, 'off' otherwise.
 %      'off'
 %
-%   scheme                    * Time-stepping scheme. HELP/SPINPSCHEME for the
+%   scheme                    * Time-stepping scheme. HELP/EXPINT for the
 %     ['etdrk4']                list of available schemes.
 %
 %   Ylim                      * Limits of the y-axis when 'plot' is 'movie'.
