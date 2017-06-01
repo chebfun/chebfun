@@ -67,7 +67,7 @@ function [uout, tout] = spinsphere(varargin)
 %    on the sphere from t=0 to t=100 with a RANDNFUNSPHERE initial condition.   
 %    The movie shows the real part of u.
 %
-% Example 3: Gierer-Meinhardt equations (pattern formation - dots)
+% Example 3: Gierer-Meinhardt equations (pattern formation - spots)
 %
 %        u = spinsphere('GM);
 %
@@ -81,7 +81,7 @@ function [uout, tout] = spinsphere(varargin)
 %       u0(x,y,z) = 1 + .1*(cos(20*x) + cos(20*y) + cos(20*z)),
 %       v0(x,y,z) = 1 - .1*(cos(20*x) + cos(20*y) + cos(20*z)).
 %
-% Example 4: Nonlinear Schroedinger equation (spherical harmonic + breather)
+% Example 4: Nonlinear Schroedinger equation (spherical harmonic & breather)
 %
 %        u = spinsphere('NLS');
 %
