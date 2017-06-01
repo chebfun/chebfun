@@ -27,13 +27,8 @@ end
 
 [m, n] = length( f );
 if ( nargin == 4 )
-    % Use the fast transform only when the number lengths of both columns
-    % are greater than 64 and the rank of f is greater than 2.
-    if ( min(m,n) > 64 && numel(cdr(f)) > 2) 
-        method = 'nufft';
-    else
-        method = 'feval';
-    end
+    % Use the fast transform, unless the user tells us otherwise.
+    method = 'nufft'; 
 end
 
 % f is bandlimited of degree (n,m) so its rotation will be bandlimited will

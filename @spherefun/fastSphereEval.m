@@ -19,6 +19,9 @@ function vals = fastSphereEval(f, lambda, theta)
 
 % Primary author: Alex Townsend, January 2017.
 
+% Working accuracy: 
+tol = 10*eps;
+
 % Convert to NUFFT2D convention (from Spherefun's convention):
 lambda = -lambda/(2*pi);
 theta  = -theta/(2*pi);
@@ -52,40 +55,60 @@ nn = -floor(n/2):floor(n/2);
 % Find low rank approximation to Ay = U1*V1.':
 er = m*(theta-yj);
 gam = norm(er, inf);
-K1 = 15;
-U1 = chebT(K1-1,er/gam) * besselCoeffs(K1, gam);
-V1 = chebT(K1-1, 2*mm'/m);
+
+% Faster version of 
+% K1 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
+xi = log(log(10/tol)/gam/7);
+lw = xi - log(xi) + log(xi)/xi + .5*log(xi)^2/xi^2 - log(xi)/xi^2;
+K1 = ceil(5*gam*exp(lw));
+
+% Low rank factors for Ay: 
+Dy = diag((1i).^(0:K1-1));
+invDy = diag((1./1i).^(0:K1-1));
+U1 = real( chebT(K1-1,er/gam) * besselCoeffs(K1, gam) * Dy );
+V1 = chebT(K1-1, 2*mm'/m) * invDy;
 
 % Ax = exp(-2*pi*1i*n*(x(:)-xj(:))*nn/n);
 % Find low rank approximation to Ax = U2*V2.':
 er = n*(lambda-xj);
 gam = norm(er, inf);
-K2 = 15;
-U2 = ( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) );
-V2 = chebT(K2-1, 2*nn'/n);
+
+% Faster version of 
+% K2 = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
+xi = log(log(10/tol)/gam/7);
+lw = xi - log(xi) + log(xi)/xi + .5*log(xi)^2/xi^2 - log(xi)/xi^2;
+K2 = ceil(5*gam*exp(lw));
+
+% Low rank factors for Ax:
+Dx = diag((1i).^(0:K2-1));
+invDx = diag((1./1i).^(0:K2-1));
+U2 = real( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) * Dx );
+V2 = chebT(K2-1, 2*nn'/n) * invDx;
 
 % Business end of the transform. (Everything above could be considered
-% precomputation.)
+% precomputation.) Note that since we know the final result is going to be
+% real, as all spherefun objects are real-valued, we can remove the
+% imaginary components of FFT_rows and FFT_cols:
 FFT_cols = zeros(m,rk,K1);
 for s = 1:K1
     % Transform in the "col" variable:
     CV1 = bsxfun(@times, C, V1(:,s));
-    FFT_cols(:,:,s) = fft( ifftshift(CV1, 1) );
+    FFT_cols(:,:,s) = real( fft( ifftshift(CV1, 1) ) );
 end
 FFT_rows = zeros(rk,n,K2);
 for r = 1:K2
     % Transform in the "row" variable:
     RV2 = bsxfun(@times, R, V2(:,r)).';
-    FFT_rows(:,:,r) = D*fft( ifftshift(RV2,2), [], 2 );
+    FFT_rows(:,:,r) = real( D*fft( ifftshift(RV2,2), [], 2 ) );
 end
 
 % Permute:
-XX = permute(FFT_rows,[1 3 2]);
-YY = permute(FFT_cols,[3 2 1]);
+XX = permute(FFT_rows, [1 3 2]);
+YY = permute(FFT_cols, [3 2 1]);
 % Convert to cell for speed:
 X = cell(n,1);
 for k = 1:n
-    X{k} = XX(:,:,k).';
+    X{k} = XX(:,:,k);
 end
 Y = cell(size(YY,3),1);
 for k = 1:m
@@ -106,12 +129,14 @@ X = X(c(:,2));
 breaks = find(diff(srt_ic)); 
 breaks(end+1) = numel(idic); % Include the endpoint
 cnt = 1;
+ov = ones(K2,1);
 vals = zeros(M, N); % Allocate storage for output.
 for idx = 1:size(c,1)
     % Get the (ii,jj) values that use the same X and Y.
     kk = idic(cnt:breaks(idx));
     % Do the inner product:
-    vals(kk) = sum((U1(kk,:)*Y{idx}).*(U2(kk,:)*X{idx}), 2);
+    A = U1(kk,:)*Y{idx};
+    vals(kk) = (U2(kk,:).*(A*X{idx}))*ov;  % This is faster than sum2
     cnt = breaks(idx)+1;
 end
 end
