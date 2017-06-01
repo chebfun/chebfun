@@ -64,8 +64,9 @@ K1 = ceil(5*gam*exp(lw));
 
 % Low rank factors for Ay: 
 Dy = diag((1i).^(0:K1-1));
+invDy = diag((1./1i).^(0:K1-1));
 U1 = real( chebT(K1-1,er/gam) * besselCoeffs(K1, gam) * Dy );
-V1 = chebT(K1-1, 2*mm'/m) / Dy;
+V1 = chebT(K1-1, 2*mm'/m) * invDy;
 
 % Ax = exp(-2*pi*1i*n*(x(:)-xj(:))*nn/n);
 % Find low rank approximation to Ax = U2*V2.':
@@ -80,8 +81,9 @@ K2 = ceil(5*gam*exp(lw));
 
 % Low rank factors for Ax:
 Dx = diag((1i).^(0:K2-1));
+invDx = diag((1./1i).^(0:K2-1));
 U2 = real( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) * Dx );
-V2 = chebT(K2-1, 2*nn'/n) / Dx;
+V2 = chebT(K2-1, 2*nn'/n) * invDx;
 
 % Business end of the transform. (Everything above could be considered
 % precomputation.)
