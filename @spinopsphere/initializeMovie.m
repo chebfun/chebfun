@@ -30,6 +30,15 @@ Nplot = 2*(size(lll, 1) - 1);
 FS = 'fontsize';
 fs = 12;
 
+% Meshgrid for plotting lines of longitude and latitude and latitude:
+numGridPtsLam = 12;
+numGridPtsTh = 6;
+minPlotNum = 200;
+[llgl, ttgl] = meshgrid(linspace(-pi, pi, numGridPtsLam + 1), ...
+    linspace(0, pi, minPlotNum));
+[llgt, ttgt] = meshgrid(linspace(-pi, pi, minPlotNum), ...
+    linspace(0, pi, numGridPtsTh + 1));
+    
 % Loop over the variables:
 p = cell(2, nVars); clf reset
 for k = 1:nVars
@@ -55,7 +64,7 @@ for k = 1:nVars
     else
         vvv = vv;
     end
-    
+
     % Plot each variable:
     subplot(1, nVars, k)
     [xxx, yyy, zzz] = sph2cart(lll, pi/2 - ttt, ones(size(lll)));
@@ -67,6 +76,13 @@ for k = 1:nVars
     set(gca, 'xtick', [-1 0 1], 'ytick', [-1 0 1], 'ztick', [-1 0 1])
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
     
+    % Plot lines of longitude and latitude:
+    gridLineType = 'k-'; LW = 'linewidth'; lw = .1;
+    [xxg, yyg, zzg] = sph2cart(llgl, pi/2 - ttgl, 1 + 0*llgl);
+    hold on, plot3(xxg, yyg, zzg, gridLineType, LW, lw)
+    [xxg, yyg, zzg] = sph2cart(llgt, pi/2 - ttgt, 1 + 0*llgt);
+    plot3(xxg', yyg', zzg', gridLineType, LW, lw)
+
     % Plot each title:
     titleString = sprintf('n = m = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
         nVars*N^2, dt, 0);
