@@ -8,18 +8,18 @@ classdef spinpref < spinpreference
 %      'imag'
 %      'abs'
 %
-%   dealias                   * If it is 'on', use the 2/3-rule to zero high 
+%   dealias                   * If 'on', uses the 2/3-rule to zero out high
 %     ['off']                   wavenumbers.
 %      'on'
 %
-%   iterplot                  * Plot the solution every ITERPLOT iterations of
+%   iterplot                  * Plots the solution every ITERPLOT iterations of
 %     [20]                      the time-stepping loop if 'plot' is 'movie'.
 %
 %   M                         * Number of points for complex means to evaluate
 %     [64]                      the phi-functions.
 %       
-%   Nplot                     * Number of grid points for plotting. If Nplot>N,
-%     [1024]                    the data are interpolated to a finer grid.
+%   Nplot                     * Number of grid points for the movie. If Nplot>N,
+%     [1024]                    the data are interpolated on a finer grid.
 %    
 %   plot                      * Plot options: 'movie' to plot a movie of the 
 %     ['movie']                 solution, 'waterfall' to use the WATERFALL

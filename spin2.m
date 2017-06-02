@@ -200,7 +200,7 @@ elseif ( strcmpi(pdechar, 'GS') == 1 )
     N = 64;
     pref.Clim = [.25 .8 0 .35];
     pref.iterplot = 10;
-    pref.Nplot = 128;
+    pref.Nplot = 256;
 elseif ( strcmpi(pdechar, 'GSspots') == 1 )
     dt = 2;
     N = 64;
