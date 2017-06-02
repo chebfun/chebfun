@@ -24,7 +24,7 @@ function [uout, tout] = spin(varargin)
 %   a SPINPREF object PREF. See HELP/SPINPREF and Example 11. However for many 
 %   purposes it is most convenient to use the syntax
 %
-%   UOUT = SPIN(..., 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
+%   UOUT = SPIN(..., 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
 %
 %   For example:
 %
@@ -254,7 +254,7 @@ elseif ( nargin >= 5 )
         varargin{4} = pref;
         varargin = varargin(~cellfun(@isempty, varargin));
         
-    % CASE 4.2. U = SPIN(S, N, DT, 'PREF1', VALUE1, 'PREF2', ...)
+    % CASE 4.2. U = SPIN(S, N, DT, 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
     else
         pref = spinpref();
         j = 4;

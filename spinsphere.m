@@ -25,7 +25,7 @@ function [uout, tout] = spinsphere(varargin)
 %   specified by a SPINPREFSPHERE object PREF. See HELP/SPINPREFSPHERE and 
 %   Example 6. However for many purposes it is most convenient to use the syntax
 %
-%   UOUT = SPINSPHERE(..., 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
+%   UOUT = SPINSPHERE(..., 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
 %
 %   For example:
 %
@@ -187,7 +187,7 @@ elseif ( nargin >= 5 )
         varargin{4} = pref;
         varargin = varargin(~cellfun(@isempty, varargin));
         
-    % CASE 4.2. U = SPINSPHERE(S, N, DT, 'PREF1', VALUE1, 'PREF2', ...)
+    % CASE 4.2. U = SPINSPHERE(S, N, DT, 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
     else
         pref = spinprefsphere();
         j = 4;
