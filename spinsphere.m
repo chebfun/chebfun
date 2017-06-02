@@ -32,6 +32,7 @@ function [uout, tout] = spinsphere(varargin)
 %   UOUT = SPINSPHERE(S, N, DT, 'Clim', [a b]) changes colorbar limits to [a b] 
 %   UOUT = SPINSPHERE(S, N, DT, 'colormap', 'jet') changes the colormap to 'jet'
 %   UOUT = SPINSPHERE(S, N, DT, 'dataplot', 'abs') plots absolute value
+%   UOUT = SPINSPHERE(S, N, DT, 'grid', 'on') for lagitude/longitude circles
 %   UOUT = SPINSPHERE(S, N, DT, 'iterplot', 4) plots only every 4th time step 
 %   UOUT = SPINSPHERE(S, N, DT, 'Nplot', 256) plays a movie at 256x256 resolution
 %   UOUT = SPINSPHERE(S, N, DT, 'plot', 'off') for no movie

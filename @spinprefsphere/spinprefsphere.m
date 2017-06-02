@@ -21,8 +21,8 @@ classdef spinprefsphere < spinpreference
 %      'on'
 %
 %   grid                      * If 'on', plots longitude and latitude circles.                      
-%     ['on']                    
-%      'off'
+%     ['off']                    
+%      'on'
 %
 %   iterplot                  * Plots the solution every ITERPLOT iterations of
 %     [1]                       the time-stepping loop if 'plot' is 'movie'.
@@ -75,7 +75,7 @@ classdef spinprefsphere < spinpreference
         function pref = spinprefsphere(varargin) 
             if ( nargin == 0 )
                 pref.colormap = 'parula';
-                pref.grid = 'on';
+                pref.grid = 'off';
                 pref.dataplot = 'real';
                 pref.dealias = 'off';
                 pref.iterplot = 1;
