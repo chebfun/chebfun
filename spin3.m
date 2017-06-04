@@ -135,7 +135,7 @@ function [uout, tout] = spin3(varargin)
 % CASE 1. U = SPIN3('GL'):
 if ( nargin == 1 ) 
     
-    try spinopsphere(varargin{1});
+    try spinop3(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPINSPHERE for the list of PDEs.')
     end

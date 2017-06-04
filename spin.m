@@ -204,7 +204,7 @@ function [uout, tout] = spin(varargin)
 % CASE 1. U = SPIN('KDV'):
 if ( nargin == 1 ) 
     
-    try spinopsphere(varargin{1});
+    try spinop(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPINSPHERE for the list of PDEs.')
     end
