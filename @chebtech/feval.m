@@ -26,7 +26,8 @@ if ( isempty(f) )
     return 
 end
 
-% Reshape x to be a column vector for passing to CLENSHAW():
+% Reshape x to be a column vector for passing to CLENSHAW() or 
+% fastChebyshevEval():
 m = size(f, 2);
 sizex = size(x);
 ndimsx = ndims(x);
@@ -38,14 +39,51 @@ if ( (m > 1) && (ndimsx > 2) )
          'with more than two dimensions is not supported.']);
 end
 
-% Evaluate using Clenshaw's algorithm:
-y = f.clenshaw(x, f.coeffs);
+if ( m <= 4000 )
+    % Evaluate using Clenshaw's algorithm:
+    y = f.clenshaw(x, f.coeffs);
+else
+    % Use fast transform: 
+    y = chebtech.fastChebyshevEval( x, f.coeffs );
+end
 
 % Reshape the output if possible:
 if ( (m == 1) && ( (ndimsx > 2) || (sizex(2) > 1) ) )
     y = reshape(y, sizex);
 elseif ( (m > 1) && ( (ndimsx == 2) || (sizex(2) > 1) ) )
     y = reshape(y, sizex(1), m*numel(x)/sizex(1));
+end
+
+end
+
+function vals = fastChebyshevEval( x, coeffs )
+% FASTCHEBYSHEVEVAL     Fast evaluation of Chebyshev expansions
+%
+% FASTCHEBYSHEVEVAL( X, C ) computes 
+%
+%      vals(j) = C(1)T_0(X(j)) + ... + C(n)T_n(X(j)) 
+% 
+% for each 1<= j <= numel(X).
+% 
+% Author: Alex Townsend, May 2017. 
+
+% Precompute plan of transform:
+[~, plan] = chebfun.nufft( rand(numel(coeffs),1), acos(x)/2/pi );
+
+% Fast application: 
+if ( isreal( coeffs ) )
+    
+    vals = real( plan(coeffs) );
+    
+elseif ( isreal( 1i*coeffs ) )
+    
+    vals = 1i*imag( plan(coeffs) );
+    
+else
+    
+    vals = real( plan(real(coeffs)) ) ...
+                 + 1i*real( plan(imag(coeffs)) );
+    
 end
 
 end

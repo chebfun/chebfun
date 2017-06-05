@@ -357,6 +357,7 @@ end
             % Evaluate the polynomial on both intervals:
             xLeft = chebptsAB(n, [ -1, splitPoint ]);
             xRight = chebptsAB(n, [ splitPoint, 1 ]); 
+            
             v = chebtech.clenshaw([xLeft ; xRight], c);
 
             % Get the coefficients on the left:
