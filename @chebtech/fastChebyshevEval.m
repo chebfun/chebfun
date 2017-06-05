@@ -1,4 +1,4 @@
-function v = fastChebyshevEval(c, x)
+function v = fastChebyshevEval(x, c)
 % NUDCT   Nonuniform discrete Chebyshev transform
 % 
 % V = NUDCT(C, X)  computes the nonuniform Chebyshev transform, which

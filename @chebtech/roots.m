@@ -358,7 +358,14 @@ end
             xLeft = chebptsAB(n, [ -1, splitPoint ]);
             xRight = chebptsAB(n, [ splitPoint, 1 ]); 
             
-            v = chebtech.clenshaw([xLeft ; xRight], c);
+            % Evaluate at points in [xLeft ; xRight]:
+            if ( n <= 4000 )
+                % If polynomial of low degree, use Clenshaw:
+                v = chebtech.clenshaw([xLeft ; xRight], c);
+            else
+                % Use nonuniform discrete Chebyshev transform: 
+                v = chebtech.fastChebyshevEval([xLeft ; xRight], c);
+            end
 
             % Get the coefficients on the left:
             cLeft = chebtech2.vals2coeffs(v(1:n));            

@@ -130,7 +130,7 @@ classdef chebtech < smoothfun % (Abstract)
         cU = chebTcoeffs2chebUcoeffs(cT)
 
         % NUDCT, nonuniform Chebyshev transform:
-        vals = fastChebyshevEval( coeffs, x); 
+        vals = fastChebyshevEval(x, coeffs); 
 
         % Retrieve and modify preferences for this class.
         p = techPref(q)

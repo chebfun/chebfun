@@ -43,8 +43,8 @@ if ( m <= 4000 )
     % Evaluate using Clenshaw's algorithm:
     y = f.clenshaw(x, f.coeffs);
 else
-    % Use fast transform: 
-    y = chebtech.fastChebyshevEval( x, f.coeffs );
+    % Use fast transform for high degree Chebyshev expansions: 
+    y = chebtech.fastChebyshevEval(x, f.coeffs);
 end
 
 % Reshape the output if possible:
