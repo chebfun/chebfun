@@ -207,7 +207,7 @@ end
         persistent TLeft TRight
 
         % Simplify the coefficients:
-        tailMmax = eps*norm(c, 1);
+        tailMmax = 5*eps*norm(c, 1);
         % Find the final coefficient about tailMax:
         n = find(abs(c) > tailMmax, 1, 'last');
 
