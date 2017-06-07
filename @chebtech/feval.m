@@ -1,6 +1,6 @@
 function y = feval(f, x)
 %FEVAL   Evaluate a CHEBTECH.
-%   Y = FEVAL(F, X) Evaluation of the CHEBTECH F at points X via Clenshaw's
+%   Y = FEVAL(F, X) evaluates of the CHEBTECH F at points X. Depending via Clenshaw's
 %   algorithm (see CLENSHAW.m).
 %
 %   If size(F, 2) > 1 then FEVAL returns values in the form [F_1(X), F_2(X),
@@ -16,7 +16,7 @@ function y = feval(f, x)
 %     view(0, 90), shg
 %     colormap(hsv)
 %
-% See also BARY, CLENSHAW.
+% See also BARY, CLENSHAW, FASTCHEBYSHEVEVAL.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -26,9 +26,8 @@ if ( isempty(f) )
     return 
 end
 
-% Reshape x to be a column vector for passing to CLENSHAW() or 
-% fastChebyshevEval():
-m = size(f, 2);
+% Reshape x to be a column vector
+[n, m] = size(f);
 sizex = size(x);
 ndimsx = ndims(x);
 x = x(:);
@@ -39,7 +38,7 @@ if ( (m > 1) && (ndimsx > 2) )
          'with more than two dimensions is not supported.']);
 end
 
-if ( m <= 6000 )
+if ( n <= 6000 )
     % Evaluate using Clenshaw's algorithm:
     y = f.clenshaw(x, f.coeffs);
 else
@@ -56,34 +55,36 @@ end
 
 end
 
-function vals = fastChebyshevEval( x, coeffs )
-% FASTCHEBYSHEVEVAL     Fast evaluation of Chebyshev expansions
-%
-% FASTCHEBYSHEVEVAL( X, C ) computes 
-%
-%      vals(j) = C(1)T_0(X(j)) + ... + C(n)T_n(X(j)) 
+%% Not used?
+
+% function vals = fastChebyshevEval( x, coeffs )
+% % FASTCHEBYSHEVEVAL     Fast evaluation of Chebyshev expansions
+% %
+% % FASTCHEBYSHEVEVAL( X, C ) computes 
+% %
+% %      vals(j) = C(1)T_0(X(j)) + ... + C(n)T_n(X(j)) 
+% % 
+% % for each 1<= j <= numel(X).
+% % 
+% % Author: Alex Townsend, May 2017. 
 % 
-% for each 1<= j <= numel(X).
+% % Precompute plan of transform:
+% [~, plan] = chebfun.nufft( rand(numel(coeffs),1), acos(x)/2/pi );
 % 
-% Author: Alex Townsend, May 2017. 
-
-% Precompute plan of transform:
-[~, plan] = chebfun.nufft( rand(numel(coeffs),1), acos(x)/2/pi );
-
-% Fast application: 
-if ( isreal( coeffs ) )
-    
-    vals = real( plan(coeffs) );
-    
-elseif ( isreal( 1i*coeffs ) )
-    
-    vals = 1i*imag( plan(coeffs) );
-    
-else
-    
-    vals = real( plan(real(coeffs)) ) ...
-                 + 1i*real( plan(imag(coeffs)) );
-    
-end
-
-end
+% % Fast application: 
+% if ( isreal( coeffs ) )
+%     
+%     vals = real( plan(coeffs) );
+%     
+% elseif ( isreal( 1i*coeffs ) )
+%     
+%     vals = 1i*imag( plan(coeffs) );
+%     
+% else
+%     
+%     vals = real( plan(real(coeffs)) ) ...
+%                  + 1i*real( plan(imag(coeffs)) );
+%     
+% end
+% 
+% end

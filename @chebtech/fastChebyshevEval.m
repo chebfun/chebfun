@@ -1,34 +1,43 @@
-function v = fastChebyshevEval(x, c)
-% NUDCT   Nonuniform discrete Chebyshev transform
-% 
-% V = NUDCT(C, X)  computes the nonuniform Chebyshev transform, which
-% evaluates the Chebyshev expansion at X, i.e., 
-% 
+function vals = fastChebyshevEval(x, coeffs)
+%NUDCT   Nonuniform discrete Chebyshev transform
+%   V = NUDCT(C, X) computes the nonuniform Chebyshev transform, which evaluates
+%   the Chebyshev expansion with coefficients C at the points X, i.e.,
+%
 %             V_j = sum_k  C(k) T_k(X(j)).
 %
-% See also chebtech.clenshaw, chebtech2.coeffs2vals, chebtech1.coeffs2vals.
+%   X must be a column vector, but C may be a matrix.
+%
+% See also CHEBTECH.clenshaw, CHEBTECH2.coeffs2vals, CHEBTECH1.coeffs2vals.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%% DEVELOPER'S NOTE %%%
-% The algorithm in this MATLAB script is based on the paper:
-%
-% [1] D. Ruiz--Antolin and A. Townsend, "A nonuniform fast Fourier transform
-% based on low rank approximation", submitted, 2017.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE: The algorithm in this MATLAB script is based on the paper
+%   [1] D. Ruiz--Antolin and A. Townsend, "A nonuniform fast Fourier transform
+%   based on low rank approximation", submitted, 2017.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-n = size(c, 1);
-coeffs = c;
+% X should be a column vector.
+if ( size(x, 2) > 1 )
+    warning('CHEBFUN:CHEBTECH:fastChebyshevEval:xDim', ...
+        'Evaluation points should be a column vector.');
+    x = x(:);
+end
+
+[n, m] = size(coeffs);
 
 % Compute theta values of evaluation points:  
 th = real(acos(x)/2/pi);
 
 % Convert a NUDCT into a NUFFT by mirroring (see chebtech2.coeffs2vals):
-c(2:end) = c(2:end)/2;
-c = [c(end:-1:2);c];
-
+c = coeffs;
+c(2:end,:) = c(2:end,:)/2;
+c = [c(end:-1:2,:) ; c];
 % Get new length of vector: 
-N = size(c,1);
+N = 2*n - 1;
+
+% We always take K = 16 terms in the low-rank approximation.
 K = 16; 
 
 % Closest points: 
@@ -36,22 +45,25 @@ s = round(N*th);
 t = mod(s, N) + 1;
 
 % Construct a low rank approximation NUDFT./DFT: 
-u = (ChebP(K-1,2*(N*th - round(N*th)))*Bessel_cfs(K));
-v = ChebP(K-1, 2*(-(n-1):(n-1))'/N);
+ds = 2*(N*th - s);
+U = ChebP(K-1, ds) * besselCoeffs(K);
+k = 2*(-(n-1):(n-1))'/N;
+V = ChebP(K-1, k);
 
 % The NUDFT can now be written as a sum of diagonally-scaled DFTs:
-In = speye(size(c,1));
-v = sum(u.*(In(t,:)*fft( ifftshift(repmat(c,1,K).*v,1),[],1 )),2);
+tmp1 = ifftshift(repmat(c,1,K).*V, 1);
+tmp2 = fft(tmp1, [], 1);
+vals = sum(U.*tmp2(t,:), 2);
 
 % If the coefficients were real/imaginary, then enforce it on vals: 
 if ( isreal(coeffs) )
-    v = real(v);
+    vals = real(vals);
 elseif ( isreal(1i*coeffs) )
-    v = imag(v);
+    vals = imag(vals);
 end
 end
 
-function T = ChebP( n, x )
+function T = ChebP(n, x)
 % Evaluate Chebyshev polynomials of degree 0,...,n at points in x. Use the
 % three-term recurrence relation:
 N = size(x, 1);
@@ -67,10 +79,9 @@ for k = 2:n
 end
 end
 
-function cfs = Bessel_cfs(K)
-% The bivarate Chebyshev coefficients for the function f(x,y) = exp(-i*x.*y)
-% on the domain [-1/2, 1/2]x[0,2*pi] are given by Lemma A.2 of Townsend's
-% DPhil thesis.
+function cfs = besselCoeffs(K)
+% Bivarate Chebyshev coefficients for the function f(x,y) = exp(-i*x.*y) on the
+% domain [-1/2, 1/2]x[0,2*pi] are given by Lemma A.2 of Townsend's DPhil thesis.
 
 % Here, we tabulate them so that they are extremely fast to compute!: 
 cfs = [ 0.725276916440514 0 -0.263810811846140 0 0.010721845410224 0 -0.000188568764214 0 0.000001845983729 0 -0.000000011505371 0 0.000000000049650 0 -0.000000000000157 0 ;
@@ -89,6 +100,5 @@ cfs = [ 0.725276916440514 0 -0.263810811846140 0 0.010721845410224 0 -0.00018856
       0 -5.586166703739336e-12i 0 -4.183174389936338e-12i 0 -2.315969292837316e-12i 0 -9.204996298527833e-13i 0 -2.480840754980324e-13i 0 -4.031057077166038e-14i 0 2.857751919953105e-15i 0 0 ; 
       -1.571252307825089e-13 0 -2.747999062823869e-13 0 -1.828391460048661e-13 0 -9.107573296934322e-14 0 -3.290023459530936e-14 0 -8.126572662991549e-15 0 -1.218719878432285e-15 0 0 0;
       0 1.545890088268538e-14i 0 1.201101735269839e-14i 0 7.190168405679147e-15i 0  3.255202808838026e-15i 0 1.077723939077946e-15i 0 2.456927663965262e-16i 0 0 0 0];  
-
-  cfs = cfs(1:K,1:K);
+cfs = cfs(1:K,1:K);
 end
