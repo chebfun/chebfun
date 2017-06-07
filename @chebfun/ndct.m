@@ -1,18 +1,23 @@
 function vals = ndct(x, coeffs, th)
-%NUDCT   Nonuniform discrete Chebyshev transform
-%   V = NUDCT(X, C) computes the nonuniform Chebyshev transform, which evaluates
+%NDCT   Nonuniform discrete Chebyshev transform
+%   V = NDCT(X, C) computes the nonuniform Chebyshev transform, which evaluates
 %   the Chebyshev expansion with coefficients C at the points X, i.e.,
 %
 %             V_j = sum_k  C(k) T_k( X(j) ).
 %
 %   X must be a column vector, but C may be a column vector or a matrix.
 %
-%   V = NUDCT(~, C, TH) is similar, but with X(j) in the expression above given
+%   V = NDCT(~, C, TH) is similar, but with X(j) in the expression above given
 %   by X(j) = cos(T(j)) so that 
 %
 %             V_j = sum_k  C(k) T_k( cos(TH(j) ).
 %
 %   This is useful as TH(j) can often be computed more accurately than X(j).
+%
+%   V = NDCT(C) is the same as evaluating the Chebyshev series at Legendre 
+%   nodes, i.e., 
+%     [~, ~, ~, TH] = legpts( size(C,1) );  
+%     V = NDCT(~, C, TH);
 %
 % See also CHEBTECH.clenshaw, CHEBTECH2.coeffs2vals, CHEBTECH1.coeffs2vals.
 
@@ -24,6 +29,13 @@ function vals = ndct(x, coeffs, th)
 %   [1] D. Ruiz--Antolin and A. Townsend, "A nonuniform fast Fourier transform
 %   based on low rank approximation", submitted, 2017.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% For backwards compatibility with chebfun.ndct(c):
+if ( nargin == 1 ) 
+    [x,~,~,th] = legpts( size(coeffs, 1) );
+    vals = ndct(x, coeffs, th);
+    return
+end
 
 % n is the length of the chebtech. If m > 1 then it is array-valued.
 [n, m] = size(coeffs);
