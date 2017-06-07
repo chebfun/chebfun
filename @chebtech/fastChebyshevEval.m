@@ -1,11 +1,18 @@
-function vals = fastChebyshevEval(x, coeffs)
+function vals = fastChebyshevEval(x, coeffs, th)
 %NUDCT   Nonuniform discrete Chebyshev transform
-%   V = NUDCT(C, X) computes the nonuniform Chebyshev transform, which evaluates
+%   V = NUDCT(X, C) computes the nonuniform Chebyshev transform, which evaluates
 %   the Chebyshev expansion with coefficients C at the points X, i.e.,
 %
-%             V_j = sum_k  C(k) T_k(X(j)).
+%             V_j = sum_k  C(k) T_k( X(j) ).
 %
 %   X must be a column vector, but C may be a column vector or a matrix.
+%
+%   V = NUDCT(~, C, TH) is similar, but with X(j) in the expression above given
+%   by X(j) = cos(T(j)) so that 
+%
+%             V_j = sum_k  C(k) T_k( cos(TH(j) ).
+%
+%   This is useful as TH(j) can often be computed more accurately than X(j).
 %
 % See also CHEBTECH.clenshaw, CHEBTECH2.coeffs2vals, CHEBTECH1.coeffs2vals.
 
@@ -18,18 +25,24 @@ function vals = fastChebyshevEval(x, coeffs)
 %   based on low rank approximation", submitted, 2017.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% X should be a column vector.
-if ( size(x, 2) > 1 )
-    warning('CHEBFUN:CHEBTECH:fastChebyshevEval:xDim', ...
-        'Evaluation points should be a column vector.');
-    x = x(:);
-end
-
 % n is the length of the chebtech. If m > 1 then it is array-valued.
 [n, m] = size(coeffs);
 
-% Compute theta values of evaluation points:  
-th = real(acos(x)/2/pi);
+% Convert evaluation points to theta space:
+if ( nargin < 3 )
+    % Compute theta values of evaluation points:  
+    th = real(acos(x)/2/pi);
+else
+    % Scale to [0 1];
+    th = real(th/2/pi);
+end
+
+% th should be a column vector.
+if ( size(th, 2) > 1 )
+    warning('CHEBFUN:CHEBTECH:fastChebyshevEval:xDim', ...
+        'Evaluation points should be a column vector.');
+    th = th(:);
+end
 
 % Convert a NUDCT into a NUFFT by mirroring (see chebtech2.coeffs2vals):
 c = coeffs;
