@@ -5,7 +5,7 @@ function vals = fastChebyshevEval(x, coeffs)
 %
 %             V_j = sum_k  C(k) T_k(X(j)).
 %
-%   X must be a column vector, but C may be a matrix.
+%   X must be a column vector, but C may be a column vector or a matrix.
 %
 % See also CHEBTECH.clenshaw, CHEBTECH2.coeffs2vals, CHEBTECH1.coeffs2vals.
 
@@ -25,6 +25,7 @@ if ( size(x, 2) > 1 )
     x = x(:);
 end
 
+% n is the length of the chebtech. If m > 1 then it is array-valued.
 [n, m] = size(coeffs);
 
 % Compute theta values of evaluation points:  
@@ -43,24 +44,31 @@ K = 16;
 % Closest points: 
 s = round(N*th);
 t = mod(s, N) + 1;
+ds = 2*(N*th - s);
 
 % Construct a low rank approximation NUDFT./DFT: 
-ds = 2*(N*th - s);
 U = ChebP(K-1, ds) * besselCoeffs(K);
-k = 2*(-(n-1):(n-1))'/N;
+k = 2*(-(n-1):(n-1))'/(2*n-1);
 V = ChebP(K-1, k);
 
-% The NUDFT can now be written as a sum of diagonally-scaled DFTs:
-tmp1 = ifftshift(repmat(c,1,K).*V, 1);
-tmp2 = fft(tmp1, [], 1);
-vals = sum(U.*tmp2(t,:), 2);
+vals = zeros(numel(x), m);
+% Loop over the columns of c for array-valued input:
+for l = 1:m
+    % The NUDFT can now be written as a sum of diagonally-scaled DFTs:
+    C = repmat(c(:,l), 1, K);
+    tmp1 = ifftshift(C.*V, 1);
+    tmp2 = fft(tmp1, [], 1);
+    vals(:,l) = sum(U.*tmp2(t,:), 2);
+end
 
 % If the coefficients were real/imaginary, then enforce it on vals: 
+%  (Note: We don't bother to check each column of coeffs for real/imag.)
 if ( isreal(coeffs) )
     vals = real(vals);
 elseif ( isreal(1i*coeffs) )
     vals = imag(vals);
 end
+
 end
 
 function T = ChebP(n, x)
