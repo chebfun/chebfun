@@ -54,37 +54,3 @@ elseif ( (m > 1) && ( (ndimsx == 2) || (sizex(2) > 1) ) )
 end
 
 end
-
-%% Not used?
-
-% function vals = fastChebyshevEval( x, coeffs )
-% % FASTCHEBYSHEVEVAL     Fast evaluation of Chebyshev expansions
-% %
-% % FASTCHEBYSHEVEVAL( X, C ) computes 
-% %
-% %      vals(j) = C(1)T_0(X(j)) + ... + C(n)T_n(X(j)) 
-% % 
-% % for each 1<= j <= numel(X).
-% % 
-% % Author: Alex Townsend, May 2017. 
-% 
-% % Precompute plan of transform:
-% [~, plan] = chebfun.nufft( rand(numel(coeffs),1), acos(x)/2/pi );
-% 
-% % Fast application: 
-% if ( isreal( coeffs ) )
-%     
-%     vals = real( plan(coeffs) );
-%     
-% elseif ( isreal( 1i*coeffs ) )
-%     
-%     vals = 1i*imag( plan(coeffs) );
-%     
-% else
-%     
-%     vals = real( plan(real(coeffs)) ) ...
-%                  + 1i*real( plan(imag(coeffs)) );
-%     
-% end
-% 
-% end
