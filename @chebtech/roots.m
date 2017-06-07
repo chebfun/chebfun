@@ -364,7 +364,7 @@ end
                 v = chebtech.clenshaw([xLeft ; xRight], c);
             else
                 % Use nonuniform discrete Chebyshev transform: 
-                v = chebtech.fastChebyshevEval([xLeft ; xRight], c);
+                v = chebfun.ndct([xLeft ; xRight], c);
             end
 
             % Get the coefficients on the left:

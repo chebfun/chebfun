@@ -128,10 +128,7 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Convert Chebyshev-T coefficients to Chebyshev-U coefficients.
         cU = chebTcoeffs2chebUcoeffs(cT)
-
-        % NUDCT, nonuniform Chebyshev transform:
-        vals = fastChebyshevEval(x, coeffs, t); 
-
+        
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 

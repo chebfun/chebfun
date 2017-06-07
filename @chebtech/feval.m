@@ -43,7 +43,7 @@ if ( n <= 6000 )
     y = f.clenshaw(x, f.coeffs);
 else
     % Use fast transform for high degree Chebyshev expansions: 
-    y = chebtech.fastChebyshevEval(x, f.coeffs);
+    y = chebfun.ndct(x, f.coeffs);
 end
 
 % Reshape the output if possible:
