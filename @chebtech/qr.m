@@ -150,7 +150,7 @@ else
     % we never form a large dense matrix.
     
     % Compute the weighted QR factorisation:
-    [ignored, wl, ignored] = legpts(n);
+    [x, wl, ignored, th] = legpts(n);
     W = spdiags(sqrt(wl.'), 0, n, n); % Weighted QR with Gauss-Legendre weights.
     Winv = spdiags(1./sqrt(wl.'), 0, n, n);    % Undo the weighting used for QR.
     if ( nargout == 3 )
@@ -163,7 +163,7 @@ else
             E = I(:,E);
         end
     else
-        converted = W*chebfun.ndct( f.coeffs ); % WP * values.
+        converted = W*chebfun.ndct(x, f.coeffs, th ); % WP * values.
         [Q, R] = qr(converted, 0);
     end
     

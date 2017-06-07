@@ -36,7 +36,7 @@ for n = 1:2
     f = testclass.make(@(x) cos(1e4*x), [], pref);
     f_exact = @(x) cos(1e4*x);
     pass(n, 3) = (norm(feval(f, x) - f_exact(x), inf) < ...
-        1e4*vscale(f)*eps);
+        2e4*vscale(f)*eps);
         
     
     z = exp(2*pi*1i/6);
