@@ -32,8 +32,9 @@ function vals = ndct(x, coeffs, th)
 
 % For backwards compatibility with chebfun.ndct(c):
 if ( nargin == 1 ) 
+    coeffs = x; 
     [x,~,~,th] = legpts( size(coeffs, 1) );
-    vals = ndct(x, coeffs, th);
+    vals = chebfun.ndct(x, coeffs, th);
     return
 end
 
