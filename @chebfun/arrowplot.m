@@ -1,7 +1,10 @@
 function varargout = arrowplot(f,varargin)
 %ARROWPLOT   Chebfun plot with arrowhead at end
-%   ARROWPLOT(F,G), where F and G are CHEBFUNs with the same domain, plots the
+%   ARROWPLOT(F, G), where F and G are CHEBFUNs with the same domain, plots the
 %   curve (F,G) in the plane with an arrowhead.
+%
+%   ARROWPLOT(F, G, 'multi', n) plots the curve (F,G) in the plane with n
+%   arrowheads placed on the curve.
 %
 %   ARROWPLOT(F), where F is a complex CHEBFUN, plots the curve
 %   (real(F),imag(F)) in the plane with an arrowhead.
@@ -10,11 +13,11 @@ function varargout = arrowplot(f,varargin)
 %   plotted.
 %
 %   Plotting options can be passed in the usual fashion. For example,
-%   'markerSize' will change the size of the arrowhead plotted. Furthermore,
-%   there is an option 'ystretch', for manually adjusting the slope of the
-%   arrowhead, so that the slope is 'ystretch' times greater than the computed
-%   slope dictates. This is useful for plots which are rescaled, or have their
-%   axes adjusted after plotting.
+%   'markerSize' will change the size of the arrowhead (the default is 6).
+%   Furthermore, there is an option 'ystretch' for manually adjusting the
+%   slope of the arrowhead, so that the slope is 'ystretch' times greater
+%   than the computed slope dictates. This is useful for plots which are 
+%   rescaled, or have their axes adjusted after plotting.
 %
 % Examples:
 %
@@ -24,6 +27,8 @@ function varargout = arrowplot(f,varargin)
 %   h = exp((-.2+3i)*t); arrowplot(h,'color','r')
 %
 %   A = []; for k = 1:3, A = [A exp((-.1*k+1i)*t)]; end, arrowplot(A)
+%
+%   A = []; for k = 1:3, A = [A exp((-.2*k+1i)*t)]; end, arrowplot(A,'multi',5)
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -32,12 +37,13 @@ function varargout = arrowplot(f,varargin)
 % must a CHEBFUN as well. If first input parameter is a complex CHEBFUN, rest of
 % arguments must be options for the plot.
 if isreal(f)
+    assert(nargin > 1, 'CHEBFUN:CHEBFUN:arrowplot:nargin', ...
+        ['Arrowplot expects two real valued CHEBFUNs, or a complex CHEBFUN '...
+        'as arguments'])
     g = varargin{1};
     varargin(1) = [];
     f = f + 1i*g;
 end
-
-% If F is just a 0 chebfun, don't plot arrows
 
 % Did the user pass in ystretch argument?
 findStretch = find(strcmp(varargin,'ystretch'));
@@ -59,19 +65,35 @@ else
     markerSize = 6;
 end
 
+% Did the user pass a multi-head argument? Find how many arrowheads have been
+% requested.
+findMulti = find(strcmpi(varargin,'multi'));
+if ~isempty(findMulti)
+    numArrows = varargin{findMulti + 1};
+    varargin(findMulti:findMulti+1) = [];
+else
+    numArrows = 1;
+end
+
 % Evaluate the derivative of input CHEBFUNs to get slope information
 fp = diff(f);
 
 % Get domain information, and evaluate functions and derivatives at the correct
-% point:
+% point(s):
 fdom = domain(f);
-fend = feval(f, fdom(end));
-fpend = feval(fp, fdom(end));
+
+% Points to evaluate functions at for arrow location/slopes
+evalPts = linspace(fdom(1), fdom(end), numArrows + 1);
+evalPts = evalPts(2:end);
+
+% Eval at the points
+fPts = feval(f, evalPts);
+fpPts = feval(fp, evalPts);
 
 % Normalise the slopes
-for aCounter=1:length(fpend)
-    if norm(fpend(aCounter),2) ~= 0
-        fpend(aCounter) = 0.001*fpend(aCounter)/norm(fpend(aCounter),2);
+for aCounter=1:length(fpPts)
+    if norm(fpPts(aCounter),2) ~= 0
+        fpPts(aCounter) = 0.001*fpPts(aCounter)/norm(fpPts(aCounter),2);
     end
 end
 
@@ -85,17 +107,19 @@ else
     pp = plot(f,varargin{:});
 end
 
-% Loop through the pieces, and plot arrows at the end. Don't plot any arrows in
-% the case where the CHEBFUN column is a zero chebfun:
+% Loop through the pieces, and plot arrows at the points requested. Don't plot
+% any arrows in the case where the CHEBFUN column is a zero chebfun:
 isz = iszero(f);
-for aCounter=1:length(fend)
+
+% Loop through the points
+for aCounter=1:length(fpPts)
     h(aCounter) = annotation('arrow','Visible','off');
-    if ( ~isz(aCounter) ) 
+    if ( ~isz(ceil(aCounter/numArrows)) )
         set(h(aCounter),'parent', gca, ...
-            'position', [real(fend(aCounter)) imag(fend(aCounter)) ...
-                real(fpend(aCounter)) ystretch*imag(fpend(aCounter))], ...
+            'position', [real(fPts(aCounter)) imag(fPts(aCounter)) ...
+            real(fpPts(aCounter)) ystretch*imag(fpPts(aCounter))], ...
             'HeadLength', markerSize, 'HeadWidth', markerSize, ...
-            'Color', pp(aCounter).Color, ...
+            'Color', pp(ceil(aCounter/numArrows)).Color, ...
             'Visible', 'on', varargin{:});
     end
 end
