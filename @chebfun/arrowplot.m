@@ -1,9 +1,9 @@
 function varargout = arrowplot(f,varargin)
 %ARROWPLOT   Chebfun plot with arrowhead at end
-%   ARROWPLOT(F,G), where F and G are CHEBFUNs with the same domain, plots the
+%   ARROWPLOT(F, G), where F and G are CHEBFUNs with the same domain, plots the
 %   curve (F,G) in the plane with an arrowhead.
 %
-%   ARROWPLOT(F,G,'multi', n) plots the curve (F,G) in the plan with n
+%   ARROWPLOT(F, G, 'multi', n) plots the curve (F,G) in the plane with n
 %   arrowheads placed on the curve.
 %
 %   ARROWPLOT(F), where F is a complex CHEBFUN, plots the curve
@@ -13,11 +13,11 @@ function varargout = arrowplot(f,varargin)
 %   plotted.
 %
 %   Plotting options can be passed in the usual fashion. For example,
-%   'markerSize' will change the size of the arrowhead plotted. Furthermore,
-%   there is an option 'ystretch', for manually adjusting the slope of the
-%   arrowhead, so that the slope is 'ystretch' times greater than the computed
-%   slope dictates. This is useful for plots which are rescaled, or have their
-%   axes adjusted after plotting.
+%   'markerSize' will change the size of the arrowhead (the default is 6).
+%   Furthermore, there is an option 'ystretch' for manually adjusting the
+%   slope of the arrowhead, so that the slope is 'ystretch' times greater
+%   than the computed slope dictates. This is useful for plots which are 
+%   rescaled, or have their axes adjusted after plotting.
 %
 % Examples:
 %
