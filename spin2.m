@@ -154,7 +154,7 @@ function [uout, tout] = spin2(varargin)
 % CASE 1. U = SPIN2('GL'):
 if ( nargin == 1 ) 
     
-    try spinops2(varargin{1});
+    try spinop2(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPINSPHERE for the list of PDEs.')
     end
