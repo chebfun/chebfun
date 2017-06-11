@@ -149,7 +149,7 @@ if ( nargin == 1 )
 elseif ( nargin == 3 ) 
     
     % CASE 2.1. U = SPIN3('GL', 'PREF1', VALUE1):
-    if ( isa([varargin{1:2}], 'char') == 1 )
+    if ( isa(varargin{1}, 'char') == 1 && isa(varargin{2}, 'char') == 1 )
         [S, N, dt, pref] = parseInputs(varargin{1});
         pref.(varargin{2}) = varargin{3};
         varargin{1} = S;
@@ -170,7 +170,7 @@ elseif ( nargin == 4 )
 elseif ( nargin >= 5 )
     
     % CASE 4.1. U = SPIN3('GL', 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
-    if ( isa([varargin{1:2}], 'char') == 1 )
+    if ( isa(varargin{1}, 'char') == 1 && isa(varargin{2}, 'char') == 1 )
         [S, N, dt, pref] = parseInputs(varargin{1});
         j = 2;
         while j < nargin
