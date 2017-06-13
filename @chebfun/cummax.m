@@ -3,6 +3,10 @@ function g = cummax(f)
 %   G = CUMMAX(F) is the cumulative maximum of a row or column CHEBFUN F
 %   over its domain of definition.
 %
+% Example:
+%
+%   rng(0), f = randnfun(.01); plot(f,'b',cummax(f),'r')
+%
 % See also CUMMIN.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.

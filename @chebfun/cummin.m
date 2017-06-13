@@ -3,6 +3,10 @@ function g = cummin(f)
 %   G = CUMMIN(F) is the cumulative minimum of a row or column CHEBFUN F
 %   over its domain of definition.
 %
+% Example:
+%
+%   f = chebfun('t*sin(t)',[0 60]); plot(f,'b',cummin(f),'r')
+%
 % See also CUMMAX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
