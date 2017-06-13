@@ -1,6 +1,7 @@
 function g = cummax(f)
 %CUMMAX   Cumulative maximum of a CHEBFUN.
-%   G = CUMMAX(F) 
+%   G = CUMMAX(F) is the cumulative maximum of a row or column CHEBFUN F
+%   over its domain of definition.
 %
 % See also CUMMIN.
 
@@ -14,11 +15,12 @@ end
 
 [rows, cols] = size(f);
 % Quasimatrices are not supported:
-if ( rows == Inf || cols == Inf )
+if ( (rows == Inf && cols > 1) || (cols == Inf && rows > 1) )
     error('CHEBFUN:CHEBFUN:cummax:quasi', ...
         'CUMMAX does not currently support quasimatrices.');
 end
 
+% Check if we are dealing with a row CHEBFUN
 rowChebfun = 0;
 if rows == 1
     rowChebfun = 1;

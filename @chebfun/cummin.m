@@ -1,6 +1,7 @@
 function g = cummin(f)
-%CUMMAX   Cumulative minimum of a CHEBFUN.
-%   G = CUMMIN(F) 
+%CUMMIN   Cumulative minimum of a CHEBFUN.
+%   G = CUMMIN(F) is the cumulative minimum of a row or column CHEBFUN F
+%   over its domain of definition.
 %
 % See also CUMMAX.
 
@@ -14,12 +15,12 @@ end
 
 % Quasimatrices are not supported:
 [rows, cols] = size(f);
-if ( rows == Inf || cols == Inf )
+if ( (rows == Inf && cols > 1) || (cols == Inf && rows > 1) )
     error('CHEBFUN:CHEBFUN:cummin:quasi', ...
         'CUMMIN does not currently support quasimatrices.');
 end
 
-% Call CUMMAX:
+% Solve the problem by calling CUMMAX:
 g = -cummax(-f);
 
 end
