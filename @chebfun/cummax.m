@@ -58,7 +58,7 @@ for i = 1:length(x)-1
 end
 
 if( x(end) < f.domain(end) )
-    fi = chebfun(fx(end), [x(end) f.domain(end)]);
+    fi = chebfun(fx(end), [x(end), f.domain(end)]);
     funs = [funs, fi.funs];
 end
 
