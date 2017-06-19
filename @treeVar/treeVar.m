@@ -289,6 +289,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'expm1');
         end
         
+        function f = fred(varargin)
+            error('CHEBFUN:TREEVAR:FRED:notSupported', ...
+                'Fred is not supported in treeVar.');
+        end
+        
         function f = imag(f)
             f.tree = f.univariate(f.tree, 'imag');
         end
@@ -487,6 +492,12 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         function f = uplus(f)
             f.tree = f.univariate(f.tree, 'uplus');
         end
+        
+        function f = volt(varargin)
+            error('CHEBFUN:TREEVAR:VOLT:notSupported', ...
+                'Volt is not supported in treeVar.');
+        end
+        
     end
     
     methods ( Access = private )
