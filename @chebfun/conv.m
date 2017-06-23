@@ -147,7 +147,7 @@ else
 
     % Ensure g is the signal (i.e., on the larger domain) and f is the filter:
     if ( (b - a) > (d - c) )
-        h = conv(g, f);
+        h = conv(g, f, varargin{:});
         return
     end
 

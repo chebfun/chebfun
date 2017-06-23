@@ -65,7 +65,7 @@ pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 % Compute the convolution of funParts and append it to the output cell:
-h = conv(funF, funG, pt);
+h = conv(funF, funG, 'cheb');
 
 % Remove zero funs for simplicity:
 zeroIndices = cellfun( @(hk) iszero(hk), h);
