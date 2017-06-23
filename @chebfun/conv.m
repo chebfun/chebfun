@@ -37,6 +37,10 @@ function h = conv(f, g, varargin)
 %   [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
 %   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3,
 %   pp. A1207-A1220, 2014.
+% 
+%   [2]. Xu and Loureiro, "Spectral approximation of convolution operator"
+%   (2017).
+%   [3]. Loureiro and Xu, "Convolution of Chebyshev polynomials" (2017).
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -90,6 +94,9 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
+pt = 'cheb';
+% pt = 'leg';
+
 % Parse inputs:
 oldMethod = false;
 same = false;
@@ -99,6 +106,10 @@ for k = 1:numel(varargin)
         oldMethod = true;
     elseif ( strcmpi(vk, 'same') )
         same = true;
+    elseif ( strcmpi(vk, 'cheb') )
+        pt = 'cheb';
+    elseif ( strcmpi(vk, 'leg') )
+        pt = 'leg';
     elseif ( strcmpi(vk, 'full') )
         % Do nothing.
     elseif ( strcmpi(vk, 'valid') )
@@ -146,7 +157,7 @@ else
     for j = 1:numel(f.funs)
         for k = 1:numel(g.funs)
             % Compute the contribution of jth fun of f with kth fun of g:
-            hjk = conv(f.funs{j}, g.funs{k});  
+            hjk = conv(f.funs{j}, g.funs{k}, pt);  
             % Add this contribution:            
             h = myplus(h, chebfun(hjk));
         end

@@ -1,4 +1,4 @@
-function h = conv(f, g)
+function h = conv(f, g, pt)
 %CONV   Convolution of DELTAFUN objects.
 %   H = CONV(F, G) produces the convolution of DELTAFUN objects F and G:
 %                     - 
@@ -65,7 +65,7 @@ pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 % Compute the convolution of funParts and append it to the output cell:
-h = conv(funF, funG);
+h = conv(funF, funG, pt);
 
 % Remove zero funs for simplicity:
 zeroIndices = cellfun( @(hk) iszero(hk), h);
