@@ -290,8 +290,15 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = fred(varargin)
+            %FRED   Not supported.
+            % We don't support integral equations with our first order
+            % reformulation. However, we could accidentally end up here in case
+            % of first order integral equation, where the conditions are
+            % specified via N.LBC/RBC. Throw a meaningful error message in this
+            % case.
             error('CHEBFUN:TREEVAR:FRED:notSupported', ...
-                'Fred is not supported in treeVar.');
+                ['Fred is not supported in treeVar. Please specify '...
+                'conditions via N.BC rather than N.LBC/RBC.']);
         end
         
         function f = imag(f)
@@ -494,8 +501,15 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = volt(varargin)
+            %VOLT   Not supported.
+            % We don't support integral equations with our first order
+            % reformulation. However, we could accidentally end up here in case
+            % of first order integral equation, where the conditions are
+            % specified via N.LBC/RBC. Throw a meaningful error message in this
+            % case.
             error('CHEBFUN:TREEVAR:VOLT:notSupported', ...
-                'Volt is not supported in treeVar.');
+                ['Volt is not supported in treeVar. Please specify '...
+                'conditions via N.BC rather than N.LBC/RBC.']);
         end
         
     end
