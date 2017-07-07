@@ -35,6 +35,8 @@ function f = randnfun(varargin)
 %   rng(s), f2 = randnfun(0.1,'norm',[0 10],3);
 %   plot(cumsum(f1),'k',cumsum(f2),'r')
 %
+%   plot(cumsum(randnfun(.01,[0 5],'complex','norm'))), axis equal
+%
 % See also RANDNFUN2, RANDNFUNSPHERE, RANDNFUNDISK.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
