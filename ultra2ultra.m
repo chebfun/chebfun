@@ -8,7 +8,7 @@ function c = ultra2ultra(c, lam_in, lam_out)
 %   References:
 %     [1] A. Townsend, M. Webb, and S. Olver, "Fast polynomial transforms
 %     based on Toeplitz and Hankel matrices", submitted, 2016.
-
+%
 % See also JAC2JAC.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
