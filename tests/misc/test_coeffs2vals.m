@@ -32,10 +32,12 @@ pass(12) = norm(v_leg - chebvals2legvals(v_cheb2, 2), inf) < tol;
 pass(13) = norm(v_cheb1 - legcoeffs2chebvals(c_leg, 1), inf) < tol;
 pass(14) = norm(v_cheb1 - chebcoeffs2chebvals(c_cheb,1), inf) < tol;
 pass(15) = norm(v_cheb1 - legvals2chebvals(v_leg, 1), inf) < tol;
+pass(16) = norm(v_cheb1 - chebvals2chebvals(v_cheb2, 2, 1), inf) < tol;
 
-pass(16) = norm(v_cheb2 - legcoeffs2chebvals(c_leg, 2), inf) < tol;
-pass(17) = norm(v_cheb2 - chebcoeffs2chebvals(c_cheb,2), inf) < tol;
-pass(18) = norm(v_cheb2 - legvals2chebvals(v_leg, 2), inf) < tol;
+pass(17) = norm(v_cheb2 - legcoeffs2chebvals(c_leg, 2), inf) < tol;
+pass(18) = norm(v_cheb2 - chebcoeffs2chebvals(c_cheb,2), inf) < tol;
+pass(19) = norm(v_cheb2 - legvals2chebvals(v_leg, 2), inf) < tol;
+pass(20) = norm(v_cheb2 - chebvals2chebvals(v_cheb1, 1, 2), inf) < tol;
 
 end
 
