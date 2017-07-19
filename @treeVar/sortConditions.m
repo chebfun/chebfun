@@ -32,7 +32,7 @@ function idx = sortConditions(funIn, domain, maxDiffOrders)
 %      that the values are in the correct order for MATLAB.
 
 % Check how many unknowns appear in FUNIN.
-numArgs = nargin(funIn);
+numArgs = length(maxDiffOrders);
 args = cell(numArgs, 1);
 
 % The ID vector to be passed to the TREEVAR constructor.
