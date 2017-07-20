@@ -40,9 +40,14 @@ elseif ( isa(BC, 'function_handle') )
     % not specified in the function handle arguments, allow also passing an
     % input function handle that takes one argument. Otherwise, we request that
     % the number of input to the BC function handle is one less than the number
-    % of arguments to the OP part.
+    % of arguments to the OP part. A special case is when BCs are specified as a
+    % vector, this leads to nargin(BC) = -1 (since we assigned the boundary
+    % conditions as an anonymous function with a varargin argument), if this is
+    % the case and the number of inputs for the BC don't match the operator, a
+    % meaningful error will be thrown later on.
     if ( (numIn == 0) || ( (numIn == 1) && (nargin(BC) == 1) ) || ...
             ( strcmp(type,'lrbc') && (nargin(BC) == (numIn - 1)) ) || ...
+            ( strcmp(type,'lrbc') && (nargin(BC) == -1) ) || ...
             ( strcmp(type,'bc') && (nargin(BC) == numIn) ) || ...
             ( strcmp(type,'bc') && (nargin(BC) == numIn + 1) ) )
         % We've got an anonymous function we're happy with. Do we need to

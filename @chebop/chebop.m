@@ -69,7 +69,7 @@ classdef (InferiorClasses = {?double}) chebop
 %                     the second entry of the vector, etc. . E.g. for a system
 %                     with two unknown functions on [0,1], N.lbc = [1;3]
 %                     specifies
-%                         u(0) = 1; v(0) = 1
+%                         u(0) = 1, v(0) = 1
 %   'dirichlet' : All variables equal zero.
 %   'neumann'   : All variables have derivative zero.
 %   function    : A function handle that must accept all dependent variables as
