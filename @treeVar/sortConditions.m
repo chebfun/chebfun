@@ -31,8 +31,11 @@ function idx = sortConditions(funIn, domain, maxDiffOrders)
 %      gives the correct order in which the above vector has to be sorted so 
 %      that the values are in the correct order for MATLAB.
 
-% Check how many unknowns appear in FUNIN.
-numArgs = length(maxDiffOrders);
+% Check how many unknowns appear in FUNIN. When BCs are assigned via e.g.
+% N.lbc = [1;3], nargin(funIn) == -1 due to the function that gets assigned
+% under the hood having varargin as its argument. Hence we look at the length of
+% diffOrders as well.
+numArgs = max(nargin(funIn), length(maxDiffOrders));
 args = cell(numArgs, 1);
 
 % The ID vector to be passed to the TREEVAR constructor.
