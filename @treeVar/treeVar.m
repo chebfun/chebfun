@@ -71,11 +71,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         %    HEIGHT: The height of the syntax tree, i.e., the number of
         %        operations between the base variables(s) and the current
         %        variable.
-        %    MULTCOEFF: The multiplication in front of the variable, which can
-        %        either be a CHEBFUN or a scalar. For example, the sequence
-        %            u = treeVar();
-        %            v = sin(x)*u'l
-        %        will have v.multcoeff == sin(x).
         %    ID: A Boolean vector, whose ith element is equal to 1 if the
         %        TREEVAR variable was constructed from the ith base variable,
         %        0 otherwise. For example, the sequence
@@ -114,8 +109,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             
             % Initialise a syntax tree for a base variable:
             obj.tree  = struct('method', 'constr', 'numArgs', 0, ...
-                'diffOrder', 0*IDvec, 'height', 0, 'multCoeff', 1, ...
-                'ID', logical(IDvec),'hasTerms', 0);
+                'diffOrder', 0*IDvec, 'height', 0, 'ID', logical(IDvec), ...
+                'hasTerms', 0);
         end
         
         function f = abs(f)
@@ -256,7 +251,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 'diffOrder', f.tree.diffOrder + k*f.tree.ID, ...
                 'height', f.tree.height + 1, ...
                 'ID', f.tree.ID, ...
-                'multCoeff', f.tree.multCoeff, ...
                 'hasTerms', f.tree.hasTerms);
         end
         
