@@ -153,8 +153,10 @@ cheb0 = chebfun(@(x) 0*x, dom);
 % Evaluate N.LBC or N.RBC:
 if ( ~isempty(N.lbc) )
     % Create enough copies to allow to evaluate the initial condition for
-    % systems:
-    cheb0 = repmat({cheb0}, nargin(N.lbc), 1);
+    % systems. We use the DIFFORDER variable from the first order conversion
+    % above for giving us information about the number of variables in the
+    % problem:
+    cheb0 = repmat({cheb0}, length(diffOrders), 1);
     % Evaluate the initial condition:
     bcEvalFun = N.lbc(cheb0{:});
     % Store the point at which the initial condition is evaluated (left
@@ -167,7 +169,7 @@ if ( ~isempty(N.lbc) )
 else
     % Create enough copies to allow to evaluate the initial condition for
     % systems:
-    cheb0 = repmat({cheb0}, nargin(N.rbc), 1);
+    cheb0 = repmat({cheb0}, length(diffOrders), 1);
     % Evaluate the final condition:
     bcEvalFun = N.rbc(cheb0{:});
     % Store the point at which the final condition is evaluated (right
