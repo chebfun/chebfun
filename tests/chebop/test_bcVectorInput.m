@@ -45,9 +45,8 @@ pass(6) = abs(u(-1) - 1) + abs(v(-1) - 2) < 1e-11;
 N = chebop(@(x,u,v,w,y) [diff(u) + v; diff(v) - w; diff(w)-y; diff(y)-u]);
 N.rbc = [1; 2; 4; 3];
 [u,v,w,y] = N\0;
-pass(7) = abs(u(-1) - 1) + abs(v(-1) - 2) + abs(w(-1) - 4) + ...
-    abs(y(-1) - 3) < 1e-11;
-
+pass(7) = abs(u(1) - 1) + abs(v(1) - 2) + abs(w(1) - 4) + ...
+    abs(y(1) - 3) < 1e-11;
 
 %% First order system (more variables), test rbc
 N = chebop(@(x,u,v,w,y) [diff(u) + v; diff(v) - w; diff(w)-y; diff(y)-u]);
