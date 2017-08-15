@@ -2,10 +2,10 @@ function varargout = surf(f, varargin)
 %SURF  Surface plot of a SPHEREFUN.
 %   SURF(F) plots F on the surface of a sphere.
 %
-%   SURF(...,'GRID',S) plots F on the surface of a sphere and includes a
+%   SURF(..., 'GRID', S) plots F on the surface of a sphere and includes a
 %   grid with standard line properties specifed by the string S.
 %
-%   SURF(...,'PROJECTION',type) plots F using one of the following map
+%   SURF(..., 'PROJECTION', type) plots F using one of the following map
 %   projections specified by the string type:
 %     'sphere'          : 3D plot on the sphere (default)
 %     'equirectangular' : Standard latitude-longitude cylindrical projection
@@ -13,9 +13,10 @@ function varargout = surf(f, varargin)
 %     'albers'          : Albers conic projection
 %     'eckert2'         : Eckert II pseudocylindrical projection
 %     'winkel3'         : Winkel III (or tripel) pseudoazimuthal projection
-%     'sinusoidal'      : Sinusoidal (or Mercator equal-area) pseudocylindrical projection
+%     'sinusoidal'      : Sinusoidal (or Mercator equal-area) pseudocylindrical 
+%                         projection
 %
-%   SURF(...,'NUMPOINTS',N) plots F using an N-by-N latitude-longitude
+%   SURF(..., 'NUMPOINTS', N) plots F using an N-by-N latitude-longitude
 %   sample grid.
 %
 %   SURF(..., 'PropertyName', PropertyValue,...) sets the value of the
@@ -26,12 +27,12 @@ function varargout = surf(f, varargin)
 %
 %   Examples:
 %      f = cheb.gallerysphere('vortices');
-%      surf(f,'grid','k-')
+%      surf(f, 'grid', 'k-')
 %
 %      f = spherefun.sphharm(4,0) + sqrt(5/7)*spherefun.sphharm(4,4);
-%      surf(f,'projection','hammer','grid','k-')
+%      surf(f, 'projection', 'hammer', 'grid', 'k-')
 %
-% See also SEPARABLEAPPROX/SURF, PLOT.
+% See also SEPARABLEAPPROX/SURF, MESH, PLOT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -71,8 +72,15 @@ while ( ~isempty(varargin) )
         varargin(1:2) = [];
     elseif strcmpi(varargin{1}, 'grid')
         addGrid = 1;
-        gridLineType = varargin{2};
-        varargin(1:2) = [];
+        if mod(nargin, 2) == 0 
+        % e.g., surf(f, 'grid') or surf(f, 'grid', 'projection', 'hammer')                       
+            gridLineType = 'k-';
+            varargin(1) = [];
+        else
+        % e.g. surf(f, 'grid', 'k-')
+            gridLineType = varargin{2};
+            varargin(1:2) = [];
+        end
     elseif strcmpi(varargin{1}, 'projection')
         plotType = varargin{2};
         addGrid = 1;
