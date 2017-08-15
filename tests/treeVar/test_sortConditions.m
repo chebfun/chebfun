@@ -103,7 +103,7 @@ end
 %% Unsupported format, unknown function appears twice, system
 icFun = @(x,u,v) u + diff(u);
 try
-    treeVar.sortConditions(icFun, dom);
+    treeVar.sortConditions(icFun, dom, 2);
 catch ME
     % The highest order derivatives of u and v appear in the same line -- this
     % should give us an error.
