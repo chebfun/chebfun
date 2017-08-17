@@ -139,13 +139,10 @@ D = det([-a*alp -alp 1; -b -1 1; c 1 1]);
 T = @(z) (A*z+B)./(C*z+D);                     % Mobius transfom
 J = ceil( log(16*gam)*log(4/tol)/pi^2 ); % No. of ADI iterations
 if ( alp > 1e7 )
-    alp = vpa( alp ); 
-    K = double( ellipke( 1-1/alp^2 ) );
+    K = (2*log(2)+log(alp)) + (-1+2*log(2)+log(alp))/alp^2/4;
     m1 = 1/alp^2; 
     u = (1/2:J-1/2)*K/J; 
     dn = sech(u) + .25*m1*(sinh(u).*cosh(u)+u).*tanh(u).*sech(u); 
-    dn = double( dn );
-    alp = double( alp ); 
 else
     K = ellipke( 1-1/alp^2 );
     [~, ~, dn] = ellipj((1/2:J-1/2)*K/J,1-1/alp^2);% ADI shifts for [-1,-1/t]&[1/t,1]
