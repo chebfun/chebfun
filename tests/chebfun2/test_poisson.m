@@ -59,6 +59,21 @@ u = chebfun2.poisson(f, p, m, n);
 v = solvepde(N, f, m, n);
 pass(5) = ( norm(u-v) < 100*tol );
 
+% General Dirichlet data, given as chebfun2:
+m = 201; n = 201; 
+a = -3; b = 1; c = 4; d = 4.2; 
+p = @(x,y) x.*y + cos(3*x.^2.*(y-.2));
+N = chebop2( @(u) lap(u), [a b c d] ); 
+N.lbc = @(y) p(a,y);
+N.rbc = @(y) p(b,y);
+N.dbc = @(x) p(x,c);
+N.ubc = @(x) p(x,d);
+g = chebfun2( p, [a b c d]);
+f = chebfun2(@(x,y) 1+0*x, [a b c d]); 
+u = chebfun2.poisson(f, g, m, n);
+v = solvepde(N, f, m, n);
+pass(6) = ( norm(u-v) < 100*tol );
+
 if ( all(pass) ) 
     pass = 1; 
 end

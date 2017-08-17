@@ -80,7 +80,7 @@ d = -dsub - dsup;
 Mn = spdiags([dsub d dsup], [-2 0 2], n, n);
 % Construct D^{-1}, which undoes the scaling from the Laplacian identity
 invDn = spdiags(-1./(jj.*(jj+3)+2), 0, n, n);
-Tn = invDn * Mn;
+Tn = scl_y * invDn * Mn;
 
 jj = (0:m-1)';
 dsub = -1./(2*(jj+3/2)).*(jj+1).*(jj+2)*1/2./(1/2+jj+2);
@@ -88,25 +88,27 @@ dsup = -1./(2*(jj+3/2)).*(jj+1).*(jj+2)*1/2./(1/2+jj);
 d = -dsub - dsup;
 Mm = spdiags([dsub d dsup], [-2 0 2], m, m);
 invDm = spdiags(-1./(jj.*(jj+3)+2), 0, m, m);
+
 % Construct T = D^{-1} * M:
-Tm = invDm * Mm;
-
-% Now solve TmX + XTn' = F using ADI. This requires O(n^2log(n)log(1/eps)) operations:
-
-% Solve the Sylvester equation for the even and odd coefficients
-% separately. The goal is to replace lyap with something faster.
+Tm = scl_x * invDm * Mm;
 F = invDm * F * invDn;
 
-% Calculate ADI shifts:
-a = -scl_y*4/pi^2;
-b = -scl_y*39*m^-4;
-c = scl_x*39*n^-4;
-d = scl_x*4/pi^2;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%  Alternating Direction Implicit method %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Solve TmX + XTn' = F using ADI, which requires O(n^2log(n)log(1/eps)) 
+% operations:
+
+% Calculate ADI shifts based on bounds on the eigenvalues of Tn and Tm:
+a = -4/pi^2 * scl_y;
+b = -39*n^-4 * scl_y;
+c = 39*m^-4 * scl_x;
+d = 4/pi^2 * scl_x;
 [p, q] = ADIshifts(a, b, c, d, 1e-14);
 
-% Run ADI:
+% Run the ADI method:
 X = zeros(m, n);
-A = scl_x*Tm; B = -scl_y*Tn';
+A = Tm; B = -Tn';
 Im = speye(m);
 In = speye(n);
 for j = 1:numel(p)
@@ -147,7 +149,17 @@ function X = Chebyshev2ultra( X )
 
 % First convert the matrix of Chebyshev coefficients to a matrix of
 % Legendre coefficients:
-X = cheb2leg( cheb2leg( X ).' ).';
+[m, n] = size(X); 
+if ( m == n && n <= 4000 )
+    S = cheb2leg_mat( n );
+    X = (S * X) * S.';
+elseif ( max( m, n) <= 4000 )
+    Sn = cheb2leg_mat( n );
+    Sm = cheb2leg_mat( m );
+    X = (Sm * X) * Sn.'; 
+else
+    X = cheb2leg( cheb2leg( X ).' ).';
+end
 
 % Now, convert the matrix of Legendre coefficient to a matrix of
 % ultraspherical coefficients:
@@ -163,14 +175,23 @@ function X = ultra1mx2Chebyshev( X )
 
 % First, convert the matrix of (1-x^2)(1-y^2)C^(3/2)(x)C^(3/2)(y) coefficients
 % to Legendre coefficients:
-[M, N] = size( X );
-S1 = ultra1mx2Legendre( M );
-S2 = ultra1mx2Legendre( N );
+[m, n] = size( X );
+S1 = ultra1mx2Legendre( m );
+S2 = ultra1mx2Legendre( n );
 X = S1 * X * S2.';
 
 % Now, convert the matrix of Legendre coefficient to a matrix of Chebyshev
 % coefficients:
-X = leg2cheb( leg2cheb( X ).' ).';
+if ( m == n && n <= 4000 )
+    S = leg2cheb_mat( n );
+    X = (S * X) * S.';
+elseif ( max( m, n) <= 4000 )
+    Sn = leg2cheb_mat( n );
+    Sm = leg2cheb_mat( m );
+    X = (Sm * X) * Sn.'; 
+else
+    X = leg2cheb( leg2cheb( X ).' ).';
+end
 end
 
 function S = Legendre2ultraMat( n )
@@ -190,5 +211,57 @@ function S = ultra1mx2Legendre( n )
 d = ones(n, 1);
 S = spdiags(((1:n).*(2:(n+1))./2./(3/2:n+1/2))', 0, n, n);
 S = spdiags( [d,-d], [0,-2], n, n ) * S;
+
+end
+
+function L = cheb2leg_mat( N ) 
+% Construct the cheb2leg conversion matrix.
+
+% This for-loop is a faster and more accurate way of doing:
+% Lambda = @(z) exp(gammaln(z+1/2) - gammaln(z+1));
+% vals = Lambda( (0:2*N-1)'/2 );
+vals = zeros(2*N,1);
+vals(1) = sqrt(pi);
+vals(2) = 2/vals(1);
+for i = 2:2:2*(N-1)
+    vals(i+1) = vals(i-1)*(1-1/i);
+    vals(i+2) = vals(i)*(1-1/(i+1));
+end
+
+L = zeros(N, N); 
+for j = 0:N-1
+    for k = j+2:2:N-1
+        L(j+1, k+1) = -k*(j+.5)*(vals((k-j-2)+1)./(k-j)).*(vals((k+j-1)+1)./(j+k+1));
+    end
+end
+c = sqrt(pi)/2;
+for j = 1:N-1
+    L(j+1, j+1) = c./vals( 2*j+1 ); 
+end
+L(1,1) = 1; 
+
+end 
+
+function M = leg2cheb_mat( N )
+% Construct the leg2cheb conversion matrix.
+
+% This for-loop is a faster and more accurate way of doing:
+% Lambda = @(z) exp(gammaln(z+1/2) - gammaln(z+1));
+% vals = Lambda( (0:2*N-1)'/2 );
+vals = zeros(2*N,1);
+vals(1) = sqrt(pi);
+vals(2) = 2/vals(1);
+for i = 2:2:2*(N-1)
+    vals(i+1) = vals(i-1)*(1-1/i);
+    vals(i+2) = vals(i)*(1-1/(i+1));
+end
+
+M = zeros(N, N); 
+for j = 0:N-1
+    for k = j:2:N-1
+        M(j+1, k+1) = 2/pi*vals((k-j)+1).*vals((k+j)+1);
+    end
+end
+M(1,:) = .5*M(1,:); 
 
 end
