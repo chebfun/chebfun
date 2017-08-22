@@ -25,14 +25,16 @@ function varargout = surf(f, varargin)
 %
 %   H = SURF(...) returns a handle to a surface plot object.
 %
+%   Note: to plot columns and rows of a SPHEREFUN, use PLOT(..., '.-').
+%
 %   Examples:
 %      f = cheb.gallerysphere('vortices');
-%      surf(f, 'grid', 'k-')
+%      surf(f, 'grid')
 %
 %      f = spherefun.sphharm(4,0) + sqrt(5/7)*spherefun.sphharm(4,4);
-%      surf(f, 'projection', 'hammer', 'grid', 'k-')
+%      surf(f, 'projection', 'hammer', 'grid')
 %
-% See also SEPARABLEAPPROX/SURF, MESH, PLOT.
+% See also MESH, PLOT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
