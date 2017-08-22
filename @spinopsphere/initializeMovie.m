@@ -12,24 +12,38 @@ function [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 % complex-valued).
 
 % Set-up:
-nVars = S.numVars;
+nVars = S.numVars;                    % Number of variables (>1 for systems)
+vscale = max(abs(v(:)));              % Scale of the solution 
+dataplot = str2func(pref.dataplot);   % Plot 'abs', 'real' or 'imag'
+ll = compGrid{1};                     % Computation grid (lambda-direction)
+tt = compGrid{2};                     % Computation grid (theta-direction)
+N = 2*(size(ll, 1) - 1);              % Size of computation grid (same in la&th)
+lll = plotGrid{1};                    % Movie grid (lambda-direction)
+ttt = plotGrid{2};                    % Movie grid (theta-direction)
+Nplot = 2*(size(lll, 1) - 1);         % Size of movie grid (same in la&th)
+FS = 'fontsize'; fs = 12;             % Fontsize for title
+
+% Viewpoint specification (see SPINPREFSPHERE):
 viewSpec = pref.view;
-vscale = max(abs(v(:)));
-dataplot = str2func(pref.dataplot);
 defaultPref = spinprefsphere();
 defaultView = defaultPref.view;
 while ( length(viewSpec) < 2*nVars )
     viewSpec = [viewSpec, defaultView];
 end
-ll = compGrid{1};
-tt = compGrid{2};
-N = 2*(size(ll, 1) - 1);
-lll = plotGrid{1};
-ttt = plotGrid{2};
-Nplot = 2*(size(lll, 1) - 1);
-FS = 'fontsize';
-fs = 12;
 
+% Meshgrid for plotting lines of longitude and latitude and latitude:
+if ( strcmpi(pref.grid, 'on') == 1 )
+    gridLineType = 'k-';
+    LW = 'linewidth'; lw = 1;
+    numGridPtsLam = 12; % Number of longitude circles
+    numGridPtsTh = 6;   % Number of latitude circles
+    minPlotNum = 200;   % Number of points on each circle
+    [llgl, ttgl] = meshgrid(linspace(-pi, pi, numGridPtsLam + 1), ...
+        linspace(0, pi, minPlotNum));
+    [llgt, ttgt] = meshgrid(linspace(-pi, pi, minPlotNum), ...
+        linspace(0, pi, numGridPtsTh + 1));
+end
+    
 % Loop over the variables:
 p = cell(2, nVars); clf reset
 for k = 1:nVars
@@ -55,7 +69,7 @@ for k = 1:nVars
     else
         vvv = vv;
     end
-    
+
     % Plot each variable:
     subplot(1, nVars, k)
     [xxx, yyy, zzz] = sph2cart(lll, pi/2 - ttt, ones(size(lll)));
@@ -66,6 +80,14 @@ for k = 1:nVars
     colorbar, colormap(pref.colormap)
     set(gca, 'xtick', [-1 0 1], 'ytick', [-1 0 1], 'ztick', [-1 0 1])
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
+    
+    % Plot lines of longitude and latitude:
+    if ( strcmpi(pref.grid, 'on') == 1 )
+        [xxg, yyg, zzg] = sph2cart(llgl, pi/2 - ttgl, 1 + 0*llgl);
+        hold on, plot3(xxg, yyg, zzg, gridLineType, LW, lw)
+        [xxg, yyg, zzg] = sph2cart(llgt, pi/2 - ttgt, 1 + 0*llgt);
+        plot3(xxg', yyg', zzg', gridLineType, LW, lw)
+    end
     
     % Plot each title:
     titleString = sprintf('n = m = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...

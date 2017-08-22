@@ -69,8 +69,8 @@ classdef spinoperator
             names = fieldnames(wrk);
             if ( isempty(names) == 0 )
                 lengthNames = size(names, 1);
-                for k = 1:lengthNames
-                    eval(sprintf('%s = wrk.(names{k});', names{k}));
+                for iter = 1:lengthNames
+                    eval(sprintf('%s = wrk.(names{iter});', names{iter}));
                 end
             end
             
@@ -128,8 +128,8 @@ classdef spinoperator
             names = fieldnames(wrk);
             if ( isempty(names) == 0 )
                 lengthNames = size(names, 1);
-                for k = 1:lengthNames
-                    eval(sprintf('%s = wrk.(names{k});', names{k}));
+                for iter = 1:lengthNames
+                    eval(sprintf('%s = wrk.(names{iter});', names{iter}));
                 end
             end
             
@@ -170,10 +170,10 @@ classdef spinoperator
                 
                 % Second, relabel the variables:
                 strNv = strNv(closeParenthesis+1:end);
-                for k = 1:nVars
-                    idx1 = [num2str(rats((k-1)/nVars)), '*', 'length(u)', '+1'];
-                    idx2 = [num2str(rats(k/nVars)), '*', 'length(u)'];
-                    strNvNew = strrep(strNv, variablesNames{k}, ...
+                for iter = 1:nVars
+                    idx1 = [num2str(rats((iter-1)/nVars)), '*', 'length(u)', '+1'];
+                    idx2 = [num2str(rats(iter/nVars)), '*', 'length(u)'];
+                    strNvNew = strrep(strNv, variablesNames{iter}, ...
                         ['u(', idx1, ':', idx2, ',:,:)']);
                     strNv = strNvNew;
                 end
