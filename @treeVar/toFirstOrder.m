@@ -1,5 +1,5 @@
 function [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
-    toFirstOrder(funIn, rhs, domain)
+    toFirstOrder(funIn, rhs, domain, numArgs, cellArg)
 %TOFIRSTORDER   Convert higher order anonymous functions to first order systems.
 %   Calling sequence:
 %      [FUNOUT, INDEXSTART, PROBLEMDOM, COEFFS, TOTALDIFFORDERS] = ...
@@ -27,6 +27,12 @@ function [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
 %      TOTALDIFFORDERS:
 %                  A vector that contains the maximum diffOrder applying to
 %                  each variable in the problem.
+%
+%   In addition, one can pass the following arguments to the function, which are
+%   only required if working in CHEBMATRIX syntax, for example, 
+%   @(x,u)[diff(u{1}) + u{2};...]:
+%       NVARS:   The number of unknown variables in the ODE.
+%       CELLARG: Specify as TRUE if FUNIN is specified in CHEBMATRIX syntax.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -34,10 +40,17 @@ function [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
 % Independent variable on the domain
 t = chebfun(@(t) t, domain);
 
-% We always have at least one argument to FUNIN, even in the scalar case. In the
-% system case, the first argument to funIn must be the independent time
-% variable. So the number of treeVar arguments needed is one less:
-numArgs = max(1, nargin(funIn) - 1);
+% See if we need to determine the number of variables involved, or if it was
+% passed as an argument.
+if ( nargin < 4)
+    % We always have at least one argument to FUNIN, even in the scalar case. In
+    % the system case, the first argument to funIn must be the independent time
+    % variable. So the number of treeVar arguments needed is one less:
+    numArgs = max(1, nargin(funIn) - 1);
+    % If working in CHEBMATRIX syntax, we need all possible input variables to
+    % be passed in as arguments:
+    cellArg = false;
+end
 args = cell(numArgs, 1);
 argsVec = zeros(1, numArgs);
 
@@ -49,13 +62,18 @@ for argCount = 1:numArgs
     argsVec = 0*argsVec;
 end
 
-% Evaluate FUNIN with the TREEVAR arguments. If FUNIN only has one input
-% argument, we just give it a TREEVAR argument. Otherwise, the first input
-% will be the independent variable on the domain:
-if ( nargin(funIn) == 1 )
-    fevalResult = funIn(args{:});
+% Evaluate FUNIN with the TREEVAR arguments. Need different calling sequences
+% depending on whether we're working with CHEBMATRIX syntax and cells or not:
+if ( cellArg )
+    fevalResult = funIn(t, args);
 else
-    fevalResult = funIn(t, args{:});
+    % If FUNIN only takes one argument, we just give it the TREEVAR argument. 
+    % Otherwise, the first input will be the independent variable on the domain:
+    if ( nargin(funIn) == 1 )
+        fevalResult = funIn(args{:});
+    else
+        fevalResult = funIn(t, args{:});
+    end
 end
 
 % If we got passed the problem as N\0, i.e. a RHS that did not match the
