@@ -551,7 +551,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         % Convert higher order anonymous functions to first order systems
         [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
-            toFirstOrder(funIn, rhs, domain)
+            toFirstOrder(funIn, rhs, domain, numArgs, cellArg)
         
     end
     
