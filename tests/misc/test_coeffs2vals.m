@@ -40,5 +40,3 @@ pass(19) = norm(v_cheb2 - legvals2chebvals(v_leg, 2), inf) < tol;
 pass(20) = norm(v_cheb2 - chebvals2chebvals(v_cheb1, 1, 2), inf) < tol;
 
 end
-
-

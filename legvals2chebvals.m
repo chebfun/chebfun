@@ -5,7 +5,7 @@ function chebvals = legvals2chebvals(legvals, varargin)
 %   representing the same polynomial evaluated at CHEBPTS.
 %
 %   LEGVALS2CHEBVALS(LEGVALS, 1) is similar except that the result is the same
-%   polynomial at second-kind Chebyshjegv points (i.e,. CHEBPTS(N,1)).
+%   polynomial at second-kind Chebyshev points (i.e,. CHEBPTS(N,1)).
 % 
 % See also CHEBVALS2LEGVALS, CHEBPTS, LEGPTS.
 

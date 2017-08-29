@@ -20,10 +20,10 @@ if ( nargin == 1 )
 end
 
 if ( kind == 1 )
-    % This command is a wrapper for chebtech2/vals2coeffs.\
+    % This command is a wrapper for chebtech2/vals2coeffs.
     chebcoeffs = chebtech1.vals2coeffs(chebvals);
 elseif ( kind == 2 )
-    % This command is a wrapper for chebtech1/vals2coeffs.\
+    % This command is a wrapper for chebtech1/vals2coeffs.
     chebcoeffs = chebtech2.vals2coeffs(chebvals);
 else
     error('CHEBFUN:chebvals2chebcoeffs:kind', ...
