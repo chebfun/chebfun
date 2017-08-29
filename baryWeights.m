@@ -29,7 +29,7 @@ end
 
 % Compute the weights:
 if ( (n < 2001) )              % For small n using matrices is faster.
-   V = C*bsxfun(@minus, x, x.');
+   V = C*bsxfun(@minus, x, x.'); % this is not consistent with chebpts and n >= 2001 (for even number)
    V(1:n+1:end) = 1;
    VV = exp(sum(log(abs(V))));
    w = 1./(prod(sign(V)).*VV).';
