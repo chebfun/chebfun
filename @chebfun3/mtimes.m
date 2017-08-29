@@ -6,10 +6,10 @@ function h = mtimes(f, g)
 %   and c is a scalar.
 %
 % See also CHEBFUN3/TIMES.
-
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+ 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
+ 
 if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
     
     if ( isa(g, 'double') )         % CHEBFUN3 * DOUBLE
@@ -35,9 +35,10 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         temp = squeeze(chebfun3.txm(fCore, X.', 1));
         [U, S, V] = svd(temp);
         h = chebfun2();
-        h.cols = fRows * U;
-        h.rows = fTubes * V;
+        h.rows = fRows * U;
+        h.cols = fTubes * V;
         h.pivotValues = 1 ./ diag(S);
+        h.domain = f.domain(3:6);
         
     elseif ( isa(g, 'chebfun2') ) % CHEBFUN3 * CHEBFUN2: Mode 1 only for now.
         % The output is another CHEBFUN3. Recall that, mode-1 contraction 
@@ -55,15 +56,17 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         
         % Form the output:
         h = chebfun3();
-        h.cols = gCols;   % 1st variable of g sits in place of 1st variable of h.
-        h.rows = fRows;   % 2nd variable of h is the 2nd variable of f.
-        h.tubes = fTubes; % 3rd variable of h is 3rd variable of f.
+        h.cols = gCols;  % 1st variable of g sits in place of 1st variable of h.
+        h.rows = fRows;  % 2nd variable of h is the 2nd variable of f.
+        h.tubes = fTubes;% 3rd variable of h is 3rd variable of f.
         h.core = chebfun3.txm(temp, gPivots, 1);
-        h.domain = f.domain;
+        h.domain(1:2) = g.domain(3:4);
+        h.domain(3:6) = f.domain(3:6);
                            
     elseif ( isa(g, 'chebfun3') )    % CHEBFUN3 * CHEBFUN3
-        error('CHEBFUN:CHEBFUN3:mtimes', 'CHEBFUN3 does not support this operation.');
-
+        error('CHEBFUN:CHEBFUN3:mtimes', ['CHEBFUN3 does not support this', ...
+            'operation.']);
+ 
     elseif ( isa(g, 'chebfun3v') )  % CHEBFUN3 * CHEBFUN3V
         nG = g.nComponents; 
         h = g; 
@@ -76,7 +79,6 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         error('CHEBFUN:CHEBFUN3:mtimes:unknown', ...
             ['Undefined function ''mtimes'' for input arguments of type %s ' ...
             'and %s.'], class(f), class(g));
-        
     end
     
 elseif ( isa(f, 'double') && isa(g, 'chebfun3') )  % DOUBLE * CHEBFUN3
@@ -84,5 +86,5 @@ elseif ( isa(f, 'double') && isa(g, 'chebfun3') )  % DOUBLE * CHEBFUN3
 else
     error('CHEBFUN:CHEBFUN3:mtimes:size', 'Sizes are inconsistent.');
 end
-
+ 
 end

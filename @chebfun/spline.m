@@ -21,7 +21,7 @@ function f = spline(x, y, d)
 %
 % See also INTERP1, PCHIP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Perhaps we shouldn't include the finals breaks in Not-A-Knot conditions?

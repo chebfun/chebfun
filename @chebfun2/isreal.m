@@ -6,7 +6,7 @@ function varargout = isreal(varargin)
 %   ~ISREAL(F) detects CHEBFUN2 object that have an imaginary part even if it is
 %   all zero.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = isreal@separableApprox(varargin{:});

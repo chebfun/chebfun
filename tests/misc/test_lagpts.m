@@ -1,4 +1,4 @@
-function pass = test_lagpts(pref)
+function pass = test_lagpts2(pref)
 
 if ( nargin == 0 )
     pref = chebfunpref();
@@ -25,25 +25,25 @@ pass(6) = abs(v(17) - 0.002937421407003) < tol;
 % Test a larger n (using ASY)
 n = 251;
 [x] = lagpts(n);
-pass(11) = all(size(x) == [n, 1]);
+pass(7) = all(size(x) == [n, 1]);
 [x, w, v] = lagpts(n);
-pass(7) = all(size(x) == [n, 1]) && all(size(w) == [1, n]) && ...
+pass(8) = all(size(x) == [n, 1]) && all(size(w) == [1, n]) && ...
     all(size(v) == [n, 1]);
-pass(8) = abs(w*x - 1) < 200*tol && abs(w*x.^2 - 2) < 400*tol;
-pass(9) = abs(x(37) - 13.309000189442097) < 10*tol;
-pass(10) = abs(w(3) - 0.050091759039996) < 200*tol;
-pass(11) = abs(v(3) - 0.214530194346947) < 200*tol;
+pass(9) = abs(w*x - 1) < 200*tol && abs(w*x.^2 - 2) < 400*tol;
+pass(10) = abs(x(37) - 13.309000189442097) < 10*tol;
+pass(11) = abs(w(3) - 0.050091759039996) < 200*tol;
+pass(12) = abs(v(3) - 0.214530194346947) < 200*tol;
 
 % Test a different interval (using GQ)
 n = 42;
 [x, w, v] = lagpts(n, [1, inf]);
 e = exp(1);
-pass(12) = abs(w*x - 2/e) < tol && abs(w*x.^2 - 5/e) < tol;
+pass(13) = abs(w*x - 2/e) < tol && abs(w*x.^2 - 5/e) < tol;
 
 % Put the inf on the left:
 [x, w, v] = lagpts(n, [-inf, -1]);
 e = exp(1);
-pass(13) = abs(w*x + 2/e) < tol && abs(w*x.^2 - 5/e) < tol;
+pass(14) = abs(w*x + 2/e) < tol && abs(w*x.^2 - 5/e) < tol;
 
 end
 

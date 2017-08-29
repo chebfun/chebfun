@@ -2,7 +2,7 @@ function f = imag( f )
 %IMAG   Imaginary part of a SEPARABLEAPPROX.
 %   IMAG(F) returns the imaginary part of a SEPARABLEAPPROX.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

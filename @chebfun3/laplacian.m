@@ -4,7 +4,7 @@ function L = laplacian(f)
 %
 % See also CHEBFUN3/LAP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 diff1 = diff(f, 2, 1); 
@@ -23,12 +23,12 @@ LVals = sample(diff1, m, m, m) + sample(diff2, m, m, m) + ...
     sample(diff3, m, m, m);
 LVscale = max(abs(LVals(:)));
 kappa = vscales/LVscale;
-pref = chebfunpref(); prefStruct = pref.cheb3Prefs;
-eps = prefStruct.chebfun3eps;
+pref = chebfunpref();
+eps = pref.cheb3Prefs.chebfun3eps;
 tol = eps*kappa;
 
 % Compute the laplacian:
-L = chebfun3(@(x,y,z) feval(diff1,x, y, z) + feval(diff2,x, y, z) + ...
-    feval(diff3,x, y, z) , f.domain, 'eps', tol);
+L = chebfun3(@(x,y,z) feval(diff1, x, y, z) + feval(diff2, x, y, z) + ...
+    feval(diff3, x, y, z) , f.domain, 'eps', tol);
 
 end

@@ -7,7 +7,7 @@ function [u, v] = helmholtzdecomp( f )
 % where U and V are spherefun objects. F needs to be a vector field that is
 % tangential to the surface of the sphere. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

@@ -54,4 +54,12 @@ u = xx(end);
 g = chebfun( u, 'equi');
 pass(10) = norm(g - u) < 10*vscale(g)*eps;
 
+% Equi should throw an error when trying to use it in an adaptive way:
+try
+    g = chebfun('exp(x)','equi');
+    pass(11) = false;
+catch ME
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:parseInputs:equi');
+end
+
 end

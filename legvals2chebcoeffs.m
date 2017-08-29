@@ -4,7 +4,7 @@ function c_cheb = legvals2chebcoeffs(v_leg)
 %   Legendre points to a vector C_CHEB of Chebyshev coefficients of the unique
 %   polynomial that interpolates those values in those points.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 c_leg = chebfun.idlt(v_leg); % Convert to Legendre coefficients.

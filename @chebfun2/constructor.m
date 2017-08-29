@@ -24,7 +24,7 @@ function g = constructor(g, op, varargin)
 %
 % See also CHEBFUN2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % Parse the inputs:
@@ -57,6 +57,11 @@ if ( isa(op, 'chebfun2') )  % CHEBFUN2( CHEBFUN2 )
     return
 end
 
+% The 'equi' flag can be used only with numeric data:
+if ( isEqui && ~isa(op, 'double') )
+    error('CHEBFUN:CHEBFUN2:constructor:equi', ...
+        'The EQUI flag is valid only when constructing from numeric data');
+end
 % Deal with constructions from numeric data:
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     g = constructFromDouble(op, dom, pref, isEqui);
@@ -408,8 +413,17 @@ if ( numel(depvar) > 2)
 elseif ( numel(depvar) == 1 )
     % Treat as a complex variable:
     op = eval(['@(' real(depvar{1}) + 1i*imag(depvar{1}) ')' op]);
-else
+
+elseif ( numel(depvar) == 2 ) 
+
     op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
+
+elseif ( isempty( depvar ) ) 
+    
+    op = @(x,y) str2double(op) + 0*x;
+    
+else 
+    error('CHEBFUN2:STR2OP','Function as string has too many independent variables.');
 end
 
 end
@@ -692,8 +706,13 @@ end
 
 isCoeffs = find(cellfun(@(p) strcmpi(p, 'coeffs'), varargin));
 if ( isCoeffs )
-    varargin(isCoeffs) = [];
-    op = chebfun2.coeffs2vals(op);
+    if ( isTrig )
+        varargin(isCoeffs) = [];
+        op = trigtech.coeffs2vals(trigtech.coeffs2vals( op ).').'; 
+    else
+        varargin(isCoeffs) = [];
+        op = chebfun2.coeffs2vals(op);
+    end
 end
 
 end

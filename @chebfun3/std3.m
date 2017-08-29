@@ -9,7 +9,7 @@ function v = std3(f)
 % See also CHEBFUN3/MEAN, CHEBFUN3/MEAN2, CHEBFUN3/MEAN3, CHEBFUN3/STD and 
 % CHEBFUN3/STD2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 h = f - mean3(f);

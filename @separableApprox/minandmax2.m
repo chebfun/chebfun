@@ -11,7 +11,7 @@ function [Y, X] = minandmax2( f )
 %
 % See also MAX2, MIN2, NORM.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % check for empty SEPARABLEAPPROX.
@@ -43,8 +43,8 @@ piv = f.pivotValues;
 dom = f.domain;
 
 % Convert rows and columns to chebfuns.
-frows = chebfun(frows, dom(1:2), maxsize);
-fcols = chebfun(fcols, dom(3:4), maxsize);
+frows = simplify(chebfun(frows, dom(1:2), maxsize));
+fcols = simplify(chebfun(fcols, dom(3:4), maxsize));
 
 % Share out scaling:
 sgn = sign( piv ).';

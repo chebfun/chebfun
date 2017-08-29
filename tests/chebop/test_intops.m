@@ -40,5 +40,21 @@ err(4) = norm( A*u - f );
 
 pass = err < tol;
 
+%%
+% From #2122
+K = @(x,t) exp(t.*(x-t));
+N = chebop(@(x,y) diff(y) + y - x.*(1+2*x).*volt(K, y) - 1 - 2*x);
+N.lbc = 1;
+y = N\0;
+pass(5) = norm(N.op(y)) + abs(y(0)-1);
+
+%%
+% From #2179
+K = @(x,y) exp(-(x-y));
+A = chebop(@(x,u) diff(u) + fred(K,u));
+A.lbc = 0; 
+u = A\1;
+pass(6) = norm(A*u - 1, inf) < tol;
+
 end
 

@@ -15,7 +15,7 @@ function [newTree, derTree] = splitTree(tree, maxOrder)
 %                  included in NEWTREE. In the example above, DERTREE is the 
 %                  syntax tree corresponding to sin(u).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Find what variables we have actually computed derivatives of.
@@ -46,8 +46,18 @@ end
 switch tree.numArgs
     case 1
         % We're dealing with a unary operator.
-        [newTree, derTree] = treeVar.splitTree(tree.center, maxOrder);
-        
+        if ( strcmp(tree.method, 'uminus') )
+            % For a unary minus, convert it to a "-1*" tree and split, which
+            % will take care of negating the resulting trees:
+            tempTree = struct('method', 'times', 'numArgs', 2, ...
+                'left', -1, 'right', tree.center, ...
+                'diffOrder', tree.diffOrder, 'height', tree.height, ...
+                'ID', tree.ID, 'hasTerms', tree.hasTerms);
+            [newTree, derTree] = treeVar.splitTree(tempTree, maxOrder);
+        else
+            % Otherwise, we can simply split the center node:
+            [newTree, derTree] = treeVar.splitTree(tree.center, maxOrder);
+        end
     case 2
         if ( any(strcmp(tree.method, {'diff', 'times', 'rdivide'})) )
             % We have already been through the expandTree() method, which

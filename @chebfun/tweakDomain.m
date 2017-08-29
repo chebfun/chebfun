@@ -30,7 +30,7 @@ function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol, side)
 %
 % See also CHEBFUN/OVERLAP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse some inputs:
@@ -91,7 +91,7 @@ end
 if ( isempty(tol) )
     % Set a tolerance relative to the horizontal scale:
     hs = max(hscale(f), hscale(g));
-    tol = 1e-15*hs;
+    tol = 2e-15*hs;
 end
 
 if ( nargin < 4 || isempty(side) )

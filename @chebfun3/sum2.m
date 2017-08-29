@@ -9,7 +9,7 @@ function ff = sum2(f, dims)
 % See also CHEBFUN3/SUM, CHEBFUN3/SUM3, CHEBFUN3/CUMSUM, CHEBFUN3/CUMSUM2
 % and CHEBFUN3/CUMSUM3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

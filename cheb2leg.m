@@ -20,7 +20,7 @@ function c_leg = cheb2leg(c_cheb, varargin)
 %
 % See also LEG2CHEB, CHEB2JAC, JAC2CHEB, JAC2JAC.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 normalize = false; % Default - no normalize.

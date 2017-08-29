@@ -25,7 +25,7 @@ function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
 %
 % See also STRINGPARSER/PARSER.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Initialize an empty output.
@@ -64,6 +64,9 @@ end
 
 % Change quotes (") to two apostrophes ('')
 str = strrep(str, '"', '''''');
+
+% Change backticks (`) to two apostrophes ('')
+str = strrep(str, '`', '''');
 
 % Change two minuses to one +, etc
 k = 1;

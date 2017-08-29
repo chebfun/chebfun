@@ -11,7 +11,7 @@ function h = min(f, g, dim)
 % 
 % See also CHEBFUN3/MIN2 and CHEBFUN3/MIN3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

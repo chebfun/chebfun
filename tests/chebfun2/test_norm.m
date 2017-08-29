@@ -29,4 +29,17 @@ pass(5) = abs(norm(f, 'inf') - exact) < tol;
 exact = (4/5)^(1/4);
 pass(6) = abs(norm(f, 4) - exact) < tol;
 
+%% functions with rank>1
+f = chebfun2(@(x,y) exp(x.*y));
+
+exact = 2.236768845167052;
+pass(7) = abs(norm(f) - exact) < tol; % default is the Frobenius norm 
+pass(8) = abs(norm(f,'fro') - exact) < tol; % Frobenius norm 
+
+exact =  2.119814813637055;
+pass(7) = abs(norm(f,2) - exact) < tol; % spectral (operator) norm 
+
+exact =  2.925303491814361;
+pass(8) = abs(norm(f,'nuc') - exact) < tol; % Frobenius norm 
+
 end

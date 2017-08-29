@@ -31,7 +31,7 @@ function out = deflationFun(Nu, u, r, p, alp, type)
 %   partial differential equations (P. E. Farrell, A. Birkisson, S. W. Funke),
 %   In SIAM Journal on Scientific Computing, volume 37, 2015.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % By default, apply L2 norm deflation

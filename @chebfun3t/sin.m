@@ -2,7 +2,7 @@ function f = sin(f)
 %SIN   Sine of a CHEBFUN3T.
 %   SIN(F) returns the sine of a CHEBFUN3T object F.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:

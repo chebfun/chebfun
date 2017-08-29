@@ -7,9 +7,9 @@ function varargout = str2anon(str, problemType, fieldType)
 %   where
 %    STR:            String on 'natural syntax form'.
 %    PROBLEMTYPE:    The type of problem we are solving in CHEBGUI, i.e., BVP,
-%                   EIG or PDE.
+%                    EIG or PDE.
 %    FIELDTYPE:      What type of field of the CHEBGUI we are converting, i.e. a
-%                   field for the initial guess/condition, or other fields.
+%                    field for the initial guess/condition, or other fields.
 %
 %   If the method is called with one output argument, the output will be an
 %   anonymous function on a form that is useful for Chebfun. The output will
@@ -35,7 +35,7 @@ function varargout = str2anon(str, problemType, fieldType)
 %    commaSeparated: Equal to 1 if the input expression was comma-separated, 
 %                    e.g., 'u(-1) = 0, u(1) = 1'. Equal to 0 otherwise.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )
@@ -147,7 +147,17 @@ for k = numel(varNames):-1:1
         varNames(k) = [];
     end
 end 
- 
+
+% String for independent variable names (if they appear in the problem). This
+% will allow us to return a function that starts with @(x,u)...
+if ( isempty(indVarNames{1}) )
+    indVarString = '';
+elseif ( isempty(indVarNames{2}) )
+    indVarString = sprintf('%s,', indVarNames{1});
+else
+    indVarString = sprintf('%s,%s,', indVarNames{1}, indVarNames{2});
+end
+
 % Convert the cell array varNames into one string. Not required when we're
 % working with the initial guess of scalar problems. If varNames is empty
 % for other kind of problems, an error would already have been thrown.
@@ -158,15 +168,15 @@ if ( ~isempty(varNames) && ~strcmp(fieldType, 'INITSCALAR') )
     end
 
     if ( length(varNames) == 1 )
-        anFunComplete = ['@(' varString ') ' anFun];
+        anFunComplete = ['@(' indVarString varString ') ' anFun];
     else
-        anFunComplete = ['@(' varString ') [' anFun ']'];
+        anFunComplete = ['@(' indVarString varString ') [' anFun ']'];
     end
 end
 
 % Also return the lambda part if we are in EIG mode
 if ( strcmp(problemType, 'eig') && ~isempty(anFunLambda) )
-    anFunLambdaComplete = ['@(' varString ') ' anFunLambda];
+    anFunLambdaComplete = ['@(' indVarString varString ') ' anFunLambda];
     anFunComplete = {anFunComplete ; anFunLambdaComplete};
     anFun = {anFun ; anFunLambda};
 end

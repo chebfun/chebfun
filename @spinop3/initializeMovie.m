@@ -1,35 +1,43 @@
-function [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
+function [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 %INITIALIZEMOVIE   Initialize a movie when solving a PDE specified by a SPINOP3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Set-up:
-nVars = S.numVars;
-vscale = max(abs(v(:)));
-dataToPlot = str2func(pref.dataToPlot);
-dom = S.domain;
-xx = dataGrid{1};
-yy = dataGrid{2};
-zz = dataGrid{3};
-N = size(xx, 1) - 1;
-xxx = plotGrid{1};
-yyy = plotGrid{2};
-zzz = plotGrid{3};
+% Note: P is a NVARSx2 CELL-ARRAY that stores the NVARS plots in the first row
+% and the tNVARS titles in the second row. OPTS is a 3x1 CELL-ARRAY that stores 
+% the limits of the colorbar in OPTS{1}, the slices of the volumetric slice plot 
+% in OPTS{2} and what kind of data to plot in OPTS{3} (real/imag/abs; when the 
+% data is complex-valued).
 
-% Slices:
+% Set-up:
+dom = S.domain;                       % Spatial domain
+nVars = S.numVars;                    % Number of variables (>1 for systems)
+vscale = max(abs(v(:)));              % Scale of the solution 
+dataplot = str2func(pref.dataplot);   % Plot 'abs', 'real' or 'imag'
+xx = compGrid{1};                     % Computation grid (x-direction)
+yy = compGrid{2};                     % Computation grid (y-direction)
+zz = compGrid{3};                     % Computation grid (z-direction)
+N = size(xx, 1) - 1;                  % Size of computation grid (same in x,y&z)
+xxx = plotGrid{1};                    % Movie grid (x-direction)
+yyy = plotGrid{2};                    % Movie grid (y-direction)
+zzz = plotGrid{3};                    % Movie grid (z-direction)
+Nplot = size(xxx, 1) - 1;             % Size of movie grid (same in x,y&z)
+FS = 'fontsize'; fs = 12;             % Fontsize for title
+
+% Slices x=cst (Sx), y=cst (Sy) and z=cst (Sz) for 3D plotting (see SPINPREF3):
 ttx = trigpts(N, dom(1:2));
 tty = trigpts(N, dom(3:4));
 ttz = trigpts(N, dom(5:6));
 ttx = [ttx; 2*ttx(end) - ttx(end-1)];
 tty = [tty; 2*tty(end) - tty(end-1)];
 ttz = [ttz; 2*ttz(end) - ttz(end-1)];
-if ( isempty(pref.slices) == 1 )
+if ( isempty(pref.slices) == 1 ) % Default slices (middle of each interval)
     Sx = ttx(floor(N/2) + 1);
     Sy = tty(floor(N/2) + 1);
     Sz = ttz(floor(N/2) + 1);
-else
-    slices = pref.slices;
+else % Slices given by user 
+    slices = pref.slices;   
     Sx = slices{1};
     for k = 1:length(Sx)
         pos = Sx(k);
@@ -51,13 +59,13 @@ else
 end
 
 % Loop over the variables:
-p = cell(nVars + 1, 1); clf reset
+p = cell(2, nVars); clf reset
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vv = dataToPlot(v(idx:idx+N-1,:,:));
-    vv = [vv, vv(:,1,:)]; %#ok<*AGROW>
+    vv = dataplot(v(idx:idx+N-1,:,:));
+    vv = [vv, vv(:,1,:)]; %#ok<*AGROW> add repeated values (periodic endpoints)
     vv = [vv; vv(1,:,:)];
     vv = cat(3, vv, vv(:,:,1));
     
@@ -70,27 +78,30 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvv = interp3(xx, yy, zz, vv, xxx, yyy, zzz, 'spline');
+    if ( Nplot > N )
+        vvv = interp3(xx, yy, zz, vv, xxx, yyy, zzz, 'spline');
+    else
+        vvv = vv;
+    end
     
-    % Plot each variable:
+    % Plot each variable on the slices Sx/Sy/Sz:
     subplot(1, nVars, k) 
-    p{k} = slice(xxx, yyy, zzz, vvv, Sx, Sy, Sz);
-    set(p{k}, 'edgecolor', 'none')
-    ax = p{k}.Parent; set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
-    axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
-    xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on
+    p{1,k} = slice(xxx, yyy, zzz, vvv, Sx, Sy, Sz);
+    set(p{1,k}, 'edgecolor', 'none', 'facecolor', 'interp')
+    ax = p{1,k}.Parent;
+    set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
+    axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)])
+    colorbar, colormap(pref.colormap)
+    xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
+    drawnow
+    
+    % Plot each title:
+    titleString = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', ...
+        N, nVars*N^3, dt, 0);
+    p{2,k} = title(titleString);
     drawnow
     
 end
-
-% Title:
-titleString = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', ...
-    N, nVars*N^3, dt, 0);
-set(gcf, 'NextPlot', 'add');
-ax = axes;
-h = title(titleString);
-set(ax, 'Visible', 'off', 'HandleVisibility', 'off', 'Fontsize', 16)
-set(h, 'Visible', 'on', 'Position', [.47 1.01 .5])
 
 % Ask the user to press SPACE:
 state = pause;
@@ -100,9 +111,8 @@ end
 shg, pause
 
 % Outputs:
-p{nVars + 1} = h;
-options{1} = Clim;
-options{2} = {Sx, Sy, Sz};
-options{3} = dataToPlot;
+opts{1} = Clim;
+opts{2} = {Sx, Sy, Sz};
+opts{3} = dataplot;
 
 end

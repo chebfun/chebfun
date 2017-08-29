@@ -22,21 +22,67 @@ function h = conv(f, g, varargin)
 %
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
-% Example:
+% Examples:
+%     cheb.x; f = 0.8 - abs(x-0.2);
+%     phi = @(t) chebfun(@(x) exp(-x^2/(4*t))/sqrt(4*pi*t));
+%     fsmooth = conv(f,phi(1e-2),'same');
+%     plot(f,'b',fsmooth','r')
+%
 %     f = chebfun(1/2); g = f;
 %     subplot(2, 2, 1), plot(f)
 %     for j = 2:4, g = conv(f, g); subplot(2, 2, j), plot(g), end
 %     figure, for j = 1:4, subplot(2,2,j), plot(g), g = diff(g); end
 %
-% REFERENCES:
+% Reference:
 %   [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
-%   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages
-%   A1207-A1220, 2014.
+%   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3,
+%   pp. A1207-A1220, 2014.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Check transpose state:
+if ( xor(f(1).isTransposed, g(1).isTransposed) )
+    error('CHEBFUN:CHEBFUN:conv:transposed', ...
+        'CHEBFUN dimensions do not agree.');
+end
+transState = f(1).isTransposed;
+
+% Support for quasimatrices:
+nf = numColumns(f);
+ng = numColumns(g);
+if ( nf > 1 || ng > 1 )
+    if ( nf == ng )
+        f = mat2cell(f);
+        g = mat2cell(g);
+        h = f;
+        for k = 1:nf
+            h{k} = conv(f{k}, g{k}, varargin{:});
+        end
+    elseif ( nf == 1 )
+        g = mat2cell(g);
+        h = g;
+        for k = 1:ng
+            h{k} = conv(f, g{k}, varargin{:});
+        end
+    elseif ( ng == 1 )
+        f = mat2cell(f);
+        h = f;
+        for k = 1:nf
+            h{k} = conv(f{k}, g, varargin{:});
+        end
+    else
+        error('CHEBFUN:CHEBFUN:conv:dimagree', 'CHEBFUN dimensions must agree.');
+    end
+    if ( ~transState )
+        h = horzcat(h{:});
+    else
+        h = vertcat(h{:});
+    end
+    return
+end
 
 % Return empty for an empty input:
 if ( isempty(f) || isempty(g) )
@@ -62,19 +108,6 @@ for k = 1:numel(varargin)
         error('CHEBFUN:CHEBFUN:conv:badInput', 'Unknown input option %s.', vk);
     end
 end
-
-% No support for quasimatrices:
-if ( numColumns(f) > 1 || numColumns(g) > 1 )
-    error('CHEBFUN:CHEBFUN:conv:quasi', ...
-        'No support for array-valued CHEBFUN objects.');
-end
-
-% Check transpose state:
-if ( xor(f(1).isTransposed, g(1).isTransposed) )
-    error('CHEBFUN:CHEBFUN:conv:transposed', ...
-        'CHEBFUN dimensions do not agree.');
-end
-transState = f(1).isTransposed;
 
 % Return a warning if F and G have too many pieces (the computation is probably
 % going to be very slow):

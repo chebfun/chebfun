@@ -60,7 +60,7 @@ u = spherefunv(f,g,h);
 divu = div(u);
 % Exact divergence
 exact = spherefun(@(x,y,z) -8*(2*(1-y.^2).*cos(4*y) - y.*sin(4*y)));
-pass(7) = norm(divu-exact, inf) < 100*tol; 
+pass(7) = norm(divu-exact, inf) < 200*tol; 
 
 % Check that the div and divergence give the same result.
 divergenceu = divergence(u);

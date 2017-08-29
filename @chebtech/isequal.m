@@ -3,7 +3,7 @@ function out = isequal(f, g)
 %   ISEQUAL(F, G) returns TRUE if the CHEBTECH objects F and G have the same
 %   length and coefficients.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = all(size(f.coeffs) == size(g.coeffs))  ...

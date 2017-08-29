@@ -6,7 +6,7 @@ function H = xor(F,G)
 %     or nonzero.  S and T must have the same dimensions (or one can be a
 %     scalar).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 H = or(F, G) & ~and(F, G);

@@ -22,7 +22,7 @@ function varargout = ode45(varargin)
 %
 % See also ODESET, ODE113, ODE15S,
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call the CONSTRUCTODESOL method, with ode45 specified as the solver:

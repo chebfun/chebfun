@@ -8,7 +8,7 @@ function f = power(f, n)
 %
 % See also CHEBFUN3/SQRT and CHEBFUN3/COMPOSE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(n) )        % Check for empty objects.
@@ -21,15 +21,18 @@ elseif ( isa (f, 'double') && isscalar(f))          % DOUBLE .^ CHEBFUN3
 elseif ( isa(n, 'double') && isscalar(n) )          % CHEBFUN3 .^ DOUBLE
    if ( round(n) ~= n )
        % Fractional power --> positive/negative test for the base.
-       [ss, zeroVal] = singleSignTest(f);
-       if ( ss == 0 || zeroVal == 1 )
-           error('CHEBFUN:CHEBFUN3:power:fractional', ...
-               'A change of sign/zero has been detected, unable to represent the result.');
+       if ( isreal(f) )
+           % Positive/negative test.
+           ss = singleSignTest(f);
+           if ( ~ss )
+               error('CHEBFUN:CHEBFUN3:power:fractional', ...
+                   'Sign change detected. Unable to represent the result.'); 
+           end
        end
    end
    op = @(x,y,z) feval(f, x, y, z) .^ n;
    f = chebfun3(op, f.domain);
-        
+
 elseif ( (isa(f, 'chebfun3')) && isa(n,'chebfun3') )  % CHEBFUN3 .^ CHEBFUN3
     if ( ~domainCheck(f, n) )          % Check they're on the same domain.
         error('CHEBFUN:CHEBFUN3:power:domain','Domains must be the same.');

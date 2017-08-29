@@ -98,41 +98,42 @@ pass(30) = doesNotCrash(@() plot(fsr2, 'interval', [-0.5 0.5]));
 pass(31) = doesNotCrash(@() plot(fsr2, [-0.5 0.5]));
 pass(32) = doesNotCrash(@() plot(fdc, 'jumpline', 'r-'));
 pass(33) = doesNotCrash(@() plot(fdc, 'jumpline', 'none'));
-pass(34) = doesNotCrash(@() plot3(fdc, fsr1, fsr2, 'jumpline', 'r-'));
-pass(35) = doesNotCrash(@() plot(fdel, 'r'));
-pass(36) = doesNotCrash(@() plot(fdel, 'deltaline', '--ro'));
-pass(37) = doesNotCrash(@() plot(x, fdel)); 
-pass(38) = doesNotCrash(@() plot(fqr1, 'linewidth', 2));
+pass(34) = doesNotCrash(@() plot(fdc, 'jumpline', {'LineStyle', '--'}));
+pass(35) = doesNotCrash(@() plot3(fdc, fsr1, fsr2, 'jumpline', 'r-'));
+pass(36) = doesNotCrash(@() plot(fdel, 'r'));
+pass(37) = doesNotCrash(@() plot(fdel, 'deltaline', '--ro'));
+pass(38) = doesNotCrash(@() plot(x, fdel));
+pass(39) = doesNotCrash(@() plot(fqr1, 'linewidth', 2));
 
 % Check plotting discrete data alongside CHEBFUN objects
 x = linspace(-1,1,10).';
-pass(39) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
+pass(40) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
 
 % Check SURF, SURFACE, SURFC, and MESH.
-pass(40) = doesNotCrash(@() surf(far1));
-pass(41) = doesNotCrash(@() surf(fqr1));
+pass(41) = doesNotCrash(@() surf(far1));
+pass(42) = doesNotCrash(@() surf(fqr1));
 % (SURFACE is a wrapper for SURF, so we don't need to be so thorough.)
-pass(42) = doesNotCrash(@() surface(fqr1));
-pass(43) = doesNotCrash(@() surfc(far1));
-pass(44) = doesNotCrash(@() surfc(fqr1));
-pass(45) = doesNotCrash(@() mesh(far1));
-pass(46) = doesNotCrash(@() mesh(fqr1));
+pass(43) = doesNotCrash(@() surface(fqr1));
+pass(44) = doesNotCrash(@() surfc(far1));
+pass(45) = doesNotCrash(@() surfc(fqr1));
+pass(46) = doesNotCrash(@() mesh(far1));
+pass(47) = doesNotCrash(@() mesh(fqr1));
 
 % Test abbreviated plot styles.
-pass(47) = doesNotCrash(@() plot(fsr1, 'linew', 15));
-pass(48) = doesNotCrash(@() plot(fsr1, 'lines', '--'));
-pass(49) = doesNotCrash(@() plot(fsr1, 'markers', 10));
+pass(48) = doesNotCrash(@() plot(fsr1, 'linew', 15));
+pass(49) = doesNotCrash(@() plot(fsr1, 'lines', '--'));
+pass(50) = doesNotCrash(@() plot(fsr1, 'markers', 10));
 
 % Test plot of a complex constant:
-pass(50) = doesNotCrash(@() plot(chebfun(1i)));
+pass(51) = doesNotCrash(@() plot(chebfun(1i)));
 
 % Test plotting doubles alongside CHEBFUN objects
 f = @(x) exp(x);
 x = linspace(-1,1,5);
 fx = f(x);
 fc = chebfun(f);
-pass(51) = doesNotCrash(@() plot(fc, 'b', x, fx, 'or'));
-pass(52) = doesNotCrash(@() plot(x, fx, 'or', fc));
+pass(52) = doesNotCrash(@() plot(fc, 'b', x, fx, 'or'));
+pass(53) = doesNotCrash(@() plot(x, fx, 'or', fc));
 
 close(hfig);
 

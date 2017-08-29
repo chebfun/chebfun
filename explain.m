@@ -26,7 +26,7 @@ function explain(varargin)
 %        available at http://arXiv.org/abs/1512.01803 and also
 %        to appear in ACM Trans. Math. Softw.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % NOTE TO DEVELOPERS.  Since standardChop only produces one output, it

@@ -3,7 +3,7 @@ function u = mldivide(L, f, varargin)
 %   Important: A CHEBOPPREF object PREFS has to be passed. When this method
 %   is called via CHEBOP/MLDIVIDE, PREFS is inherited from the CHEBOP level.
 %
-%  Copyright 2016 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2017 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 u = linsolve(L, f, varargin{:});
 

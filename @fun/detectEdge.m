@@ -6,7 +6,7 @@ function edge = detectEdge(f, op, hscale, vscale, pref)
 %   that both are required). If no edge is detected, EDGE is set to the midpoint
 %   of DOMAIN.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -27,7 +27,7 @@ function [v, S] = null(A, prefs, nullity)
 %
 % See also LINOP/SVDS, LINOP/EIGS, NULL.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Discretization type:
@@ -131,7 +131,7 @@ if ( m == 1 )
 else % system of eqns
     [~, R] = qr(join(v{:}));
     for j = 1:numel(v)
-        v{j} = v{j}/R;
+        v{j} = mrdivide(v{j}, R, 'least-squares');
         v{j} = simplify(v{j});
     end
 end

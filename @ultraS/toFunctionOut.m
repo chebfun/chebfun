@@ -6,7 +6,7 @@ function f = toFunctionOut(disc, coeffs, cutoff)
 %   ULTRAS to a CHEBFUN. The input may be piecewise smooth, as indicated by the 
 %   dimension property of the discretization.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for cutoff

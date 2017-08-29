@@ -20,7 +20,7 @@ function A = unfold(T, rowDims, colDims)
 % The structure of this code is similar to `matricize.m` from the HTUCKER 
 % toolbox of Tobler and Kressner.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 3 )

@@ -19,7 +19,7 @@ function explain(f, varargin)
 %   f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); explain(f, 2)
 %   f = chebfun2(@(x,y) cos(x.*y)); explain(f, .5)
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %% Explain only supports chebfun2 on the unit domain

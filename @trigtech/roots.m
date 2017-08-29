@@ -19,7 +19,7 @@ function out = roots(f, varargin)
 %   matrix may be returned. The columns of R = ROOTS(F) correspond to the
 %   columns of F.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:

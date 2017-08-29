@@ -15,7 +15,7 @@ function [bcrow, bcvalue] = constructBC(bcArg, bcpos, een, bcn, dom, scl, order)
 %   bcvalue = vector of discretized nonhomogeneous part of the constraint 
 %   (satisfying bcrow * X = bcvalue, or X * bcrow' = bcvalue').
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(bcArg, 'chebfun') )

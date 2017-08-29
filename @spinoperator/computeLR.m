@@ -5,7 +5,7 @@ function LR = computeLR(S, dt, L, M)
 %   means. DT is the time-step, L is the linear part of the SPINOPERATOR S, and
 %   M is the number of points to discretize the contour.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set-up:

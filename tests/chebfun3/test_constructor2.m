@@ -82,4 +82,13 @@ pass(17) = f(0.25,0.5,0) - 0.75 < tol;
 f = chebfun3('cos(x+y+z)');
 pass(18) = f(0.25,0.5,-0.3) - cos(0.25+0.5-0.3) < tol;
 
+% Test that the 'equi' flag outputs an error message if used for
+% adaptive construction of a chebfun3.
+try
+    f = chebfun3(@(x, y, z) z.*x.^2.*exp(sin(x + y)), 'equi');
+    pass(19) = false;
+catch ME
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN3:constructor:equi');
+end
+
 end

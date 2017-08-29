@@ -8,7 +8,7 @@ function displayInfoExactInitial(pref)
 % PREF.display = 'iter', it prints the information that the initial guess
 % solved the BVP
 %
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % Obtain preferences for what we want to show

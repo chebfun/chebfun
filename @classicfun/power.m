@@ -16,7 +16,7 @@ function f = power(f, b)
 %
 % See also SQRT.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If there are roots at the end of the domain, then make the f.onefun a singfun:

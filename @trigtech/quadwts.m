@@ -4,7 +4,7 @@ function w = quadwts(n)
 %
 % See also TRIGPTS, BARYWTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 w = 2/n*ones(1, n);

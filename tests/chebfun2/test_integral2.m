@@ -1,23 +1,19 @@
-function pass = test_integral2( pref ) 
+function pass = test_integral2(pref)
 % Test INTEGRAL2()
 
-if ( nargin == 0) 
-    pref = chebfunpref; 
+if ( nargin == 0)
+    pref = chebfunpref;
 end
-
 tol = 100*pref.cheb2Prefs.chebfun2eps;
 
-% circle 
-c = chebfun(@(t) exp(1i*t), [0 2*pi]);
+f = chebfun2(@(x,y) x.*y);
+pass(1) = ( abs(integral2(f) - 0) < tol );
 
-f = chebfun2(@(x,y) 1+0*x); 
-pass(1) = abs( integral(f, c) - 2*pi ) < tol; 
+% Integrate over a smaller domain:
+pass(2) = ( abs(integral2(f, [0, 1, 0, 1]) - 0.25) < tol );
 
-f = chebfun2(@(x,y) cos(x)); 
-pass(2) = abs( integral(f, c) - 2*pi*besselj(0,1) ) < tol;
-
-f = chebfun2(@(x,y) cos(x.*y)); 
-exact = sum(chebfun(@(t) cos( cos(t).*sin(t) ), [0 2*pi])) ;
-pass(3) = abs( integral(f, c) - exact ) < tol;
+f = chebfun2(@(x,y) x.^2 .* cos(y), [0, 3, -1, 1]);
+Iexact = 9 * 2 * sin(1);
+pass(3) = ( abs(integral2(f) - Iexact) < tol );
 
 end

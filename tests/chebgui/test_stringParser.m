@@ -12,6 +12,7 @@ str = { 'u(0) = 1'
         'u(end),u(1,left)'
         'diff(sin(u))'
         'diff(sin(u),2)'
+        'diff(u^2) + sin(x)*u = 1'
         'feval(u,sqrt(2))'
         'feval(u,0,left)'
         'sum(u) = 0'
@@ -35,13 +36,14 @@ correctBVP = {  '@(u) feval(u,0)-1'
                 '@(u) feval(u,''end'');feval(u,1,''left'')'
                 '@(u) diff(sin(u))'
                 '@(u) diff(sin(u),2)'
+                '@(x,u) diff(u.^2)+sin(x).*u-1'
                 '@(u) feval(u,sqrt(2))'
                 '@(u) feval(u,0,''left'')'
                 '@(u) sum(u)'
                 '@(u) sum(u,0,.5)'
-                '@(u) volt(@(x,y)sin(x-y),u)'
-                '@(u) fred(@(x,y)sin(x-y),u)-fred(@(x,z)cos(x-z),u)'
-                '@(u) u+fred(@(x,y)sin(2.*pi.*(y-x)),u)-feval(u,0,''left'')'};
+                '@(x,u) volt(@(x,y)sin(x-y),u)'
+                '@(x,u) fred(@(x,y)sin(x-y),u)-fred(@(x,z)cos(x-z),u)'
+                '@(x,u) u+fred(@(x,y)sin(2.*pi.*(y-x)),u)-feval(u,0,''left'')'};
 
 passBVP = zeros(n, 1);
 for k = 1:n
@@ -51,6 +53,7 @@ end
 %% EIGS
 
 str = {'u''''-lambda*u = 0'
+       'u'' + sin(x)*u = lambda*u'
        'u''''+u'' = lambda*(u + u'') + u'};
 n2 = numel(str);
 outEIG = cell(n2, 1);
@@ -61,6 +64,8 @@ end
 
 correct = {{'@(u) diff(u,2)'
             '@(u) u'}
+            {'@(x,u) diff(u)+sin(x).*u'
+            '@(x,u) u'}
             {'@(u) diff(u,2)+diff(u)-u'
             '@(u) u+diff(u)'}};
         
@@ -82,7 +87,7 @@ for k = 1:n3
     outPDE{k} = stringParser.str2anon(str{k}, 'pde');
 end
 
-correct = {'@(u) -x.*diff(u,2)+diff(u)'};
+correct = {'@(x,t,u) -x.*diff(u,2)+diff(u)'};
 
 passPDE = zeros(n3, 1);
 for k = 1:n3
