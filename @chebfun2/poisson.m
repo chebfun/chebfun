@@ -1,12 +1,13 @@
 function u = poisson( f, g, m, n )
 %POISSON   Fast Poisson solver for the rectangle.
-%   POISSON(F, G, N) solves laplacian(U) = F on the domain of f with
+%   POISSON(F, G, N) solves laplacian(U) = F on the domain of F with
 %   Dirichlet boundary conditions given by G. That is, U satisfies
 %
 %     U_{x,x} + U_{y,y} = F, on [a,b]x[c,d]    U = G on boundary
 %
 %   The equation is solved using an N x N discretization. G can be a
-%   scalar or any chebfun2 object satisfying the Dirichlet data.
+%   scalar, a function handle, or any chebfun2 object satisfying the
+%   Dirichlet data.
 %
 %   POISSON(F, G, M, N) is the same as POISSON(F, G, N), but with an M x N
 %   discretization.
@@ -15,24 +16,31 @@ function u = poisson( f, g, m, n )
 %   f = chebfun2( @(x,y) 1 + 0*x, [-1 2 0 1]);
 %   u = chebfun2.poisson(f, 0, 100);
 %   plot(u)
+%
+% See also DISKFUN/POISSON, SPHEREFUN/POISSON.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% DEVELOPERS NOTE:
+% DEVELOPER'S NOTE:
 %
-% METHOD: Spectral method (in coeff space). We use a C^{(3/2)} basis to
-% discretize the equation, resulting in a discretization of the form AX+XA
-% = F, where A is a symmetric tridiagonal matrix.
+% METHOD: Spectral method (in coefficient space). We use a C^{(3/2)} basis
+% to discretize the equation, resulting in a discretization of the form
+% AX + XA = F, where A is a symmetric tridiagonal matrix.
 %
 % LINEAR ALGEBRA: Matrix equations. The matrix equation is solved by the
 % alternating direction implicit (ADI) method.
 %
-% SOLVE COMPLEXITY:  O(M*N*log(MAX(M,N))log(1/eps))  with M*N = total
+% SOLVE COMPLEXITY:  O(M*N*log(MAX(M,N))*log(1/eps)) with M*N = total
 % degrees of freedom.
 % 
-% AUTHORS: Dan Fortunato (dan.fortunato@gmail.com ) and Alex 
-%          Townsend (townsend@cornell.edu). 
+% AUTHORS: Dan Fortunato (dan.fortunato@gmail.com)
+%          Alex Townsend (townsend@cornell.edu)
+%
+% The fast Poisson solver is based on:
+%
+% D. Fortunato and A. Townsend, Fast Poisson solvers for spectral methods,
+% in preparation, 2017.
 
 % Solve for u on the same domain as f, adjust diffmat to including scaling:
 dom = f.domain;
@@ -49,7 +57,7 @@ F = coeffs2( f, m, n );
 
 % Solver only deals with zero homogeneous Dirichlet conditions. Therefore,
 % if nonzero Dirichlet conditions are given, we solve lap(u) = f with u|bc = g
-% as    u = v + w, where v|bc = g, and lap(w) = f - lap(v), w|bc = 0:
+% as u = v + w, where v|bc = g, and lap(w) = f - lap(v), w|bc = 0:
 if ( isa(g, 'double') )
     BC = zeros(m, n);
     BC(1,1) = g;
@@ -137,7 +145,7 @@ B = det([-a*alp -alp a; -b -1 b ; c 1 c]);
 C = det([-alp a 1; -1 b 1 ; 1 c 1]);
 D = det([-a*alp -alp 1; -b -1 1; c 1 1]);
 T = @(z) (A*z+B)./(C*z+D);                     % Mobius transfom
-J = ceil( log(16*gam)*log(4/tol)/pi^2 ); % No. of ADI iterations
+J = ceil( log(16*gam)*log(4/tol)/pi^2 );       % No. of ADI iterations
 if ( alp > 1e7 )
     K = (2*log(2)+log(alp)) + (-1+2*log(2)+log(alp))/alp^2/4;
     m1 = 1/alp^2; 
@@ -145,37 +153,45 @@ if ( alp > 1e7 )
     dn = sech(u) + .25*m1*(sinh(u).*cosh(u)+u).*tanh(u).*sech(u); 
 else
     K = ellipke( 1-1/alp^2 );
-    [~, ~, dn] = ellipj((1/2:J-1/2)*K/J,1-1/alp^2);% ADI shifts for [-1,-1/t]&[1/t,1]
+    [~, ~, dn] = ellipj((1/2:J-1/2)*K/J,1-1/alp^2); % ADI shifts for [-1,-1/t]&[1/t,1]
 end
-p = T( -alp*dn ); q = T( alp*dn );             % ADI shifts for [a,b]&[c,d]
+p = T( -alp*dn ); q = T( alp*dn );                  % ADI shifts for [a,b]&[c,d]
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%% CONVERSION CODES %%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% CONVERSION CODES %%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function X = Chebyshev2ultra( X )
 % Convert a matrix of Chebyshev coefficients to a matrix of C^(3/2)
 % coefficients.
 
 % First convert the matrix of Chebyshev coefficients to a matrix of
 % Legendre coefficients:
-[m, n] = size(X); 
-if ( m == n && n <= 4000 )
-    S = cheb2leg_mat( n );
-    X = (S * X) * S.';
-elseif ( max( m, n) <= 4000 )
-    Sn = cheb2leg_mat( n );
-    Sm = cheb2leg_mat( m );
-    X = (Sm * X) * Sn.'; 
+[m, n] = size(X);
+if ( max( m, n ) <= 8192 ) % Determined experimentally
+    if ( m == n )
+        S = cheb2leg_mat( n );
+        X = (S * X) * S.';
+    else
+        Sm = cheb2leg_mat( m );
+        Sn = cheb2leg_mat( n );
+        X = (Sm * X) * Sn.';
+    end
 else
     X = cheb2leg( cheb2leg( X ).' ).';
 end
 
-% Now, convert the matrix of Legendre coefficient to a matrix of
+% Now, convert the matrix of Legendre coefficients to a matrix of
 % ultraspherical coefficients:
-S1 = Legendre2ultraMat( size(X,1) );
-S2 = Legendre2ultraMat( size(X,2) );
-X = S1 * X * S2.';
+if ( m == n )
+    S = Legendre2ultraMat( n );
+    X = (S * X) * S.';
+else
+    Sm = Legendre2ultraMat( m );
+    Sn = Legendre2ultraMat( n );
+    X = (Sm * X) * Sn.';
+end
 
 end
 
@@ -186,22 +202,31 @@ function X = ultra1mx2Chebyshev( X )
 % First, convert the matrix of (1-x^2)(1-y^2)C^(3/2)(x)C^(3/2)(y) coefficients
 % to Legendre coefficients:
 [m, n] = size( X );
-S1 = ultra1mx2Legendre( m );
-S2 = ultra1mx2Legendre( n );
-X = S1 * X * S2.';
+
+if ( m == n )
+    S = ultra1mx2Legendre( n );
+    X = (S * X) * S.';
+else
+   Sm = ultra1mx2Legendre( m );
+   Sn = ultra1mx2Legendre( n );
+   X = (Sm * X) * Sn.';
+end
 
 % Now, convert the matrix of Legendre coefficient to a matrix of Chebyshev
 % coefficients:
-if ( m == n && n <= 4000 )
-    S = leg2cheb_mat( n );
-    X = (S * X) * S.';
-elseif ( max( m, n) <= 4000 )
-    Sn = leg2cheb_mat( n );
-    Sm = leg2cheb_mat( m );
-    X = (Sm * X) * Sn.'; 
+if ( max( m, n ) <= 8192 ) % Determined experimentally
+    if ( m == n )
+        S = leg2cheb_mat( n );
+        X = (S * X) * S.';
+    else
+        Sm = leg2cheb_mat( m );
+        Sn = leg2cheb_mat( n );
+        X = (Sm * X) * Sn.';
+    end
 else
     X = leg2cheb( leg2cheb( X ).' ).';
 end
+
 end
 
 function S = Legendre2ultraMat( n )

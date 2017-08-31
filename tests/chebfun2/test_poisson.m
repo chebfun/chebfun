@@ -1,13 +1,13 @@
 function pass = test_poisson( pref ) 
 % Test Poisson solver in Chebfun2 
 
-if ( nargin == 0) 
+if ( nargin == 0 ) 
     pref = chebfunpref; 
 end
 
 tol = 1e6*pref.cheb2Prefs.chebfun2eps;
 
-% Compare against chebop2: 
+% Compare against chebop2:
 m = 101; n = 101; 
 N = chebop2( @(u) lap(u) ); 
 N.bc = 0; 
