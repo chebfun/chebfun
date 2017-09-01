@@ -7,7 +7,7 @@ function F = atand(F, varargin)
 %
 % See also TAND, ATAN2D, ATAN.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % Call the compose method:

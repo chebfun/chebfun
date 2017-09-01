@@ -6,7 +6,7 @@ function u = partition(disc, values)
 %   of individual variables in the system. I.e., deduce the variable boundaries
 %   within the discretization.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Which variables are functions (as opposed to scalars)?

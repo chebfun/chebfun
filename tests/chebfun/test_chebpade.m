@@ -40,6 +40,11 @@ ratio1 = p2(.3)/p(.3);
 ratio2 = r2(-.4)/r(-.4);
 pass(5) = norm([ratio1 ratio2] - [1i 1i], inf) < 1e-13;
 
+% Try a call with an explicit number of coefficients in
+% the Chebyshev expansion of f.
+[p,q,r] = chebpade(f,2,2,10);
+pass(6) = norm(f - p./q) < 2e-4;
+
 % Restore the warning state.
 warning(warnState);
 

@@ -2,7 +2,7 @@ function out = isfinite(F)
 %ISFINITE   Test if a CHEBFUN is bounded.
 %   ISFINITE(F) returns FALSE if F has any infinite values and TRUE otherwise.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = zeros(1, numel(F));

@@ -155,10 +155,15 @@ catch ME
     pass(18) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:max:flag');
 end
 
+% Ensure minimum of a constant function is returned at the middle of the domain:
+f = chebfun(1);
+[y, x] = min(f);
+pass(19) = (y == 1) && (x == 0);
+
 %% Check min of a CHEBFUN and a scalar:
 f = chebfun(@(x) [sin(x) cos(x)]);
 h = min(f, .75);
-pass(19) = norm(h([-.9 0 .9].') - [sin(-.9) cos(-.9) ; 0 .75 ; .75 cos(.9)]) ...
+pass(20) = norm(h([-.9 0 .9].') - [sin(-.9) cos(-.9) ; 0 .75 ; .75 cos(.9)]) ...
     < 3*eps*vscale(h);
 
 %% test on function defined on unbounded domain:
@@ -175,7 +180,7 @@ f = chebfun(op, dom, 'exps', [0 -1]);
 yExact = -Inf;
 xExact = dom(2);
 errX = x - xExact;
-pass(20) = ( norm(errX, inf) < eps*vscale(f) ) && ...
+pass(21) = ( norm(errX, inf) < eps*vscale(f) ) && ...
     ( y == yExact );
 
 end

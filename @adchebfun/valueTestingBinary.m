@@ -24,7 +24,7 @@ function [err, lin] = valueTestingBinary(func)
 %      the results of the matching operations (which we should expect to be zero
 %      in all cases).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

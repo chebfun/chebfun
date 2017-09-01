@@ -26,7 +26,7 @@ function F = diff(F, n, dim)
 % References:
 %  [1] http://en.wikipedia.org/wiki/Fractional_calculus#Fractional_derivatives
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial case:
@@ -37,6 +37,15 @@ end
 % Parse inputs:
 if ( nargin == 1 )
     n = 1;
+else
+    if ( ~isnumeric(n) )
+        if ( isa(n, 'chebfun') )
+            error('CHEBFUN:CHEBFUN:diff:n', ...
+                'diff(F,G) no longer implemented.');
+        end
+        error('CHEBFUN:CHEBFUN:diff:n', ...
+            'Second argument must be an integer.');
+    end
 end
 if ( nargin < 3 )
     dim = 1;

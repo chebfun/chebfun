@@ -347,7 +347,11 @@ if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
         
     else
         % Evaluate. The output, BCU, will be a vector.
-        bcU = N.bc(x, uBlocks{:});
+        if ( cellArg )
+            bcU = N.bc(x, u);
+        else
+            bcU = N.bc(x, uBlocks{:});
+        end
         bcNorm = bcNorm + norm(bcU, 2).^2;
     end
 end

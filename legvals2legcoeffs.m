@@ -1,13 +1,13 @@
 function legcoeffs = legvals2legcoeffs(legvals)
 %LEGVALS2LEGCOEFFS  Convert Legendre values to Legendre coefficients.
-% 	LEGCOEFFS = LEGVALS2LEGCOEFFS(LEGVALS), converts the column vector
+% 	LEGCOEFFS = LEGVALS2LEGCOEFFS(LEGVALS) converts the column vector
 %   LEGVALS representing values on a Legendre grid (i.e, F(LEGPTS)) to a
-%   vector LEGCOEFFS representing the Chebyshev coefficients of the series
+%   vector LEGCOEFFS representing the coefficients of the series
 %       F(X) = C_LEG(1)*P0(X) + ... + C_LEG(N)*P{N-1}(X).
 % 
 % See also CHEBFUN.IDLT, LEGPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % This command is a wrapper for chebfun/idlt.

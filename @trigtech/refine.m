@@ -1,7 +1,7 @@
 function [values, giveUp] = refine(op, values, pref)
 %REFINE   Refinement method for TRIGTECH construction.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:
@@ -56,16 +56,19 @@ function [values, giveUp] = refineResampling(op, values, pref)
     end
    
     % [TODO]: Allow "first-kind" trigonometric points.
-    x = trigpts(n);    
+    % Do the evaluation with the right end point included so that we can
+    % get the average value of the function at its two ends to redefine
+    % f(-1) as f(-1) = 0.5*(f(1) + f(-1)).  This approach is preferred
+    % since f may not make sense to evaluate pointwise if, for example, it
+    % is the result of an integral equation.
+    x = [trigpts(n);1];
 
     % Evaluate the operator:
     values = feval(op, x);
     
-    % Force the value at -1 to be equal to the value at 1, thus
-    % enforcing symmetry.
-    valRightBoundary = feval(op,1);
-    
-    values(1,:) = 0.5*(values(1,:) + valRightBoundary);
+    % Compute the average value of f at -/+ 1 and then remove the +1 value.
+    values(1,:) = 0.5*(values(1,:) + values(end,:));
+    values = values(1:end-1,:);
 end
 
 function [values, giveUp] = refineNested(op, values, pref)

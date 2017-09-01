@@ -140,7 +140,7 @@ h = f.*g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(26) = norm(err, inf) < 2*eps*get(f,'vscale');
+pass(26) = norm(err, inf) < 10*eps*get(f,'vscale');
 
 %% Test multiplication between a CHEBFUN and a TRIGFUN.
 

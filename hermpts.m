@@ -1,5 +1,5 @@
 function [x, w, v] = hermpts(n, varargin)
-%HERMPTS   Hermite points and Gauss-Hermite Quadrature Weights.
+%HERMPTS   Hermite points and Gauss-Hermite quadrature weights.
 %   HERMPTS(N) returns N Hermite points X in (-inf, inf). By default these are
 %   roots of the 'physicist'-type Hermite polynomials, which are orthogonal with
 %   respect to the weight exp(-x.^2).
@@ -35,7 +35,7 @@ function [x, w, v] = hermpts(n, varargin)
 %
 % See also CHEBPTS, LEGPTS, LAGPTS, and JACPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 %
 % 'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].

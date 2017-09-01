@@ -5,7 +5,7 @@ function f = imag(f)
 % See also CHEBFUN3/REAL, CHEBFUN3/CONJ, CHEBFUN3/COMPLEX and 
 % CHEBFUN3/COMPOSE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

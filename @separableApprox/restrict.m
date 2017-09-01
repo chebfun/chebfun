@@ -1,11 +1,11 @@
 function f = restrict(f, dom)
-% RESTRICT  Restrict the domain of a SEPARABLEAPPROX.
+%RESTRICT   Restrict the domain of a SEPARABLEAPPROX.
 %
-% F = RESTRICT(F, DOM) returns a SEPARABLEAPPROX on the domain DOM that approximates F
-% F on that domain.  DOM should be a vector of length 4 giving the coordinates
-% of the corners. 
+% F = RESTRICT(F, DOM) returns a SEPARABLEAPPROX on the domain DOM that
+% approximates F on that domain.  DOM should be a vector of length 4 giving the
+% coordinates of the corners.
 
-% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( isa( dom, 'double' ) )    
@@ -38,8 +38,8 @@ if ( isa( dom, 'double' ) )
         error('CHEBFUN:SEPARABLEAPPROX:restrict:domain', 'Domain not determined.');
     end
     
-elseif (isa( dom, 'chebfun' ))
-    f = feval(f, dom);
+elseif ( isa(dom, 'chebfun') )
+    f = compose(dom, f);
     
 else
     error('CHEBFUN:SEPARABLEAPPROX:restrict:domain', 'Unrecognizable domain.');

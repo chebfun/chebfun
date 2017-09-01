@@ -7,11 +7,8 @@ function pass = sampleTest(op, values, f, data, pref)
 %   difference is large, it returns FALSE. SAMPLETEST(OP, VALUES, F, DATA) will
 %   test relative to the values given in DATA.VSCALE, rather than VSCALE(F).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% Get the interpolation points:
-n = length(f);
 
 % Set a tolerance:
 tol = sqrt(max(eps, pref.chebfuneps));

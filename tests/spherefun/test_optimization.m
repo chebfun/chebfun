@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref; 
 end 
 
-tol = 1000*pref.cheb2Prefs.chebfun2eps;
+tol = 5e4*pref.cheb2Prefs.chebfun2eps;
 j = 1; 
 
 Battery = {@(x,y,z) cos(pi*z),...
@@ -50,5 +50,16 @@ end
 
 %%
 pass = err < tol;
+
+%% Check double wrapping is hidden:
+j = length(pass);
+
+f = spherefun(@(x,y,z) exp(x));
+[m,loc] = max2(f);
+pass(j+1) = (loc(1)==0);
+
+f = spherefun(@(x,y,z) exp(x));
+[m,loc] = min2(f);
+pass(j+2) = (loc(1)==0);
 
 end

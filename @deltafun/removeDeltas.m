@@ -2,7 +2,7 @@ function F = removeDeltas(F)
 %REMOVEDELTAS   Remove the deltas from a deltafun.
 %   REMOVEDELTAS(F) returns a deltafun's funPart.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 F = F.funPart;

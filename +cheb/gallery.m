@@ -44,13 +44,15 @@ function varargout = gallery(name)
 %   vandercheb   Chebyshev-Vandermonde quasimatrix
 %   vandermonde  Vandermonde quasimatrix
 %   wiggly       One of the Chebfun team's favorites
+%   wild         An iteratively defined function on [-1 1]
 %   zigzag       Degree 10000 polynomial that looks piecewise linear
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
-% See also CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERY3.
+% See also CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERY3, CHEB.GALLERYDISK, CHEB.GALLERYSPHERE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If the user did not supply an input, return a random function from the
@@ -67,7 +69,7 @@ if ( nargin == 0 )
         'chirp', 'daubechies', 'erf', 'fishfillet', 'gamma', 'gaussian', ...
         'jitter', 'kahaner', 'motto', 'random', 'rose', 'runge', ...
         'seismograph', 'Si', 'sinefun1', 'sinefun2', 'spikycomb', ...
-        'stegosaurus', 'vandercheb', 'vandermonde', 'wiggly', 'zigzag'};
+        'stegosaurus', 'vandercheb', 'vandermonde', 'wiggly', 'wild', 'zigzag'};
     name = names{randi(length(names))};
 end
 
@@ -229,6 +231,12 @@ switch lower(name)
         fa = @(x) sin(x) + sin(x.^2);
         f = chebfun(fa, [0 10]);
         ylims = [-2.4 2.4];
+        
+    % An example from one of the first Chebfun papers (Trefethen, 2007):
+    case 'wild'
+        fa = @(x) wild(x); % Defined below.
+        f = chebfun(fa, [-1 1]);
+        ylims = [5.5 9.5];
 
     % Degree 10000 polynomial that looks piecewise linear from ATAP appendix:
     case 'zigzag'
@@ -254,6 +262,7 @@ else
     if ( ~isempty(axispref) )
         axis(axispref{:})
     end
+    shg
 end
 
 end
@@ -286,4 +295,14 @@ f = chebfun([phi'; 0], [0 3], 'equi');
         end
     end
 
+end
+
+function s = wild(x)
+% The 'wild' function from Computing Numerically with Functions, Trefethen 2007.
+f = sin(pi*x);
+s = f;
+for j = 1:15
+    f = (3/4)*(1 - 2*f.^4);
+    s = s + f;
+end
 end

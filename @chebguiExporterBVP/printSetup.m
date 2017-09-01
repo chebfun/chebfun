@@ -7,7 +7,7 @@ function printSetup(fid, expInfo, guifile)
 %   FID:        ID of a file-writing stream.
 %   EXPINFO:    Struct containing information for printing the problem.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract info from the EXPINFO struct:
@@ -108,9 +108,9 @@ elseif ( ~isempty(initInput{1}) )
             fprintf(fid, '%s%s = %s;\n', inits{order(k)}, initText, ...
                 guesses{order(k)});
         end
-        fprintf(fid, 'N.init = [%s%s,', inits{order(1)}, initText);
+        fprintf(fid, 'N.init = [%s%s;', inits{order(1)}, initText);
         for k = 2:numel(initInput)-1
-            fprintf(fid, ' %s%s,', inits{order(k)}, initText);
+            fprintf(fid, ' %s%s;', inits{order(k)}, initText);
         end
         fprintf(fid, ' %s%s];\n', inits{order(end)}, initText);
     end

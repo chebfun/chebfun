@@ -5,7 +5,7 @@ function g = squeeze(f)
 %   then a CHEBFUN2 is returned. If F only depends on one of the variables, 
 %   then a CHEBFUN is returned.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )     % Check for an empty CHEBFUN3.

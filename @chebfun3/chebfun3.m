@@ -47,7 +47,7 @@ classdef chebfun3
 %
 % See also CHEBFUN3V and CHEBFUN3T.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -273,8 +273,8 @@ methods (Access = public)
     % Tensor of coefficients of a CHEBFUN3.
     varargout = chebcoeffs3(f);
     
-    % A wrapper for chebcoeffs3.
-    varargout = coeffs3(f);
+    % Tensor of coefficients of a CHEBFUN3 of specified size.
+    varargout = coeffs3(f, varargin);
 end
 
 methods
@@ -395,6 +395,9 @@ methods
     
     % Normal vector of a CHEBFUN3.
     varargout = normal(f, varargin);
+    
+    % Determinant of Jacobian of three CHEBFUN3 objects.
+    f = jacobian(f, g, h);    
       
     % Laplacian of a CHEBFUN3.
     out = lap(f);

@@ -3,7 +3,7 @@ function I = sum3(f)
 %   This is a direct generalization of Clenshaw-Curtis quadrature as 
 %   implemented in Page 77 of Battles' PhD thesis.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) ) 

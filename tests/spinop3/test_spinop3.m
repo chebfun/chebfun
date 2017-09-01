@@ -1,10 +1,10 @@
-% Test file for SPINOP3/SPINOP3:
+% Test file for SPINOP3:
 
 function pass = test_spinop3()
 
-% Construction from STRING for GL3 equation:
-S = spinop3('gl3');
-N = S.nonlinearPart;
+% Construction from STRING for GL equation:
+S = spinop3('GL');
+N = S.nonlin;
 pass(1) = strcmpi(func2str(N), '@(u)u-(1+1.5i)*u.*(abs(u).^2)');
 
 % Construction from DOM/TSPAN:

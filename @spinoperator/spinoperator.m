@@ -3,24 +3,25 @@ classdef spinoperator
 %operators for time-dependent PDEs. 
 %   SPINOPERATOR is a class for representing the spartial part S of a 
 %   time-dependent PDE of the form u_t = S(u) = Lu + N(u), where L is a linear 
-%   operator and N is a nonlinear operator. SPINOP (in 1D), SPINOP2 (in 2D) and 
-%   SPINOP3 (in 3D) are full implementations.
+%   operator and N is a nonlinear operator. SPINOP (in 1D), SPINOP2 (in 2D),
+%   SPINOP3 (in 3D) and SPINOPSPHERE (on the sphere) are full implementations.
 %   
-% See also SPINOP, SPINOP2, SPINOP3.
+% See also SPINOP, SPINOP2, SPINOP3, SPINOPSPHERE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        domain              % Spatial domain (1x2 DOUBLE in 1D, 1x4 in 2D, 
-                            % 1x6 in 3D)
+        domain              % Spatial domain (1x2 DOUBLE in 1D, 1x4 in 2D and on
+                            % the sphere, 1x6 in 3D)
         init                % Initial condition (CHEBFUN in 1D, CHEBFUN2 in 2D,
-                            % CHEBFUN3 in 3D, CHEBMATRIX for systems)
-        linearPart          % Linear part of the operator (FUNCTION HANDLE)
-        nonlinearPart       % Nonlinear part of the operator (FUNCTION HANDLE)
+                            % CHEBFUN3 in 3D, SPHEREFUN on the SPHERE, 
+                            % CHEBMATRIX for systems)
+        lin                 % Linear part of the operator (FUNCTION HANDLE)
+        nonlin              % Nonlinear part of the operator (FUNCTION HANDLE)
         tspan               % Vector of strictly increasing time 
                             % samples (DOUBLE)
     end
@@ -46,7 +47,7 @@ classdef spinoperator
         % METHOD for numVars:
         function nVars = get.numVars(S)
             
-            nVars = nargin(S.linearPart);
+            nVars = nargin(S.lin);
             
         end
         
@@ -54,7 +55,7 @@ classdef spinoperator
         function Nc = get.nonlinearPartCoeffs(S)
             
             % Extract the nonlinear part:
-            N = S.nonlinearPart;
+            N = S.nonlin;
             
             % If N is empty, we are done:
             if ( isempty(N) == 1 )
@@ -68,8 +69,8 @@ classdef spinoperator
             names = fieldnames(wrk);
             if ( isempty(names) == 0 )
                 lengthNames = size(names, 1);
-                for k = 1:lengthNames
-                    eval(sprintf('%s = wrk.(names{k});', names{k}));
+                for iter = 1:lengthNames
+                    eval(sprintf('%s = wrk.(names{iter});', names{iter}));
                 end
             end
             
@@ -79,12 +80,9 @@ classdef spinoperator
             % Get the number of variables NVARS:
             nVars = nargin(N);
             
-            % Get the dimension DIM:
-            dim = getDimension(S);
-            
             % For scalar equations in 1D, we support nonlinearities of the form
             % diff(f(u),m) with m>=0:
-            if ( dim == 1 && nVars == 1 )
+            if ( isa(S, 'spinop') == 1 && nVars == 1 )
                 
                 % Compute the differentiation order to get NC=diff(u,m):
                 diffOrderTwoOrGreater = regexp(strN, ',\d*', 'match');
@@ -99,9 +97,10 @@ classdef spinoperator
                 Nc = ['@(u) diff(u,', diffOrder, ')'];
                 Nc = eval(Nc);
                 
-            % For scalar equations in 2D and 3D, and for systems of equations in 
-            % 1D, 2D and 3D, we only support nonlinearities of the form 
-            % f_i(u_1,...,u_n), i.e., with no differentiation, so Nc=1:
+            % For scalar equations in 2D/3D and on the sphere, and for systems 
+            % of equations in 1D/2D/3D and on the sphere, we only support 
+            % nonlinearities of the form f_i(u_1,...,u_n), i.e., with no 
+            % differentiation, so Nc=1:
             else
                 
                 % Nc=1:
@@ -115,7 +114,7 @@ classdef spinoperator
         function Nv = get.nonlinearPartVals(S)
             
             % Extract the nonlinear part:
-            N = S.nonlinearPart;
+            N = S.nonlin;
             
             % If N is empty, we are done:
             if ( isempty(N) == 1 )
@@ -124,14 +123,13 @@ classdef spinoperator
             end
             
             % Else, get the variables of the workspace:
-            N = S.nonlinearPart;
             func = functions(N);
             wrk = func.workspace{1};
             names = fieldnames(wrk);
             if ( isempty(names) == 0 )
                 lengthNames = size(names, 1);
-                for k = 1:lengthNames
-                    eval(sprintf('%s = wrk.(names{k});', names{k}));
+                for iter = 1:lengthNames
+                    eval(sprintf('%s = wrk.(names{iter});', names{iter}));
                 end
             end
             
@@ -141,12 +139,9 @@ classdef spinoperator
             % Get the number of variables NVARS:
             nVars = nargin(N);
             
-            % Get the dimension DIM:
-            dim = getDimension(S);
-            
             % For scalar equations in 1D, we support nonlinearities of the form
             % diff(f(u),m) with m>=0:
-            if ( dim == 1 && nVars == 1 )
+            if ( isa(S, 'spinop') == 1 && nVars == 1 )
                 
                 % Get rid of the differentiation part in STRN to get NV=f(u):
                 oldString = {'diff', ',\d*)'};
@@ -154,9 +149,10 @@ classdef spinoperator
                 Nv = regexprep(strN, oldString, newString);
                 Nv = eval(Nv);
                 
-            % For scalar equations in 2D and 3D, and for systems of equations in 
-            % 1D, 2D and 3D, we only support nonlinearities of the form 
-            % f_i(u_1,...,u_n), i.e., with no differentiation, so Nv=N:
+            % For scalar equations in 2D/3D and on the sphere, and for systems 
+            % of equations in 1D/2D/3D and on the sphere, we only support 
+            % nonlinearities of the form f_i(u_1,...,u_n), i.e., with no 
+            % differentiation, so Nv=N:
             else
                 
                 % Nv=N:
@@ -174,10 +170,10 @@ classdef spinoperator
                 
                 % Second, relabel the variables:
                 strNv = strNv(closeParenthesis+1:end);
-                for k = 1:nVars
-                    idx1 = [num2str(rats((k-1)/nVars)), '*', 'length(u)', '+1'];
-                    idx2 = [num2str(rats(k/nVars)), '*', 'length(u)'];
-                    strNvNew = strrep(strNv, variablesNames{k}, ...
+                for iter = 1:nVars
+                    idx1 = [num2str(rats((iter-1)/nVars)), '*', 'length(u)', '+1'];
+                    idx2 = [num2str(rats(iter/nVars)), '*', 'length(u)'];
+                    strNvNew = strrep(strNv, variablesNames{iter}, ...
                         ['u(', idx1, ':', idx2, ',:,:)']);
                     strNv = strNvNew;
                 end
@@ -194,23 +190,47 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = true, Static = false )
         
-        % Check if the solution is resolved in space:
-        ishappy = checkHappiness(S, c, pref)
-        
         % Discretize a SPINOPERATOR:
         [L, Nc] = discretize(S, N)
 
-        % Returns the spatial dimension (1 for SPINOP, 2 for SPINOP2 and 
-        % 3 for SPINOP3):
+        % Returns indexes for dealiasing procedure (2/3-rule):
+        idx = getDealiasingIndexes(S, N, nVars)
+        
+        % Returns the type of CHEBFUN on which the SPINOPERATOR acts:
+        out = getChebfunType(S)
+        
+        % Returns the transform coeffs -> values:
+        F = getCoeffs2ValsTransform(S)
+        
+        % Returns the spatial dimension:
         dim = getDimension(S)
         
+        % Returns a grid correspoding to a SPINOPRERATOR object:
+        grid = getGrid(S, N, dom)
+        
+        % Returns the adequate SPINPREFERENCE object:
+        pref = getPreference(S)
+        
+        % Returns the transform values -> coeffs:
+        F = getVals2CoeffsTransform(S)
+
+        % Returns 1 if the linear part of the SPINOPERATOR is diagonal, 
+        % 0 otherwise:
+        out = isDiag(S)
+        
         % Initialize a movie when solving a PDE specified by a SPINOPERATOR:
-        [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
+        [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
         
-        % Plot a movie when solving a PDE specified by a SPINOPERATOR:
-        options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
+        % Update the movie when solving a PDE specified by a SPINOPERATOR:
+        opts = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
+         
+        % Reshape the data that will be used for constructing the solution at
+        % the end of the time-stepping: (For example, for SPINOPSPEHRE, it 
+        % extracts half of the data, since the data has been doubled-up with
+        % the DFS method.)
+        data = reshapeData(S, data, nVars)
         
-        % Add the (repeated) endpoints to a periodic grid in 1D, 2D or 3D:
+        % Add the (repeated) endpoints to a periodic grid:
         grid = reshapeGrid(S, grid)
 
     end
@@ -221,10 +241,7 @@ classdef spinoperator
     methods ( Access = public, Abstract = false, Static = true )
         
         % Solve a PDE defined by a SPINOPERATOR:
-        [uout, tout] = solvepde(varargin)
-        
-        % Check if in DEMO mode:
-        out = isDemoCheck(in)
+        [uout, tout, computingTime] = solvepde(varargin)
    
     end
 

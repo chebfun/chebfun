@@ -9,7 +9,7 @@ function varargout = cdr( f )
 %
 % See also PIVOTS, SVD. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty( f ) )
@@ -24,7 +24,7 @@ piv = f.pivotValues;
 d = 1./piv; 
 
 % Set infinite values to zero.
-d( d == inf ) = 0;  
+d( abs(d) == inf ) = 0;  
 
 % Output:
 if ( nargout <= 1 )

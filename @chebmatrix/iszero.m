@@ -5,7 +5,7 @@ function isz = iszero(f)
 %
 %   This function is used for linearity detection in CHEBOP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 fBlocks = f.blocks;

@@ -16,7 +16,7 @@ function T = txm(T, A, varargin)
 % The structure of this code is similar to `ttm.m` from the HTUCKER toolbox 
 % of Tobler and Kressner.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 contractionMode = varargin{1};

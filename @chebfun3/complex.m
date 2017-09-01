@@ -5,7 +5,7 @@ function h = complex(f, g)
 %
 % See also CHEBFUN3/IMAG, CHEBFUN3/CONJ, CHEBFUN3/ABS and CHEBFUN3/REAL.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isreal(f) || ~isreal(g) )

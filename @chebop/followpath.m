@@ -110,7 +110,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followpath(N, lam0, varargin)
 %       'measure', measure, 'direction', -1, 'plotting', 1, ...
 %       'stopfun', @(u,lam) lam < 5e-3, 'stepmax', .1);
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % ========================= Developer comment ==================================

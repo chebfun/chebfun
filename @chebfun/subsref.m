@@ -13,7 +13,9 @@ function varargout = subsref(f, index)
 %   COL. In both cases, COL should be a row vector.
 %
 %   F(G), where G is also a CHEBFUN, computes the composition of F and G. See
-%   CHEBFUN/COMPOSE for further details.
+%   CHEBFUN/COMPOSE for further details.  This also works if G is a CHEBFUN2,
+%   CHEBFUN3, DISKFUN or SPHEREFUN, see CHEBFUN2/COMPOSE, CHEBFUN3/COMPOSE,
+%   DISKFUN/COMPOSE or SPHEREFUN/COMPOSE for further details.
 %
 % .
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
@@ -26,7 +28,7 @@ function varargout = subsref(f, index)
 %
 % See also FEVAL, COMPOSE, GET, RESTRICT, SIMPLIFY.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Document for array-valued CHEBFUN objects and quasimatrices.
@@ -109,7 +111,8 @@ switch index(1).type
             extraColons = mat2cell(extraColons, 1, ones(1, extraDims));
             out = out(:, outCols(:), extraColons{:});
 
-        elseif ( isa(x, 'chebfun') )
+        elseif ( isa(x, 'chebfun') || isa(x, 'chebfun2') || ...
+                isa(x, 'chebfun3') || isa(x, 'diskfun') || isa(x, 'spherefun') )
             % Call COMPOSE():
             out = compose(x, f);
             

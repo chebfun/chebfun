@@ -1,12 +1,11 @@
 function varargout = plot( f, varargin )
 %PLOT  Surface plot of a SEPARABLEAPPROX.
 %
-%   PLOT(F) if F is a real-valued SEPARABLEAPPROX then this is the surface plot and is
-%   the same as surf(F). If F is a complex valued then this returns a domain
-%   colouring plot of F.
+%   PLOT(F) gives a surface plot of the SEPARABLEAPPROX F, the same
+%   as SURF(F).  If F is complex-valued, it gives a phase portrait.
 %
-%   PLOT(F) if F is a complex-valued SEPARABLEAPPROX then we do Wegert's phase portrait
-%   plots.
+%   PLOT(F, 'zebra') gives a "zebra plot", black for values < 0
+%   and white for values >= 0.
 %
 %   PLOT(F, S) Plotting with option string plots the column and row slices, and
 %   pivot locations used in the construction of F.
@@ -38,7 +37,7 @@ function varargout = plot( f, varargin )
 % 
 % See also SURF, MESH.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
 holdState = ishold;
@@ -112,12 +111,20 @@ if ( ~isempty(varargin) )
         hold off
     else
         
-        %% Standard surface plot 
-        h = surf(f, varargin{:});
+        %% Standard or zebra surface plot 
+        if strcmp(varargin{1}, 'zebra')
+            h = surf(f);
+            view(0,90)
+            caxis(norm(caxis,inf)*[-1 1])
+            colormap([0 0 0; 1 1 1])
+        else
+            h = surf(f, varargin{:});
+        end
     end
 else
     if ( isreal( f ) )
         h = surf( f );
+        colormap default
         
     else
         %% Phase Protrait plot 

@@ -57,7 +57,7 @@ function varargout = chebtest(varargin)
 %
 %   Any of the '--' input arguments can be used in tandem.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Find directory in which Chebfun was installed:

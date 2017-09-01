@@ -8,7 +8,7 @@ function f = restrict(f, dom)
 %   - CHEBFUN that approximates F on the domain if DOM is a line.
 %   DOM should be a vector of length 6 specifying the underlying cuboid.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(dom, 'double') )

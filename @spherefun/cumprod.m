@@ -5,7 +5,7 @@ function varargout = cumprod(varargin)
 %
 % See also SPHEREFUN/CUMSUM, SPHEREFUN/SUM, SPHEREFUN/PROD.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:SPHEREFUN:CUMPROD:notSupported',...

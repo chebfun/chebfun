@@ -1,5 +1,5 @@
 function [x, w, v] = radaupts(n, varargin)
-%RADAUPTS   Gauss-Legendre-Radau Quadrature Nodes and Weights.
+%RADAUPTS   Gauss-Legendre-Radau quadrature nodes and weights.
 %  RADAUPTS(N) returns N Legendre-Radau points X in (-1,1).
 %
 %  [X, W] = RADAUPTS(N) returns also a row vector W of weights for
@@ -13,7 +13,7 @@ function [x, w, v] = radaupts(n, varargin)
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, LOBPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

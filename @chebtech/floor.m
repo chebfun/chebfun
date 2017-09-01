@@ -10,7 +10,7 @@ function f = floor(f)
 %
 % See also CEIL, ROUND, FIX.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Evaluate at the two end points, and an arbitrary interior point:

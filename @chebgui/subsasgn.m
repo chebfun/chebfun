@@ -1,7 +1,7 @@
 function varargout = subsasgn(cg, index, varargin)
 % SUBSASGN   Modify a CHEBGUI object.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Allow calls on the form guifile.options.plotting

@@ -1,6 +1,5 @@
 classdef spinop < spinoperator
-%SPINOP   Class for representing the spatial part of 1D differential operators 
-%for time-dependent PDEs.
+%SPINOP   Class for representing 1D differential operators in SPIN.
 %   SPINOP is a class for representing the spatial part S of a time-dependent 
 %   PDE of the form u_t = S(u) = Lu + N(u) in 1D, where L is a linear 
 %   operator and N is a nonlinear operator. 
@@ -8,17 +7,17 @@ classdef spinop < spinoperator
 %   S = SPINOP(PDECHAR) creates a SPINOP object S defined by the string PDECHAR.
 %   Strings available include 'AC' for Allen-Cahn equation, 'KS' for 
 %   Kuramoto-Sivashinsky equation, and 'KdV' for Korteweg-de Vries equation. 
-%   Many other PDEs are available, see HELP/SPIN.
+%   Other PDEs are available, see HELP/SPIN.
 %
 %   S = SPINOP(DOM, TSPAN) creates a SPINOP object S on DOM x TSPAN. The other
-%   fields of a SPINOP are its linear part S.LINEARPART, its nonlienar part
-%   S.NONLINEARPART and the initial condition S.INIT. The fields can be set via
-%   S.PROP = VALUE. See Remark 1 and Example 1.
+%   fields of a SPINOP are its linear part S.LIN, its nonlienar part S.NONLIN 
+%   and the initial condition S.INIT. The fields can be set via S.PROP = VALUE. 
+%   See Remark 1 and Example 1.
 % 
 % Remark 1: The linear part can be any linear constant-coefficient differential
 %           operator, e.g., @(u) diff(u,3) + u. The nonlinear part has to be
 %           constant-coefficient and of the form @(u) diff(f(u), m) where f is a 
-%           nonlinear function of u that does not involve any derivatives of u, 
+%           nonlinear function of u that does not involve any derivative of u, 
 %           and m is the differentiation order. The following function handles 
 %           are allowed:
 %
@@ -40,13 +39,13 @@ classdef spinop < spinoperator
 %
 %            dom = [-pi pi]; tspan = [0 1e-2];
 %            S = spinop(dom, tspan);
-%            S.linearPart = @(u) -diff(u,3);
-%            S.nonlinearPart = @(u) -.5*diff(u.^2);
+%            S.lin = @(u) -diff(u,3);
+%            S.nonlin = @(u) -.5*diff(u.^2);
 %            S.init = chebfun(@(x) 100*sin(x), dom);
 %
-% See also SPINOPERATOR, SPINOP2, SPINOP3, SPIN.
+% See also SPINOPERATOR, SPIN.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,8 +63,8 @@ classdef spinop < spinoperator
             elseif ( nargin == 1 )
                 if ( isa(varargin{1}, 'char') == 1 )
                     [L, N, dom, tspan, u0] = parseInputs(varargin{1});
-                    S.linearPart = L;
-                    S.nonlinearPart = N;
+                    S.lin = L;
+                    S.nonlin = N;
                     S.domain = dom;
                     S.tspan = tspan;
                     S.init = u0;
@@ -130,7 +129,7 @@ end
             L = @(u) 1e-3*diff(u, 2);
             N = @(u) -.5*diff(u.^2);
             dom = [-1 1];
-            tspan = [0 15];
+            tspan = [0 20];
             u0 = chebfun('(1-x.^2).*exp(-30.*(x+1/2).^2)', dom, 'trig');
             
         % Belousov-Zhabotinsky equation:
@@ -140,7 +139,7 @@ end
             dom = [-1 1];
             tspan = [0 30];
             u01 = chebfun(@(x) exp(-100*(x+.5).^2), dom, 'trig');
-            u02 = chebfun(@(x) exp(-100*(x).^2), dom, 'trig');
+            u02 = chebfun(@(x) exp(-100*x.^2), dom, 'trig');
             u03 = chebfun(@(x) exp(-100*(x-.5).^2), dom, 'trig');
             u0 = [u01; u02; u03];
             
@@ -158,7 +157,7 @@ end
             N = @(u,v) [2e-2*(1 - u) - u.*v.^2; -8.62e-2*v + u.*v.^2];
             G = 50;
             dom = G*[-1 1];
-            tspan = [0 12000];
+            tspan = [0 8000];
             u01 = chebfun(@(x) 1 - 1/2*sin(pi*(x-G)/(2*G)).^100, dom, 'trig');
             u02 = chebfun(@(x) 1/4*sin(pi*(x-G)/(2*G)).^100, dom, 'trig');
             u0 = [u01; u02];
@@ -178,7 +177,7 @@ end
             L = @(u) -diff(u, 2) - diff(u, 4);
             N = @(u) -.5*diff(u.^2);
             dom = [0 32*pi];
-            tspan = [0 300];
+            tspan = [0 200];
             u0 = chebfun('cos(x/16).*(1 + sin((x-1)/16))', dom, 'trig');
             
         % Nikolaevskiy equation:
@@ -194,8 +193,8 @@ end
             L = @(u) 1i*diff(u, 2);
             N = @(u) 1i*abs(u).^2.*u;
             dom = [-pi pi];
-            tspan = [0 18];
-            A = 2; B = 1;
+            tspan = [0 20];
+            A = 1; B = 1;
             u0 = @(x) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A;
             u0 = chebfun(u0, dom, 'trig');
              

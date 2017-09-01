@@ -16,7 +16,7 @@ function c = ultracoeffs(f, n, lam)
 %
 % See also CHEBCOEFFS, JACCOEFFS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,7 +46,7 @@ end
 ab = lam - .5;
 c = jaccoeffs(f, n, ab, ab);   
 
-n = length(c) - 1;
+n = size(c,1) - 1;
 nn = (0:n).';
 % scl = feval(jacpoly(nn, lam-.5, lam-.5), 1)./feval(ultrapoly(nn, lam), 1);
 scl = ( gamma(2*lam) ./ gamma(lam+.5) ) * ...

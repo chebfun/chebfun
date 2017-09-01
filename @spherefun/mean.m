@@ -8,7 +8,7 @@ function s = mean(f, dim)
 %
 % See also SPHEREFUN/MEAN2, SPHEREFUN/STD2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
@@ -27,7 +27,7 @@ s = sum( f, dim );
 if ( dim == 1 )
     s = s / pi; % Mean in the latitude direction (default)
 elseif ( dim == 2 )
-    s = s / 2*pi; % Mean in the longitude direction
+    s = s / (2*pi); % Mean in the longitude direction
 else
     error('CHEBFUN:SPHEREFUN:mean:dim', ...
         'Mean not in longitude (LAMBDA) or latitude (THETA) direction.')

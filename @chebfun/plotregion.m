@@ -29,7 +29,7 @@ function varargout = plotregion(u, varargin)
 %       u = chebfun({@sin, @cos, @tan, @cot}, [-2, -1, 0, 1, 2]);
 %       plotregion(u)
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numColumns(u) > 1 )

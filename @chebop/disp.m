@@ -3,7 +3,7 @@ function disp(A)
 %
 % See also DISPLAY.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
@@ -30,6 +30,9 @@ else
     if ( ~isempty(A.op) )
         fprintf(':\n')
         [str, args] = formatOperator(A.op);
+        if ( ~isempty(A.opShow) )
+            str = A.opShow;
+        end
         fprintf('      %s\n', str);
         if ( loose )
             fprintf('\n')
@@ -85,6 +88,17 @@ else
             fprintf('\n')
         end
     end
+    
+    if ( ~isempty(A.maxnorm) )
+        mn = A.maxnorm;
+        mn = mn(:)'; % Ensure row vector for printing
+        if ( length(mn) > 1 )
+            maxnormString = ['[' num2str(mn) ']'];
+        else
+            maxnormString = num2str(mn);
+        end
+        fprintf('   enforcing a maximum norm of solution: %s\n', maxnormString);
+    end
 
 end
 
@@ -106,28 +120,42 @@ elseif ( isnumeric(bcShow) )
     if ( ~isempty(args) )
         % How many conditions are we dealing with?
         numBC = length(bcShow);
-        % Extra whitespace to make things align
-        if ( numBC < 4)
-            extraWS = repmat(' ', 1, numBC - 1);
-        else
-            extraWS = '    ';
-        end
         
-        % We always need to print the first condition:
-        fprintf('      %s%s = %s\n', args, extraWS, num2str(bcShow(1)));
-        % If we got more conditions, print them as well:
-        if ( numBC >= 2 )
-            fprintf('      %s''%s = %s\n', args, ...
-                extraWS(1:end-1), num2str(bcShow(2)));
-        end
-        if ( numBC >= 3 )
-            fprintf('      %s''''%s = %s\n', args, ...
-                extraWS(1:end-2), num2str(bcShow(3)));
-        end
-        % Print all remaining conditions:
-        for bcCounter = 4:numBC
-            fprintf('      %s^(%i) = %s\n', args, ...
-                bcCounter-1, num2str(bcShow(bcCounter)));
+        % Check if we're dealing with a scalar case (e.g. u=2, u'=3) or system
+        % case (e.g. u=2, v=3):
+        if ( isempty(strfind(args, ',')) )  % Scalar case
+
+            % Extra whitespace to make things align
+            if ( numBC < 4)
+                extraWS = repmat(' ', 1, numBC - 1);
+            else
+                extraWS = '    ';
+            end
+            
+            % We always need to print the first condition:
+            fprintf('      %s%s = %s\n', args, extraWS, num2str(bcShow(1)));
+            % If we got more conditions, print them as well:
+            if ( numBC >= 2 )
+                fprintf('      %s''%s = %s\n', args, ...
+                    extraWS(1:end-1), num2str(bcShow(2)));
+            end
+            if ( numBC >= 3 )
+                fprintf('      %s''''%s = %s\n', args, ...
+                    extraWS(1:end-2), num2str(bcShow(3)));
+            end
+            % Print all remaining conditions:
+            for bcCounter = 4:numBC
+                fprintf('      %s^(%i) = %s\n', args, ...
+                    bcCounter-1, num2str(bcShow(bcCounter)));
+            end
+        else
+           % Vector case. Split args back into individual variables before so we
+           % can print them one per line
+           args = strsplit(args,',');
+           
+           for bcCounter = 1:numBC
+               fprintf('      %s = %s\n', args{bcCounter}, num2str(bcShow(bcCounter)));
+           end
         end
     else
         fprintf('      %s\n', num2str(bcShow));

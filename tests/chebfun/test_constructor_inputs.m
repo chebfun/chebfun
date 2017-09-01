@@ -140,4 +140,20 @@ f = chebfun(@sin);
 g = chebfun(@sin, 'eps', 1e-6);
 pass(26) = length(g) < length(f);
 
+% Test the use of 'coeffs' and 'chebkind' simultaneously.
+c = (1:5).';
+try
+    chebfun(c, 'coeffs', 'chebkind', 1);
+catch ME
+    pass(27) = strcmpi(ME.message, [' ''coeffs'' and ''chebkind'' ' ...
+        'should not be specified simultaneously.']);
+end
+
+try
+    chebfun(c, 'chebkind', 2, 'coeffs');
+catch ME
+    pass(28) = strcmpi(ME.message, [' ''coeffs'' and ''chebkind'' ' ...
+        'should not be specified simultaneously.']);
+end
+
 end
