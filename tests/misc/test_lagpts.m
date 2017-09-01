@@ -1,4 +1,7 @@
-function pass = test_lagpts2(pref)
+
+
+
+function pass = test_lagpts(pref)
 
 if ( nargin == 0 )
     pref = chebfunpref();
@@ -44,7 +47,6 @@ pass(13) = abs(w*x - 2/e) < tol && abs(w*x.^2 - 5/e) < tol;
 [x, w, v] = lagpts(n, [-inf, -1]);
 e = exp(1);
 pass(14) = abs(w*x + 2/e) < tol && abs(w*x.^2 - 5/e) < tol;
-<<<<<<< HEAD
 
 % Tests with other alpha at different n
 alpha = 0.7;
@@ -75,8 +77,6 @@ alpha = 3; % RH changes to expl
 pass(22) = all(size(x) == [n,1]) && (abs(w*x -gamma(alpha+2) ) <= 1e-9);
 pass(23) = (min(x) > 0.0) && ( max(x) < 4*n + 2*alpha + 2 );
 pass(24) = (min(diff(x)) > 0.0) && (min(w) >= 0.0);
-=======
->>>>>>> 40570c16411f021bb15991426c36fcff1d29ba2b
 
 end
 
