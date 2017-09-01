@@ -11,19 +11,24 @@ function [x, w, v] = lagpts(n, int, meth, alf)
 %
 %   [X, W] = LAGPTS(N, METHOD) allows the user to select which method to use.
 %   METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
-%   which is best for when N is small. METHOD = 'RH' will use asymptotics of
-%   Laguerre polynomials, and METHOD = 'RHW' is the same as 'RH' except it 
-%   costs only O(sqrt(n)) operations. This is because it stops when the
-%   weights fall below realmin. The command [X, W] = lagpts(round( (n/17)^2), 
-%   'RHW') returns about n nodes and weights above realmin for large n.
-%   METHOD = 'REC' or 'RECW' use Newton iterations on the recurrence relation.
+%   which is best for when N is small. 
+%   METHOD = 'RH' will use Newton iterations on asymptotics of Laguerre polynomials. 
+%   METHOD = 'RHW' is the same as 'RH' except it costs only O(sqrt(n)) 
+%   operations. This is because it stops when the weights fall below 
+%   realmin. The command [X, W] = lagpts(round( (n/17)^2), 'RHW') 
+%   returns about n nodes and weights above realmin for large n.
+%   METHOD = 'FAST' will use the Glaser-Liu-Rokhlin fast algorithm.
+%   METHOD = 'REC' or 'RECW' uses Newton iterations on the recurrence relation.
 %   METHOD = 'EXP' or 'EXPW' uses explicit expansions of nodes and weights.
 %
 %   [X, W] = LAGPTS(N, alpha) or LAGPTS(N, [0, inf], METHOD, alpha) will return
 %   the nodes and weights for the generalised Laguerre polynomials with 
-%   parameter alpha.
+%   parameter alpha. Inaccurate results can be expected when alpha and n are large.
 %
-%   By default LAGPTS uses 'REC' when N < 128, and else 'EXP'.
+%   By default, LAGPTS uses 'GW' with replacement of inaccurate small weights by
+%   weights from the recurrence relation when N < 128. We use 'EXP' for N >= 1024 
+%   and else 'RH', unless the latter does not converge. Then, LAGPTS uses 'FAST' if
+%   alpha is zero and else 'EXP' although both may be inaccurate.
 %
 % See also CHEBPTS, LEGPTS, HERMPTS, and JACPTS.
 
@@ -125,10 +130,27 @@ elseif any(strcmpi(method, {'RH', 'RHW'}))
     % RH, see [3] and [5]
     [x, w] = newton(n, strcmpi(method, 'RHW'), alpha, 1);
     
-elseif ( any(strcmpi(method,{'rec', 'recW'}))  || ( ( n < 128 ) && strcmpi(method,'default') ) )
+elseif ( n < 128 ) && strcmpi(method,'default')
+    % GW with forward recurrence for small weights
+    [x,w] = lagpts(n, [0, inf], 'GW', alpha);
+    ixs = find(w < 1e-10);
+    for k = ixs
+        [~, pder] = lagpnRecDer(n, alpha, x(k));
+        w(k) = (n^2 +alpha*n)^(-1/2)/lagpnRecDer(n-1, alpha, x(k))/pder;
+    end
+    
+elseif strcmpi(method,'fast')
+    % Fast, see [2]
+    [x, ders] = alg0_Lag(n);
+    w = transpose(exp(-x)./(x.*ders.^2));
+    
+elseif any(strcmpi(method,{'rec', 'recW'}))
     % Forward recurrence
     [x, w] = newton(n, strcmpi(method, 'recW'), alpha, 0);
     
+elseif ( n < 1024 ) && strcmpi(method,'default')
+    [x, w] = newton(n, 0, alpha, 2);
+        
 else
     % Explicit expansions, see [4]
     [x,w] = laguerreExp(n, strcmpi(method,'expW'), alpha);
@@ -158,6 +180,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% Newton Routine %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% rh = 0 if forward recurrence, 1 if RH and 2 if RH by default
 function [x, w] = newton(n, compRepr, alpha, rh)
 
 if compRepr
@@ -231,7 +254,7 @@ for k = 1:mn
     ox = x(k); % Old x
     % The constants multiplying eps or the maximal l can be increased to avoid
     % the error below, at the cost of possibly lower accuracy.
-    while ( ( abs(step) > eps*400*x(k) ) && ( l < 9) )
+    while ( ( abs(step) > eps*40*x(k) ) && ( l < 5) )
         l = l + 1;
         if rh
             pe = polyAsyRH(n, x(k), alpha, T);
@@ -241,7 +264,7 @@ for k = 1:mn
             [pe, pder] = lagpnRecDer(n, alpha, x(k));
             step = pe/pder;
         end
-        if (abs(pe) >= abs(ov)*(1-500*eps) )
+        if (abs(pe) >= abs(ov)*(1-50*eps) )
             % The function values do not decrease enough any more due to
             % roundoff errors, so set to the previous value and quit.
             x(k) = ox;
@@ -251,13 +274,21 @@ for k = 1:mn
         x(k) = x(k) -step;
         ov = pe;
     end
-    if ( x(k) < 0 ) || ( x(k) > 4*n + 2*alpha + 2 ) || ( l == 9 ) || ...
+    if ( x(k) < 0 ) || ( x(k) > 4*n + 2*alpha + 2 ) || ( l == 5 ) || ...
             ( ( k ~= 1 ) && ( x(k - 1) >= x(k) ) )
+        if (rh == 2) && (alpha == 0)
+            [x, ders] = alg0_Lag(n);
+            w = transpose(exp(-x)./(x.*ders.^2));
+            return
+        elseif rh == 2
+           [x,w] = laguerreExp(n, 0, alpha); 
+           return
+        end
         error('CHEBFUN:lagpts:converge','Newton method may not have converged.');
     end
     if noUnderflow && rh
         w(k) = factorw/polyAsyRH(n-1, x(k), alpha + 1, T)/...
-            polyAsyRH(n+1, x(k), alpha, T)/exp( x(k) );
+            polyAsyRH(n+1, x(k), alpha, T)/exp(x(k));
     elseif noUnderflow
         w(k) = (n^2 +alpha*n)^(-1/2)/lagpnRecDer(n-1, alpha, x(k))/pder;
     end
@@ -281,6 +312,7 @@ end
 
 % Compute the expansion of the orthonormal polynomial without e^(x/2) nor a
 % constant factor based on some heuristics
+
 function p = polyAsyRH(np, y, alpha, T)
 % We could avoid these tests by splitting the loop k=1:mn into three parts
 % with heuristics for the bounding indices. np + alpha is always n, so we
@@ -964,6 +996,158 @@ p = real( 4*sqrt(pi)/z^(1/4)/d^(1/4)*z^(-alpha/2)* ...
 
 end
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%% Routines for FAST algorithm %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [x, ders] = alg0_Lag(n)
+ders = zeros(n, 1);
+xs = 1/(2*n+1);
+n1 = 20;
+n1 = min(n1, n);
+x = zeros(n, 1);
+for k = 1:n1
+    [xs, ders(k)] = alg3_Lag(n, xs);
+    x(k) = xs;
+    xs = 1.1*xs;
+end
+[x, ders] = alg1_Lag(x, ders, n, n1);
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [roots, ders] = alg1_Lag(roots, ders, n, n1)
+
+% number of terms in Taylor expansion
+m = 30;
+
+% initialise
+hh1 = ones(m+1, 1); 
+zz = zeros(m, 1); 
+u = zeros(1, m+1); 
+up = zeros(1, m+1);
+
+x = roots(n1);
+for j = n1:(n - 1)
+    
+    % initial approx
+    h = rk2_Lag(pi/2, -pi/2, x, n) - x;
+    
+    % scaling:
+    M = 1/h; 
+    M2 = M^2; 
+    M3 = M^3; 
+    M4 = M^4;
+    
+    % recurrence relation for Laguerre polynomials
+    r = x*(n + .5 - .25*x);  
+    p = x^2;
+    u(1:2) = [0 ; ders(j)/M];
+    u(3) = -.5*u(2)/(M*x) - (n + .5 - .25*x)*u(1)/(x*M^2);
+    u(4) = -u(3)/(M*x) + ( -(1+r)*u(2)/6/M^2 - (n+.5-.5*x)*u(1)/M^3 ) / p;
+    up(1:3) = [u(2) ; 2*u(3)*M ; 3*u(4)*M];
+    
+    for k = 2:(m - 2)
+        u(k+3) = ( -x*(2*k+1)*(k+1)*u(k+2)/M - (k*k+r)*u(k+1)/M2 - ...
+                   (n+.5-.5*x)*u(k)/M3 + .25*u(k-1)/M4 ) / (p*(k+2)*(k+1));
+        up(k+2) = (k+2)*u(k+3)*M;
+    end
+    up(m+1) = 0;
+    
+    % Flip for more accuracy in inner product calculation.
+    u = u(m+1:-1:1);  
+    up = up(m+1:-1:1);
+    
+    % Newton iteration
+    hh = hh1; 
+    hh(end) = M;    
+    step = inf;  
+    l = 0;
+    if ( M == 1 )
+        Mhzz = (M*h) + zz;
+        hh = [M ; cumprod(Mhzz)];
+        hh = hh(end:-1:1);
+    end
+    while ( (abs(step) > eps) && (l < 10) )
+        l = l + 1;
+        step = (u*hh)/(up*hh);
+        h = h - step;
+        Mhzz = (M*h) + zz;
+        % Powers of h (This is the fastest way!)
+        hh = [M ; cumprod(Mhzz)];     
+        % Flip for more accuracy in inner product
+        hh = hh(end:-1:1);          
+    end
+    
+    % Update
+    x = x + h;
+    roots(j+1) = x;
+    ders(j+1) = up*hh;
+    
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [x1, d1] = alg3_Lag(n, xs)
+[u, up] = eval_Lag(xs, n);
+theta = atan(sqrt(xs/(n + .5 - .25*xs))*up/u);
+x1 = rk2_Lag(theta, -pi/2, xs, n);
+
+% Newton iteration
+step = inf;  
+l = 0;
+while ( (abs(step) > eps || abs(u) > eps) && (l < 200) )
+    l = l + 1;
+    [u, up] = eval_Lag(x1, n);
+    step = u/up;
+    x1 = x1 - step;
+end
+
+[~, d1] = eval_Lag(x1, n);
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Evaluate Laguerre polynomial via recurrence
+function [L, Lp] = eval_Lag(x, n)
+Lm2 = 0; 
+Lm1 = exp(-x/2); 
+Lpm2 = 0; 
+Lpm1 = 0;
+for k = 0:n-1
+    L = ( (2*k+1-x).*Lm1 - k*Lm2 ) / (k + 1);
+    Lp = ( (2*k+1-x).*Lpm1 - Lm1 - k*Lpm2 ) / (k + 1);
+    Lm2 = Lm1; 
+    Lm1 = L;
+    Lpm2 = Lpm1; 
+    Lpm1 = Lp;
+end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Runge-Kutta for Laguerre Equation
+function x = rk2_Lag(t, tn, x, n)
+m = 10; 
+h = (tn - t)/m;
+for j = 1:m
+    f1 = (n + .5 - .25*x);
+    k1 = -h/( sqrt(f1/x) + .25*(1/x-.25/f1)*sin(2*t) );
+    t = t + h;  
+    x = x + k1;   
+    f1 = (n + .5 - .25*x);
+    k2 = -h/( sqrt(f1/x) + .25*(1/x-.25/f1)*sin(2*t) );
+    x = x + .5*(k2 - k1);
+end
+end
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%% Routine for recurrence %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1003,7 +1187,7 @@ ibes = max(round(sqrt(n)), 7);
 iair = floor(0.9*n);
 
 % This is a heuristic for the number of terms in the expansions that follow.
-T = ceil(34/log(n) );
+T = ceil(45/log(n) );
 if ( alpha^2/n > 1 )
     warning('CHEBFUN:lagpts:inputs',['A large alpha may lead to inaccurate ' ...
         'results because the weight is low and R(z) is not close to identity.']);
