@@ -14,3 +14,11 @@ u2 = L\1;
 
 %% Did we get the same solution?
 pass = (norm(u1-u2) == 0);
+
+%% sum instead of cumsum, rbc
+L = chebop(@(x,u) diff(u) + 2*sum((5-x)*sin(x)*u),d);
+x = chebfun('x', L.domain);
+L.rbc = 1;
+rhs = sin(pi*x);
+u = L\rhs;
+pass(2) = (norm(L*u - rhs,inf) < 1e-10) && (u(end) - 1 < 1e-10);
