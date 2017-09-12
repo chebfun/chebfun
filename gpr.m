@@ -1,14 +1,15 @@
 function varargout = gpr(x, y, varargin)
 %GPR        Gaussian Process regression
-%   MU = GPR(X, Y) returns a CHEBFUN on [min(X),max(X)] corresponding to
-%   the posterior mean of a Gaussian Process with prior mean 0 and a
+%   [MU, S2] = GPR(X, Y) returns a CHEBFUN on [min(X),max(X)] corresponding
+%   to the posterior mean of a Gaussian Process with prior mean 0 and a
 %   squared exponential kernel k(x,x') = sigmaf^2*exp(-1/(2*l^2)*(x-x')^2),
 %   with signal variance sigmaf^2 = 1.21*max(abs(Y))^2 and length scale
-%   l = 10/length(X). MU interpolates Y at X. 
+%   l = 10/length(X). MU interpolates Y at X. S2 represents a chebfun
+%   estimate of the variance in the posterior.
 %
-%   [MU, SAMPLE] = GPR(X, Y, 'sample', N) also computes N samples from the
-%   posterior distribution, returning them as N independent columns of the
-%   quasimatrix SAMPLE.
+%   [MU, S2, SAMPLE] = GPR(X, Y, 'sample', N) also computes N samples from
+%   the posterior distribution, returning them as N independent columns of
+%   the quasimatrix SAMPLE.
 %
 %   [...] = GPR(...,'domain', DOM) computes the results on the domain
 %   DOM = [A, B].
@@ -20,7 +21,7 @@ function varargout = gpr(x, y, varargin)
 %
 % n = 10; x = -2 + 4*rand(n,1); x = sort(x);
 % y = sin(exp(x));
-% [mu, sampl] = gpr(x,y,'domain',[-2,2],'sample',3,'hyperparams',[1, 0.5]);
+% [mu, s2, sampl] = gpr(x,y,'domain',[-2,2],'sample',3,'hyperparams',[1, 0.5]);
 % plot(repmat(mu,1,3)-sampl);
 % hold on, plot(x,zeros(n,1),'.k','markersize',14), hold off;
 %
@@ -46,30 +47,34 @@ alpha = L'\(L\y);
 % constuct a Chebfun approximation for the posterior distribution mean
 mu = chebfun(@(z) mean(alpha, x, z, opts.sigmaf, opts.lenScale), ...
                         opts.dom, 'eps', 1e-10);
+                    
+
+% Compute the predictive variance based on a large sample set
+sampleSize = min(20*n,2000);
+xSample = chebpts(sampleSize,opts.dom);
+
+Ks = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1,n) - ...
+                                repmat(x',sampleSize,1)).^2);
+                            
+Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1, ...
+            sampleSize) - repmat(xSample',sampleSize,1)).^2);
+
+v = L\(Ks');
+s2 = spdiags(Kss - v'*v, 0);
+s2 = chebfun(s2,opts.dom);
 
 % take samples from the posterior and construct Chebfun representations
 % of them; for the moment, just sample at a large number of points and
 % construct Chebfun representations
 if ( opts.samples > 0 )
-    sampleSize = min(20*n,2000);
-    %xSample = linspace(opts.dom(1), opts.dom(end), sampleSize)';
-    xSample = chebpts(sampleSize,opts.dom);
-    % Compute the predictive variance
-    Ks = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1,n) - ...
-                                repmat(x',sampleSize,1)).^2);
-                            
-    Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1, ...
-                sampleSize) - repmat(xSample',sampleSize,1)).^2);
-    v = L\(Ks');
     Ls = chol(Kss - v'*v + 1e-12*eye(sampleSize),'lower');
-    fPost = repmat(mu(xSample), 1, opts.samples) + Ls*randn(sampleSize, ...
+    fSample = repmat(mu(xSample), 1, opts.samples) + Ls*randn(sampleSize, ...
                         opts.samples);
                     
-    %fPost = chebfun(fPost, opts.dom, 'equi');
-    fPost = chebfun(fPost,opts.dom);
-    varargout = {mu, fPost};
+    fSample = chebfun(fSample,opts.dom);
+    varargout = {mu, s2, fSample};
 else
-    varargout = {mu};
+    varargout = {mu, s2};
 end
 
 end
