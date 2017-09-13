@@ -35,41 +35,67 @@ opts = parseInputs(x, y, varargin{:});
 % we assume a Gaussian squared exponential kernel (see for
 % instance eq. (2.31) from Rasmussen & Williams, "Gaussian Processes
 % for Machine Learning")
-n = length(x);
-K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(x,1,n) - ...
-                            repmat(x',n,1)).^2);
 
-% Compute the Cholesky decomposition of K
-L = chol(K+1e-15*eye(n), 'lower');
-% coefficients of the radial basis function expansion of the mean
-alpha = L'\(L\y);
+if ~isempty(x)
+    if length(x) ~= length(y)
+        error('CHEBFUN:CHEBFUN:gpr:badInput', ...
+            'The number of points and data values must be equal.');
+    end
+    
+    n = length(x);
+    K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(x,1,n) - ...
+                                repmat(x',n,1)).^2);
 
-% constuct a Chebfun approximation for the posterior distribution mean
-mu = chebfun(@(z) mean(alpha, x, z, opts.sigmaf, opts.lenScale), ...
-                        opts.dom, 'eps', 1e-10);
-                    
+    % Compute the Cholesky decomposition of K
+    L = chol(K+1e-15*eye(n), 'lower');
+    % coefficients of the radial basis function expansion of the mean
+    alpha = L'\(L\y);
 
-% Compute the predictive variance based on a large sample set
-sampleSize = min(20*n,2000);
-xSample = chebpts(sampleSize,opts.dom);
+    % constuct a Chebfun approximation for the posterior distribution mean
+    mu = chebfun(@(z) mean(alpha, x, z, opts.sigmaf, opts.lenScale), ...
+                            opts.dom, 'eps', 1e-10);
+                        
+    % Compute the predictive variance based on a large sample set
+    % TODO: probably better to take this value based on the length-scale of
+    % the kernel
+    sampleSize = min(20*n,2000);
+    xSample = chebpts(sampleSize,opts.dom);
 
-Ks = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1,n) - ...
+    Ks = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1,n) - ...
                                 repmat(x',sampleSize,1)).^2);
+    v = L\(Ks');
                             
-Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1, ...
-            sampleSize) - repmat(xSample',sampleSize,1)).^2);
-
-v = L\(Ks');
-s2 = spdiags(Kss - v'*v, 0);
-s2 = chebfun(s2,opts.dom);
+    Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1, ...
+                sampleSize) - repmat(xSample',sampleSize,1)).^2);
+    s2 = spdiags(Kss - v'*v, 0);
+    s2 = chebfun(s2,opts.dom);
+else % no data points given
+    
+    % we are assuming a zero mean on the prior
+    mu = chebfun(0,opts.dom);
+    
+    s2 = chebfun(opts.sigmaf^2,opts.dom);
+end
 
 % take samples from the posterior and construct Chebfun representations
 % of them; for the moment, just sample at a large number of points and
 % construct Chebfun representations
 if ( opts.samples > 0 )
-    Ls = chol(Kss - v'*v + 1e-12*eye(sampleSize),'lower');
-    fSample = repmat(mu(xSample), 1, opts.samples) + Ls*randn(sampleSize, ...
-                        opts.samples);
+    if ~isempty(x)
+        Ls = chol(Kss - v'*v + 1e-12*eye(sampleSize),'lower');
+    else
+        % TODO: take this value depending on the length-scale of the
+        % covariance matrix
+        sampleSize = 1000;
+        xSample = chebpts(sampleSize,opts.dom);          
+        Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1, ...
+                sampleSize) - repmat(xSample',sampleSize,1)).^2);
+        
+        Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
+    end
+    
+    fSample = repmat(mu(xSample), 1, opts.samples) + ...
+                    Ls*randn(sampleSize, opts.samples);
                     
     fSample = chebfun(fSample,opts.dom);
     varargout = {mu, s2, fSample};
