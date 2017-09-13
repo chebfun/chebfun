@@ -37,14 +37,16 @@ opts = parseInputs(x, y, varargin{:});
 % for Machine Learning")
 
 if ~isempty(x)
-    if length(x) ~= length(y)
-        error('CHEBFUN:CHEBFUN:gpr:badInput', ...
-            'The number of points and data values must be equal.');
-    end
     
     n = length(x);
-    K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(x,1,n) - ...
+    if opts.trig
+        K = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
+                sin(pi/(opts.dom(end)-opts.dom(1))*(repmat(x,1,n) - ...
+                repmat(x',n,1))).^2);
+    else
+        K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(x,1,n) - ...
                                 repmat(x',n,1)).^2);
+    end
 
     % Compute the Cholesky decomposition of K
     L = chol(K+1e-15*eye(n), 'lower');
@@ -52,23 +54,45 @@ if ~isempty(x)
     alpha = L'\(L\y);
 
     % constuct a Chebfun approximation for the posterior distribution mean
-    mu = chebfun(@(z) mean(alpha, x, z, opts.sigmaf, opts.lenScale), ...
-                            opts.dom, 'eps', 1e-10);
+    if opts.trig
+        mu = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'trig', ...
+            'eps', 1e-10);
+    else
+        mu = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'eps', 1e-10);
+    end
                         
     % Compute the predictive variance based on a large sample set
-    % TODO: probably better to take this value based on the length-scale of
-    % the kernel
     sampleSize = min(20*n,2000);
-    xSample = chebpts(sampleSize,opts.dom);
+    if opts.trig
+        xSample = linspace(opts.dom(1),opts.dom(end),sampleSize)';
+        
+        Ks = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
+            sin(pi/(opts.dom(end)-opts.dom(1))*(repmat(xSample,1,n) - ...
+            repmat(x',sampleSize,1))).^2);
+        
+        Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
+            sin(pi/(opts.dom(end)-opts.dom(1)) * ...
+            (repmat(xSample,1,sampleSize) - ...
+            repmat(xSample',sampleSize,1))).^2);
+    else
+        xSample = chebpts(sampleSize,opts.dom);    
+        
+        Ks = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * ...
+                (repmat(xSample,1,n)-repmat(x',sampleSize,1)).^2);
+            
+        Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * ...
+            (repmat(xSample,1, sampleSize) - ...
+            repmat(xSample',sampleSize,1)).^2);
+    end
 
-    Ks = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1,n) - ...
-                                repmat(x',sampleSize,1)).^2);
     v = L\(Ks');
                             
-    Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1, ...
-                sampleSize) - repmat(xSample',sampleSize,1)).^2);
     s2 = spdiags(Kss - v'*v, 0);
-    s2 = chebfun(s2,opts.dom);
+    if opts.trig
+        s2 = chebfun(s2,opts.dom,'trig');
+    else
+        s2 = chebfun(s2,opts.dom);
+    end
 else % no data points given
     
     % we are assuming a zero mean on the prior
@@ -84,20 +108,32 @@ if ( opts.samples > 0 )
     if ~isempty(x)
         Ls = chol(Kss - v'*v + 1e-12*eye(sampleSize),'lower');
     else
-        % TODO: take this value depending on the length-scale of the
-        % covariance matrix
         sampleSize = 1000;
-        xSample = chebpts(sampleSize,opts.dom);          
-        Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(xSample,1, ...
-                sampleSize) - repmat(xSample',sampleSize,1)).^2);
+        if opts.trig
+            xSample = linspace(opts.dom(1),opts.dom(end),sampleSize)';
+            Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
+                sin(pi/(opts.dom(end)-opts.dom(1)) * ...
+                (repmat(xSample,1,sampleSize) - ...
+                repmat(xSample',sampleSize,1))).^2);
+            
+        else
+            xSample = chebpts(sampleSize,opts.dom);          
+            Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)* ...
+                (repmat(xSample,1, sampleSize) - ...
+                repmat(xSample',sampleSize,1)).^2);
+        end
         
         Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
     end
     
     fSample = repmat(mu(xSample), 1, opts.samples) + ...
                     Ls*randn(sampleSize, opts.samples);
-                    
-    fSample = chebfun(fSample,opts.dom);
+                
+    if opts.trig
+        fSample = chebfun(fSample,opts.dom,'trig');
+    else
+        fSample = chebfun(fSample,opts.dom);
+    end
     varargout = {mu, s2, fSample};
 else
     varargout = {mu, s2};
@@ -107,10 +143,26 @@ end
 
 function opts = parseInputs(x, y, varargin)
 
+if length(x) ~= length(y)
+    error('CHEBFUN:CHEBFUN:gpr:badInput', ...
+             'The number of points and data values must be equal.');
+end
+
 opts.samples = 0;
 opts.sigmaf = 0;
 opts.lenScale = 0;
 opts.dom = [];
+opts.trig = 0;
+
+for k = 1:length(varargin)
+    if ( strcmpi('trig', varargin{k}) )
+        opts.trig = k;
+    end
+end
+
+if opts.trig
+    varargin(opts.trig) = [];
+end
 
 for k = 1:2:length(varargin)
     if ( strcmpi('sample', varargin{k}) )
@@ -131,6 +183,17 @@ if isempty(opts.dom) % domain not provided, default to [min(x) max(x)]
     opts.dom = [min(x) max(x)];
 end
 
+if opts.trig % if domain endpoints are among data points, check to see if
+             % periodicity is enforced
+             % TODO: allow some tolerences?
+    [x,idx] = sort(x,'ascend');
+    y = y(idx);
+    if opts.dom(1) == x(1) && opts.dom(end) == x(end)
+        if y(1) ~= y(end)
+        end
+    end
+end
+
 if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified; for the
                                   % moment, just give some heuristic values
                                   % based on the input data
@@ -143,13 +206,19 @@ end
 
 % Computes the mean function estimate of the GP (using a Gaussian squared
 % exponential kernel)
-function fxEval = mean(alpha, x, xEval, sigmaf, lenScale)
+function fxEval = mean(alpha, x, xEval, opts)
 
 n = length(x);
 xEval = xEval(:);
 m = length(xEval);
-Kss = sigmaf^2*exp(-1/(2*lenScale^2)*(repmat(xEval,1,n) - ...
+if opts.trig
+    Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
+        sin(pi/(opts.dom(end)-opts.dom(1))*(repmat(xEval,1,n) - ...
+        repmat(x',m,1))).^2);
+else
+    Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2)*(repmat(xEval,1,n) - ...
                                             repmat(x',m,1)).^2);
+end
 
 fxEval = Kss*alpha;
 
