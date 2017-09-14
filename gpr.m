@@ -1,5 +1,6 @@
 function varargout = gpr(x, y, varargin)
 %GPR        Gaussian Process regression
+%
 %   [MU, S2] = GPR(X, Y) returns a CHEBFUN on [min(X),max(X)] corresponding
 %   to the posterior mean of a Gaussian Process with prior mean 0 and a
 %   squared exponential kernel k(x,x') = sigmaf^2*exp(-1/(2*l^2)*(x-x')^2),
@@ -14,17 +15,27 @@ function varargout = gpr(x, y, varargin)
 %   [...] = GPR(...,'domain', DOM) computes the results on the domain
 %   DOM = [A, B].
 %
+%   [...] = GPR(...,'trig') uses a periodic version of the squared
+%   exponential kernel (see eq. (4.31) from [1]), namely
+%               k(x,x') = sigmaf^2*exp(-2/l^2*sin(pi*(x-x')/p)^2),
+%   where p is the period length, corresponding to the size of the
+%   approximation domain.
+%
 %   [...] = GPR(...,'hyperparam', [SIGMAF, L]) specifies the
 %   hyperparameters of the kernel function.
 %
 % Example:
 %
-% n = 10; x = -2 + 4*rand(n,1); x = sort(x);
-% y = sin(exp(x));
-% [mu, s2, sampl] = gpr(x,y,'domain',[-2,2],'sample',3,'hyperparams',[1, 0.5]);
-% plot(repmat(mu,1,3)-sampl);
-% hold on, plot(x,zeros(n,1),'.k','markersize',14), hold off;
+%   n = 10; x = -2 + 4*rand(n,1); x = sort(x);
+%   y = sin(exp(x));
+%   [mu,s2,smpl] = gpr(x,y,'domain',[-2,2],'sample',3,'hyperparams',[1,0.5]);
+%   plot(repmat(mu,1,3)-smpl);
+%   hold on, plot(x,zeros(n,1),'.k','markersize',14), hold off;
 %
+% References:
+%
+%   [1] C. E. Rasmussen & C. K. I. Williams, "Gaussian Processes
+%   for Machine Learning", MIT Press, 2006
 %
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -33,8 +44,7 @@ opts = parseInputs(x, y, varargin{:});
 
 % construct the kernel matrix corresponding to x; for the moment,
 % we assume a Gaussian squared exponential kernel (see for
-% instance eq. (2.31) from Rasmussen & Williams, "Gaussian Processes
-% for Machine Learning")
+% instance eq. (2.31) from [1]
 
 if ~isempty(x)
     
@@ -49,7 +59,7 @@ if ~isempty(x)
     end
 
     % Compute the Cholesky decomposition of K
-    L = chol(K+1e-15*eye(n), 'lower');
+    L = chol(K+1e-15*n*eye(n), 'lower');
     % coefficients of the radial basis function expansion of the mean
     alpha = L'\(L\y);
 
@@ -63,9 +73,9 @@ if ~isempty(x)
                         
     % Compute the predictive variance based on a large sample set
     sampleSize = min(20*n,2000);
+    xSample = chebpts(sampleSize,opts.dom);
+    
     if opts.trig
-        xSample = linspace(opts.dom(1),opts.dom(end),sampleSize)';
-        
         Ks = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
             sin(pi/(opts.dom(end)-opts.dom(1))*(repmat(xSample,1,n) - ...
             repmat(x',sampleSize,1))).^2);
@@ -75,8 +85,6 @@ if ~isempty(x)
             (repmat(xSample,1,sampleSize) - ...
             repmat(xSample',sampleSize,1))).^2);
     else
-        xSample = chebpts(sampleSize,opts.dom);    
-        
         Ks = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * ...
                 (repmat(xSample,1,n)-repmat(x',sampleSize,1)).^2);
             
@@ -88,11 +96,8 @@ if ~isempty(x)
     v = L\(Ks');
                             
     s2 = spdiags(Kss - v'*v, 0);
-    if opts.trig
-        s2 = chebfun(s2,opts.dom,'trig');
-    else
-        s2 = chebfun(s2,opts.dom);
-    end
+    s2 = chebfun(s2,opts.dom);
+    
 else % no data points given
     
     % we are assuming a zero mean on the prior
@@ -106,7 +111,12 @@ end
 % construct Chebfun representations
 if ( opts.samples > 0 )
     if ~isempty(x)
-        Ls = chol(Kss - v'*v + 1e-12*eye(sampleSize),'lower');
+        Ls = chol(Kss - v'*v + 1e-12*n*eye(sampleSize),'lower');
+        
+        fSample = repmat(mu(xSample), 1, opts.samples) + ...
+                  Ls*randn(sampleSize, opts.samples);
+    
+        fSample = chebfun(fSample,opts.dom);
     else
         sampleSize = 1000;
         if opts.trig
@@ -116,23 +126,26 @@ if ( opts.samples > 0 )
                 (repmat(xSample,1,sampleSize) - ...
                 repmat(xSample',sampleSize,1))).^2);
             
+            Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
+            
         else
             xSample = chebpts(sampleSize,opts.dom);          
             Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)* ...
                 (repmat(xSample,1, sampleSize) - ...
                 repmat(xSample',sampleSize,1)).^2);
+            
+            Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
         end
         
-        Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
-    end
+        fSample = repmat(mu(xSample), 1, opts.samples) + ...
+                        Ls*randn(sampleSize, opts.samples);
     
-    fSample = repmat(mu(xSample), 1, opts.samples) + ...
-                    Ls*randn(sampleSize, opts.samples);
-                
-    if opts.trig
-        fSample = chebfun(fSample,opts.dom,'trig');
-    else
-        fSample = chebfun(fSample,opts.dom);
+        if opts.trig
+            fSample = chefbun(fSample,opts.dom,'trig');
+        else
+            fSample = chebfun(fSample,opts.dom);
+        end
+        
     end
     varargout = {mu, s2, fSample};
 else
