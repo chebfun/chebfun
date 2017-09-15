@@ -49,4 +49,10 @@ f = chebfun(@(x) 1 + sin(pi*sin(10*pi*x)), 'periodic', 'trunc', 11);
 c = get(f, 'coeffs');
 pass(7) = abs(1 - c(6)) < eps;
 
+% Test construction from a chebfun row (transposed chebfun). The result
+% should be a chebfun column (not transposed).
+f = chebfun(@(x) cos(pi*x), 'trig')';
+g = chebfun(f);
+pass(8) = g.isTransposed == 0;
+
 end
