@@ -3,9 +3,9 @@ function varargout = gpr(x, y, varargin)
 %
 %   [MU, S2] = GPR(X, Y) returns a CHEBFUN on [min(X),max(X)] corresponding
 %   to the posterior mean of a Gaussian Process with prior mean 0 and a
-%   squared exponential kernel k(x,x') = sigmaf^2*exp(-1/(2*l^2)*(x-x')^2),
-%   with signal variance sigmaf^2 = 1.21*max(abs(Y))^2 and length scale
-%   l = 10/length(X). MU interpolates Y at X. S2 represents a chebfun
+%   squared exponential kernel k(x,x') = SIGMAF^2*exp(-1/(2*L^2)*(x-x')^2),
+%   with signal variance SIGMAF^2 = 1.21*max(abs(Y))^2 and length scale
+%   L = 1/length(X). MU interpolates Y at X. S2 represents a chebfun
 %   estimate of the variance in the posterior.
 %
 %   [MU, S2, SAMPLE] = GPR(X, Y, 'sample', N) also computes N samples from
@@ -17,8 +17,8 @@ function varargout = gpr(x, y, varargin)
 %
 %   [...] = GPR(...,'trig') uses a periodic version of the squared
 %   exponential kernel (see eq. (4.31) from [1]), namely
-%               k(x,x') = sigmaf^2*exp(-2/l^2*sin(pi*(x-x')/p)^2),
-%   where p is the period length, corresponding to the size of the
+%               k(x,x') = SIGMAF^2*exp(-2/L^2*sin(pi*(x-x')/P)^2),
+%   where P is the period length, corresponding to the size of the
 %   approximation domain.
 %
 %   [...] = GPR(...,'hyperparam', [SIGMAF, L]) specifies the
@@ -30,7 +30,7 @@ function varargout = gpr(x, y, varargin)
 %   y = sin(exp(x));
 %   [mu,s2,smpl] = gpr(x,y,'domain',[-2,2],'sample',3,'hyperparams',[1,0.5]);
 %   plot(repmat(mu,1,3)-smpl);
-%   hold on, plot(x,zeros(n,1),'.k','markersize',14), hold off;
+%   hold on, plot(x,zeros(n,1),'.k','markersize',14), hold off
 %
 % References:
 %
@@ -40,11 +40,12 @@ function varargout = gpr(x, y, varargin)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+x = x(:); y = y(:);
 opts = parseInputs(x, y, varargin{:});
 
-% construct the kernel matrix corresponding to x; for the moment,
-% we assume a Gaussian squared exponential kernel (see for
-% instance eq. (2.31) from [1]
+% Construct the kernel matrix corresponding to x. For the moment,
+% we assume a Gaussian squared exponential kernel. (see for
+% instance eq. (2.31) from [1])
 
 if ~isempty(x)
     
@@ -58,7 +59,7 @@ if ~isempty(x)
                                 repmat(x',n,1)).^2);
     end
 
-    % Compute the Cholesky decomposition of K
+    % compute the Cholesky decomposition of K
     L = chol(K+1e-15*n*eye(n), 'lower');
     % coefficients of the radial basis function expansion of the mean
     alpha = L'\(L\y);
@@ -71,7 +72,7 @@ if ~isempty(x)
         mu = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'eps', 1e-10);
     end
                         
-    % Compute the predictive variance based on a large sample set
+    % compute the predictive variance based on a large sample set
     sampleSize = min(20*n,2000);
     xSample = chebpts(sampleSize,opts.dom);
     
@@ -106,9 +107,9 @@ else % no data points given
     s2 = chebfun(opts.sigmaf^2,opts.dom);
 end
 
-% take samples from the posterior and construct Chebfun representations
-% of them; for the moment, just sample at a large number of points and
-% construct Chebfun representations
+% Take samples from the posterior and construct Chebfun representations
+% of them. For the moment, just sample at a large number of points and
+% construct Chebfun representations.
 if ( opts.samples > 0 )
     if ~isempty(x)
         Ls = chol(Kss - v'*v + 1e-12*n*eye(sampleSize),'lower');
@@ -199,10 +200,10 @@ end
 if opts.trig % if domain endpoints are among data points, check to see if
              % periodicity is enforced
              % TODO: allow some tolerences?
-    [x,idx] = sort(x,'ascend');
-    y = y(idx);
-    if opts.dom(1) == x(1) && opts.dom(end) == x(end)
-        if y(1) ~= y(end)
+    [~,idMin] = min(x);
+    [~,idMax] =  max(x);
+    if opts.dom(1) == x(idMin) && opts.dom(end) == x(idMax)
+        if y(idMin) ~= y(idMax)
         end
     end
 end
@@ -212,7 +213,7 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified; for the
                                   % based on the input data
     n = length(x);
     opts.sigmaf = 1.1*sqrt(max(abs(y)));
-    opts.lenScale = 10/n;
+    opts.lenScale = 1/n;
 end
 
 end
