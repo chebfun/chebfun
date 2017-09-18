@@ -15,10 +15,10 @@ classdef spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        dataplot           % Which data to plot when complex values (STRING)
+        dataplot             % Which data to plot when complex values (STRING)
         dealias              % To use dealiasing with 2/3-rule (STRING)
         iterplot             % Plot every ITERPLOT iterations (1x1 INT)
-        Nplot                % Number of points for plotting grid (1x1 INT)
+        Nplot                % Number of points for movie grid (1x1 INT)
         plot                 % Plot options (STRING)
         scheme               % Time-stepping scheme (STRING)
     end
