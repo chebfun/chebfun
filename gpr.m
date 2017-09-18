@@ -1,14 +1,14 @@
 function varargout = gpr(x, y, varargin)
 %GPR        Gaussian Process regression
 %
-%   [MU, S2] = GPR(X, Y) returns a CHEBFUN on [min(X),max(X)] corresponding
+%   [F, FVAR] = GPR(X, Y) returns a CHEBFUN on [min(X),max(X)] corresponding
 %   to the posterior mean of a Gaussian Process with prior mean 0 and a
 %   squared exponential kernel k(x,x') = SIGMAF^2*exp(-1/(2*L^2)*(x-x')^2),
-%   with signal variance SIGMAF^2 = 1.21*max(abs(Y))^2 and length scale
-%   L = 1/length(X). MU interpolates Y at X. S2 represents a chebfun
-%   estimate of the variance in the posterior.
+%   with signal variance SIGMAF^2 = 0.01 and length scale
+%   L = 1/length(X)*(max(X)-min(X)). F interpolates Y at X. FVAR represents
+%   a chebfun estimate of the variance in the posterior.
 %
-%   [MU, S2, SAMPLE] = GPR(X, Y, 'sample', N) also computes N samples from
+%   [F, FVAR, SAMPLE] = GPR(X, Y, 'samples', N) also computes N samples from
 %   the posterior distribution, returning them as N independent columns of
 %   the quasimatrix SAMPLE.
 %
@@ -26,10 +26,10 @@ function varargout = gpr(x, y, varargin)
 %
 % Example:
 %
-%   n = 10; x = -2 + 4*rand(n,1); x = sort(x);
+%   n = 10; x = -2 + 4*rand(n,1);
 %   y = sin(exp(x));
-%   [mu,s2,smpl] = gpr(x,y,'domain',[-2,2],'sample',3,'hyperparams',[1,0.5]);
-%   plot(repmat(mu,1,3)-smpl);
+%   [f,fvar,smpl] = gpr(x,y,'domain',[-2,2],'samples',3,'hyperparams',[1,0.5]);
+%   plot(repmat(f,1,3)-smpl);
 %   hold on, plot(x,zeros(n,1),'.k','markersize',14), hold off
 %
 % References:
@@ -66,10 +66,11 @@ if ~isempty(x)
 
     % constuct a Chebfun approximation for the posterior distribution mean
     if opts.trig
-        mu = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'trig', ...
+        f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'trig', ...
             'eps', 1e-10);
     else
-        mu = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'eps', 1e-10);
+        f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, ...
+            'eps', 1e-10);
     end
                         
     % compute the predictive variance based on a large sample set
@@ -96,15 +97,15 @@ if ~isempty(x)
 
     v = L\(Ks');
                             
-    s2 = spdiags(Kss - v'*v, 0);
-    s2 = chebfun(s2,opts.dom);
+    fvar = spdiags(Kss - v'*v, 0);
+    fvar = chebfun(fvar,opts.dom);
     
 else % no data points given
     
     % we are assuming a zero mean on the prior
-    mu = chebfun(0,opts.dom);
+    f = chebfun(0,opts.dom);
     
-    s2 = chebfun(opts.sigmaf^2,opts.dom);
+    fvar = chebfun(opts.sigmaf^2,opts.dom);
 end
 
 % Take samples from the posterior and construct Chebfun representations
@@ -114,7 +115,7 @@ if ( opts.samples > 0 )
     if ~isempty(x)
         Ls = chol(Kss - v'*v + 1e-12*n*eye(sampleSize),'lower');
         
-        fSample = repmat(mu(xSample), 1, opts.samples) + ...
+        fSample = repmat(f(xSample), 1, opts.samples) + ...
                   Ls*randn(sampleSize, opts.samples);
     
         fSample = chebfun(fSample,opts.dom);
@@ -138,7 +139,7 @@ if ( opts.samples > 0 )
             Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
         end
         
-        fSample = repmat(mu(xSample), 1, opts.samples) + ...
+        fSample = repmat(f(xSample), 1, opts.samples) + ...
                         Ls*randn(sampleSize, opts.samples);
     
         if opts.trig
@@ -148,9 +149,9 @@ if ( opts.samples > 0 )
         end
         
     end
-    varargout = {mu, s2, fSample};
+    varargout = {f, fvar, fSample};
 else
-    varargout = {mu, s2};
+    varargout = {f, fvar};
 end
 
 end
@@ -179,7 +180,7 @@ if opts.trig
 end
 
 for k = 1:2:length(varargin)
-    if ( strcmpi('sample', varargin{k}) )
+    if ( strcmpi('samples', varargin{k}) )
         opts.samples = varargin{k+1};
     elseif ( strcmpi('hyperparams', varargin{k}) )
         hyperparams = varargin{k+1};
@@ -212,8 +213,8 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified; for the
                                   % moment, just give some heuristic values
                                   % based on the input data
     n = length(x);
-    opts.sigmaf = 1.1*sqrt(max(abs(y)));
-    opts.lenScale = 1/n;
+    opts.sigmaf = 0.1;
+    opts.lenScale = 1/n*(opts.dom(end)-opts.dom(1));
 end
 
 end
