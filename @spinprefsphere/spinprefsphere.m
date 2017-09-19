@@ -16,16 +16,20 @@ classdef spinprefsphere < spinpreference
 %      'imag'
 %      'abs'
 %
-%   dealias                   * If it is 'on', use the 2/3-rule to zero high 
+%   dealias                   * If 'on', uses the 2/3-rule to zero out high
 %     ['off']                   wavenumbers.
 %      'on'
 %
-%   iterplot                  * Plot the solution every ITERPLOT iterations of
+%   grid                      * If 'on', plots longitude and latitude circles.                      
+%     ['off']                    
+%      'on'
+%
+%   iterplot                  * Plots the solution every ITERPLOT iterations of
 %     [1]                       the time-stepping loop if 'plot' is 'movie'.
 %
 %
 %   Nplot                     * Number of grid points in each direction for 
-%     [256]                     plotting. If Nplot>N, the data are interpolated 
+%     [256]                     the movie. If Nplot>N, the data are interpolated 
 %                               to a finer grid.
 %
 %   plot                      * Plot options: 'movie' to plot a movie of the
@@ -59,6 +63,7 @@ classdef spinprefsphere < spinpreference
     properties ( Access = public )
         Clim                  % Limits of the colorbar (1x2*NVARS DOUBLE)
         colormap              % Color look-up table (STRING)
+        grid                  % For longitude and latitude circles (STRING)
         view = [-37.5 30];    % Viewpoint of the plot (1x2 DOUBLE)
     end
     
@@ -70,6 +75,7 @@ classdef spinprefsphere < spinpreference
         function pref = spinprefsphere(varargin) 
             if ( nargin == 0 )
                 pref.colormap = 'parula';
+                pref.grid = 'off';
                 pref.dataplot = 'real';
                 pref.dealias = 'off';
                 pref.iterplot = 1;

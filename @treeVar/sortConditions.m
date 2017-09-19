@@ -51,9 +51,14 @@ for argCount = 1:numArgs
     argsVec = 0*argsVec;
 end
 
-% Evaluate FUNIN with the TREEVAR arguments:
-bcResults = funIn(args{:});
-
+% Evaluate FUNIN with the TREEVAR arguments. If we're working with the
+% CHEBMATRIX syntax, we should not expand the ARGS cell (but do it otherwise):
+if ( ( nargin(funIn) == 1 ) && ( length(args) > 1 ) )
+    % CHEBMATRIX syntax in specifying BCs:
+    bcResults = funIn(args);
+else
+    bcResults = funIn(args{:});
+end
 % Look at the results of evaluating the boundary conditions, find what
 % constraint operated on what variable, and what its diffOrder was:
 varList = cell(numArgs, 1);

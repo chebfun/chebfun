@@ -387,6 +387,20 @@ tol = 1e4*max(eps*vscale(g));
 
 pass(39) = err < tol;
 
+%% Test single CHEBFUN raised to an array of non-negative integer powers:
+x = chebfun('x');
+f = x.^(0:5);
+g = chebfun(@(x) x.^(0:5));
+pass(40) = norm(f-g,inf) < tol;
+
+pows = [-2 -0.5 1.25 3];
+f = (1 + x.^2).^pows;
+g = chebfun(@(x) (1+x.^2).^pows);
+pass(41) = norm(f-g,inf) < tol;
+
+
+
+
 end
 
 function out = normest(f, dom)

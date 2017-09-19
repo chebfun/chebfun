@@ -56,5 +56,13 @@ A.lbc = 0;
 u = A\1;
 pass(6) = norm(A*u - 1, inf) < tol;
 
+%%
+% From https://groups.google.com/forum/#!topic/chebfun-users/0dpsggp1RyA . 
+% Also, see #2210.
+
+L = chebop(@(u) diff(u)+sum(u), [0 1]);
+L.lbc = 1; 
+u = L\0;
+pass(7) = norm(u - (1- 2*chebfun('x',[0 1])/3), inf) < tol;
 end
 

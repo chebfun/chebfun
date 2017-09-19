@@ -331,6 +331,50 @@ pass(3, problemNo) = norm(domOut - union(-1:4, rhs.domain)) < tol;
 pass(4, problemNo) = norm(coeffs{1} - 5) + norm(coeffs{2} - cos(x)) < tol;
 pass(5, problemNo) = all( diffOrders == 2);
 
+
+%% Four variables, mixed derivatives, mixed order, CHEBMATRIX syntax
+% We have the equations
+%   diff(y{4},3) + y{3} + diff(u{1}) = exp(x)
+%   7*diff(y{3}) + diff(y{2}) = x.^2 
+%   5*(diff(y{1},2) + 3*y{2} + coth(x)) = tanh(x)
+%   cos(x)*diff(y{2},2) + diff(y{1}) - diff(y{4},2) = 2
+% so expect the first order system to include the variables:
+%   u(1) = y{1}, u(2) = y{1}', u(3) = y{2}, u(4) = y{2}'; 
+%   u(5) = y{3}, u(6) = y{4}, u(7) = y{4}', y(8) = y{4}''
+% and the first order reformulation to be
+%   u'(1) = u(2)
+%   u'(2) = tanh(x)/5 - 3*u(3) - coth(x+5)
+%   u'(3) = u(4)
+%   u'(4) = (2 - u(2) + u(8))/cos(x)
+%   u'(5) = (x.^2-u(4))/7
+%   u'(6) = u(7)
+%   u'(7) = u(8)
+%   u'(8) = exp(x) - u(5) - u(2)
+problemNo = 19;
+myfun = @(x,y) [...
+    diff(y{4}, 3 ) + y{3} + diff(y{1});
+    7*diff(y{3}) + diff(y{2});
+    5*(diff(y{1},2) + 3*y{2} + coth(x+5));
+    cos(x).*diff(y{2},2) + diff(y{1}) - diff(y{4},2)];
+rhs = [exp(x); x.^2; tanh(x); 2];
+numVars = 4; cellArg = 1;
+[anonFun, idx, domOut, coeffs, diffOrders] = ...
+    treeVar.toFirstOrder(myfun, rhs, dom, numVars, cellArg);
+correctFun = @(x,u) [...
+    u(2); tanh(x)/5 - 3*u(3) - coth(x+5); 
+    u(4); (2-u(2) + u(8))/cos(x);
+    (x.^2 - u(4))/7;
+    u(7); u(8); exp(x) - u(5) - u(2)];
+evalPt = [2 1 2.4 2.3 1.2 3.2 5.1 4.6];
+pass(1, problemNo) = norm(anonFun(1, evalPt) - correctFun(1, evalPt)) < tol;
+pass(2, problemNo) = all(idx == [1 3 5 6]);
+pass(3, problemNo) = norm(domOut - dom) < tol;
+pass(4, problemNo) = norm(coeffs{1} - 5) + norm(coeffs{2} - cos(x)) + ...
+    norm(coeffs{3} - 7) + norm(coeffs{4} - 1) < tol;
+pass(5, problemNo) = all( diffOrders == [2 2 1 3]);
+
+
+
 %% Coupled systems -- Unsupported format, highest order derivatives in same eqn
 myfun = @(x,u,v) [diff(u,2) + diff(v,2); diff(u) + sin(v)];
 rhs = [1;2];
