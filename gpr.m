@@ -228,10 +228,7 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
     
     %opts.lenScale = 1/n*domSize;
     f = chebfun(@(z) logML(z,x,y,opts),searchDom,'eps',1e-6);
-    plot(f);
     [~, opts.lenScale] = max(f);
-    opts.lenScale
-    pause();
 end
 
 end
