@@ -146,7 +146,7 @@ if ( opts.samples > 0 )
                         Ls*randn(sampleSize, opts.samples);
     
         if opts.trig
-            fSample = chefbun(fSample,opts.dom,'trig');
+            fSample = chebfun(fSample,opts.dom,'trig');
         else
             fSample = chebfun(fSample,opts.dom);
         end
@@ -201,9 +201,9 @@ if isempty(opts.dom) % domain not provided, default to [min(x) max(x)]
     opts.dom = [min(x) max(x)];
 end
 
-if opts.trig % if domain endpoints are among data points, check to see if
-             % periodicity is enforced
-             % TODO: allow some tolerences?
+if ~isempty(x) && opts.trig % if domain endpoints are among data points,
+                            % check to see if periodicity is enforced
+                            % TODO: allow some tolerences?
     [~,idMin] = min(x);
     [~,idMax] =  max(x);
     if opts.dom(1) == x(idMin) && opts.dom(end) == x(idMax)
@@ -219,11 +219,19 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
     % Construct a chebfun approximation of the log marginal likelihood
     % parametrized on the length scale. Use the length scale maximizing
     % this function.
-    domSize = opts.dom(end)-opts.dom(1);
-    searchDom = [2/(pi*n)*domSize,1/(min(4,n)*pi)*domSize];
+    if opts.trig
+        searchDom = [2/n,2/min(4,n)];
+    else
+        domSize = opts.dom(end)-opts.dom(1);
+        searchDom = [2/(pi*n)*domSize,1/(min(4,n)*pi)*domSize];
+    end
+    
     %opts.lenScale = 1/n*domSize;
     f = chebfun(@(z) logML(z,x,y,opts),searchDom,'eps',1e-6);
+    plot(f);
     [~, opts.lenScale] = max(f);
+    opts.lenScale
+    pause();
 end
 
 end
