@@ -220,7 +220,7 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
     % parametrized on the length scale. Use the length scale maximizing
     % this function.
     if opts.trig
-        searchDom = [2/n,2/min(4,n)];
+        searchDom = [2/n,2/min(2,n)];
     else
         domSize = opts.dom(end)-opts.dom(1);
         searchDom = [2/(pi*n)*domSize,1/(min(4,n)*pi)*domSize];
