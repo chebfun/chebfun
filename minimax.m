@@ -620,7 +620,7 @@ status.diffx = diffx;
 status.xk = xk;
 status.success = interpSuccess;
 % Compute the poles and zeros in case of a rational approximation
-if ( n > 0 )
+if ( n > 0 &&  ~isempty(beta) )
     status.pol = pzeros(tk, beta, rh, n, dom);
 else
     status.pol = [];
@@ -1052,7 +1052,7 @@ if isempty(pos) % still no solution, give up
         disp('Trial interpolant too far from optimal...')
     end
     interpSuccess = 0; 
-    p = []; q = []; rh = []; h = 1e-19;
+    p = []; q = []; rh = []; h = 1e-19; wD = [];
     return
 elseif ( length(pos) > 1 ) % more than one solution with no sign changes...
     [~,ix] = min(abs(hpre)-diag(abs(d(pos,pos))));
