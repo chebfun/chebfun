@@ -1924,9 +1924,10 @@ E = [0 beta.'; ones(m, 1) diag(zj)];
 zer = eig(E, B);
 % Remove zeros of denominator at infinity:
 zer = zer(~isinf(zer));
+
 rad = 1e-5; % radius for approximating residual
 
-    if ( m > n )% superdiagonal case, remove irrelevant poles        
+    if ( m - 1 > n )% superdiagonal case, remove irrelevant poles        
     dz = rad*exp(2i*pi*(1:4)/4);
     res = rh(bsxfun(@plus, zer, dz))*dz.'/4; % residues
     ix = find( abs(res) > 1e-10 ); % pole with suff. residues
