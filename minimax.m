@@ -46,6 +46,7 @@ function varargout = minimax(f, varargin)
 %       STATUS.DIFFX - Maximum correction in last trial reference.
 %       STATUS.XK    - Last trial reference on which the error
 %                      equioscillates.
+%       STATUS.POL   - Poles of the minimax approximation.
 %
 %   This code is highly reliable for polynomial approximation but may
 %   sometimes have difficulties in the rational case, though we believe
@@ -559,7 +560,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
          
     else
         err = inf;
-        [p, q, rh, h, interpSuccess, ~] = ...
+        [p, q, rh, h, interpSuccess, tk, beta] = ...
             computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, ...
                                          dialogFlag, opts.silentFlag);
    
@@ -618,6 +619,12 @@ status.iter = iter;
 status.diffx = diffx;
 status.xk = xk;
 status.success = interpSuccess;
+% Compute the poles and zeros in case of a rational approximation
+if ( n > 0 )
+    status.pol = pzeros(tk, beta);
+else
+    status.pol = [];
+end
  
 if( ~isempty(p))
     p = simplify(p);
@@ -770,7 +777,7 @@ p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
 
 end
 
-function [p, q, rh, h, interpSuccess,xsupport] = ...
+function [p, q, rh, h, interpSuccess,xsupport,wD] = ...
     computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, ...
                                  dialogFlag, silentFlag)
 % computeTrialFunctionRational finds a rational approximation to f at an 
@@ -1905,6 +1912,20 @@ else
 end
 r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
 end
+
+% Compute zeros of a partial fraction.
+function zer = pzeros(zj, beta)
+m = length(beta);
+
+% Compute poles via generalized eigenvalue problem:
+B = eye(m+1);
+B(1,1) = 0;
+E = [0 beta.'; ones(m, 1) diag(zj)];
+zer = eig(E, B);
+% Remove zeros of denominator at infinity:
+zer = zer(~isinf(zer));
+
+end % End of PZEROS().
 
 function op = str2op(op)
     % Convert string inputs to either numeric format or function_handles.
