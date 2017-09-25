@@ -621,7 +621,7 @@ status.xk = xk;
 status.success = interpSuccess;
 % Compute the poles and zeros in case of a rational approximation
 if ( n > 0 )
-    status.pol = pzeros(tk, beta);
+    status.pol = pzeros(tk, beta, rh, n, dom);
 else
     status.pol = [];
 end
@@ -1914,7 +1914,7 @@ r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
 end
 
 % Compute zeros of a partial fraction.
-function zer = pzeros(zj, beta)
+function zer = pzeros(zj, beta, rh, n, dom)
 m = length(beta);
 
 % Compute poles via generalized eigenvalue problem:
@@ -1924,6 +1924,17 @@ E = [0 beta.'; ones(m, 1) diag(zj)];
 zer = eig(E, B);
 % Remove zeros of denominator at infinity:
 zer = zer(~isinf(zer));
+rad = 1e-5; % radius for approximating residual
+
+    if ( m > n )% superdiagonal case, remove irrelevant poles        
+    dz = rad*exp(2i*pi*(1:4)/4);
+    res = rh(bsxfun(@plus, zer, dz))*dz.'/4; % residues
+    ix = find( abs(res) > 1e-10 ); % pole with suff. residues
+    zer = zer(ix); 
+    zerBern = abs(zer-dom(1)) + abs(zer-dom(2)); % Bernstein ellipse radius
+    [~,ix] = sort( zerBern, 'ascend'); % sort wrt radius
+    zer = zer( ix(1:min(n,end)) ); % choose <=n zeros with largest residues    
+    end    
 
 end % End of PZEROS().
 
