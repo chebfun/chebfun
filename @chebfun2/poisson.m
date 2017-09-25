@@ -52,6 +52,9 @@ if ( nargin == 3 )
     n = m;
 end
 
+% Set the error tolerance for ADI
+tol = chebfun2eps();
+
 % Compute the Chebyshev coefficients of f(x,y):
 F = coeffs2( f, m, n );
 
@@ -115,7 +118,7 @@ a = -4/pi^2 * scl_y;
 b = -39*n^-4 * scl_y;
 c = 39*m^-4 * scl_x;
 d = 4/pi^2 * scl_x;
-[p, q] = ADIshifts(a, b, c, d, 1e-14);
+[p, q] = ADIshifts(a, b, c, d, tol);
 
 % Run the ADI method:
 X = zeros(m, n);
