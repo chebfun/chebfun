@@ -1,8 +1,8 @@
 function varargout = gpr(x, y, varargin)
-%GPR        Gaussian Process regression
+%GPR        Gaussian process regression
 %
 %   [F, FVAR] = GPR(X, Y) returns a CHEBFUN F defined on [min(X),max(X)]
-%   representing the posterior mean of a Gaussian Process with prior mean 0
+%   representing the posterior mean of a Gaussian process with prior mean 0
 %   and squared exponential kernel
 %               k(x,x') = SIGMAF^2*exp(-1/(2*L^2)*(x-x')^2).
 %   The default signal variance is SIGMAF^2 = 1. L is chosen such that it
@@ -30,9 +30,10 @@ function varargout = gpr(x, y, varargin)
 %
 %       n = 10; x = -2 + 4*rand(n,1);
 %       y = sin(exp(x));
-%       MS = 'markersize';
+%       MS = 'markersize'; LW = 'linewidth';
 %       [f,fvar,smpl] = gpr(x,y,'domain',[-2,2],'samples',3);
-%       plot(f), hold on, plot(smpl), plot(x,y,'.k',MS,14), hold off
+%       plot(f), hold on
+%       plot(smpl,'color',[.8 .8 .8]), plot(x,y,'.k',MS,14), hold off
 %
 % References:
 %
@@ -60,7 +61,6 @@ if ~isempty(x)
         K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(x,1,n) - ...
                                 repmat(x',n,1)).^2);
     end
-
     % compute the Cholesky decomposition of K
     L = chol(K+1e-15*n*eye(n), 'lower');
     % coefficients of the radial basis function expansion of the mean
@@ -198,7 +198,13 @@ for k = 1:2:length(varargin)
 end
 
 if isempty(opts.dom) % domain not provided, default to [min(x) max(x)]
-    opts.dom = [min(x) max(x)];
+    if isempty(x)
+        opts.dom = [-1 1];
+    elseif length(x) == 1
+        opts.dom = [x-1 x+1];
+    else
+        opts.dom = [min(x) max(x)];
+    end
 end
 
 if ~isempty(x) && opts.trig % if domain endpoints are among data points,
@@ -220,13 +226,12 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
     % parametrized on the length scale. Use the length scale maximizing
     % this function.
     if opts.trig
-        searchDom = [2/n,2/min(2,n)];
+        searchDom = [1/(2*n),2/min(2,n)];
     else
         domSize = opts.dom(end)-opts.dom(1);
-        searchDom = [2/(pi*n)*domSize,1/(min(4,n)*pi)*domSize];
+        searchDom = [1/(pi*n)*domSize,1/pi*domSize];
     end
     
-    %opts.lenScale = 1/n*domSize;
     f = chebfun(@(z) logML(z,x,y,opts),searchDom,'eps',1e-6);
     [~, opts.lenScale] = max(f);
 end
