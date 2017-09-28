@@ -15,6 +15,10 @@ function varargout = minimax(f, varargin)
 %   stable function handle for evaluating P/Q (based on a barycentric
 %   representation).
 %
+%   [...] = MINIMAX(..., [A, B]) takes the approximation domain to be
+%   [A, B]. If a domain is not specified and F is a CHEBFUN, then the
+%   domain of F is used. In all other cases, [-1, 1] is used.
+%
 %   [...] = MINIMAX(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the relative equioscillation error.  The default is 
 %   approximately 1e-12 for polynomial approximation and 1e-4 for
