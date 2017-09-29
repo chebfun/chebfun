@@ -55,6 +55,12 @@ if ( needZ )
     return
 end
 
+% Remove any infinite function values (avoid SVD failures):
+toKeep = ~isinf(F);
+F = F(toKeep); Z = Z(toKeep);
+M = length(Z);
+
+
 % Relative tolerance:
 reltol = tol * norm(F, inf);
 
