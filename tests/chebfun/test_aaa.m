@@ -69,4 +69,10 @@ Z = linspace(-1,1);
 r = aaa(gamma(Z),Z);
 pass(17) = ( abs(r(0.63) - gamma(0.63)) < 1e-3 );
 
+% Test for NaNs
+X = linspace(0,20);
+F = sin(X)./X;
+r = aaa(F,X);
+pass(18) = ( abs(r(2) - sin(2)/2) < 1e-3 );
+
 end
