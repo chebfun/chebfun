@@ -46,7 +46,10 @@ function varargout = minimax(f, varargin)
 %       STATUS.DIFFX - Maximum correction in last trial reference.
 %       STATUS.XK    - Last trial reference on which the error
 %                      equioscillates.
+%   In case we are doing rational approximation (denominator degree >=1),
+%   two extra field are computed:
 %       STATUS.POL   - Poles of the minimax approximation.
+%       STATUS.ZER   - Zeros of the minimax approximation.
 %
 %   This code is highly reliable for polynomial approximation but may
 %   sometimes have difficulties in the rational case, though we believe
@@ -560,7 +563,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
          
     else
         err = inf;
-        [p, q, rh, h, interpSuccess, tk, beta] = ...
+        [p, q, rh, h, interpSuccess, tk, alpha, beta] = ...
             computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, ...
                                          dialogFlag, opts.silentFlag);
    
@@ -585,7 +588,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
     end
  
     % Display diagnostic information as requested.
-    if ( opts.plotIter && interpSuccess && dialogFlag)
+    if ( opts.plotIter && interpSuccess && dialogFlag )
         doPlotIter(xo, xk, err_handle, h, dom);
     end
  
@@ -620,10 +623,10 @@ status.diffx = diffx;
 status.xk = xk;
 status.success = interpSuccess;
 % Compute the poles and zeros in case of a rational approximation
-if ( n > 0 &&  ~isempty(beta) )
-    status.pol = pzeros(tk, beta, rh, n, dom);
+if status.success && dialogFlag && rationalMode
+    [status.zer, status.pol] = pzeros(tk, alpha, beta, rh, m, n, dom);
 else
-    status.pol = [];
+    status.zer = []; status.pol = [];
 end
  
 if( ~isempty(p))
@@ -777,7 +780,7 @@ p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
 
 end
 
-function [p, q, rh, h, interpSuccess,xsupport,wD] = ...
+function [p, q, rh, h, interpSuccess,xsupport, wN, wD] = ...
     computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, ...
                                  dialogFlag, silentFlag)
 % computeTrialFunctionRational finds a rational approximation to f at an 
@@ -1052,7 +1055,7 @@ if isempty(pos) % still no solution, give up
         disp('Trial interpolant too far from optimal...')
     end
     interpSuccess = 0; 
-    p = []; q = []; rh = []; h = 1e-19; wD = [];
+    p = []; q = []; rh = []; h = 1e-19; wD = []; wN = [];
     return
 elseif ( length(pos) > 1 ) % more than one solution with no sign changes...
     [~,ix] = min(abs(hpre)-diag(abs(d(pos,pos))));
@@ -1913,29 +1916,65 @@ end
 r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
 end
 
-% Compute zeros of a partial fraction.
-function zer = pzeros(zj, beta, rh, n, dom)
-m = length(beta);
+% Compute the poles zeros of the barycentric approximant with
+% weights alpha and beta.
+function [zer, pol] = pzeros(zj, alpha, beta, rh, m, n, dom)
 
-% Compute poles via generalized eigenvalue problem:
-B = eye(m+1);
-B(1,1) = 0;
-E = [0 beta.'; ones(m, 1) diag(zj)];
-zer = eig(E, B);
-% Remove zeros of denominator at infinity:
-zer = zer(~isinf(zer));
+if ( n == 0 || isempty(beta) )
+    pol = [];
+else
+    l = length(beta);
 
-rad = 1e-5; % radius for approximating residual
+    % Compute poles via generalized eigenvalue problem:
+    B = eye(l+1);
+    B(1,1) = 0;
+    E = [0 beta.'; ones(l, 1) diag(zj)];
+    pol = eig(E, B);
+    % Remove zeros of denominator at infinity:
+    pol = pol(~isinf(pol));
 
-    if ( m - 1 > n )% superdiagonal case, remove irrelevant poles        
+    rad = 1e-5; % radius for approximating residual
+
+    if ( l - 1 > n )% superdiagonal case, remove irrelevant poles 
     dz = rad*exp(2i*pi*(1:4)/4);
-    res = rh(bsxfun(@plus, zer, dz))*dz.'/4; % residues
+    res = rh(bsxfun(@plus, pol, dz))*dz.'/4; % residues
     ix = find( abs(res) > 1e-10 ); % pole with suff. residues
-    zer = zer(ix); 
-    zerBern = abs(zer-dom(1)) + abs(zer-dom(2)); % Bernstein ellipse radius
+    pol = pol(ix); 
+    zerBern = abs(pol-dom(1)) + abs(pol-dom(2)); % Bernstein ellipse radius
     [~,ix] = sort( zerBern, 'ascend'); % sort wrt radius
-    zer = zer( ix(1:min(n,end)) ); % choose <=n zeros with largest residues    
-    end    
+    pol = pol( ix(1:min(n,end)) ); % choose <=n zeros with largest residues    
+    end
+end
+
+if ( m == 0 && isempty(alpha) )
+    zer = [];
+else
+    l = length(alpha);
+    
+    % Compute zeros via generalized eigenvalue problem:
+    B = eye(l+1);
+    B(1,1) = 0;
+    E = [0 alpha.'; ones(l, 1) diag(zj)];
+    
+    zer = eig(E,B);
+    % Remove zeros of numerator at infinity:
+    zer = zer(~isinf(zer));
+    
+    % subdiagonal case, remove irrelevant zeros:
+    if ( l - 1 > m )
+        rad = 1e-5; % radius for approximating derivative
+        dz = rad*exp(2i*pi*(1:4)/4);
+        deriv = sum(abs(bsxfun(@minus,rh(zer),rh(dz))./bsxfun(@minus,zer,dz)),2);
+        deriv = deriv/4;
+        ix = find( abs(deriv) > 1e-10 );
+        
+        zer = zer(ix);
+        zerBern = abs(zer-dom(1)) + abs(zer-dom(2));
+        [~,ix] = sort(zerBern,'ascend');
+        zer = zer( ix(1:min(m,end)) );
+    end
+    
+end
 
 end % End of PZEROS().
 
