@@ -47,7 +47,7 @@ function varargout = minimax(f, varargin)
 %       STATUS.XK    - Last trial reference on which the error
 %                      equioscillates.
 %   In case we are doing rational approximation (denominator degree >=1),
-%   two extra field are computed:
+%   two extra fields are computed:
 %       STATUS.POL   - Poles of the minimax approximation.
 %       STATUS.ZER   - Zeros of the minimax approximation.
 %
@@ -65,7 +65,7 @@ function varargout = minimax(f, varargin)
 %
 %   [1] B. Beckermann, S. Filip, Y. Nakatsukasa and L. N. Trefethen,
 %   "Rational minimax approximation via adaptive barycentric
-%   representations", manuscript in preparation.
+%   representations", arXiv:1705.10132.
 %
 %   [2] R. Pachon and L. N. Trefethen, "Barycentric-Remez algorithms for
 %   best polynomial approximation in the chebfun system", BIT Numerical
