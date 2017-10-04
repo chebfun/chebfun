@@ -82,7 +82,7 @@ classdef chebfun2 < separableApprox
         F = outerProduct(f, g);  
         
         % Fast spectrally-accurate Poisson solver:
-        u = poisson(f, g, m, n);
+        u = poisson(f, varargin);
         
     end
     
