@@ -19,7 +19,7 @@ function f = randnfun(varargin)
 %   distributed coefficients of equal variance.
 %
 %   RANDNFUN(LAMBDA, 'complex') returns a complex random function.  The
-%   variance is the same as in the real case (i.e., not twice as much).
+%   variance is the same as in the real case (i.e., not twice as great).
 %
 %   RANDNFUN() uses the default value LAMBDA = 1.  Combinations such
 %   as RANDNFUN(DOM) and RANDNFUN('norm', LAMBDA) are allowed so long as
@@ -65,9 +65,9 @@ if trig    % periodic case: finite Fourier-Wiener series.
         c = (c + flipud(conj(c)))/sqrt(2);       % real coeffs, var 1
     end
     if normalize
-        c = c/sqrt(L/2);    % on [-1,1], coeffs from N(0,1) (finite F-W series)
+        c = c/sqrt(L);   % on [-1,1], coeffs from N(0,1/2) (finite F-W series)
     else
-        c = c/sqrt(2*m+1);  % regardless of domain, function values from N(0,1)
+        c = c/sqrt(2*m+1); % regardless of domain, function values from N(0,1)
     end
     f = chebfun(c, dom, 'trig', 'coeffs');
 
@@ -101,9 +101,9 @@ else       % nonperiodic case: call periodic case and restrict
 
            % restrict the result to the prescribed interval
  
-    x = chebpts(5*m+5, dom);  % this number is large enough...
-    f = chebfun(f(x), dom);   % ...so this is equiv. to f{dom(1),dom(2)}
-    f = simplify(f, 1e-13);   % loosened tolerance gives clean Cheb series
+    x = chebpts(5*m+20, dom);  % this number is large enough...
+    f = chebfun(f(x), dom);    % ...so this is equiv. to f{dom(1),dom(2)}
+    f = simplify(f, 1e-13);    % loosened tolerance gives clean Cheb series
 
 end
 end
