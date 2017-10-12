@@ -11,13 +11,15 @@ function f = randnfun(varargin)
 %   RANDNFUN(LAMBDA, N) returns a quasimatrix with N independent columns.
 %
 %   RANDNFUN(LAMBDA, 'norm') normalizes the output by dividing it by about
-%   SQRT(2*LAMBDA), so white noise is approached in the limit LAMBDA -> 0.
+%   2*SQRT(LAMBDA), so white noise is approached in the limit LAMBDA -> 0,
+%   with an indefinite integral corresponding to standard Brownian motion.
 %
 %   RANDNFUN(LAMBDA, 'trig') returns a random periodic function.  This
 %   is defined by a finite Fourier-Wiener series with independent normally
 %   distributed coefficients of equal variance.
 %
-%   RANDNFUN(LAMBDA, 'complex') returns a complex random function.
+%   RANDNFUN(LAMBDA, 'complex') returns a complex random function.  The
+%   variance is the same as in the real case (i.e., not twice as much).
 %
 %   RANDNFUN() uses the default value LAMBDA = 1.  Combinations such
 %   as RANDNFUN(DOM) and RANDNFUN('norm', LAMBDA) are allowed so long as
