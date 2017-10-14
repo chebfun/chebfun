@@ -11,7 +11,7 @@ function f = randnfun(varargin)
 %   RANDNFUN(LAMBDA, N) returns a quasimatrix with N independent columns.
 %
 %   RANDNFUN(LAMBDA, 'norm') normalizes the output by dividing it by about
-%   2*SQRT(LAMBDA), so white noise is approached in the limit LAMBDA -> 0,
+%   SQRT(LAMBDA/2), so white noise is approached in the limit LAMBDA -> 0,
 %   with an indefinite integral corresponding to standard Brownian motion.
 %
 %   RANDNFUN(LAMBDA, 'trig') returns a random periodic function.  This
