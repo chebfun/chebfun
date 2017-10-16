@@ -76,13 +76,16 @@ else       % nonperiodic case: call periodic case and restrict
     dom2 = dom(1) + [0 1.2*diff(dom)];
     m = round(diff(dom)/lambda);
 
-    if lambda == inf    
+    if lambda == inf
         c = randn;
         if cmplx
-            c = (c + 1i*randn)/sqrt(2)
+            c = (c + 1i*randn)/sqrt(2);
+        end
+        if normalize
+            c = c/sqrt(diff(dom2));
         end
         f = chebfun(c, dom);        % random constant function
-	return
+        return
     end
 
     if cmplx
