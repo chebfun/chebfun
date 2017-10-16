@@ -18,7 +18,7 @@ X = cov(A);
 pass(4) = (norm(X-X') == 0);
 
 rng(0), f1 = randnfun('norm',1/64,[0 3]);
-rng(0), f2 = 2*sqrt(64)*randnfun(1/64, 1, [0 3]);
+rng(0), f2 = sqrt(2*64)*randnfun(1/64, 1, [0 3]);
 pass(5) = norm(f1-f2) < .2*norm(f1);
 
 rng(0), f1 = randnfun(1,[0 4]);
@@ -47,7 +47,7 @@ pass(12) = (norm(X-X') == 0);
 f = randnfun('trig') + 1i*randnfun('trig');
 pass(13) = (abs(f(-.999)-f(.999)) < .1);
 
-rng(0), f1 = randnfun(1/16,'norm','trig')/8;
+rng(0), f1 = randnfun(1/16,'norm','trig')/(4*sqrt(2));
 rng(0), f2 = randnfun(1/16,'trig');
 pass(14) = norm(f1-f2) < .2*norm(f1);
 
@@ -70,5 +70,14 @@ rng(0)
 f = randnfun(.3,'complex',[0 77]);
 pass(19) = (abs(std(f)-1) < .1);
 pass(20) = (abs(mean(f)) < .1);
+
+% test that Brownian motion is normalized properly
+nsamp = 600;
+f = randnfun(.1,[0 1],'norm',nsamp);
+b = cumsum(f); s = sum(b.^2,2)/nsamp; 
+pass(21) = abs(s(1)-1) < .2;
+f = randnfun(.1,[0 1],'norm','complex',nsamp);
+b = cumsum(f); s = sum(conj(b).*b,2)/nsamp; 
+pass(22) = abs(s(1)-1) < .2;
 
 end

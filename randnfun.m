@@ -11,13 +11,15 @@ function f = randnfun(varargin)
 %   RANDNFUN(LAMBDA, N) returns a quasimatrix with N independent columns.
 %
 %   RANDNFUN(LAMBDA, 'norm') normalizes the output by dividing it by about
-%   SQRT(2*LAMBDA), so white noise is approached in the limit LAMBDA -> 0.
+%   SQRT(LAMBDA/2), so white noise is approached in the limit LAMBDA -> 0,
+%   with an indefinite integral corresponding to standard Brownian motion.
 %
 %   RANDNFUN(LAMBDA, 'trig') returns a random periodic function.  This
 %   is defined by a finite Fourier-Wiener series with independent normally
 %   distributed coefficients of equal variance.
 %
-%   RANDNFUN(LAMBDA, 'complex') returns a complex random function.
+%   RANDNFUN(LAMBDA, 'complex') returns a complex random function.  The
+%   variance is the same as in the real case (i.e., not twice as great).
 %
 %   RANDNFUN() uses the default value LAMBDA = 1.  Combinations such
 %   as RANDNFUN(DOM) and RANDNFUN('norm', LAMBDA) are allowed so long as
@@ -63,9 +65,9 @@ if trig    % periodic case: finite Fourier-Wiener series.
         c = (c + flipud(conj(c)))/sqrt(2);       % real coeffs, var 1
     end
     if normalize
-        c = c/sqrt(L/2);    % on [-1,1], coeffs from N(0,1) (finite F-W series)
+        c = c/sqrt(L);   % on [-1,1], coeffs from N(0,1/2) (finite F-W series)
     else
-        c = c/sqrt(2*m+1);  % regardless of domain, function values from N(0,1)
+        c = c/sqrt(2*m+1); % regardless of domain, function values from N(0,1)
     end
     f = chebfun(c, dom, 'trig', 'coeffs');
 
@@ -74,13 +76,16 @@ else       % nonperiodic case: call periodic case and restrict
     dom2 = dom(1) + [0 1.2*diff(dom)];
     m = round(diff(dom)/lambda);
 
-    if lambda == inf    
+    if lambda == inf
         c = randn;
         if cmplx
-            c = (c + 1i*randn)/sqrt(2)
+            c = (c + 1i*randn)/sqrt(2);
+        end
+        if normalize
+            c = c/sqrt(diff(dom2));
         end
         f = chebfun(c, dom);        % random constant function
-	return
+        return
     end
 
     if cmplx
@@ -99,9 +104,9 @@ else       % nonperiodic case: call periodic case and restrict
 
            % restrict the result to the prescribed interval
  
-    x = chebpts(5*m+5, dom);  % this number is large enough...
-    f = chebfun(f(x), dom);   % ...so this is equiv. to f{dom(1),dom(2)}
-    f = simplify(f, 1e-13);   % loosened tolerance gives clean Cheb series
+    x = chebpts(5*m+20, dom);  % this number is large enough...
+    f = chebfun(f(x), dom);    % ...so this is equiv. to f{dom(1),dom(2)}
+    f = simplify(f, 1e-13);    % loosened tolerance gives clean Cheb series
 
 end
 end
