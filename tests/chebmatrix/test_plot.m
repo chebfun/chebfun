@@ -52,6 +52,13 @@ pass(8) = doesNotCrash(@() semilogy(A));
 
 close(hfig);
 
+%%
+% More than one CHEBMATRIX: (see #2220)
+
+N = chebop(@(x,u) diff(u,2) + 1i*diff(u), [-1, 1], 0);
+[V, D] = eigs(N, 2);
+pass(9) = doesNotCrash(@() plot(real(V), '-', imag(V), '--'));
+
 end
 
 function pass = doesNotCrash(fn)
@@ -59,7 +66,7 @@ function pass = doesNotCrash(fn)
 try
     fn();
     pass = true;
-catch ME;
+catch ME
     pass = false;
 end
 

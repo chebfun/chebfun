@@ -37,6 +37,16 @@ else
     % call CHEBFUN/PLOT():
     A.blocks = reshape(A.blocks, 1, numel(A.blocks));
     A = quasimatrix(A.blocks);
+    
+    % Repeat for other CHEBMATRIX types in varargin.
+    for k = 1:numel(varargin)
+        if ( isa(varargin{k}, 'chebmatrix') )
+            tmp = varargin{k};
+            tmp = reshape(tmp.blocks, 1, numel(tmp.blocks));
+            varargin{k} = quasimatrix(tmp);
+        end
+    end
+    
     [varargout{1:nargout}] = plot(A, varargin{:});
     
 end
