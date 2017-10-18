@@ -61,7 +61,7 @@ g0 = cell(q-1, 1);
 for j = 1:q-1
     g0{j} = expinteg.gammaEval(0, j, LR, N, dim, nVars);
     for k = 1:q-1
-        g{j, k} = expint.gammaEval(j, k, LR, N, dim, nVars);
+        g{j, k} = expinteg.gammaEval(j, k, LR, N, dim, nVars);
     end
 end
 
