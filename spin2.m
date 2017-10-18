@@ -137,7 +137,7 @@ function [uout, tout] = spin2(varargin)
 %   direction, a time-step dt=5e-1, doesn't play any movie and uses the
 %   time-stepping scheme PECEC433.
 %
-% See also SPINOP2, SPINPREF2, EXPINT.
+% See also SPINOP2, SPINPREF2, EXPINTEG.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
