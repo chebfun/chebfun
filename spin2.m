@@ -21,17 +21,17 @@ function [uout, tout] = spin2(varargin)
 %   a SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6. However for many 
 %   purposes it is most convenient to use the syntax
 %
-%   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
+%   UOUT = SPIN2(..., 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
 %
 %   For example:
 %
-%   UOUT = SPIN2(S, N, DT, 'Clim', [a b]) changes colorbar limits to [a b] 
-%   UOUT = SPIN2(S, N, DT, 'colormap', 'jet') changes the colormap to 'jet'
-%   UOUT = SPIN2(S, N, DT, 'dataplot', 'abs') plots absolute value
-%   UOUT = SPIN2(S, N, DT, 'iterplot', 4) plots only every 4th time step 
-%   UOUT = SPIN2(S, N, DT, 'Nplot', 256) plays a movie at 256x256 resolution
-%   UOUT = SPIN2(S, N, DT, 'plot', 'off') for no movie
-%   UOUT = SPIN2(S, N, DT, 'view', [a b]) changes the view angle to [a b]
+%   UOUT = SPIN2(..., 'Clim', [a b]) changes colorbar limits to [a b] 
+%   UOUT = SPIN2(..., 'colormap', 'jet') changes the colormap to 'jet'
+%   UOUT = SPIN2(..., 'dataplot', 'abs') plots absolute value
+%   UOUT = SPIN2(..., 'iterplot', 4) plots only every 4th time step 
+%   UOUT = SPIN2(..., 'Nplot', 256) plays a movie at 256x256 resolution
+%   UOUT = SPIN2(..., 'plot', 'off') for no movie
+%   UOUT = SPIN2(..., 'view', [a b]) changes the view angle to [a b]
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
@@ -151,32 +151,73 @@ function [uout, tout] = spin2(varargin)
 % where S is a SPINOP2 object, N is the number of grid points in each direction, 
 % DT is the time-step and PREF is a SPINPREF2 oject.
 
-if ( nargin == 1 ) % e.g., u = spin2('GL')
+% CASE 1. U = SPIN2('GL'):
+if ( nargin == 1 ) 
+    
     try spinop2(varargin{1});
     catch
-        error('Unrecognized PDE. See HELP/SPIN2 for the list of PDEs.')
+        error('Unrecognized PDE. See HELP/SPINSPHERE for the list of PDEs.')
     end
     [S, N, dt, pref] = parseInputs(varargin{1});
     varargin{1} = S;
     varargin{2} = N;
     varargin{3} = dt;
     varargin{4} = pref;
-elseif ( nargin == 3 ) % e.g., u = spin2(S, 128, 1e-1)
-    % Nothing to do here.
-elseif ( nargin == 4 ) % e.g., u = spin2(S, 128, 1e-1, pref)
-    % Nothing to do here.
-elseif ( nargin >= 5 ) % u.g., u = spin2(S, 128, 1e-1, 'plot', 'off')
-    % In this case, put the options in a SPINPREF2 object.
-    pref = spinpref2();
-    j = 4;
-    while j < nargin
-        pref.(varargin{j}) = varargin{j+1};
-        varargin{j} = [];
-        varargin{j+1} = [];
-        j = j + 2;
+    
+% CASE 2. U = SPIN2('GL', 'PREF1', VALUE1) or U = SPINSPHERE(S, N, DT):
+elseif ( nargin == 3 ) 
+    
+    % CASE 2.1. U = SPIN2('GL', 'PREF1', VALUE1):
+    if ( isa(varargin{1}, 'char') == 1 && isa(varargin{2}, 'char') == 1 )
+        [S, N, dt, pref] = parseInputs(varargin{1});
+        pref.(varargin{2}) = varargin{3};
+        varargin{1} = S;
+        varargin{2} = N;
+        varargin{3} = dt;
+        varargin{4} = pref;
+        
+    % CASE 2.2. U = SPIN2(S, N, DT):
+    else
+        % Nothing to do here.
     end
-    varargin{end + 1} = pref;
-    varargin = varargin(~cellfun(@isempty, varargin));
+    
+% CASE 3. U = SPIN2(S, N, DT, PREF)
+elseif ( nargin == 4 ) 
+    % Nothing to do here.
+    
+% CASE 4. 
+elseif ( nargin >= 5 )
+    
+    % CASE 4.1. U = SPIN2('GL', 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
+    if ( isa(varargin{1}, 'char') == 1 && isa(varargin{2}, 'char') == 1 )
+        [S, N, dt, pref] = parseInputs(varargin{1});
+        j = 2;
+        while j < nargin
+            pref.(varargin{j}) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j+1} = [];
+            j = j + 2;
+        end
+        varargin{1} = S;
+        varargin{2} = N;
+        varargin{3} = dt;
+        varargin{4} = pref;
+        varargin = varargin(~cellfun(@isempty, varargin));
+        
+    % CASE 4.2. U = SPIN2(S, N, DT, 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
+    else
+        pref = spinpref2();
+        j = 4;
+        while j < nargin
+            pref.(varargin{j}) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j+1} = [];
+            j = j + 2;
+        end
+        varargin{4} = pref;
+        varargin = varargin(~cellfun(@isempty, varargin));
+    end
+    
 end
 
 % SPIN2 is a wrapper for SOLVPDE:

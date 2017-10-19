@@ -156,4 +156,10 @@ catch ME
         'should not be specified simultaneously.']);
 end
 
+% Test construction from a chebfun row (transposed chebfun). The result
+% should be a chebfun column (not transposed).
+f = chebfun(@(x) cos(pi*x))';
+g = chebfun(f);
+pass(29) = g.isTransposed == 0;
+
 end

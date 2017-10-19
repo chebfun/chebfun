@@ -119,4 +119,12 @@ x = chebfun('x'); f = 1e40*abs(x);
 [p,q,rh,err] = minimax(f,5,5);
 pass(18) = (err < 1e38);
 
+% Test poles and zeros of the best approximation
+%{
+[p,q,~,~,status] = minimax(@(x) sqrt(x), [0,1], 4,4);
+zer1 = roots(p,'all'); zer1 = sort(zer1); zer2 = sort(status.zer);
+pol1 = roots(q,'all'); pol1 = sort(pol1); pol2 = sort(status.pol);
+pass(19) = ( norm(zer1-zer2,Inf)/norm(zer1,Inf) < 1e-5 && ...
+    norm(pol1-pol2,Inf)/norm(pol1,Inf) < 1e-5 );
+%}
 end
