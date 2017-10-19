@@ -5,7 +5,7 @@ classdef imex < spinscheme
 %
 % Construction: 
 %
-%   K = EXPINT(SCHEME) constructs an IMEX object corresponding to the 
+%   K = IMEX(SCHEME) constructs an IMEX object corresponding to the 
 %   IMEX scheme SCHEME. SCHEME is a (case-insensitive) STRING.
 %
 % Available IMEX schemes:

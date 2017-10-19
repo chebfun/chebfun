@@ -2,9 +2,9 @@ function [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, pref, S, uInit, NuInit
 %STARTMULTISTEP   Get enough initial data when using a multistep scheme.
 %    [USOL, NUSOL] = STARTMULTISTEP(K, dt, L, NC, NV, pref, S, uInit, NuInit)
 %    uses a one-step algorithm with time-step DT, combined with a fixed point
-%    algorithm, to get enough initial data to start the multistep EXPINT K using
-%    the linear part L, the nonlinear parts in coeff and value space NC and NV,
-%    the SPINPREFERENCE object PREF, and the SPINOPERATOR S.
+%    algorithm, to get enough initial data to start the multistep EXPINTEG K 
+%    using the linear part L, the nonlinear parts in coeff and value space NC 
+%    and NV, the SPINPREFERENCE object PREF, and the SPINOPERATOR S.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -36,7 +36,7 @@ uSol{q} = uInit{1};
 NuSol{q} = NuInit{1};
 
 % Set-up the scheme:
-K = expint('etdrk2');
+K = expinteg('etdrk2');
 schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 
 % Do (Q-1) steps:
@@ -59,9 +59,9 @@ LR = computeLR(S, dt, L, M);
 g = cell(q-1);
 g0 = cell(q-1, 1);
 for j = 1:q-1
-    g0{j} = expint.gammaEval(0, j, LR, N, dim, nVars);
+    g0{j} = expinteg.gammaEval(0, j, LR, N, dim, nVars);
     for k = 1:q-1
-        g{j, k} = expint.gammaEval(j, k, LR, N, dim, nVars);
+        g{j, k} = expinteg.gammaEval(j, k, LR, N, dim, nVars);
     end
 end
 

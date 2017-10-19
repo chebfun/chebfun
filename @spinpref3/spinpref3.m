@@ -33,7 +33,7 @@ classdef spinpref3 < spinpreference
 %     ['movie']                 solution, 'off' otherwise.
 %      'off'
 %
-%   scheme                    * Time-stepping scheme. HELP/EXPINT for the
+%   scheme                    * Time-stepping scheme. HELP/EXPINTEG for the
 %     ['etdrk4']                list of available schemes.
 %
 %   slices                    * Slices of the volumetric slice plot when 'plot'
