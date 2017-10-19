@@ -16,10 +16,6 @@ myfun = @(u) 2 + diff(u,2);
 t = myfun(u);
 pass(3) = doesNotCrash(@() treeVar.printTree(t.tree));
 pass(4) = doesNotCrash(@() print(t));
-%% Nested differentiation
-t = diff(diff(u)) + diff(u) + u;
-pass(5) = doesNotCrash(@() treeVar.printTree(t.tree));
-pass(6) = doesNotCrash(@() print(t));
 end
 
 

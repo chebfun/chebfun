@@ -20,10 +20,6 @@ s = myfun(u);
 pass(3) = doesNotCrash(@() treeVar.plotTree(s.tree));
 pass(4) = doesNotCrash(@() plot(s));
 
-%% Nested differentiation
-s2 = diff(diff(u)) + diff(u) + u;
-pass(5) = doesNotCrash(@() treeVar.plotTree(s2.tree));
-pass(6) = doesNotCrash(@() plot(s2));
 end
 
 

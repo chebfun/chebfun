@@ -24,14 +24,14 @@ function [uout, tout] = spin(varargin)
 %   a SPINPREF object PREF. See HELP/SPINPREF and Example 11. However for many 
 %   purposes it is most convenient to use the syntax
 %
-%   UOUT = SPIN(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...)
+%   UOUT = SPIN(..., 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
 %
 %   For example:
 %
-%   UOUT = SPIN(S, N, DT, 'dataplot', 'abs') plots absolute value
-%   UOUT = SPIN(S, N, DT, 'iterplot', 4) plots only every 4th time step 
-%   UOUT = SPIN(S, N, DT, 'Nplot', 1024) plays a movie at 1024 resolution
-%   UOUT = SPIN(S, N, DT, 'plot', 'off') for no movie
+%   UOUT = SPIN(..., 'dataplot', 'abs') plots absolute value
+%   UOUT = SPIN(..., 'iterplot', 4) plots only every 4th time step 
+%   UOUT = SPIN(..., 'Nplot', 1024) plays a movie at 1024 resolution
+%   UOUT = SPIN(..., 'plot', 'off') for no movie
 %
 % Remark 1: List of PDEs (case-insensitive)
 %
@@ -201,32 +201,73 @@ function [uout, tout] = spin(varargin)
 % where S is a SPINOP object, N is the number of grid points, DT is the 
 % time-step and PREF is a SPINPREF oject.
 
-if ( nargin == 1 ) % e.g., u = spin('kdv')
+% CASE 1. U = SPIN('KDV'):
+if ( nargin == 1 ) 
+    
     try spinop(varargin{1});
     catch
-        error('Unrecognized PDE. See HELP/SPIN for the list of PDEs.')
+        error('Unrecognized PDE. See HELP/SPINSPHERE for the list of PDEs.')
     end
     [S, N, dt, pref] = parseInputs(varargin{1});
     varargin{1} = S;
     varargin{2} = N;
     varargin{3} = dt;
     varargin{4} = pref;
-elseif ( nargin == 3 ) % e.g., u = spin(S, 256, 1e-5)
-    % Nothing to do here.
-elseif ( nargin == 4 ) % e.g., u = spin(S, 256, 1e-5, pref)
-    % Nothing to do here.
-elseif ( nargin >= 5 ) % u.g., u = spin(S, 256, 1e-5, 'plot', 'off')
-    % In this case, put the options in a SPINPREF object.
-    pref = spinpref();
-    j = 4;
-    while j < nargin
-        pref.(varargin{j}) = varargin{j+1};
-        varargin{j} = [];
-        varargin{j+1} = [];
-        j = j + 2;
+    
+% CASE 2. U = SPIN('KDV', 'PREF1', VALUE1) or U = SPINSPHERE(S, N, DT):
+elseif ( nargin == 3 ) 
+    
+    % CASE 2.1. U = SPIN('KDV', 'PREF1', VALUE1):
+    if ( isa(varargin{1}, 'char') == 1 && isa(varargin{2}, 'char') == 1 )
+        [S, N, dt, pref] = parseInputs(varargin{1});
+        pref.(varargin{2}) = varargin{3};
+        varargin{1} = S;
+        varargin{2} = N;
+        varargin{3} = dt;
+        varargin{4} = pref;
+        
+    % CASE 2.2. U = SPIN(S, N, DT):
+    else
+        % Nothing to do here.
     end
-    varargin{end + 1} = pref;
-    varargin = varargin(~cellfun(@isempty, varargin));
+    
+% CASE 3. U = SPIN(S, N, DT, PREF)
+elseif ( nargin == 4 ) 
+    % Nothing to do here.
+    
+% CASE 4. 
+elseif ( nargin >= 5 )
+    
+    % CASE 4.1. U = SPIN('KDV', 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
+    if ( isa(varargin{1}, 'char') == 1 && isa(varargin{2}, 'char') == 1 )
+        [S, N, dt, pref] = parseInputs(varargin{1});
+        j = 2;
+        while j < nargin
+            pref.(varargin{j}) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j+1} = [];
+            j = j + 2;
+        end
+        varargin{1} = S;
+        varargin{2} = N;
+        varargin{3} = dt;
+        varargin{4} = pref;
+        varargin = varargin(~cellfun(@isempty, varargin));
+        
+    % CASE 4.2. U = SPIN(S, N, DT, 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
+    else
+        pref = spinpref();
+        j = 4;
+        while j < nargin
+            pref.(varargin{j}) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j+1} = [];
+            j = j + 2;
+        end
+        varargin{4} = pref;
+        varargin = varargin(~cellfun(@isempty, varargin));
+    end
+    
 end
 
 % SPIN is a wrapper for SOLVPDE:

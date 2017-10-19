@@ -92,11 +92,16 @@ f_exact = [0 0 0 -1 1 -1 exp(-1i*pi) 1 exp(1i*pi)
     [1 sqrt(2) 1 1 0 -1]/sqrt(2) exp(1i*pi.*[.25 .5 .75])];
 pass(12) = all(all(abs(fx - f_exact) < 10*max(vscale(f)*eps)));
 
-% Even expansion of an array-valued complex trigfun evaluated at scalar
+% Even expansion of an array-valued complex trigtech evaluated at scalar
 % argument.
 f_exact = @(t) [exp(pi*1i*t) exp(2*pi*1i*t)];
 f = chebfun(f_exact,'trig','trunc',4);
 t = 1/2;
 pass(13) = ( norm(f(t)-f_exact(t), inf) < 10*vscale(f)*eps );
+
+% Check constant complex trigtech evaluated at multiple values
+f = chebfun(1+1i,'trig');
+out = f([.3 .4]);
+pass(14) = ( norm(out-[1+1i 1+1i],inf) < vscale(f)*eps );
 
 end

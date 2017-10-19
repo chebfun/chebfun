@@ -17,24 +17,37 @@ if ( isempty(BC) )
     result = [];
     
 elseif ( isnumeric(BC) )
-    % This means setting up condition so that the solution equals the first
-    % entry of the vector at the endpoint, its derivative the second entry etc.
-    if ( numIn > 2 )
-        % Allow only if we are dealing with a scalar problem.
-        error('CHEBFUN:CHEBOP:parseBC:numeric', ...
-            'Can only assign scalar BCs to scalar problems');
-    else
-        result = @(u) setupNumericalConditions(u, BC);
-    end
+    % We reach here if we get assigned BCs like N.lbc = [1; 3].
+    %   * In the scalar case, this means setting up conditions so that the
+    %     solution equals the first entry of the vector at the endpoint, its
+    %     derivative the second entry etc. In the example above, for a
+    %     second order problem on [0,1], this amounts to
+    %         u(0) = 1, u'(0) = 3.
+    %   * In the system case, this means that the value of the first unknown 
+    %     function equals the first entry of the vector, the second unknown
+    %     function the second entry of the vector, etc. In the example above,
+    %     for a coupled system on [0,1], this amounts to 
+    %         u(0) = 1, v(0) = 3.
+    %     Higher order coupled systems are not supported, as that would require
+    %     inspecting the diffOrder of the linearized chebop, a (relatively)
+    %     computionally expensive operation. That information only becomes
+    %     available for free once we've called \ for starting to solve the
+    %     problem.
+    result = @(varargin) setupNumericalConditions(BC, varargin);
     
 elseif ( isa(BC, 'function_handle') )
     % If we are dealing with a scalar problem where the independent variable is
     % not specified in the function handle arguments, allow also passing an
     % input function handle that takes one argument. Otherwise, we request that
     % the number of input to the BC function handle is one less than the number
-    % of arguments to the OP part.
+    % of arguments to the OP part. A special case is when BCs are specified as a
+    % vector, this leads to nargin(BC) = -1 (since we assigned the boundary
+    % conditions as an anonymous function with a varargin argument), if this is
+    % the case and the number of inputs for the BC don't match the operator, a
+    % meaningful error will be thrown later on.
     if ( (numIn == 0) || ( (numIn == 1) && (nargin(BC) == 1) ) || ...
             ( strcmp(type,'lrbc') && (nargin(BC) == (numIn - 1)) ) || ...
+            ( strcmp(type,'lrbc') && (nargin(BC) == -1) ) || ...
             ( strcmp(type,'bc') && (nargin(BC) == numIn) ) || ...
             ( strcmp(type,'bc') && (nargin(BC) == numIn + 1) ) )
         % We've got an anonymous function we're happy with. Do we need to
@@ -94,20 +107,46 @@ end
 
 end
 
-function out = setupNumericalConditions(u, BC)
+function out = setupNumericalConditions(BC, varargin)
 % SETUPNUMERICALCONDITIONS  Return anonymous function for evaluating BCs.
 %
 % We need this function so that we can construct a function handle that allows
-% specifying boundary conditions with a vector. Essentially, we are subtracting
-% the nth entry of the vector from the (n-1)st derivative of U.
+% specifying boundary conditions with a vector. In the scalar case, we will be
+% subtracting the nth entry of the BC vector from the (n-1)st derivative of the
+% solution. In the system case, we will be subtracting the nth entry of the
+% vector from the nth unknown function at the endpoint:
 
-% We must always have at least one condition
-out = u - BC(1);
-for bcCounter = 2:length(BC)
-    % Add to the boundary conditions vector. It's tricky to initialize the OUT
-    % argument to the correct dimensions, as we need to be able to evaluate this
-    % both with CHEBFUNs, ADCHEBFUNs and TREEVARs, hence a cheeky growth of the
-    % array.
-    out = [out; diff(u, bcCounter-1) - BC(bcCounter)]; %#ok<AGROW>
+u = varargin{1};
+% Check if we're dealing with scalar or system case:
+if (length(u) == 1)
+    % Scalar case, subtract entries of BC from U and its derivatives:
+    u = u{1};
+    % We must always have at least one condition
+    out = u - BC(1);
+    for bcCounter = 2:length(BC)
+        % Add to the boundary conditions vector. It's tricky to initialize the
+        % OUT argument to the correct dimensions, as we need to be able to
+        % evaluate this both with CHEBFUNs, ADCHEBFUNs and TREEVARs, hence a
+        % cheeky growth of the array.
+        out = [out; diff(u, bcCounter-1) - BC(bcCounter)]; %#ok<AGROW>
+    end
+else
+    assert(length(u) == length(BC), ...
+        'CHEBFUN:CHEBOP:parseBC:numberOfConditions', ...
+        ['The number of initial/final conditions appears to be greater than' ...
+        ' the number of variables in problem. Specifying boundary ' ...
+        'conditions as a vector for systems is only supported for first ' ...
+        'order systems.']);
+    % We must always have at least one condition
+    out = u{1} - BC(1);
+    for bcCounter = 2:length(BC)
+        % Add to the boundary conditions vector. Like above, it's tricky to
+        % initialize the OUT argument to the correct dimensions, as we need to
+        % be able to evaluate this both with CHEBFUNs, ADCHEBFUNs and TREEVARs.
+        % So, allow ourselves to grow the array, by subtracting elements from
+        % the BC vector from the solution components.
+        out = [out; u{bcCounter} - BC(bcCounter)]; %#ok<AGROW>
+    end
 end
+
 end

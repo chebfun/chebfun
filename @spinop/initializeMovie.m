@@ -10,16 +10,15 @@ function [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 % OPTS{2} (real/imag/abs; when the data is complex-valued).
 
 % Set-up:
-dom = S.domain;
-nVars = S.numVars;
-vscale = max(abs(v));
-dataplot = str2func(pref.dataplot);
-xx = compGrid{1};
-xxx = plotGrid{1};
-N = size(xx, 1) - 1;
-Nplot = size(xxx, 1) - 1;
-FS = 'fontsize';
-fs = 12;
+dom = S.domain;                       % Spatial domain
+nVars = S.numVars;                    % Number of variables (>1 for systems)
+vscale = max(abs(v));                 % Scale of the solution 
+dataplot = str2func(pref.dataplot);   % Plot 'abs', 'real' or 'imag'
+xx = compGrid{1};                     % Computation grid
+xxx = plotGrid{1};                    % Movie grid
+N = size(xx, 1) - 1;                  % Size of computation grid
+Nplot = size(xxx, 1) - 1;             % Size of movie grid 
+FS = 'fontsize'; fs = 12;             % Fontsize for title 
 
 % Loop over the variables:
 p = cell(2, nVars); clf reset
