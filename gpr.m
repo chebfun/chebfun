@@ -53,13 +53,12 @@ opts = parseInputs(x, y, varargin{:});
 if ~isempty(x)
     
     n = length(x);
+    r = repmat(x,1,n) - repmat(x',n,1);
     if opts.trig
         K = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-                sin(pi/(opts.dom(end)-opts.dom(1))*(repmat(x,1,n) - ...
-                repmat(x',n,1))).^2);
+                sin(pi/(opts.dom(end)-opts.dom(1))*r).^2);
     else
-        K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*(repmat(x,1,n) - ...
-                                repmat(x',n,1)).^2);
+        K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*r.^2);
     end
     % compute the Cholesky decomposition of K
     L = chol(K+1e-15*n*eye(n), 'lower');
@@ -78,23 +77,19 @@ if ~isempty(x)
     % compute the predictive variance based on a large sample set
     sampleSize = min(20*n,2000);
     xSample = chebpts(sampleSize,opts.dom);
+    rx = repmat(xSample,1,n) - repmat(x',sampleSize,1);
+    rxs = repmat(xSample,1,sampleSize) - repmat(xSample',sampleSize,1);
     
     if opts.trig
         Ks = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-            sin(pi/(opts.dom(end)-opts.dom(1))*(repmat(xSample,1,n) - ...
-            repmat(x',sampleSize,1))).^2);
+            sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2);
         
         Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-            sin(pi/(opts.dom(end)-opts.dom(1)) * ...
-            (repmat(xSample,1,sampleSize) - ...
-            repmat(xSample',sampleSize,1))).^2);
+            sin(pi/(opts.dom(end)-opts.dom(1)) * rxs).^2);
     else
-        Ks = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * ...
-                (repmat(xSample,1,n)-repmat(x',sampleSize,1)).^2);
+        Ks = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * rx.^2);
             
-        Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * ...
-            (repmat(xSample,1, sampleSize) - ...
-            repmat(xSample',sampleSize,1)).^2);
+        Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * rxs.^2);
     end
 
     v = L\(Ks');
@@ -126,18 +121,18 @@ if ( opts.samples > 0 )
         sampleSize = 1000;
         if opts.trig
             xSample = linspace(opts.dom(1),opts.dom(end),sampleSize)';
+            rxs = repmat(xSample,1,sampleSize) - ...
+                repmat(xSample',sampleSize,1);
             Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-                sin(pi/(opts.dom(end)-opts.dom(1)) * ...
-                (repmat(xSample,1,sampleSize) - ...
-                repmat(xSample',sampleSize,1))).^2);
+                sin(pi/(opts.dom(end)-opts.dom(1)) * rxs).^2);
             
             Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
             
         else
-            xSample = chebpts(sampleSize,opts.dom);          
-            Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)* ...
-                (repmat(xSample,1, sampleSize) - ...
-                repmat(xSample',sampleSize,1)).^2);
+            xSample = chebpts(sampleSize,opts.dom); 
+            rxs = repmat(xSample,1,sampleSize) - ...
+                repmat(xSample',sampleSize,1);
+            Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)* rxs.^2);
             
             Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
         end
@@ -229,7 +224,12 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
         searchDom = [1/(2*n),2/min(2,n)];
     else
         domSize = opts.dom(end)-opts.dom(1);
-        searchDom = [1/(pi*n)*domSize,1/pi*domSize];
+        if (n < 30)
+            searchDom = [1/(2*pi*n)*domSize,2/pi*domSize];
+        else
+            searchDom = [1/(pi*log(n))*domSize,1/pi*domSize];
+        end
+
     end
     
     f = chebfun(@(z) logML(z,x,y,opts),searchDom,'eps',1e-6);
@@ -239,19 +239,18 @@ end
 end
 
 % Computes the mean function estimate of the GP (using a Gaussian squared
-% exponential kernel)
+% exponential kernel) at the points xEval
 function fxEval = mean(alpha, x, xEval, opts)
 
 n = length(x);
 xEval = xEval(:);
 m = length(xEval);
+rx = repmat(xEval,1,n) - repmat(x',m,1);
 if opts.trig
     Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-        sin(pi/(opts.dom(end)-opts.dom(1))*(repmat(xEval,1,n) - ...
-        repmat(x',m,1))).^2);
+        sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2);
 else
-    Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2)*(repmat(xEval,1,n) - ...
-                                            repmat(x',m,1)).^2);
+    Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2)*rx.^2);
 end
 
 fxEval = Kss*alpha;
@@ -265,15 +264,14 @@ function fxEval = logML(lenScale, x,y, opts)
 fxEval = lenScale;
 [r,c] = size(lenScale);
 n = length(x);
+rx = repmat(x,1,n) - repmat(x',n,1);
 for i = 1:r
     for j = 1:c
         if opts.trig
             K = opts.sigmaf^2*exp(-2/(lenScale(i,j)^2) * ...
-                    sin(pi/(opts.dom(end)-opts.dom(1))*(repmat(x,1,n) - ...
-                    repmat(x',n,1))).^2);
+                    sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2);
         else
-            K = opts.sigmaf^2*exp(-1/(2*lenScale(i,j)^2) * ...
-                    (repmat(x,1,n) - repmat(x',n,1)).^2);
+            K = opts.sigmaf^2*exp(-1/(2*lenScale(i,j)^2) * rx.^2);
         end
     
         % compute the Cholesky decomposition of K
