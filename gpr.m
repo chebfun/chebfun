@@ -4,7 +4,7 @@ function varargout = gpr(x, y, varargin)
 %   [F, FVAR] = GPR(X, Y) returns a CHEBFUN F defined on [min(X),max(X)]
 %   representing the posterior mean of a Gaussian process with prior mean 0
 %   and squared exponential kernel
-%               k(x,x') = SIGMAF^2*exp(-1/(2*L^2)*(x-x')^2).
+%               k(x,x') = exp(-1/(2*L^2)*(x-x')^2).
 %   The default signal variance is SIGMAF^2 = 1. L is chosen such that it
 %   maximizes the log marginal likelihood (see eq.(2.30) from [1]).
 %   F interpolates Y at X. FVAR represents a CHEBFUN estimate of the
@@ -23,8 +23,11 @@ function varargout = gpr(x, y, varargin)
 %   where P is the period length, corresponding to the size of the
 %   approximation domain.
 %
-%   [...] = GPR(...,'hyperparam', [SIGMAF, L]) specifies the
+%   [...] = GPR(...,'hyperparams', [SIGMAF, L]) specifies the
 %   hyperparameters of the kernel function.
+%
+%   [...] = GPR(...,'noise', sigmaY) specifies that the input is noisy
+%   following a normal distribution N(0,sigmaY^2).
 %
 % Example:
 %
@@ -56,22 +59,28 @@ if ~isempty(x)
     r = repmat(x,1,n) - repmat(x',n,1);
     if opts.trig
         K = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-                sin(pi/(opts.dom(end)-opts.dom(1))*r).^2);
+                sin(pi/(opts.dom(end)-opts.dom(1))*r).^2) + ...
+                opts.sigmaY^2*eye(n);
     else
-        K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*r.^2);
+        K = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)*r.^2) + ...
+            opts.sigmaY^2*eye(n);
     end
     % compute the Cholesky decomposition of K
-    L = chol(K+1e-15*n*eye(n), 'lower');
+    if opts.sigmaY == 0
+        L = chol(K+1e-15*n*eye(n), 'lower');
+    else
+        L = chol(K+opts.sigmaY^2*eye(n), 'lower');
+    end
     % coefficients of the radial basis function expansion of the mean
     alpha = L'\(L\y);
 
     % constuct a Chebfun approximation for the posterior distribution mean
     if opts.trig
         f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'trig', ...
-            'eps', 1e-10);
+            'eps', 1e-10,'splitting','on');
     else
         f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, ...
-            'eps', 1e-10);
+            'eps', 1e-10,'splitting','on');
     end
                         
     % compute the predictive variance based on a large sample set
@@ -82,14 +91,18 @@ if ~isempty(x)
     
     if opts.trig
         Ks = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-            sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2);
+            sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2) + ...
+            opts.sigmaY^2*(rx == 0);
         
         Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-            sin(pi/(opts.dom(end)-opts.dom(1)) * rxs).^2);
+            sin(pi/(opts.dom(end)-opts.dom(1)) * rxs).^2) + ...
+            opts.sigmaY^2*eye(sampleSize);
     else
-        Ks = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * rx.^2);
+        Ks = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * rx.^2) + ...
+            opts.sigmaY^2*(rx == 0);
             
-        Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * rxs.^2);
+        Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2) * rxs.^2) + ...
+            opts.sigmaY^2*eye(sampleSize);
     end
 
     v = L\(Ks');
@@ -124,17 +137,27 @@ if ( opts.samples > 0 )
             rxs = repmat(xSample,1,sampleSize) - ...
                 repmat(xSample',sampleSize,1);
             Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-                sin(pi/(opts.dom(end)-opts.dom(1)) * rxs).^2);
+                sin(pi/(opts.dom(end)-opts.dom(1)) * rxs).^2) + ...
+                opts.sigmaY^2*eye(sampleSize);
             
-            Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
+            if (opts.sigmaY == 0)
+                Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
+            else
+                Ls = chol(Kss + opts.sigmaY^2*eye(sampleSize),'lower');
+            end
             
         else
             xSample = chebpts(sampleSize,opts.dom); 
             rxs = repmat(xSample,1,sampleSize) - ...
                 repmat(xSample',sampleSize,1);
-            Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)* rxs.^2);
+            Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)* rxs.^2) + ...
+                opts.sigmaY^2*eye(sampleSize);
             
-            Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
+            if (opts.sigmaY == 0)
+                Ls = chol(Kss + 1e-12*eye(sampleSize),'lower');
+            else
+                Ls = chol(Kss + opts.sigmaY^2*eye(sampleSize),'lower');
+            end
         end
         
         fSample = repmat(f(xSample), 1, opts.samples) + ...
@@ -163,6 +186,7 @@ end
 
 opts.samples = 0;
 opts.sigmaf = 0;
+opts.sigmaY = 0;
 opts.lenScale = 0;
 opts.dom = [];
 opts.trig = 0;
@@ -186,6 +210,8 @@ for k = 1:2:length(varargin)
         opts.lenScale = hyperparams(end);
     elseif ( strcmpi('domain', varargin{k}) )
         opts.dom = varargin{k+1};
+    elseif ( strcmpi('noise', varargin{k}) )
+        opts.sigmaY = varargin{k+1};
     else
         error('CHEBFUN:CHEBFUN:gpr:badInput', ...
             'Unrecognized sequence of input parameters.');
@@ -220,19 +246,30 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
     % Construct a chebfun approximation of the log marginal likelihood
     % parametrized on the length scale. Use the length scale maximizing
     % this function.
+    domSize = opts.dom(end)-opts.dom(1);
     if opts.trig
-        searchDom = [1/(2*n),2/min(2,n)];
+        searchDom = [1/(2*n)*domSize, 10*domSize];
     else
-        domSize = opts.dom(end)-opts.dom(1);
-        if (n < 30)
-            searchDom = [1/(2*pi*n)*domSize,2/pi*domSize];
-        else
-            searchDom = [1/(pi*log(n))*domSize,1/pi*domSize];
-        end
-
+        searchDom = [1/(2*pi*n)*domSize,10/pi*domSize];
     end
     
-    f = chebfun(@(z) logML(z,x,y,opts),searchDom,'eps',1e-6);
+    % heuristic for reducing the optimization domain for the max log
+    % marginal likelihood estimation
+    fdom1 = logML(searchDom(1),x,y,opts);
+    fdom2 = logML(searchDom(2),x,y,opts);
+    while(fdom1 > fdom2)
+        newBound = (searchDom(1) + searchDom(2))/2;
+        fdomnew = logML(newBound,x,y,opts);
+        if (fdomnew > fdom1)
+            break;
+        else
+            searchDom(2) = newBound;
+            fdom2 = fdomnew;
+        end
+    end
+    
+    f = chebfun(@(z) logML(z,x,y,opts),searchDom, ...
+        'eps',1e-6,'splitting','on');
     [~, opts.lenScale] = max(f);
 end
 
@@ -248,9 +285,10 @@ m = length(xEval);
 rx = repmat(xEval,1,n) - repmat(x',m,1);
 if opts.trig
     Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-        sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2);
+        sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2) + opts.sigmaY*(rx == 0);
 else
-    Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2)*rx.^2);
+    Kss = opts.sigmaf^2*exp(-1/(2*opts.lenScale^2)*rx.^2) + ...
+        opts.sigmaY*(rx == 0);
 end
 
 fxEval = Kss*alpha;
@@ -275,7 +313,11 @@ for i = 1:r
         end
     
         % compute the Cholesky decomposition of K
-        L = chol(K+1e-15*n*eye(n), 'lower');
+        if opts.sigmaY ~= 0
+            L = chol(K+sigmaY^2*eye(n), 'lower');
+        else
+            L = chol(K+1e-15*n*eye(n), 'lower');
+        end
         alpha = L'\(L\y);
         % log marginal likelihood (see line 7 from Alg. 2.1 in [1])
         fxEval(i,j) = -.5*y'*alpha - trace(log(L)) - n/2*log(2*pi);
