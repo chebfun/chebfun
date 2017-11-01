@@ -4,7 +4,7 @@ function varargout = gpr(x, y, varargin)
 %   [F, FVAR] = GPR(X, Y) returns a CHEBFUN F defined on [min(X),max(X)]
 %   representing the posterior mean of a Gaussian process with prior mean 0
 %   and squared exponential kernel
-%               k(x,x') = exp(-1/(2*L^2)*(x-x')^2).
+%               k(x,x') = SIGMAF^2*exp(-1/(2*L^2)*(x-x')^2).
 %   The default signal variance is SIGMAF^2 = 1. L is chosen such that it
 %   maximizes the log marginal likelihood (see eq.(2.30) from [1]).
 %   F interpolates Y at X. FVAR represents a CHEBFUN estimate of the
