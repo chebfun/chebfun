@@ -118,7 +118,7 @@ function [uout, tout] = spin3(varargin)
 %   direction, a time-step dt=5e-1, doesn't produce any movie use the
 %   time-stepping scheme PECEC433.
 %
-% See also SPINOP3, SPINPREF3, EXPINT.
+% See also SPINOP3, SPINPREF3, EXPINTEG.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
