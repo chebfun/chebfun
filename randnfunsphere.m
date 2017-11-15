@@ -53,7 +53,10 @@ elseif nargin == 2
     end
 end
  
-deg = round(pi/lambda);
+% deg = round(pi/lambda);
+% deg = ceil(2*pi/lambda);
+% deg = ceil(2*sqrt(2)*pi/lambda);
+deg = ceil(2*sqrt(4*pi)/lambda)-1;
 
 % We do not use adaptive construction, but just sample the function on a
 % fine enough grid to exactly resolve it then pass this to the constructor.
