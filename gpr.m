@@ -314,7 +314,7 @@ for i = 1:r
     
         % compute the Cholesky decomposition of K
         if opts.sigmaY ~= 0
-            L = chol(K+sigmaY^2*eye(n), 'lower');
+            L = chol(K+opts.sigmaY^2*eye(n), 'lower');
         else
             L = chol(K+1e-15*n*eye(n), 'lower');
         end
