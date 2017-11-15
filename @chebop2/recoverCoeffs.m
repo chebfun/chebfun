@@ -6,15 +6,15 @@ function p = recoverCoeffs(L)
 %   where M is the difforder of the operator. If L is not linear, an error is
 %   thrown.
 %
-%    For a block operator L, i.e., one defining a system of equations
+%   For a block operator L, i.e., one defining a system of equations
 %         Lu = [L_{1,1} L_{1,2} ... L_{1,S}] [ u_1 ]
 %              [L_{2,1} L_{1,2} ... L_{1,S}] [ u_2 ]
 %              [  ...     ...   ...   ...  ] [ ... ]
 %              [L_{R,1} L_{R,2} ... L_{R,S}] [ u_S ],
-%    P will be the RxS cell array such that P{J,K} = RECOVERCOEFFS(L_{J,K}).
+%   P will be the RxS cell array such that P{J,K} = RECOVERCOEFFS(L_{J,K}).
 %
-%    [P L] = RECOVERCOEFFS(L) returns also the linop L, which can be useful if
-%    the input was a linear chebop.
+%   [P L] = RECOVERCOEFFS(L) returns also the linop L, which can be useful if
+%   the input was a linear chebop.
 %
 % Example 1:
 %  [L x] = chebop(@(x,u) 0.5*diff(u,2) - sin(x).*diff(u) + x.*u);
@@ -31,6 +31,9 @@ function p = recoverCoeffs(L)
 %  p = recoverCoeffs(L)
 %  norm([p{:}] - [0 0 1 0 0 0 .5])
 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Convert to linop if input is a chebop. (But don't overwrite input as it's
 % more efficient to evaluate the chebop .op than the linearised .oparray!)
 if isa(L, 'chebop')
@@ -39,7 +42,7 @@ else
     L2 = L;
 end
 
-% Initialise:
+% Initialize:
 s = size(L2);                    % Determine the size of the system,
 m = L2.diffOrder;                % and the difforder.
 x = chebfun('x', L2.domain,2);   % Construct linear function on the domain,
@@ -52,7 +55,7 @@ for hh = 1:s(2)                 % Loop over each of the dependent variables.
     x0l = repmat(x0,1,hh-1);    % Set dep vars to the left to zero.
     x0r = repmat(x0,1,s(2)-hh); % Set dep vars to the right to zero.
     p1 = L*[x0l 1+0*x x0r];     % Evaluate all equations for [0 ... 1 ... 0]
-    p1 = p1 - p0;               % Subtract non-autonomous compnent.
+    p1 = p1 - p0;               % Subtract non-autonomous component.
     for ll = 1:s(1)             % Loop over equations and assign.
         p{ll,hh} = p1{ll};
     end

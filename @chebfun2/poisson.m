@@ -3,7 +3,7 @@ function u = poisson( f, varargin )
 %   POISSON(F) solves laplacian(U) = F on the domain of F with zero
 %   Dirichlet boundary conditions. That is, U satisfies
 %
-%     U_{x,x} + U_{y,y} = F, on [a,b]x[c,d]    U = 0 on boundary
+%     U_{x,x} + U_{y,y} = F, on [a,b]x[c,d], with U = 0 on boundary
 %
 %   The equation is solved using an adaptively determined discretization
 %   size.
@@ -12,11 +12,12 @@ function u = poisson( f, varargin )
 %   can be a scalar, a function handle, or any chebfun2 object satisfying
 %   the Dirichlet data.
 %
-%   POISSON(F, G, N) is the same as POISSON(F, G), but uses an N x N
-%   discretization to solve the equation.
+%   POISSON(F, G, N) is the same as POISSON(F, G), but uses an N x N tensor
+%   product discretization to solve the equation.
 %
 %   POISSON(F, G, M, N) is the same as POISSON(F, G, N), but with an M x N
-%   discretization.
+%   tensor product discretization, where N is the number of coeffcieints in
+%   the x-direction and M is the number in the y-direction.
 %
 % EXAMPLE:
 %   f = chebfun2( @(x,y) 1 + 0*x, [-1 2 0 1]);
@@ -48,7 +49,7 @@ function u = poisson( f, varargin )
 % D. Fortunato and A. Townsend, Fast Poisson solvers for spectral methods,
 % Submitted, 2017.
 
-% Solve for u on the same domain as f, adjust diffmat to including scaling:
+% Solve for u on the same domain as f, adjust diffmat to include scaling:
 dom = f.domain;
 scl_x = (2/(dom(2)-dom(1)))^2;
 scl_y = (2/(dom(4)-dom(3)))^2;
@@ -185,7 +186,7 @@ B = det([-a*alp -alp a; -b -1 b ; c 1 c]);
 C = det([-alp a 1; -1 b 1 ; 1 c 1]);
 D = det([-a*alp -alp 1; -b -1 1; c 1 1]);
 T = @(z) (A*z+B)./(C*z+D);                     % Mobius transfom
-J = ceil( log(16*gam)*log(4/tol)/pi^2 );       % No. of ADI iterations
+J = ceil( log(16*gam)*log(4/tol)/pi^2 );       % Number of ADI iterations
 if ( alp > 1e7 )
     K = (2*log(2)+log(alp)) + (-1+2*log(2)+log(alp))/alp^2/4;
     m1 = 1/alp^2;
@@ -251,7 +252,7 @@ end
 end
 
 function S = leg2ultra_mat( n )
-% Conversion matrix from Legendre coefficients to C^(3/2).
+% LEG2ULTRA_MAT Conversion matrix from Legendre coefficients to C^(3/2).
 %
 % Given coefficients in the Legendre basis the C^(3/2) coefficients
 % can be computed via
@@ -260,6 +261,7 @@ function S = leg2ultra_mat( n )
 %     S = leg2ultra_mat( length(c) ); % conversion matrix
 %     d = S * c;           % C^(3/2) coefficients
 %
+
 % Alex Townsend, 5th May 2016
 
 lam = 1/2;
@@ -271,7 +273,7 @@ S  = spdiags( [v w], [0 2], n, n );
 end
 
 function S = ultra1mx2leg_mat( n )
-% Conversion matrix for (1-x^2)C^(3/2) to Legendre.
+% ULTRA1MX2LEG_MAT Conversion matrix for (1-x^2)C^(3/2) to Legendre.
 %
 % Given coefficients in the (1-x^2)C^(3/2) basis the Legendre coefficients
 % can be computed via
@@ -280,6 +282,7 @@ function S = ultra1mx2leg_mat( n )
 %     S = ultra1mx2leg_mat( length(c) ); % conversion matrix
 %     c_leg = S * c;       % Legendre coefficients
 %
+
 % Alex Townsend, 5th May 2016
 
 d = ones(n, 1);
@@ -289,7 +292,7 @@ S = spdiags( [d,-d], [0,-2], n, n ) * S;
 end
 
 function L = cheb2leg_mat( N )
-% Construct the cheb2leg conversion matrix.
+% CHEB2LEG_MAT Construct the cheb2leg conversion matrix.
 
 % This for-loop is a faster and more accurate way of doing:
 % Lambda = @(z) exp(gammaln(z+1/2) - gammaln(z+1));
@@ -317,7 +320,7 @@ L(1,1) = 1;
 end
 
 function M = leg2cheb_mat( N )
-% Construct the leg2cheb conversion matrix.
+% LEG2CHEB_MAT Construct the leg2cheb conversion matrix.
 
 % This for-loop is a faster and more accurate way of doing:
 % Lambda = @(z) exp(gammaln(z+1/2) - gammaln(z+1));

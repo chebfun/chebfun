@@ -1,12 +1,13 @@
 function X = denseSolve(N, f, m, n)
 %DENSESOLVE   Given a fixed discretisation size, solve the differential equation using
-%a dense solver.
+% a dense solver.
 %   X = DENSESOLVE(N, F, M, N), returns a solution matrix X of values on a M by N
-%  Chebyshev grid.
+%   Chebyshev grid.
 %
 % For further details about the PDE solver, see: 
 % A. Townsend and S. Olver, The automatic solution of partial differential
-% equations using a global spectral method, in preparation, 2014.
+% equations using a global spectral method, J. Comput. Phys., 299, 2015,
+% pp. 106-123.
 % 
 % Warning: This PDE solver is an experimental new feature. It has not been
 % publicly advertised. 
@@ -87,7 +88,7 @@ else
         sz = size(CC{1,1}, 1) * size(CC{2,1}, 2);
         if sz > 65^2
             error('CHEBFUN:CHEBOP2:denseSolve:unresolved1', ...
-                'Solution was unresolved on a 60 by 60 grid.');
+                'Solution was unresolved on a 65 by 65 grid.');
         end
 
         % Form the massive mn by mn matrix.
@@ -120,7 +121,7 @@ end
 end
 
 function X = imposeBoundaryConditions(X, bb, gg, Px, Py, m, n)
-% This command imposes the boundary condition on the solution. 
+% IMPOSEBOUNDARYCONDITIONS imposes the boundary condition on the solution
 % 
 % X = solution with conditions, 
 % bb = cell array of linear constraints,

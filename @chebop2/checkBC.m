@@ -1,13 +1,14 @@
 function [bctype, g] = checkBC(N, m, n)
 %CHECKBC   Checks the type of the boundary conditions.
 %
-% INPUTS:
-%   N = chebop2
-%
-% OUTPUTS:
-%   bctype = 0 - general boundary condition
+% [BCTYPE,G] = CHECKBC(N,m,n) determines the type of boundary condition
+% in the chebop2 N and returns
+%   BCTYPE = 0 - general boundary condition
 %            1 - Dirichlet boundary condition
-%   g = chebfun2 that interpolates the Dirichlet data (if it exists)
+%   B = chebfun2 that interpolates the Dirichlet data (if it exists)
+
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 bctype = 0;
 g = chebfun2();
