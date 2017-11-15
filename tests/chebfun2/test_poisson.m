@@ -67,8 +67,4 @@ f = lap(v);
 u = chebfun2.poisson(f, v, m, n);
 pass(8) = ( norm(u-v) < tol );
 
-if ( all(pass) )
-    pass = 1;
-end
-
 end

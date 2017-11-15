@@ -46,7 +46,7 @@ function u = poisson( f, varargin )
 % The fast Poisson solver is based on:
 %
 % D. Fortunato and A. Townsend, Fast Poisson solvers for spectral methods,
-% in preparation, 2017.
+% Submitted, 2017.
 
 % Solve for u on the same domain as f, adjust diffmat to including scaling:
 dom = f.domain;
