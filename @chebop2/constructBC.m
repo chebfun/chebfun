@@ -66,7 +66,7 @@ elseif ( isa( bcArg, 'function_handle' ) )
         
         % Now go find the constants in the boundary conditions: 
         L = linearize(chebop(bcArg, dom), [], [], 0, 0);
-        p = recoverCoeffs(L);
+        p = chebop2.recoverCoeffs(L);
         
         % Set up the boundary rows that will impose the linear constraints: 
         if ( iscell(p) )

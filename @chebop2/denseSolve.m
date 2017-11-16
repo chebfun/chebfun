@@ -16,9 +16,9 @@ function X = denseSolve(N, f, m, n)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if we can use the fast Poisson solver:
-[bctype, g] = checkBC(N, m, n);
+[bctype, g] = chebop2.checkBC(N, m, n);
 if ( isPoisson(N) && bctype == 1 )
-    u = chebfun2.poisson(f, g, m, n);
+    u = chebfun2.poisson(f+N.rhs, g, m, n);
     X = coeffs2(u, m, n);
 else
     % Use the general PDE solver
@@ -38,7 +38,7 @@ else
 
     % Rank-2 PDE operator.
     elseif ( size(CC, 1) == 2 )
-        % Extract out generatlized matrix equation: 
+        % Extract out generalized matrix equation: 
         A = CC{1,1}; 
         B = CC{1,2}; 
         C = CC{2,1}; 
@@ -174,7 +174,12 @@ function res = isPoisson(N)
 
 op = N.coeffs;
 if ( iscell(op) )
-    op = cell2mat(op);
+    try
+        op = cell2mat(op);
+    catch
+        res = false;
+        return
+    end
 end
 
 % TODO: For now, this only allows N = a*u_{xx} + b*u_{yy} with a = b = 1.

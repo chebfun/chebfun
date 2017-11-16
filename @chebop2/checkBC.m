@@ -32,6 +32,7 @@ function [bctype, bcfun] = getBC(bc, dom)
 %it exists).
 
 bctype = 0;
+bcfun = 0;
 if ( ~isempty(bc) )
     if ( isa(bc, 'chebfun') )
         % Scalars, chebfuns, and single-argument function handles are
@@ -50,7 +51,7 @@ if ( ~isempty(bc) )
                 L = linearize(chebop(bc, dom), [], [], 0, 0);
                 if ( L.diffOrder == 0 )
                     % Find the constants in the operator
-                    p = recoverCoeffs(L);
+                    p = chebop2.recoverCoeffs(L);
                     if ( size(p,1) == 1 && size(p,2) == 1 )
                         % The boundary condition is Dirichlet
                         % Move the constants to the right-hand side
