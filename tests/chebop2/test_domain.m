@@ -5,7 +5,7 @@ function pass = test_domain( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 100*prefs.techPrefs.chebfuneps; 
+tol = 1e3*prefs.techPrefs.chebfuneps;
 
 d = [-2 2 -2 2];
 N = chebop2(@(u) diff(u, 2, 1) + diff(u, 2, 2), d);
