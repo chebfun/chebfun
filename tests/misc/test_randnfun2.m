@@ -36,4 +36,12 @@ pass(9) = abs( f(.5,.5) - h(1,3) ) < 1e-12;
 f = randnfun2(6,'trig');
 pass(10) = norm(diff(f),'fro') == 0;
 
+% test that 'big', as well as 'norm', work 
+rng(0), f1 = sqrt(10)*randnfun2(.1);
+rng(0), f2 = randnfun2(.1,'big');
+rng(0), f3 = randnfun2(.1,'norm');
+pass(11) = norm(f1-f2) == 0;
+pass(12) = norm(f2-f3) == 0;
+
+
 

@@ -3,13 +3,13 @@ function g = gammaEval(j, k, LR, N, dim, nVars)
 %   g = GAMMAEVAL(L, LR, N, DIM, NVARS) evaluates the gamma-function (J, K) with
 %   the contour LR, N grid points, in dimension DIM and with NVARS variables.
 %
-% See also EXPINT/GAMMAFUN.
+% See also EXPINTEG/GAMMAFUN.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get a function handle to the phi function of index L:
-g = expint.gammaFun(j, k);
+g = expinteg.gammaFun(j, k);
 
 % Evaluate it with a contour integral:
 g = mean(feval(g, LR), 2);

@@ -15,6 +15,10 @@ function varargout = minimax(f, varargin)
 %   stable function handle for evaluating P/Q (based on a barycentric
 %   representation).
 %
+%   [...] = MINIMAX(..., [A, B]) takes the approximation domain to be
+%   [A, B]. If a domain is not specified and F is a CHEBFUN, then the
+%   domain of F is used. In all other cases, [-1, 1] is used.
+%
 %   [...] = MINIMAX(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the relative equioscillation error.  The default is 
 %   approximately 1e-12 for polynomial approximation and 1e-4 for
@@ -46,6 +50,10 @@ function varargout = minimax(f, varargin)
 %       STATUS.DIFFX - Maximum correction in last trial reference.
 %       STATUS.XK    - Last trial reference on which the error
 %                      equioscillates.
+%   In case we are doing rational approximation (denominator degree >=1),
+%   two extra fields are computed:
+%       STATUS.POL   - Poles of the minimax approximation.
+%       STATUS.ZER   - Zeros of the minimax approximation.
 %
 %   This code is highly reliable for polynomial approximation but may
 %   sometimes have difficulties in the rational case, though we believe
@@ -61,7 +69,7 @@ function varargout = minimax(f, varargin)
 %
 %   [1] B. Beckermann, S. Filip, Y. Nakatsukasa and L. N. Trefethen,
 %   "Rational minimax approximation via adaptive barycentric
-%   representations", manuscript in preparation.
+%   representations", arXiv:1705.10132.
 %
 %   [2] R. Pachon and L. N. Trefethen, "Barycentric-Remez algorithms for
 %   best polynomial approximation in the chebfun system", BIT Numerical
@@ -511,8 +519,9 @@ if ( opts.displayIter && dialogFlag)
     disp('It.   Max(|Error|)     |ErrorRef|    Delta ErrorRef    Delta Ref     m  n')
 end
 
-h = -1;
 err = normf;
+% Initialise the levelled error such that one iteration always executes
+h = 2*err + 1;
 interpSuccess = 1;
 % Run the main algorithm.
 while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
@@ -559,7 +568,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
          
     else
         err = inf;
-        [p, q, rh, h, interpSuccess, ~] = ...
+        [p, q, rh, h, interpSuccess, tk, alpha, beta] = ...
             computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, ...
                                          dialogFlag, opts.silentFlag);
    
@@ -584,7 +593,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
     end
  
     % Display diagnostic information as requested.
-    if ( opts.plotIter && interpSuccess && dialogFlag)
+    if ( opts.plotIter && interpSuccess && dialogFlag )
         doPlotIter(xo, xk, err_handle, h, dom);
     end
  
@@ -618,6 +627,12 @@ status.iter = iter;
 status.diffx = diffx;
 status.xk = xk;
 status.success = interpSuccess;
+% Compute the poles and zeros in case of a rational approximation
+if status.success && dialogFlag && rationalMode
+    [status.zer, status.pol] = pzeros(tk, alpha, beta, rh, m, n, dom);
+else
+    status.zer = []; status.pol = [];
+end
  
 if( ~isempty(p))
     p = simplify(p);
@@ -770,7 +785,7 @@ p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
 
 end
 
-function [p, q, rh, h, interpSuccess,xsupport] = ...
+function [p, q, rh, h, interpSuccess,xsupport, wN, wD] = ...
     computeTrialFunctionRational(f, fHandle, xk, m, n, hpre, ...
                                  dialogFlag, silentFlag)
 % computeTrialFunctionRational finds a rational approximation to f at an 
@@ -1045,7 +1060,7 @@ if isempty(pos) % still no solution, give up
         disp('Trial interpolant too far from optimal...')
     end
     interpSuccess = 0; 
-    p = []; q = []; rh = []; h = 1e-19;
+    p = []; q = []; rh = []; h = 1e-19; wD = []; wN = [];
     return
 elseif ( length(pos) > 1 ) % more than one solution with no sign changes...
     [~,ix] = min(abs(hpre)-diag(abs(d(pos,pos))));
@@ -1905,6 +1920,68 @@ else
 end
 r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
 end
+
+% Compute the poles zeros of the barycentric approximant with
+% weights alpha and beta.
+function [zer, pol] = pzeros(zj, alpha, beta, rh, m, n, dom)
+
+if ( n == 0 || isempty(beta) )
+    pol = [];
+else
+    l = length(beta);
+
+    % Compute poles via generalized eigenvalue problem:
+    B = eye(l+1);
+    B(1,1) = 0;
+    E = [0 beta.'; ones(l, 1) diag(zj)];
+    pol = eig(E, B);
+    % Remove zeros of denominator at infinity:
+    pol = pol(~isinf(pol));
+
+    rad = 1e-5; % radius for approximating residual
+
+    if ( l - 1 > n )% superdiagonal case, remove irrelevant poles 
+    dz = rad*exp(2i*pi*(1:4)/4);
+    res = rh(bsxfun(@plus, pol, dz))*dz.'/4; % residues
+    ix = find( abs(res) > 1e-10 ); % pole with suff. residues
+    pol = pol(ix); 
+    zerBern = abs(pol-dom(1)) + abs(pol-dom(2)); % Bernstein ellipse radius
+    [~,ix] = sort( zerBern, 'ascend'); % sort wrt radius
+    pol = pol( ix(1:min(n,end)) ); % choose <=n zeros with largest residues    
+    end
+end
+
+if ( m == 0 && isempty(alpha) )
+    zer = [];
+else
+    l = length(alpha);
+    
+    % Compute zeros via generalized eigenvalue problem:
+    B = eye(l+1);
+    B(1,1) = 0;
+    E = [0 alpha.'; ones(l, 1) diag(zj)];
+    
+    zer = eig(E,B);
+    % Remove zeros of numerator at infinity:
+    zer = zer(~isinf(zer));
+    
+    % subdiagonal case, remove irrelevant zeros:
+    if ( l - 1 > m )
+        rad = 1e-5; % radius for approximating derivative
+        dz = rad*exp(2i*pi*(1:4)/4);
+        deriv = sum(abs(bsxfun(@minus,rh(zer),rh(dz))./bsxfun(@minus,zer,dz)),2);
+        deriv = deriv/4;
+        ix = find( abs(deriv) > 1e-10 );
+        
+        zer = zer(ix);
+        zerBern = abs(zer-dom(1)) + abs(zer-dom(2));
+        [~,ix] = sort(zerBern,'ascend');
+        zer = zer( ix(1:min(m,end)) );
+    end
+    
+end
+
+end % End of PZEROS().
 
 function op = str2op(op)
     % Convert string inputs to either numeric format or function_handles.

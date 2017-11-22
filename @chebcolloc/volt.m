@@ -31,4 +31,3 @@ disc.source = operatorBlock.cumsum(disc.domain);
 V = V .* matrix(disc, n); 
 
 end
-

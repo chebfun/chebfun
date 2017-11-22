@@ -65,6 +65,11 @@ classdef linopConstraint
         %APPEND    Insert an additional constraint.
         %   C = APPEND(C, FUNC, VAL) appends the constraint FUNC*u=VAL to the
         %   current list. If VAL is omitted, it defaults to zero.
+        
+            % Appending empty does nothing:
+            if ( isempty(func) )
+                return
+            end                
             
             % Check if func is of an allowed class.
             validateattributes(func, {'linBlock', 'chebmatrix'}, {})
