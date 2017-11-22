@@ -519,8 +519,9 @@ if ( opts.displayIter && dialogFlag)
     disp('It.   Max(|Error|)     |ErrorRef|    Delta ErrorRef    Delta Ref     m  n')
 end
 
-h = -1;
 err = normf;
+% Initialise the levelled error such that one iteration always executes
+h = 2*err + 1;
 interpSuccess = 1;
 % Run the main algorithm.
 while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
