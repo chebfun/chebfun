@@ -26,7 +26,7 @@ function f = randnfun(varargin)
 %   N, if present, is preceded by an explicit specification of LAMBDA.
 %
 %   Reference: S. Filip, A. Javeed, and L. N. Trefethen, "Smooth random
-%   functoins, random ODEs, and Gaussian processes," manuscript, Nov. 2017.
+%   functions, random ODEs, and Gaussian processes," manuscript, Nov. 2017.
 %
 % Examples:
 %
