@@ -1,6 +1,6 @@
 function f = randnfun2(varargin)
-%RANDNFUN2   Random smooth 2D function 
-%   F = RANDNFUN2(LAMBDA) returns a smooth CHEBFUN2 on [-1,1,-1,1] with
+%RANDNFUN2   Smooth random function in 2D
+%   F = RANDNFUN2(LAMBDA) returns a CHEBFUN2 on [-1,1,-1,1] with
 %   maximum frequency about 2pi/LAMBDA in both the X and Y directions
 %   and standard normal distribution N(0,1) at each point.  F is obtained
 %   by calling RANDNFUN2(T, 'trig') on a domain of dimensions about 20%

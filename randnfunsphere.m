@@ -1,13 +1,13 @@
 function f = randnfunsphere(lambda, type)
-%RANDNFUNSPHERE   Random smooth function on the unit sphere
-%   F = RANDNFUNSPHERE(LAMBDA) returns a smooth SPHEREFUN of maximum
-%   wavelength of about 2pi/LAMBDA, as measured around the equator, and 
-%   standard normal distribution N(0,1) at each point.  F is obtained from
-%   a combination of spherical harmonics with random coefficients.
+%RANDNFUNSPHERE   Smooth random function on the unit sphere
+%   F = RANDNFUNSPHERE(LAMBDA) returns a SPHEREFUN of maximum
+%   wavelength of about 2pi/LAMBDA and standard normal distribution
+%   N(0,1) at each point.  F is obtained from a combination of
+%   spherical harmonics with random coefficients.
 %
 %   RANDNFUNSPHERE(LAMBDA, 'monochrome') is similar, but uses a
 %   fixed-degree expansion so that all components have wave number
-%   about equal to 2pi/LAMBDA. Note that it is also possible to shorten
+%   about equal to 2pi/LAMBDA. Note that it is possible to shorten
 %   'monochrome' to just 'm'.
 %
 %   RANDNFUNSPHERE() uses the default value LAMBDA = 1.
@@ -52,9 +52,8 @@ elseif nargin == 2
     end
 end
 
-% This is a common measure for the resolution of a spherical harmonic 
-% series in terms of the truncation level (deg) and wave-length lambda
-% as measured along the equator of the sphere.
+% Since the unit sphere has circumference L = 2*pi, the following
+% choice matches the choice deg = floor(L/lambda) in randnfun.
 deg = floor(2*pi/lambda);
 
 % We do not use adaptive construction, but just sample the function on a
