@@ -1,6 +1,6 @@
 function f = randnfun(varargin)
-%RANDNFUN   Random smooth function
-%   F = RANDNFUN(LAMBDA) returns a smooth CHEBFUN on [-1,1] with maximum
+%RANDNFUN   Smooth random function
+%   F = RANDNFUN(LAMBDA) returns a CHEBFUN on [-1,1] with maximum
 %   frequency <= 2pi/LAMBDA and standard normal distribution N(0,1)
 %   at each point.  F can be regarded as a sample path of a Gaussian
 %   process.  It is obtained by calling RANDNFUN(LAMBDA, 'trig') on an
@@ -24,6 +24,9 @@ function f = randnfun(varargin)
 %   RANDNFUN() uses the default value LAMBDA = 1.  Combinations such
 %   as RANDNFUN(DOM) and RANDNFUN('big', LAMBDA) are allowed so long as
 %   N, if present, is preceded by an explicit specification of LAMBDA.
+%
+%   Reference: S. Filip, A. Javeed, and L. N. Trefethen, "Smooth random
+%   functions, random ODEs, and Gaussian processes," manuscript, Nov. 2017.
 %
 % Examples:
 %
