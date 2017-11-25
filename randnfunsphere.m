@@ -51,11 +51,11 @@ elseif nargin == 2
         type = 'monochromatic';
     end
 end
- 
-% deg = round(pi/lambda);
-deg = ceil(2*pi/lambda);
-% deg = ceil(2*sqrt(2)*pi/lambda);
-% deg = ceil(2*sqrt(4*pi)/lambda)-1;
+
+% This is a common measure for the resolution of a spherical harmonic 
+% series in terms of the truncation level (deg) and wave-length lambda
+% as measured along the equator of the sphere.
+deg = floor(2*pi/lambda);
 
 % We do not use adaptive construction, but just sample the function on a
 % fine enough grid to exactly resolve it then pass this to the constructor.
