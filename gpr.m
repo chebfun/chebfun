@@ -1,18 +1,18 @@
 function varargout = gpr(x, y, varargin)
-%GPR        Gaussian process regression
+%GPR    Gaussian process regression
 %
 %   [F, FVAR] = GPR(X, Y) returns a CHEBFUN F defined on [min(X),max(X)]
 %   representing the posterior mean of a Gaussian process with prior mean 0
 %   and squared exponential kernel
 %               k(x,x') = SIGMAF^2*exp(-1/(2*L^2)*(x-x')^2).
 %   The default signal variance is SIGMAF^2 = 1. L is chosen such that it
-%   maximizes the log marginal likelihood (see eq.(2.30) from [1]).
-%   F should match Y at X. FVAR represents a CHEBFUN estimate of the
+%   maximizes the log marginal likelihood (see eq. (2.30) from [1]).
+%   F matches Y at X.  FVAR is CHEBFUN representing an estimate of the
 %   variance in the posterior.
 %
-%   [F, FVAR, SAMPLES] = GPR(X, Y, 'samples', N) also computes N samples
-%   from the posterior distribution, returning them as N independent
-%   columns of the quasimatrix SAMPLES.
+%   [F, FVAR, SAMPLES] = GPR(X, Y, 'samples', N) also computes N
+%   independent samples from the posterior distribution, returning them
+%   as the N columns of the quasimatrix SAMPLES.
 %
 %   [...] = GPR(...,'domain', DOM) computes the results on the domain
 %   DOM = [A, B].
@@ -31,14 +31,13 @@ function varargout = gpr(x, y, varargin)
 %
 % Example:
 %
-%       n = 10; x = -2 + 4*rand(n,1);
-%       y = sin(exp(x));
-%       MS = 'markersize'; LW = 'linewidth';
-%       [f,fvar,smpl] = gpr(x,y,'domain',[-2,2],'samples',3);
-%       plot(f), hold on
-%       plot(smpl,'color',[.8 .8 .8]), plot(x,y,'.k',MS,14), hold off
+%      n = 10; x = -2 + 4*rand(n,1);
+%      y = sin(exp(x));
+%      [f,fvar,smpl] = gpr(x,y,'domain',[-2,2],'samples',3);
+%      plot(f), hold on
+%      plot(smpl,'color',[.8 .8 .8]), plot(x,y,'.k','markersize',14), hold off
 %
-% References:
+% Reference:
 %
 %   [1] C. E. Rasmussen & C. K. I. Williams, "Gaussian Processes
 %   for Machine Learning", MIT Press, 2006

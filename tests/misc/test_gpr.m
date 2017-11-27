@@ -44,4 +44,36 @@ f = gpr(xx,yy,'hyperparams',[1,.1]);
 err = norm(f(xx) - yy,Inf)/norm(f(xx),Inf);
 pass(7) = err < 1e-6;
 
+% Test vertical scale (big function):
+x = (1:5).^2; y = sin(x);
+S = 1e50;
+f = gpr(x,y);
+ybig = S*y;
+fbig = gpr(x,ybig);
+err = norm(f-fbig/S);
+pass(8) = err < 1e-14;
+
+% Test vertical scale (small function):
+ysmall = y/S;
+fsmall = gpr(x,ysmall);
+err = norm(f-S*fsmall);
+pass(8) = err < 1e-14;
+
+% Test horizontal scale (big interval):
+x = (1:5).^2; y = sin(x);
+S = 1e50;
+f = gpr(x,y);
+xbig = S*x;
+fbig = gpr(xbig,y);
+xx = linspace(1,25);
+err = norm(f(xx)-fbig(S*xx))
+pass(9) = err < 1e-14;
+
+% Test horizontal scale (small interval):
+xsmall = x/S;
+fsmall = gpr(xsmall,y);
+xx = linspace(1,25);
+err = norm(f(xx)-fsmall(xx/S))
+pass(10) = err < 1e-14;
+
 end
