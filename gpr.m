@@ -1,14 +1,16 @@
 function varargout = gpr(x, y, varargin)
 %GPR    Gaussian process regression
 %
-%   [F, FVAR] = GPR(X, Y) returns a CHEBFUN F defined on [min(X),max(X)]
+%   F = GPR(X, Y) returns a CHEBFUN F defined on [min(X),max(X)]
 %   representing the posterior mean of a Gaussian process with prior mean 0
 %   and squared exponential kernel
 %               k(x,x') = SIGMAF^2*exp(-1/(2*L^2)*(x-x')^2).
 %   The default signal variance is SIGMAF^2 = 1. L is chosen such that it
 %   maximizes the log marginal likelihood (see eq. (2.30) from [1]).
-%   F matches Y at X.  FVAR is CHEBFUN representing an estimate of the
-%   variance in the posterior.
+%   F matches Y at X.
+% 
+%   [F, FVAR] = GPR(X, Y) also returns a CHEBFUN representing an estimate
+%   of the variance in the posterior.
 %
 %   [F, FVAR, SAMPLES] = GPR(X, Y, 'samples', N) also computes N
 %   independent samples from the posterior distribution, returning them
