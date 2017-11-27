@@ -7,7 +7,7 @@ function varargout = gpr(x, y, varargin)
 %               k(x,x') = SIGMAF^2*exp(-1/(2*L^2)*(x-x')^2).
 %   The default signal variance is SIGMAF^2 = 1. L is chosen such that it
 %   maximizes the log marginal likelihood (see eq.(2.30) from [1]).
-%   F interpolates Y at X. FVAR represents a CHEBFUN estimate of the
+%   F should match Y at X. FVAR represents a CHEBFUN estimate of the
 %   variance in the posterior.
 %
 %   [F, FVAR, SAMPLES] = GPR(X, Y, 'samples', N) also computes N samples
@@ -77,10 +77,10 @@ if ~isempty(x)
     % constuct a Chebfun approximation for the posterior distribution mean
     if opts.trig
         f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'trig', ...
-            'eps', 1e-10,'splitting','on');
+            'eps', 1e-12,'splitting','on');
     else
         f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, ...
-            'eps', 1e-10,'splitting','on');
+            'eps', 1e-12,'splitting','on');
     end
                         
     % compute the predictive variance based on a large sample set
@@ -230,7 +230,6 @@ end
 
 if ~isempty(x) && opts.trig % if domain endpoints are among data points,
                             % check to see if periodicity is enforced
-                            % TODO: allow some tolerences?
     [~,idMin] = min(x);
     [~,idMax] =  max(x);
     if opts.dom(1) == x(idMin) && opts.dom(end) == x(idMax)
@@ -255,10 +254,11 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
     
     % heuristic for reducing the optimization domain for the max log
     % marginal likelihood estimation
+    
     fdom1 = logML(searchDom(1),x,y,opts);
     fdom2 = logML(searchDom(2),x,y,opts);
     while(fdom1 > fdom2)
-        newBound = (searchDom(1) + searchDom(2))/2;
+        newBound = searchDom(2)-(searchDom(1) + searchDom(2))/3;
         fdomnew = logML(newBound,x,y,opts);
         if (fdomnew > fdom1)
             break;
