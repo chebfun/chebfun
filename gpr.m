@@ -48,6 +48,12 @@ function varargout = gpr(x, y, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 x = x(:); y = y(:);
+scalingFactor = 1;
+if ~isempty(y)
+    scalingFactor = max(abs(y));
+    y = y/scalingFactor;
+end
+
 opts = parseInputs(x, y, varargin{:});
 
 % Construct the kernel matrix corresponding to x. For the moment,
@@ -74,6 +80,7 @@ if ~isempty(x)
     end
     % coefficients of the radial basis function expansion of the mean
     alpha = L'\(L\y);
+    alpha = alpha*scalingFactor;
 
     % constuct a Chebfun approximation for the posterior distribution mean
     if opts.trig
@@ -241,8 +248,12 @@ end
 
 if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
     n = length(x);
-    opts.sigmaf = 1;    % fix the signal variance to 1
-    
+
+    if isempty(y)
+        opts.sigmaf = 1;
+    else
+        opts.sigmaf = 1./max(abs(y));
+    end
     % Construct a chebfun approximation of the log marginal likelihood
     % parametrized on the length scale. Use the length scale maximizing
     % this function.
@@ -259,7 +270,7 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
     fdom1 = logML(searchDom(1),x,y,opts);
     fdom2 = logML(searchDom(2),x,y,opts);
     while(fdom1 > fdom2)
-        newBound = searchDom(2)-(searchDom(1) + searchDom(2))/3;
+        newBound = searchDom(1)+(searchDom(2) - searchDom(1))/2;
         fdomnew = logML(newBound,x,y,opts);
         if (fdomnew > fdom1)
             break;
@@ -268,10 +279,10 @@ if ~opts.sigmaf && ~opts.lenScale % hyperparameters not specified
             fdom2 = fdomnew;
         end
     end
-    
     f = chebfun(@(z) logML(z,x,y,opts),searchDom, ...
         'eps',1e-6,'splitting','on');
     [~, opts.lenScale] = max(f);
+    
 end
 
 end
@@ -311,6 +322,36 @@ for i = 1:r
                     sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2);
         else
             K = opts.sigmaf^2*exp(-1/(2*lenScale(i,j)^2) * rx.^2);
+        end
+    
+        % compute the Cholesky decomposition of K
+        if opts.sigmaY ~= 0
+            L = chol(K+opts.sigmaY^2*eye(n), 'lower');
+        else
+            L = chol(K+1e-15*n*eye(n), 'lower');
+        end
+        alpha = L'\(L\y);
+        % log marginal likelihood (see line 7 from Alg. 2.1 in [1])
+        fxEval(i,j) = -.5*y'*alpha - trace(log(L)) - n/2*log(2*pi);
+    end
+end
+
+end
+
+
+function fxEval = logML2(lenScale, sigma, x,y, opts)
+
+fxEval = lenScale;
+[r,c] = size(lenScale);
+n = length(x);
+rx = repmat(x,1,n) - repmat(x',n,1);
+for i = 1:r
+    for j = 1:c
+        if opts.trig
+            K = sigma(i,j)^2*exp(-2/(lenScale(i,j)^2) * ...
+                    sin(pi/(opts.dom(end)-opts.dom(1))*rx).^2);
+        else
+            K = sigma(i,j)^2*exp(-1/(2*lenScale(i,j)^2) * rx.^2);
         end
     
         % compute the Cholesky decomposition of K

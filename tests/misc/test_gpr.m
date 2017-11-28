@@ -56,7 +56,7 @@ pass(8) = err < 1e-14;
 % Test vertical scale (small function):
 ysmall = y/S;
 fsmall = gpr(x,ysmall);
-err = norm(f-S*fsmall);
+err = norm(f-S*fsmall)
 pass(8) = err < 1e-14;
 
 % Test horizontal scale (big interval):
@@ -66,14 +66,14 @@ f = gpr(x,y);
 xbig = S*x;
 fbig = gpr(xbig,y);
 xx = linspace(1,25);
-err = norm(f(xx)-fbig(S*xx))
+err = norm(f(xx)-fbig(S*xx));
 pass(9) = err < 1e-14;
 
 % Test horizontal scale (small interval):
 xsmall = x/S;
 fsmall = gpr(xsmall,y);
 xx = linspace(1,25);
-err = norm(f(xx)-fsmall(xx/S))
+err = norm(f(xx)-fsmall(xx/S));
 pass(10) = err < 1e-14;
 
 end
