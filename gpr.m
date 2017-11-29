@@ -31,7 +31,7 @@ function varargout = gpr(x, y, varargin)
 %   kernel function.
 %
 %   [...] = GPR(...,'noise', sigmaY) specifies that the input is noisy
-%   i.i.d with noise distribution N(0,sigmaY^2). The kernel function
+%   i.i.d. with noise distribution N(0,sigmaY^2). The kernel function
 %   takes this into account by updating its values at the sample points. It
 %   becomes
 %           k'(x,x') = k(x,x') + sigmaY^2*delta_xx',
@@ -39,8 +39,9 @@ function varargout = gpr(x, y, varargin)
 %   zero otherwise (see eq. (2.20) from [1]).
 %   
 %
-% Example:
+% Examples:
 %
+%      rng(1)
 %      n = 10; x = -2 + 4*rand(n,1);
 %      y = sin(exp(x));
 %      [f,fvar,smpl] = gpr(x,y,'domain',[-2,2],'samples',3);
