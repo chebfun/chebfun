@@ -5,7 +5,7 @@ function pass = test_gpr( pref )
 % set a seed for the RNG:
 seedRNG(23411);
 % Generate a few random points to use as test values:
-xx = 2 * rand(10, 1) - 1;
+xx = linspace(-1,1,10)'+2e-2*randn(10,1);
 % The values to match
 yy = exp(xx).*sin(2*xx);
 
@@ -13,7 +13,7 @@ yy = exp(xx).*sin(2*xx);
 
 % Test the accuracy of the posterior mean:
 err = norm(f(xx) - yy,Inf);
-pass(1) = err < 1e-5;
+pass(1) = err < 1e-6;
 
 % Test the accuracy of the samples:
 err = norm(fsamples(xx,1) - yy, Inf);
@@ -25,11 +25,11 @@ pass(3) = err < 5e-4;
 % Test adding noise to the data:
 yy = yy + .1*randn(size(yy));
 f = gpr(xx,yy,'noise',.1);
-pass(4) = std(f(xx)-yy) < .3;
+pass(4) = std(f(xx)-yy) < .25;
 
 
 % Test horizontal scale (small interval):
-xx = 2e-100*rand(10,1)-1e-100;
+xx = 2e-100*xx-1e-100;
 yy = randn(10,1);
 f = gpr(xx,yy);
 err = norm(f(xx) - yy,Inf);
@@ -43,7 +43,7 @@ pass(6) = err < 1e-6;
 
 % Test vertical scale (big function, fixed hyperparameter(s)):
 xx = linspace(-1,1,10)';
-yy = 1e100*rand(10,1);
+yy = 1e100*sin(3*xx).*exp(xx);
 f = gpr(xx,yy,'sigma',1e100,'L',.1);
 err = norm((f(xx) - yy)./yy,Inf);
 pass(7) = err < 1e-10;
@@ -96,15 +96,17 @@ pass(14) = err < 5e-14;
 
 
 % Test periodic version of the code:
-xx = linspace(-1,1,20)';
+N = 40;
+xx = linspace(-1,1,N)';
+xx(2:end-1) = xx(2:end-1)+1e-3*randn(N-2,1);
 % The values to match
 
-yy = exp(xx.^2);
+yy = exp(sin(pi*xx));
 
 [f,~,fsamples] = gpr(xx,yy,'domain',[-1,1],'trig','samples',2);
 
 err = norm(f(xx) - yy,Inf);
-pass(15) = err < 1e-5;
+pass(15) = err < 1e-6;
 
 % Test the accuracy of the samples:
 err = norm(fsamples(xx,1) - yy, Inf);

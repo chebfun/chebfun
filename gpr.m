@@ -23,7 +23,9 @@ function varargout = gpr(x, y, varargin)
 %   exponential kernel (see eq. (4.31) from [1]), namely
 %               k(x,x') = SIGMA^2*exp(-2/L^2*sin(pi*(x-x')/P)^2),
 %   where P is the period length, corresponding to the size of the
-%   approximation domain.
+%   approximation domain. If the domain is not specified, it is chosen
+%   to be [min(X) max(X) +.1*(max(X)-min(X))] to account for the fact
+%   that the Y values might not be identical at min(X) and max(X).
 %
 %   [...] = GPR(...,'sigma', SIGMA) specifies the signal variance of 
 %   the kernel function.
@@ -180,7 +182,7 @@ if ( opts.samples > 0 )
             Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
                 sin(pi/diff(opts.dom) * rxs).^2);
             
-            Ls = chol(Kss + 1e-12*scalingFactor*eye(sampleSize),'lower');
+            Ls = chol(Kss + 1e-12*scalingFactor^2*eye(sampleSize),'lower');
             
         else
             xSample = chebpts(sampleSize,opts.dom); 
