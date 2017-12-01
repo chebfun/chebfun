@@ -2,8 +2,10 @@
 
 function pass = test_gpr( pref )
 
-% Generate a few random points to use as test values.
-rng(2), xx = 2 * rand(10, 1) - 1;
+% set a seed for the RNG:
+seedRNG(23411);
+% Generate a few random points to use as test values:
+xx = 2 * rand(10, 1) - 1;
 % The values to match
 yy = exp(xx).*sin(2*xx);
 
@@ -21,43 +23,43 @@ err = norm(fsamples(xx,2) - yy, Inf);
 pass(3) = err < 5e-4;
 
 % Test adding noise to the data:
-rng(2), yy = yy + .1*randn(size(yy));
+yy = yy + .1*randn(size(yy));
 f = gpr(xx,yy,'noise',.1);
-pass(4) = std(f(xx)-yy) < .2;
+pass(4) = std(f(xx)-yy) < .3;
 
 
 % Test horizontal scale (small interval):
-rng(10), xx = 2e-100*rand(10,1)-1e-100;
+xx = 2e-100*rand(10,1)-1e-100;
 yy = randn(10,1);
 f = gpr(xx,yy);
 err = norm(f(xx) - yy,Inf);
 pass(5) = err < 1e-6;
 
 % Test vertical scale (big function) and horizontal scale(small interval):
-rng(2), yy = 1e100*randn(10,1);
+yy = 1e100*randn(10,1);
 f = gpr(xx,yy);
 err = norm((f(xx) - yy)./yy,Inf);
 pass(6) = err < 1e-6;
 
 % Test vertical scale (big function, fixed hyperparameter(s)):
-rng(2), xx = 2*rand(10,1)-1;
+xx = linspace(-1,1,10)';
 yy = 1e100*rand(10,1);
 f = gpr(xx,yy,'sigma',1e100,'L',.1);
 err = norm((f(xx) - yy)./yy,Inf);
-pass(7) = err < 1e-12;
+pass(7) = err < 1e-10;
 
 f = gpr(xx,yy,'sigma',1e100);
 err = norm((f(xx) - yy)./yy,Inf);
-pass(8) = err < 1e-12;
+pass(8) = err < 1e-10;
 
 f = gpr(xx,yy,'L',.1);
 err = norm((f(xx) - yy)./yy,Inf);
-pass(9) = err < 1e-12;
+pass(9) = err < 1e-10;
 
 
 f = gpr(xx,yy);
 err = norm((f(xx) - yy)./yy,Inf);
-pass(10) = err < 1e-12;
+pass(10) = err < 1e-10;
 
 
 % Test vertical scale (big function):
@@ -92,8 +94,9 @@ xx = linspace(1,25);
 err = norm(f(xx)-fsmall(xx/S));
 pass(14) = err < 5e-14;
 
+
 % Test periodic version of the code:
-rng(2), xx = 2 * rand(100, 1) - 1;
+xx = linspace(-1,1,20)';
 % The values to match
 
 yy = exp(xx.^2);

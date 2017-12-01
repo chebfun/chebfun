@@ -111,7 +111,7 @@ if ~isempty(x)
     alpha = L'\(L\y);
 
     % constuct a Chebfun approximation for the posterior distribution mean
-    if opts.trig
+    if opts.trig && ~opts.sigmaY
         f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'trig', ...
             'eps', 1e-12,'splitting','on');
     else
@@ -122,6 +122,9 @@ if ~isempty(x)
     % compute the predictive variance based on a large sample set
     sampleSize = min(20*n,2000);
     xSample = chebpts(sampleSize,opts.dom);
+    % check if we need to add the noise term in the covariance matrix
+    inX = ismember(xSample,x);
+    % construct the input matrices
     rx = repmat(xSample,1,n) - repmat(x',sampleSize,1);
     rxs = repmat(xSample,1,sampleSize) - repmat(xSample',sampleSize,1);
     
@@ -132,13 +135,13 @@ if ~isempty(x)
         
         Kss = opts.sigma^2*exp(-2/(opts.lenScale^2) * ...
             sin(pi/(opts.dom(end)-opts.dom(1)) * rxs).^2) + ...
-            opts.sigmaY^2*eye(sampleSize);
+            opts.sigmaY^2*diag(inX);
     else
         Ks = opts.sigma^2*exp(-1/(2*opts.lenScale^2) * rx.^2) + ...
             opts.sigmaY^2*(rx == 0);
             
         Kss = opts.sigma^2*exp(-1/(2*opts.lenScale^2) * rxs.^2) + ...
-            opts.sigmaY^2*eye(sampleSize);
+            opts.sigmaY^2*diag(inX);
     end
 
     v = L\(Ks');
@@ -175,27 +178,18 @@ if ( opts.samples > 0 )
             rxs = repmat(xSample,1,sampleSize) - ...
                 repmat(xSample',sampleSize,1);
             Kss = opts.sigmaf^2*exp(-2/(opts.lenScale^2) * ...
-                sin(pi/diff(opts.dom) * rxs).^2) + ...
-                opts.sigmaY^2*eye(sampleSize);
+                sin(pi/diff(opts.dom) * rxs).^2);
             
-            if (opts.sigmaY == 0)
-                Ls = chol(Kss + 1e-12*scalingFactor*eye(sampleSize),'lower');
-            else
-                Ls = chol(Kss + opts.sigmaY^2*eye(sampleSize),'lower');
-            end
+            Ls = chol(Kss + 1e-12*scalingFactor*eye(sampleSize),'lower');
             
         else
             xSample = chebpts(sampleSize,opts.dom); 
             rxs = repmat(xSample,1,sampleSize) - ...
                 repmat(xSample',sampleSize,1);
-            Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)* rxs.^2) + ...
-                opts.sigmaY^2*eye(sampleSize);
+            Kss = (opts.sigmaf^2)*exp(-1/(2*opts.lenScale^2)* rxs.^2);
             
-            if (opts.sigmaY == 0)
-                Ls = chol(Kss + 1e-12*scalingFactor^2*eye(sampleSize),'lower');
-            else
-                Ls = chol(Kss + opts.sigmaY^2*eye(sampleSize),'lower');
-            end
+            Ls = chol(Kss + 1e-12*scalingFactor^2*eye(sampleSize),'lower');
+
         end
         
         fSample = repmat(f(xSample), 1, opts.samples) + ...
