@@ -135,7 +135,7 @@ if ( isempty(yl) )
 end
 
 % Convert the operator in N to first order.
-firstOrderFun = treeVar.toFirstOrder(N.op, 0, N.domain);
+[firstOrderFun, ~, ~, ~, diffOrd] = treeVar.toFirstOrder(N.op, 0, N.domain);
 
 % Vectors for constructing a meshgrid:
 y1 = linspace(xl(1), xl(end), xpts);
@@ -159,11 +159,19 @@ if ( numEquations > 2 )
         'order ODE or a system of two first order equations.'])
 end
 
-% [TODO]: Could probably vectorize this, with reshapes. For now, just loop.
-for i = 1:numel(x)
-    res = firstOrderFun(t,[x(i); y(i)]);
-    u(i) = res(1);
-    v(i) = res(2);
+% Are we plotting a slope field (cf. #2238), or a standard phase plane?
+if( (length(diffOrd) == 1) && (diffOrd == 1))   % Slope field
+    for i = 1:numel(x)
+        res = firstOrderFun(x(i), y(i));
+        u(i) = 1;
+        v(i) = res(1);
+    end
+else                                            % Phase plane
+    for i = 1:numel(x)
+        res = firstOrderFun(t,[x(i); y(i)]);
+        u(i) = res(1);
+        v(i) = res(2);
+    end
 end
 
 if ( normalize )
