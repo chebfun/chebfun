@@ -1,12 +1,13 @@
 function X = denseSolve(N, f, m, n)
 %DENSESOLVE   Given a fixed discretisation size, solve the differential equation using
-%a dense solver.
+% a dense solver.
 %   X = DENSESOLVE(N, F, M, N), returns a solution matrix X of values on a M by N
-%  Chebyshev grid.
+%   Chebyshev grid.
 %
 % For further details about the PDE solver, see: 
 % A. Townsend and S. Olver, The automatic solution of partial differential
-% equations using a global spectral method, in preparation, 2014.
+% equations using a global spectral method, J. Comput. Phys., 299, 2015,
+% pp. 106-123.
 % 
 % Warning: This PDE solver is an experimental new feature. It has not been
 % publicly advertised. 
@@ -14,104 +15,113 @@ function X = denseSolve(N, f, m, n)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Construct discretisation for PDE:
-[CC, RHS, bb, gg, Px, Py, xsplit, ysplit] =...
-    chebop2.discretize(N, f, m, n); 
+% Check if we can use the fast Poisson solver:
+[bctype, g] = chebop2.checkBC(N, m, n);
+if ( isPoisson(N) && bctype == 1 )
+    u = chebfun2.poisson(f+N.rhs, g, m, n);
+    X = coeffs2(u, m, n);
+else
+    % Use the general PDE solver
 
-% Rank-1 PDE operator.
-if ( size(CC, 1) == 1 )  
-    % We can do this one in our sleep: 
-    A = CC{1,1}; 
-    B = CC{1,2};
-    Y = A \ RHS;
-    X = (B \ Y.').';
-    X = imposeBoundaryConditions(X, bb, gg, Px, Py, m, n);
-    
-% Rank-2 PDE operator.
-elseif ( size(CC, 1) == 2 )
-    % Extract out generatlized matrix equation: 
-    A = CC{1,1}; 
-    B = CC{1,2}; 
-    C = CC{2,1}; 
-    D = CC{2,2};
-    
-    % Don't solve for subproblems if we have lots of bcs on one edge:
-    if ( min(size(bb{1})) > 1 || min(size(bb{2}))>1 ||...
-            min(size(bb{3}))>1 || min(size(bb{4}))>1 )
-        xsplit = 0; 
-        ysplit = 0;
-    end
-    
-    % xsplit and ysplit tell the solver if it is possible to solve
-    % subproblems. Wrap in a try-catch statement in case LYAP is not on the
-    % MATLAB path. 
-    try
-        if ( xsplit || ysplit )
-            % Solve AXB^T + CXD^T = RHS, by doing subproblems: 
-            X = chebop2.bartelsStewart(A, B, C, D, RHS, xsplit, ysplit);       
-        else
-            % Solve AXB^T + CXD^T = RHS with MATLAB LYAP command:
-            X = lyap(C\A,(B\D).', -(B\(C\RHS).').');
+    % Construct discretisation for PDE:
+    [CC, RHS, bb, gg, Px, Py, xsplit, ysplit] =...
+        chebop2.discretize(N, f, m, n); 
+
+    % Rank-1 PDE operator.
+    if ( size(CC, 1) == 1 )  
+        % We can do this one in our sleep: 
+        A = CC{1,1}; 
+        B = CC{1,2};
+        Y = A \ RHS;
+        X = (B \ Y.').';
+        X = imposeBoundaryConditions(X, bb, gg, Px, Py, m, n);
+
+    % Rank-2 PDE operator.
+    elseif ( size(CC, 1) == 2 )
+        % Extract out generalized matrix equation: 
+        A = CC{1,1}; 
+        B = CC{1,2}; 
+        C = CC{2,1}; 
+        D = CC{2,2};
+
+        % Don't solve for subproblems if we have lots of bcs on one edge:
+        if ( min(size(bb{1})) > 1 || min(size(bb{2}))>1 ||...
+                min(size(bb{3}))>1 || min(size(bb{4}))>1 )
+            xsplit = 0; 
+            ysplit = 0;
         end
-    catch
-        % Solve AXB^T + CXD^T = RHS:
-        X = chebop2.bartelsStewart(A, B, C, D, RHS, xsplit, ysplit);
-    end
-    
-    % QZ in bartelsStewart solver can return small complex part. Make it 
-    % real.
-    if ( norm(imag(X),inf) < sqrt(eps) )
-        X = real(X);
-    end
-    
-    % Impose the boundary conditions: 
-    X = imposeBoundaryConditions(X, bb, gg, Px, Py, m, n);
 
-    % Quick check that nothing was singular: 
-    if ( any( isnan(X(:)) | isinf(X(:)) ) )
-        error('CHEBFUN:CHEBOP2:denseSolve:nanInf', 'Nonunique solution to PDE.')
+        % xsplit and ysplit tell the solver if it is possible to solve
+        % subproblems. Wrap in a try-catch statement in case LYAP is not on the
+        % MATLAB path. 
+        try
+            if ( xsplit || ysplit )
+                % Solve AXB^T + CXD^T = RHS, by doing subproblems: 
+                X = chebop2.bartelsStewart(A, B, C, D, RHS, xsplit, ysplit);       
+            else
+                % Solve AXB^T + CXD^T = RHS with MATLAB LYAP command:
+                X = lyap(C\A,(B\D).', -(B\(C\RHS).').');
+            end
+        catch
+            % Solve AXB^T + CXD^T = RHS:
+            X = chebop2.bartelsStewart(A, B, C, D, RHS, xsplit, ysplit);
+        end
+
+        % QZ in bartelsStewart solver can return small complex part. Make it 
+        % real.
+        if ( norm(imag(X),inf) < sqrt(eps) )
+            X = real(X);
+        end
+
+        % Impose the boundary conditions: 
+        X = imposeBoundaryConditions(X, bb, gg, Px, Py, m, n);
+
+        % Quick check that nothing was singular: 
+        if ( any( isnan(X(:)) | isinf(X(:)) ) )
+            error('CHEBFUN:CHEBOP2:denseSolve:nanInf', 'Nonunique solution to PDE.')
+        end
+
+    % Rank-k > 2 PDE operator.
+    else  
+        % Do full n^2 by n^2 matrix kronecker product.
+        % Make massive mn by mn matrix.
+        sz = size(CC{1,1}, 1) * size(CC{2,1}, 2);
+        if sz > 65^2
+            error('CHEBFUN:CHEBOP2:denseSolve:unresolved1', ...
+                'Solution was unresolved on a 65 by 65 grid.');
+        end
+
+        % Form the massive mn by mn matrix.
+        A = spalloc(sz, sz, m*sz + sz);
+        for jj = 1:size(CC, 1)
+            A = A + kron(CC{jj,2}, CC{jj,1});   
+        end
+
+        % Vectorize the rhs.
+        b = RHS(:);
+
+        % Solve linear system: 
+        X = A \ b;
+
+        % Avoid filling the memory: 
+        if ( max(size(X)) > 4000 )
+            error('CHEBFUN:CHEBOP2:denseSolve:unresolved2', ...
+                'Unresolved for n > 4000.');
+        end
+
+        % Unvectorize.
+        X = reshape(X, size(CC{1,1}, 1), size(CC{2,1}, 2));
+
+        % Impose linear constraints:
+        X = imposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
+
     end
-    
-% Rank-k > 2 PDE operator.
-else  
-    % Do full n^2 by n^2 matrix kronecker product.
-    % Make massive mn by mn matrix.
-    sz = size(CC{1,1}, 1) * size(CC{2,1}, 2);
-    if sz > 65^2
-        error('CHEBFUN:CHEBOP2:denseSolve:unresolved1', ...
-            'Solution was unresolved on a 60 by 60 grid.');
-    end
-    
-    % Form the massive mn by mn matrix.
-    A = spalloc(sz, sz, m*sz + sz);
-    for jj = 1:size(CC, 1)
-        A = A + kron(CC{jj,2}, CC{jj,1});   
-    end
-    
-    % Vectorize the rhs.
-    b = RHS(:);
-    
-    % Solve linear system: 
-    X = A \ b;
-    
-    % Avoid filling the memory: 
-    if ( max(size(X)) > 4000 )
-        error('CHEBFUN:CHEBOP2:denseSolve:unresolved2', ...
-            'Unresolved for n > 4000.');
-    end
-    
-    % Unvectorize.
-    X = reshape(X, size(CC{1,1}, 1), size(CC{2,1}, 2));
-    
-    % Impose linear constraints:
-    X = imposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
-    
 end
 
 end
 
 function X = imposeBoundaryConditions(X, bb, gg, Px, Py, m, n)
-% This command imposes the boundary condition on the solution. 
+% IMPOSEBOUNDARYCONDITIONS imposes the boundary condition on the solution
 % 
 % X = solution with conditions, 
 % bb = cell array of linear constraints,
@@ -156,5 +166,25 @@ end
 if ( ~isempty(Py) )
     X = Py * X;
 end
+
+end
+
+function res = isPoisson(N)
+%ISPOISSON   Determine if the PDO represents Poisson's equation.
+
+op = N.coeffs;
+if ( iscell(op) )
+    try
+        op = cell2mat(op);
+    catch
+        res = false;
+        return
+    end
+end
+
+% TODO: For now, this only allows N = a*u_{xx} + b*u_{yy} with a = b = 1.
+%       The fast Poisson solver can probably handle any constants a, b, though.
+[m, n] = size(op);
+res = m>=3 && n>=3 && size(find(op),1)==2 && op(3,1)==1 && op(1,3)==1;
 
 end

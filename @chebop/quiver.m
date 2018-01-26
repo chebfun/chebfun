@@ -5,8 +5,8 @@ function varargout = quiver(N, varargin)
 %   H = QUIVER(N, AXIS, 'OPT1', VAL1, ...)
 %
 % Here, the inputs are:
-%   N    : A chebop, whose N.op arguments specifies a second order scalar ODE,
-%          or a coupled system of two first order ODEs.
+%   N    : A chebop, whose N.op arguments specifies a first or second order
+%          scalar ODE, or a coupled system of two first order ODEs.
 %   AXIS : A 4-vector with elements [XMIN XMAX YMIN YMAX] that specify the
 %          rectangular region shown on the phase plot. If none is passed, the
 %          default values [-1 1 -1 1] are used.
@@ -38,7 +38,8 @@ function varargout = quiver(N, varargin)
 % Note: The CHEBOP QUIVER command works by reformulating higher order problems
 % as coupled first order systems, evaluating the resulting first order system at
 % grid that should be interpreted as values of u and u', then calling the
-% built-ing MATLAB QUIVER method on the results.
+% built-ing MATLAB QUIVER method on the results. In the case of first order
+% scalar problems, the grid should be interpreted as values of t and u.
 %
 % Example 1 -- van der Pol equation (second order ODE)
 %   N = chebop(0,100);
@@ -58,6 +59,11 @@ function varargout = quiver(N, varargin)
 %   [u, v] = N\0;
 %   plot(u, v, 'linewidth', 2)
 %   plot(0.5, 1,'m*','markersize',15) % Mark initial condition
+%
+% Example 3 -- Slopefield for a first order problem
+%   N = chebop(@(t,u) diff(u)-sin(t)*u);
+%   quiver(N,[-1.2*pi 1.2*pi -1 1])
+
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
@@ -135,7 +141,7 @@ if ( isempty(yl) )
 end
 
 % Convert the operator in N to first order.
-firstOrderFun = treeVar.toFirstOrder(N.op, 0, N.domain);
+[firstOrderFun, ~, ~, ~, diffOrd] = treeVar.toFirstOrder(N.op, 0, N.domain);
 
 % Vectors for constructing a meshgrid:
 y1 = linspace(xl(1), xl(end), xpts);
@@ -159,11 +165,19 @@ if ( numEquations > 2 )
         'order ODE or a system of two first order equations.'])
 end
 
-% [TODO]: Could probably vectorize this, with reshapes. For now, just loop.
-for i = 1:numel(x)
-    res = firstOrderFun(t,[x(i); y(i)]);
-    u(i) = res(1);
-    v(i) = res(2);
+% Are we plotting a slope field (cf. #2238), or a standard phase plane?
+if( (length(diffOrd) == 1) && (diffOrd == 1))   % Slope field
+    for i = 1:numel(x)
+        res = firstOrderFun(x(i), y(i));
+        u(i) = 1;
+        v(i) = res(1);
+    end
+else                                            % Phase plane
+    for i = 1:numel(x)
+        res = firstOrderFun(t,[x(i); y(i)]);
+        u(i) = res(1);
+        v(i) = res(2);
+    end
 end
 
 if ( normalize )
