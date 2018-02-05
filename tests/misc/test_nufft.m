@@ -20,6 +20,15 @@ for N = 10.^(0:4)
     count = count + 1;
 end
 
+% Test on random inputs: 
+N = 50; 
+omega = N*randn(1,N);
+c = rand(N,1) + 1i*rand(N,1);
+F = exp(-2*pi*1i*((0:N-1)/N).'*omega);
+f = chebfun.nufft(c, omega.', 1);
+pass(count) = ( norm( f - F*c ) < 300*N*tol*norm(c,1) );
+count = count + 1; 
+
 % Test NUFFT-II:
 for N = 10.^(0:4)
     x = linspace(0,1,N+1)'; x(end) = [];
@@ -30,6 +39,15 @@ for N = 10.^(0:4)
     pass(count) = norm( exact - fast, inf ) < 300*N*tol*norm(c,1);
     count = count + 1; 
 end
+
+% Test on random inputs: 
+N = 50; 
+x = 100*rand(N,1);
+c = rand(N,1) + 1i*rand(N,1);
+F = exp(-2*pi*1i*x*(0:N-1));
+f = chebfun.nufft(c, x);
+pass(count) = ( norm( f - F*c ) < 300*N*tol*norm(c,1) );
+count = count + 1; 
 
 % Test NUFFT-III
 for N = 10.^(0:4)
