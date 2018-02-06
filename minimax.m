@@ -99,8 +99,11 @@ if ( ~isa(f,'chebfun') ) % check if input is chebfun; if not, look for
     else
         varargin(domIndex) = [];
     end
-    
-    fHandle = str2op(vectorize(f));
+    if ( ischar(f) )
+        fHandle = str2op(vectorize(f));
+    else
+        fHandle = f;
+    end
     f = chebfun(f, dom, 'splitting', 'on');
 else % f is a chebfun input
     fHandle = @(x) feval(f, x);
