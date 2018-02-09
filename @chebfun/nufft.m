@@ -75,10 +75,11 @@ N = size(omega,1);
 [u, v] = constructAK(omega/N, (0:N-1)', K);
 
     function pc = p(c)
+        I = speye(numel(c));
         cK = repmat(c,1,K);
         tmp1 = conj(cK.*u);
-        tmp1 = tmp1(t,:);
-        tmp2 = conj( ifft( tmp1, [], 1) );
+        tmp1 = full(I(:,t)*tmp1);
+        tmp2 = conj(ifft( tmp1, [], 1));
         pc = N*sum(v.*tmp2, 2);
     end
 
