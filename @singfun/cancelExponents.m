@@ -13,6 +13,11 @@ function f = cancelExponents(f)
 % Grab the exponents:
 exps = get(f, 'exponents');
 
+if ( size(f, 2) > 2 )
+    error('CHEBFUN:SINGFUN:cancelExponent:arrayvalued', ...
+        'SINGFUN dfoes not support array-valued techs.')
+end
+
 % Grab boundary values:
 boundaryVals = [lval(f.smoothPart),  rval(f.smoothPart)];
 
