@@ -591,8 +591,8 @@ if ( nu > 0 )
     q = chebfun(Cf(:,1:nu+1) * b, dom, 'tech', @chebtech2);
     r = @(x) p(x) ./ q(x);
 else
-    q = chebfun(b, dom, 'tech', @chebtech2);
-    r = @(x) p(x)/b;
+    q = chebfun(b/R(1, 1), dom, 'tech', @chebtech2);
+    r = @(x) p(x)/(b/R(1, 1));
 end
 
 end
