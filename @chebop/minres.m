@@ -40,6 +40,29 @@ function [u,flag,relres,iter,resvec] = minres(L,f,tol,maxit,R1,R2,u0,varargin)
 %   estimated residual norms at each iteration including NORM(G-L(Uk),2)
 %   where G is the modified RHS.
 
+% Only continue if L is a linear chebop:
+if ( isa(L, 'function_handle') )
+    if ( ~all(islinear(chebop(L))) )
+         error('CHEBFUN:CHEBOP:pcg:nonlinear', ...
+                'PCG supports only linear CHEBOP instances.');
+    end
+elseif ( isa(L, 'chebop') )
+    if ( ~all(islinear(L)) )
+         error('CHEBFUN:CHEBOP:pcg:nonlinear', ...
+                'PCG supports only linear CHEBOP instances.');
+    end
+else 
+    error('CHEBFUN:CHEBOP:pcg:DiffOp', ... 
+            'The differential operator should be a chebop or function handle.'); 
+end
+
+% At the moment, we need a second-order differential equation: 
+LinearOp = linop( L ); 
+if ( LinearOp.diffOrder ~=2 )
+    error('CHEBFUN:CHEBOP:pcg:DiffOrder', ... 
+            'Currently, we require the differential operator to second-order, and fundamental algorithmic questions need to be answered to extend to general linear ODEs.'); 
+end
+
 if (nargin < 2)
     error(message('chebop:minres:NotEnoughInputs'));
 end
@@ -370,6 +393,5 @@ if ((flag <= 1) || (flag == 3))
 else
     resvec = resvec(1:ii);
 end
-
 
 end

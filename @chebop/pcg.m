@@ -60,6 +60,13 @@ else
             'The differential operator should be a chebop or function handle.'); 
 end
 
+% At the moment, we need a second-order differential equation: 
+LinearOp = linop( L ); 
+if ( LinearOp.diffOrder ~=2 )
+    error('CHEBFUN:CHEBOP:pcg:DiffOrder', ... 
+            'Currently, we require the differential operator to second-order, and fundamental algorithmic questions need to be answered to extend to general linear ODEs.'); 
+end
+
 if (nargin < 2)
     error(message('chebop:pcg:NotEnoughInputs'));
 end
