@@ -41,26 +41,16 @@ function [u,flag,relres,iter,resvec] = minres(L,f,tol,maxit,R1,R2,u0,varargin)
 %   where G is the modified RHS.
 
 % Only continue if L is a linear chebop:
-if ( isa(L, 'function_handle') )
-    if ( ~all(islinear(chebop(L))) )
-         error('CHEBFUN:CHEBOP:pcg:nonlinear', ...
-                'PCG supports only linear CHEBOP instances.');
-    end
-elseif ( isa(L, 'chebop') )
-    if ( ~all(islinear(L)) )
-         error('CHEBFUN:CHEBOP:pcg:nonlinear', ...
-                'PCG supports only linear CHEBOP instances.');
-    end
-else 
-    error('CHEBFUN:CHEBOP:pcg:DiffOp', ... 
-            'The differential operator should be a chebop or function handle.'); 
+if ( ~all(islinear(L)) )
+    error('CHEBFUN:CHEBOP:pcg:nonlinear', ...
+        'PCG supports only linear CHEBOP instances.');
 end
 
-% At the moment, we need a second-order differential equation: 
-LinearOp = linop( L ); 
+% At the moment, we need a second-order differential equation:
+LinearOp = linop( L );
 if ( LinearOp.diffOrder ~=2 )
-    error('CHEBFUN:CHEBOP:pcg:DiffOrder', ... 
-            'Currently, we require the differential operator to second-order, and fundamental algorithmic questions need to be answered to extend to general linear ODEs.'); 
+    error('CHEBFUN:CHEBOP:pcg:DiffOrder', ...
+        'Currently, we require the differential operator to second-order, and fundamental algorithmic questions need to be answered to extend to general linear ODEs.');
 end
 
 if (nargin < 2)
@@ -69,7 +59,7 @@ end
 
 % Norm of righthand side function:
 n2f = norm(f, 2);
-n = length( f ); 
+n = length( f );
 dom = domain( f );
 
 if ( isa( L, 'chebop' ) )
@@ -78,7 +68,7 @@ if ( isa( L, 'chebop' ) )
     else
         left_bc = L.lbcShow;
     end
- 
+    
     if isempty(L.rbc)
         right_bc = 0;
     else
@@ -100,9 +90,9 @@ elseif ( nargin(L) ~=2 )
     error(message('chebop:pcg:DiffOpNargin'));
 end
 
-% Data mine L for faster "mat-vec" computations in the CG iteration: 
+% Data mine L for faster "mat-vec" computations in the CG iteration:
 x = chebfun( @(x) x );
-c = L(x, 1+0*x); 
+c = L(x, 1+0*x);
 a = -L(x, x.^2/2) - (-L(x, x) + c.*x).*x + c.*(x.^2/2);
 L = @(v) -diff( a.*diff( v ) ) + c.*v;
 
@@ -128,16 +118,16 @@ if ((nargin < 5) || isempty(R1))
     % Preconditioner:
     R1 = @(u) cumsum(u);
 else
-   % The method only works with the default preconditioner:
-   error(message('chebop:pcg:OnlyDefaultPreconditionerAllowed'))
+    % The method only works with the default preconditioner:
+    error(message('chebop:pcg:OnlyDefaultPreconditionerAllowed'))
 end
 
 if ((nargin < 6) || isempty(R2))
     % Adjoint operator to R1:
     R2 = @(u) sum(u) - cumsum(u);
 else
-   % The method only works with the default preconditioner:
-   error(message('chebop:pcg:OnlyDefaultPreconditionerAllowed'))
+    % The method only works with the default preconditioner:
+    error(message('chebop:pcg:OnlyDefaultPreconditionerAllowed'))
 end
 
 % Projection operator
@@ -157,17 +147,17 @@ if ((nargin >= 7) && ~isempty(u0))
 else
     % Otherwise, initial guess is the zero function:
     u = 0*f;
-    Tu = u; 
+    Tu = u;
 end
 
-if (nargin > 7) 
+if (nargin > 7)
     error(message('chebop:minres:TooManyInputs'));
 end
 
 % Ensure that rhs is within the correct space, and if not then solve a
-% modified problem. 
+% modified problem.
 R2f = R2( f );
-PiR2f = Pi( R2f ); 
+PiR2f = Pi( R2f );
 if ( norm( R2f - PiR2f ) > tol || norm(left_bc)> tol || norm(right_bc) > tol )
     % f is NOT in the space Wn = {v in L_2: R1(v) in V_{n,0} }:
     basis = x.^(0:4);
@@ -327,7 +317,7 @@ for ii = 2 : maxit
     normr = abs(snprod);
     
     resvec(ii+1,1) = normr;
-
+    
     % check for convergence
     if ( ( normr <= tolg ) || ( stag >= maxstagsteps ) || moresteps)
         % double check residual norm is less than tolerance
@@ -366,7 +356,7 @@ for ii = 2 : maxit
     end
 end                                % for ii = 1 : maxit
 if isempty(ii)
-  ii = 1;
+    ii = 1;
 end
 
 % Returned solution is first with minimal residual:
