@@ -145,12 +145,12 @@ end
 
 % Data mine L for faster "mat-vec" computations in the CG iteration:
 % Uses a non-divergence form
-xfun = chebfun( @(x) x, 'splitting', 'on' );
-c = L(xfun, 1+0*xfun); 
-b = L(xfun, xfun) - c.*xfun;
-a = L(xfun, xfun.^2/2) - b.*xfun - c.*xfun.^2/2;
-L = @(v) a.*diff( v,2) + b.*diff(v,1) +  c.*v;
-
+x = chebfun( @(x) x );
+c = L(x, 1+0*x); 
+bminusa = L(x, x) - c.*x;
+a = -L(x, x.^2/2) + bminusa.*x + c.*x.^2/2;
+b = bminusa + diff(a);
+L = @(v) -diff( a.*diff( v ) ) + b.*diff( v ) +  c.*v;
 
 % Assign default values to unspecified parameters
 if (nargin < 3) || isempty(restart) 
@@ -234,7 +234,7 @@ R2f = R2( f );
 PiR2f = Pi( R2f ); 
 if ( norm( R2f - PiR2f ) > tol || norm(left_bc)> tol || norm(right_bc) > tol )
     % f is NOT in the space Wn = {v in L_2: R1(v) in V_{n,0} }:
-    basis = xfun.^(0:4);
+    basis = x.^(0:4);
     A = zeros(4, size(basis,2));
     for jj = 1:size(basis,2)
         A(1:2,jj) = feval( R1( R2( L(basis(:,jj)) ) ), dom([1,length(dom)])');
