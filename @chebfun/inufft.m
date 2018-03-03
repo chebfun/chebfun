@@ -109,6 +109,7 @@ row(1) = col(1);
 % Conjugate gradient method on normal equations:
 AFun = @(c) fastToeplitz(col, row, c);
 [c, ~] = pcg(AFun, pct(f), 100*tol, 50);
+
 % Plan: 
 p = @(f) pcg(AFun, pct(f), 100*tol, 50);
 end
