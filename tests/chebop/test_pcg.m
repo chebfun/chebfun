@@ -20,7 +20,7 @@ f = chebfun(@(x) 1-3*x.^2);
 u = N\f;
 % Chebfun-ready pcg:
 
-v = pcg(N, chebfun(f));
+v = pcg(N, f);
 
 % Errors:
 pass(1) = ( norm( u - v ) < tol );

@@ -68,17 +68,29 @@ n2f = norm(f, 2);
 n = length( f );
 dom = domain( f );
 
+% Grab boundary conditions from chebop: 
 if ( isa( L, 'chebop' ) )
     if isempty(L.lbc)
         left_bc = 0;
     else
         left_bc = L.lbcShow;
+        
+        % Current implementation requires Dirichlet boundary conditions: 
+        if ( ~isa(left_bc, 'double' ) )
+            error('CHEBFUN:CHEBOP:pcg:leftbc', ...
+                   'Currently, we require Dirichlet boundary conditions. Please supply N.lbc = double.');
+        end
     end
     
     if isempty(L.rbc)
         right_bc = 0;
     else
         right_bc = L.rbcShow;
+        % Current implementation requires Dirichlet boundary conditions: 
+        if ( ~isa(right_bc, 'double' ) )
+            error('CHEBFUN:CHEBOP:pcg:rightbc', ...
+                   'Currently, we require Dirichlet boundary conditions. Please supply N.rbc = double.');
+        end
     end
     
     L = L.op;
