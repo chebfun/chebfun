@@ -1,44 +1,50 @@
 function [u,flag,relres,iter,resvec] = minres(L,f,tol,maxit,R1,R2,u0,varargin)
-%PCG    A Preconditioned Minimal Residual method for ODEs.
-%   U = minres(L,F) attempts to solve the linear ODE L(U) = F on DOMAIN(L)
+%MINRES    A Preconditioned Minimal Residual method for ODEs.
+%   U = MINRES(L,F) attempts to solve the linear ODE L(U) = F on DOMAIN(L)
 %   with boundary conditions. The linop must be a self-adjoint, uniformly
 %   elliptic second-order differential operator of the form
-%          L(U) = (a(x)*U')' + c(x)U
+%          L(U) = (a(x)*U')' + c(x)U,
+%   with dirichlet boundary conditions.
 %   The righthand side F should be a chebfun on DOMAIN(L).
 %   By default the indefinite integral operator is employed as a
 %   preconditioner.
 %
-%   U = minres(L,F,TOL) specifies the tolerance of the method. If TOL is []
-%   then pcg uses the default in chebfun.pref
+%   U = MINRES(L,F,TOL) specifies the tolerance of the method. If TOL is []
+%   then MINRES uses the default in cheboppref.
 %
-%   U = minres(L,F,TOL,MAXIT) specifies the maximum number of iterations. If
-%   MAXIT is [] then pcg uses the default of 50.
+%   U = MINRES(L,F,TOL,MAXIT) specifies the maximum number of iterations. If
+%   MAXIT is [] then MINRES uses the default in cheboppref.
 %
-%   U = minres(L,F,TOL,MAXIT,R1,R2) solves the preconditioned linear ODE of
+%   U = MINRES(L,F,TOL,MAXIT,R1,R2) solves the preconditioned linear ODE of
 %   (R2*L*R1)(V) = R2*f, where R2 must be the adjoint of R1. R1 and R2 must
 %   be function handles. If R1 = [], then the default preconditioner is
-%   employed.
+%   employed. Only the default preconditioner is currently supported.
 %
-%   U = minres(L,F,TOL,MAXIT,M1,M2,U0) specifies the initial guess. If U0 is
-%   [] then pcg uses the default, the zero function on DOMAIN(L).
+%   U = MINRES(L,F,TOL,MAXIT,R1,R2,U0) specifies the initial guess. If U0 is
+%   [] then MINRES MINRES the default, the zero function on DOMAIN(L).
 %
-%   [U,FLAG] = minres(L,F,...) also returns a convergence FLAG:
-%    0 pcg converged to the desired tolerance TOL within MAXIT iterations
-%    1 pcg iterated MAXIT times but did not converge.
-%    2 preconditioner M was an unbounded operator.
-%    3 pcg stagnated (two consecutive iterates were the same).
-%    4 one of the scalar quantities calculated during pcg became too
+%   [U,FLAG] = MINRES(L,F,...) also returns a convergence FLAG:
+%    0 MINRES converged to the desired tolerance TOL within MAXIT iterations
+%    1 MINRES iterated MAXIT times but did not converge.
+%    2 preconditioner R1 was an unbounded operator.
+%    3 MINRES stagnated (two consecutive iterates were the same).
+%    4 one of the scalar quantities calculated during MINRES became too
 %      small or too large to continue computing.
 %
-%   [U,FLAG,RELRES] = minres(L,F,...) also returns the relative residual
-%    NORM(F-L(U),2)/NORM(F,2). If FLAG is 0, then RELRES <= TOL.
+%   [U,FLAG,RELRES] = MINRES(L,F,...) also returns the relative residual
+%    NORM(R2(F)-R2(L(U)),2)/NORM(F,2). If FLAG is 0, then RELRES <= TOL.
 %
-%   [U,FLAG,RELRES,ITER] = minres(L,F,...) also returns the iteration number
+%   [U,FLAG,RELRES,ITER] = MINRES(L,F,...) also returns the iteration number
 %   at which U was computed: 0 <= ITER <= MAXIT.
 %
-%   [U,FLAG,RELRES,ITER,RESVEC] = minres(L,F,...) also returns a vector of the
-%   estimated residual norms at each iteration including NORM(G-L(Uk),2)
-%   where G is the modified RHS.
+%   [U,FLAG,RELRES,ITER,RESVEC] = MINRES(L,F,...) also returns a vector of the
+%   estimated residual norms at each iteration including
+%   NORM(R2(F)-R2(L(Uk)),2).
+%
+% See also CHEBOP/PCG and CHEBOP/GMRES.
+
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
+% http://www.chebfun.org/ for Chebfun information.
 
 % Only continue if L is a linear chebop:
 if ( ~all(islinear(L)) )

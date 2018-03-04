@@ -1,113 +1,68 @@
-function varargout = gmres(A, varargin)
-%GMRES   Iterative solution of a linear system. 
-%   U = GMRES(A,F) solves the system A*U = F for CHEBFUN U and F and linear 
-%   CHEBOP A. If A is not linear, an error is returned.
+function [u,flag,relres,iter,resvec] = gmres(L,f,restart,tol,maxit,R1,R2,u0,varargin)
+%GMRES    A Preconditioned Generalized Minimal Residual method for ODEs.
+%   U = GMRES(L,F) attempts to solve the linear ODE L(U) = F on DOMAIN(L)
+%   with boundary conditions. The linop must be a self-adjoint, uniformly
+%   elliptic second-order differential operator of the form
+%          L(U) = (a(x)*U')' b(x)*U' + c(x)U,
+%   with dirichlet boundary conditions.
+%   The righthand side F should be a chebfun on DOMAIN(L).
+%   By default the indefinite integral operator is employed as a
+%   preconditioner. This uses the unrestarted method with the maximum
+%   number of iteration set in chebfun.pref.
 %
-%   More calling options are available; see chebfun/gmres for details.
-%
-% Example:
-%   % To solve a simple Volterra integral equation:
-%   d = [-1,1];
-%   f = chebfun('exp(-4*x.^2)',d);
-%   A = chebop(@(u) cumsum(u) + 20*u, d);
-%   u = gmres(A,f,Inf,1e-14);
-%
-% See also CHEBFUN/GMRES, GMRES.
-
-% Copyright 2017 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
-
-if ( ~all(islinear(A)) )
-    error('CHEBFUN:CHEBOP:gmres:nonlinear', ...
-        'GMRES supports only linear CHEBOP instances.');
-end
-
-% If a second-order differential operator, then call operator GMRES. 
-% Otherwise, go to chebfun/gmres:
-LinearOp = linop( A );
-if ( LinearOp.diffOrder ==2 )
-    [varargout{1:nargout}] = OperatorGMRES(A,varargin{:});
-else
-    op = @(u) A*u;
-    [varargout{1:nargout}] = gmres(op, varargin{:});
-end
-
-end   
-
-function [u,flag,relres,iter,resvec] = OperatorGMRES(L,f,restart,tol,maxit,R1,R2,u0,varargin)
-%GMRES   Generalized Minimum Residual Method.
-%   X = GMRES(A,B) attempts to solve the system of linear equations A*X = B
-%   for X.  The N-by-N coefficient matrix A must be square and the right
-%   hand side column vector B must have length N. This uses the unrestarted
-%   method with MIN(N,10) total iterations.
-%
-%   X = GMRES(AFUN,B) accepts a function handle AFUN instead of the matrix
-%   A. AFUN(X) accepts a vector input X and returns the matrix-vector
-%   product A*X. In all of the following syntaxes, you can replace A by
-%   AFUN.
-%
-%   X = GMRES(A,B,RESTART) restarts the method every RESTART iterations.
+%   U = GMRES(L,F,RESTART) restarts the method every RESTART iterations.
 %   If RESTART is N or [] then GMRES uses the unrestarted method as above.
 %
-%   X = GMRES(A,B,RESTART,TOL) specifies the tolerance of the method.  If
-%   TOL is [] then GMRES uses the default, 1e-6.
+%   U = GMRES(L,F,RESTART,TOL) specifies the tolerance of the method.  If
+%   TOL is [] then GMRES uses the default, cheboppref().bvpTol.
 %
-%   X = GMRES(A,B,RESTART,TOL,MAXIT) specifies the maximum number of outer
+%   U = GMRES(L,F,RESTART,TOL,MAXIT) specifies the maximum number of outer
 %   iterations. Note: the total number of iterations is RESTART*MAXIT. If
-%   MAXIT is [] then GMRES uses the default, MIN(N/RESTART,10). If RESTART
-%   is N or [] then the total number of iterations is MAXIT.
+%   MAXIT is [] then GMRES uses the default,  cheboppref().maxIter; If
+%   RESTART is [] then the total number of iterations is
+%   cheboppref().maxIter.
 %
-%   X = GMRES(A,B,RESTART,TOL,MAXIT,M) and
-%   X = GMRES(A,B,RESTART,TOL,MAXIT,M1,M2) use preconditioner M or M=M1*M2
-%   and effectively solve the system inv(M)*A*X = inv(M)*B for X. If M is
-%   [] then a preconditioner is not applied.  M may be a function handle
-%   returning M\X.
+%   U = GMRES(L,F,RESTART,TOL,MAXIT,R1,R2) use preconditioner M or M=M1*M2
+%   and effectively solve the system R2(L(R1(U))) = R2(F) for U. Only the
+%   default preconditioner is currently supported.
 %
-%   X = GMRES(A,B,RESTART,TOL,MAXIT,M1,M2,X0) specifies the first initial
-%   guess. If X0 is [] then GMRES uses the default, an all zero vector.
+%   U = GMRES(L,F,RESTART,TOL,MAXIT,R1,R2,U0) specifies the initial guess. If U0 is
+%   [] then GMRES uses the default, the zero function on DOMAIN(L).
 %
-%   [X,FLAG] = GMRES(A,B,...) also returns a convergence FLAG:
+%   [U,FLAG] = GMRES(L,F,...) also returns a convergence FLAG:
 %    0 GMRES converged to the desired tolerance TOL within MAXIT iterations.
 %    1 GMRES iterated MAXIT times but did not converge.
-%    2 preconditioner M was ill-conditioned.
+%    2 preconditioner R1 was an unbounded operator.
 %    3 GMRES stagnated (two consecutive iterates were the same).
 %
-%   [X,FLAG,RELRES] = GMRES(A,B,...) also returns the relative residual
-%   NORM(B-A*X)/NORM(B). If FLAG is 0, then RELRES <= TOL. Note with
-%   preconditioners M1,M2, the residual is NORM(M2\(M1\(B-A*X))).
+%   [U,FLAG,RELRES] = GMRES(L,F,...) also returns the relative residual
+%   NORM(R2(F)-R2(L(U)))/NORM(R2(F)). If FLAG is 0, then RELRES <= TOL. 
 %
-%   [X,FLAG,RELRES,ITER] = GMRES(A,B,...) also returns both the outer and
+%   [U,FLAG,RELRES,ITER] = GMRES(L,F,...) also returns both the outer and
 %   inner iteration numbers at which X was computed: 0 <= ITER(1) <= MAXIT
 %   and 0 <= ITER(2) <= RESTART.
 %
-%   [X,FLAG,RELRES,ITER,RESVEC] = GMRES(A,B,...) also returns a vector of
-%   the residual norms at each inner iteration, including NORM(B-A*X0).
-%   Note with preconditioners M1,M2, the residual is NORM(M2\(M1\(B-A*X))).
+%   [U,FLAG,RELRES,ITER,RESVEC] = GMRES(L,F,...) also returns a vector of
+%   the residual norms at each inner iteration, including
+%   NORM(R2(F)-R2(L(U0)).
 %
-%   Example:
-%      n = 21; A = gallery('wilk',n);  b = sum(A,2);
-%      tol = 1e-12;  maxit = 15; M = diag([10:-1:1 1 1:10]);
-%      x = gmres(A,b,10,tol,maxit,M);
-%   Or, use this matrix-vector product function
-%      %-----------------------------------------------------------------%
-%      function y = afun(x,n)
-%      y = [0; x(1:n-1)] + [((n-1)/2:-1:0)'; (1:(n-1)/2)'].*x+[x(2:n); 0];
-%      %-----------------------------------------------------------------%
-%   and this preconditioner backsolve function
-%      %------------------------------------------%
-%      function y = mfun(r,n)
-%      y = r ./ [((n-1)/2:-1:1)'; 1; (1:(n-1)/2)'];
-%      %------------------------------------------%
-%   as inputs to GMRES:
-%      x1 = gmres(@(x)afun(x,n),b,10,tol,maxit,@(x)mfun(x,n));
-%
-%   Class support for inputs A,B,M1,M2,X0 and the output of AFUN:
-%      float: double
-%
-%   See also BICG, BICGSTAB, BICGSTABL, CGS, LSQR, MINRES, PCG, QMR, SYMMLQ,
-%   TFQMR, ILU, FUNCTION_HANDLE.
+% See also CHEBOP/PCG and CHEBOP/MINRES.
 
-%   Copyright 1984-2015 The MathWorks, Inc.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
+% http://www.chebfun.org/ for Chebfun information.
+
+% Only continue if L is a linear chebop:
+if ( ~all(islinear(L)) )
+    error('CHEBFUN:CHEBOP:pcg:nonlinear', ...
+        'PCG supports only linear CHEBOP instances.');
+end
+
+% At the moment, we need a second-order differential equation:
+LinearOp = linop( L );
+if ( LinearOp.diffOrder ~=2 )
+    error('CHEBFUN:CHEBOP:pcg:DiffOrder', ...
+        'Currently, we require the differential operator to second-order, and fundamental algorithmic questions need to be answered to extend to general linear ODEs.');
+end
 
 if (nargin < 2)
     error(message('chebop:gmres:NotEnoughInputs'));
