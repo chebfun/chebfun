@@ -1,23 +1,22 @@
 function f = randnfunsphere(lambda, type)
-%RANDNFUNSPHERE   Random smooth function on the unit sphere
-%   F = RANDNFUNSPHERE(LAMBDA) returns a smooth SPHEREFUN of maximum
-%   frequency about 2pi/LAMBDA and standard normal distribution N(0,1)
-%   at each point.  F is obtained from a combination of spherical
-%   harmonics with random coefficients.
+%RANDNFUNSPHERE   Smooth random function on the unit sphere
+%   F = RANDNFUNSPHERE(LAMBDA) returns a SPHEREFUN of maximum
+%   wavelength of about 2pi/LAMBDA and standard normal distribution
+%   N(0,1) at each point.  F is obtained from a combination of
+%   spherical harmonics with random coefficients.
 %
 %   RANDNFUNSPHERE(LAMBDA, 'monochrome') is similar, but uses a
 %   fixed-degree expansion so that all components have wave number
-%   about equal to 2pi/LAMBDA.
+%   about equal to 2pi/LAMBDA. Note that it is possible to shorten
+%   'monochrome' to just 'm'.
 %
 %   RANDNFUNSPHERE() uses the default value LAMBDA = 1.
 %
 % Examples:
 %
-%   f = randnfunsphere(0.2); std2(f), plot(f)
-%   colormap([0 0 0; 1 1 1]), caxis(norm(caxis,inf)*[-1 1])
+%   f = randnfunsphere(0.2); std2(f), plot(f,'zebra')
 %
-%   f = randnfunsphere(0.2,'monochromatic'); std2(f), plot(f)
-%   colormap([0 0 0; 1 1 1]), caxis(norm(caxis,inf)*[-1 1])
+%   f = randnfunsphere(0.2,'monochrome'); std2(f), plot(f,'zebra')
 %
 % See also RANDNFUN, RANDNFUN2, RANDNFUNDISK.
 
@@ -52,15 +51,17 @@ elseif nargin == 2
         type = 'monochromatic';
     end
 end
- 
-deg = round(pi/lambda);
+
+% Since the unit sphere has circumference L = 2*pi, the following
+% choice matches the choice deg = floor(L/lambda) in randnfun.
+deg = floor(2*pi/lambda);
 
 % We do not use adaptive construction, but just sample the function on a
 % fine enough grid to exactly resolve it then pass this to the constructor.
 
 % Sampling grid to exactly recover the random spherical harmonic:
-ll = trigpts(2*deg,[-pi pi]);
-tt = linspace(0,pi,2*deg);
+ll = trigpts(2*deg+2,[-pi pi]);
+tt = linspace(0,pi,2*deg+2);
 
 if strcmpi(type,'monochromatic');
     c = randn(2*deg+1, 1);

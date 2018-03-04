@@ -2,7 +2,7 @@ function g = gammaFun(j, k)
 %GAMMAFUN   Get a function handle to a gamma function.
 %   G = GAMMAFUN(J, K) returns a function handle to the gamma function (J, K).
 %
-% See also EXPINT/GAMMAEVAL.
+% See also EXPINTEG/GAMMAEVAL.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -15,7 +15,7 @@ if ( j == 0 )
 else
     g = @(z) 0*z;
     for m = 1:j
-        gm = expint.gammaFun(j-m, k);
+        gm = expinteg.gammaFun(j-m, k);
         g = @(z) g(z) + (-1)^(m-1)/m*gm(z);
     end
     if ( j <= k )

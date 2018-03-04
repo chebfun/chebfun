@@ -16,27 +16,27 @@ N.dbc = @(x) exp(-10*x.^2);
 N.rbc = @(t,u) [u ; diff(u)];
 N.lbc = 0;
 u1 = mldivide(N, 0, 200, inf);
-[m, n] = length( u1 ); 
+[n, m] = length( u1 );
 pass(1) = ( m == 200 ); 
 
 u2 = mldivide(N, 0, 200, 200);
-[m, n] = length( u2 ); 
+[m, n] = length( u2 );
 pass(2) = ( m == 200 ); 
 pass(3) = ( n == 200 ); 
 
 u3 = mldivide(N, 0, inf, 200);
-[m, n] = length( u2 ); 
+[n, m] = length( u2 );
 pass(4) = ( n == 200 ); 
 
 % check small values of n: 
 u4 = mldivide(N, 0, 10, 10);
-[m, n] = length( u4 ); 
+[n, m] = length( u4 );
 pass(5) = ( m == 10 ); 
 pass(6) = ( n == 10 );  
 
 % check small values of n: 
 u4 = mldivide(N, 0, 6, 10);
-[m, n] = length( u4 ); 
+[n, m] = length( u4 );
 pass(7) = ( n == 10 ); 
 pass(8) = ( m == 6 );
 

@@ -1,4 +1,4 @@
-function eig(varargin)
+function varargout = eig(varargin)
 %   EIG(N) is not supported. Use EIGS(N) to find selected eigenvalues of a
 %   linear operator.
 %

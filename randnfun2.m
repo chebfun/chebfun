@@ -1,6 +1,6 @@
 function f = randnfun2(varargin)
-%RANDNFUN2   Random smooth 2D function 
-%   F = RANDNFUN2(LAMBDA) returns a smooth CHEBFUN2 on [-1,1,-1,1] with
+%RANDNFUN2   Smooth random function in 2D
+%   F = RANDNFUN2(LAMBDA) returns a CHEBFUN2 on [-1,1,-1,1] with
 %   maximum frequency about 2pi/LAMBDA in both the X and Y directions
 %   and standard normal distribution N(0,1) at each point.  F is obtained
 %   by calling RANDNFUN2(T, 'trig') on a domain of dimensions about 20%
@@ -8,7 +8,7 @@ function f = randnfun2(varargin)
 %
 %   F = RANDNFUN2(LAMBDA, DOM) returns a result with domain DOM = [A,B,C,D].
 %
-%   F = RANDNFUN2(LAMBDA, 'norm') normalizes the output by dividing it
+%   F = RANDNFUN2(LAMBDA, 'big') normalizes the output by dividing it
 %   by SQRT(LAMBDA).  (This may change.)
 %
 %   RANDNFUN(LAMBDA, 'trig') returns a random doubly periodic function.
@@ -16,7 +16,7 @@ function f = randnfun2(varargin)
 %   normally distributed coefficients of equal variance.
 %
 %   F = RANDNFUN2() uses the default value LAMBDA = 1.  Combinations such
-%   as RANDNFUN2(DOM), RANDNFUN2('norm', LAMBDA) are allowed.
+%   as RANDNFUN2(DOM), RANDNFUN2('big', LAMBDA) are allowed.
 %
 % Examples:
 %
@@ -28,7 +28,7 @@ function f = randnfun2(varargin)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-[lambda, dom, normalize, trig] = parseInputs(varargin{:});
+[lambda, dom, makebig, trig] = parseInputs(varargin{:});
 
 if trig    % periodic case: random bivariate Fourier series
 
@@ -44,7 +44,7 @@ if trig    % periodic case: random bivariate Fourier series
     c = c/sqrt(nnz(c));                     % ensure var = 1 at each point
     f = chebfun2(c, dom, 'coeffs', 'trig');
     f = real(f);
-    if normalize
+    if makebig
         f = f/sqrt(lambda);                     % normalize for 2D white noise
     end
 
@@ -52,7 +52,7 @@ else       % nonperiodic case: call periodic case and restrict
 
     if lambda == inf
         f = chebfun2(randn, dom);    % random constant function
-        if normalize
+        if makebig
             f = f/sqrt(lambda);          % zero function
         end
         return
@@ -62,8 +62,8 @@ else       % nonperiodic case: call periodic case and restrict
     n = round(1.2*(dom(4)-dom(3))/lambda+2);
     dom2 = [ dom(1) dom(1)+m*lambda dom(3) dom(3)+n*lambda ];
 
-    if normalize
-        f = randnfun2(lambda, dom2, 'norm', 'trig');
+    if makebig
+        f = randnfun2(lambda, dom2, 'big', 'trig');
     else
         f = randnfun2(lambda, dom2, 'trig');
     end
@@ -75,18 +75,18 @@ else       % nonperiodic case: call periodic case and restrict
 end
 end
 
-function [lambda, dom, normalize, trig] = parseInputs(varargin)
+function [lambda, dom, makebig, trig] = parseInputs(varargin)
 
 lambda = NaN;  
 dom = NaN;
-normalize = 0;
+makebig = 0;
 trig = 0;
 
 for j = 1:nargin
     v = varargin{j};
     if ischar(v)
-	if ( v(1) == 'n' )
-            normalize = 1;
+        if ( v(1) == 'n' | v(1) == 'b')
+            makebig = 1;
         elseif ( v(1) == 't' )
             trig = 1;
         else

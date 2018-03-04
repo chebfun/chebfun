@@ -258,6 +258,12 @@ classdef chebop2
         [bcrow, bcvalue] = constructBC(bcArg, bcpos,...
             een, bcn, dom, scl, order);
         
+        % Recover coefficient functions of a linear operator:
+        p = recoverCoeffs(L);
+        
+        % Checks the type of the boundary conditions:
+        [bctype, g] = checkBC(N, m, n);
+        
         % This is used to discretize the PDE:
         [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] =...
             discretize(N, f, m, n, flag);

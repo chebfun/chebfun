@@ -25,11 +25,27 @@ if ( n == mu )
     return
 end
 
+if ( numel(f) > 0 )
+    f = quasimatrix(f);
+    for k = 1:numel(f)
+        f(k) = fracDiffcol(f(k), mu, type);
+    end
+else
+    f = fracDiffcol(f, mu, type);
+end
+
+end
+
+function f = fracDiffcol(f, mu, type)
+
 % No piecewise support yet:
-if ( numel(f.funs) > 1 )
+if ( numel(f(1).funs) > 1 )
     error('CHEBFUN:CHEBFUN:fracDiff:breakpoints', ...
         'FRACDIFF does not currently support piecewise functions.');
 end
+
+% Extract the fractional part:
+n = ceil(mu);
 
 if ( strcmpi(type, 'Caputo') )
     % Caputo:

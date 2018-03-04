@@ -79,7 +79,10 @@ classdef chebfun2 < separableApprox
         [xx, yy] = chebpts2(nx, ny, domain, kind);
         
         % Outer-product of two chebfuns:
-        F = outerProduct(f, g);   
+        F = outerProduct(f, g);  
+        
+        % Fast spectrally-accurate Poisson solver:
+        u = poisson(f, varargin);
         
     end
     

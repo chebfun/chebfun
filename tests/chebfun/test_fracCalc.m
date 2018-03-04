@@ -59,6 +59,15 @@ G = fracDiff(fracDiff(f, .3), .7);
 err(6) = norm(feval(F, xx) - feval(G, xx), inf);
 tol(6) = 1e2*eps*vscale(G)*hscale(G);
 
+%% Test quasimatrix support
+x = chebfun('x', [0 1]);
+V = cheb2quasi(vander(x, 5));
+F = diff(V, .5);
+err(7) = 0;
+for k = 1:numel(V)
+    err(7) = err(7) + norm(diff(V(:,k), .5) - F(:,k));
+end
+tol(7) = 10*eps;
 
 %%
 pass = err < tol;

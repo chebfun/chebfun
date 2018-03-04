@@ -35,12 +35,33 @@ u = N\0;
 pass(5) = abs(u(.6) - 0.2) + abs(feval(diff(u), .6) - 0.8) + ...
     abs(u(3) - 0.2) + abs(feval(diff(u),3) - 0.8) < 1e-11;
 
-%% Systems are not supported
+%% First order systems are supported
 N = chebop(@(x,u,v) [diff(u) + v; diff(v) - u]);
-pass(6) = 0;
+N.lbc = [1; 2];
+[u,v] = N\0;
+pass(6) = abs(u(-1) - 1) + abs(v(-1) - 2) < 1e-11;
+
+%% First order system (more variables)
+N = chebop(@(x,u,v,w,y) [diff(u) + v; diff(v) - w; diff(w)-y; diff(y)-u]);
+N.rbc = [1; 2; 4; 3];
+[u,v,w,y] = N\0;
+pass(7) = abs(u(1) - 1) + abs(v(1) - 2) + abs(w(1) - 4) + ...
+    abs(y(1) - 3) < 1e-11;
+
+%% First order system (more variables), test rbc
+N = chebop(@(x,u,v,w,y) [diff(u) + v; diff(v) - w; diff(w)-y; diff(y)-u]);
+N.rbc = [1; 2; 4; 3];
+[u,v,w,y] = N\0;
+pass(8) = abs(u(1) - 1) + abs(v(1) - 2) + abs(w(1) - 4) + ...
+    abs(y(1) - 3) < 1e-11;
+
+%% Higher order systems are not supported
+N = chebop(@(x,u,v) [diff(u,2) + v; diff(v) - u]);
+N.lbc = [1; 3; 2];
 try
-    N.lbc = [1; 2];
+    [u,v] = N\0;
 catch ME
-    pass(6) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:parseBC:numeric');
+    pass(9) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBOP:parseBC:numberOfConditions');
 end
 end

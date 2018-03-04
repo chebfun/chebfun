@@ -15,17 +15,22 @@ function out = jaccoeffs(f, n, a, b)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( numel(f) > 1 )
-    error('CHEBFUN:CHEBFUN:jaccoeffs:quasi', ...
-        'JACCOEFFS does not support quasimatrices.');
-end
 
-if ( (numel(f.funs) == 1) && (nargin < 4) )
+if ( (numel(f(1).funs) == 1) && (nargin < 4) )
     b = a;
     a = n;
     n = length(f);
 elseif ( isempty(n) )
     n = length(f);
+end
+
+if ( numel(f) > 1 )
+    out = zeros(n, numel(f));
+    f = cheb2cell(f);
+    for k = 1:numel(f)
+        out(:,k) = jaccoeffs(f{k}, n, a, b);
+    end
+    return
 end
 
 %%

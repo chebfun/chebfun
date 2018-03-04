@@ -12,8 +12,19 @@ function f = simplifyExponents(f)
 % Grab the exponents:
 exps = get(f, 'exponents');
 
+% Tolerance:
+tol = 100*eps*vscale(f.smoothPart);
+
+% Set nearly zeros exponents to zero:
+exps(abs(exps) < tol) = 0;
+f.exponents = exps;
+
+% Set nearly integer exponents to zero:
+idx = abs(round(exps)-exps) < tol;
+exps(idx) = round(exps(idx));
+
 % Grab the indice for exponents larger or equal to 1:
-ind = ( exps >= 1 );
+ind = ( exps >= 1-tol );
 
 % Both exponents are less than 1:
 if ( ~any( ind ) )

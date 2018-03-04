@@ -31,8 +31,11 @@ function idx = sortConditions(funIn, domain, maxDiffOrders)
 %      gives the correct order in which the above vector has to be sorted so 
 %      that the values are in the correct order for MATLAB.
 
-% Check how many unknowns appear in FUNIN.
-numArgs = nargin(funIn);
+% Check how many unknowns appear in FUNIN. When BCs are assigned via e.g.
+% N.lbc = [1;3], nargin(funIn) == -1 due to the function that gets assigned
+% under the hood having varargin as its argument. Hence we look at the length of
+% diffOrders as well.
+numArgs = max(nargin(funIn), length(maxDiffOrders));
 args = cell(numArgs, 1);
 
 % The ID vector to be passed to the TREEVAR constructor.
@@ -48,9 +51,14 @@ for argCount = 1:numArgs
     argsVec = 0*argsVec;
 end
 
-% Evaluate FUNIN with the TREEVAR arguments:
-bcResults = funIn(args{:});
-
+% Evaluate FUNIN with the TREEVAR arguments. If we're working with the
+% CHEBMATRIX syntax, we should not expand the ARGS cell (but do it otherwise):
+if ( ( nargin(funIn) == 1 ) && ( length(args) > 1 ) )
+    % CHEBMATRIX syntax in specifying BCs:
+    bcResults = funIn(args);
+else
+    bcResults = funIn(args{:});
+end
 % Look at the results of evaluating the boundary conditions, find what
 % constraint operated on what variable, and what its diffOrder was:
 varList = cell(numArgs, 1);

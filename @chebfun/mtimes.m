@@ -28,7 +28,16 @@ elseif ( fIsChebfun && gIsChebfun )         % CHEBFUN * CHEBFUN
     gIsTrans = g(1).isTransposed;
     
     if ( fIsTrans == gIsTrans )
-        f = times(f, g);
+        try
+            f = times(f, g);
+        catch ME
+            if ( strcmp(ME.identifier, ...
+                    'CHEBFUN:SINGFUN:cancelExponent:arrayvalued') )
+                f = times(quasimatrix(f), quasimatrix(g));
+            else
+                rethrow(ME)
+            end
+        end
     elseif ( fIsTrans && ~gIsTrans ) % Row times column.
         % Compute the inner product (we call CONJ() here because
         % INNERPRODUCT() is semilinear in the first factor, 

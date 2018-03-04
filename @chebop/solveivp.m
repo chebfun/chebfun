@@ -119,6 +119,18 @@ if ( strcmp(solver, 'values') || strcmp(solver, 'coeffs') || ...
     return
 end
 
+% Find out how many variables N operates on:
+nVars = numVars(N);
+
+% Check if we're working with a CHEBMATRIX syntax, e.g.
+%   @(x,u) [diff(u{1}) + u{2}; ...]
+% as we'll need different feval calls if that's the case.
+if ( nargin(N) == 2 && nVars > 1 )
+    cellArg = 1;
+else
+    cellArg = 0;
+end
+
 %% Convert to a first-order system
 
 % We call the conversion methods of the TREEVAR class, the call depends on
@@ -127,7 +139,7 @@ end
 % encounters unsupported methods.
 try
     [anonFun, varIndex, problemDom, coeffs, diffOrders] = ...
-        treeVar.toFirstOrder(N.op, rhs, N.domain);
+        treeVar.toFirstOrder(N.op, rhs, N.domain, nVars, cellArg);
 catch ME
     % Did we encounter an unsupported method? If so, try to solve it globally:
     if ( ~isempty(regexp(ME.identifier, 'CHEBFUN:TREEVAR:.+:notSupported', ...
@@ -153,10 +165,17 @@ cheb0 = chebfun(@(x) 0*x, dom);
 % Evaluate N.LBC or N.RBC:
 if ( ~isempty(N.lbc) )
     % Create enough copies to allow to evaluate the initial condition for
-    % systems:
-    cheb0 = repmat({cheb0}, nargin(N.lbc), 1);
-    % Evaluate the initial condition:
-    bcEvalFun = N.lbc(cheb0{:});
+    % systems. We use the DIFFORDER variable from the first order conversion
+    % above for giving us information about the number of variables in the
+    % problem:
+    cheb0 = repmat({cheb0}, length(diffOrders), 1);
+    % Evaluate the initial condition, depending on whether we're dealing with
+    % CHEBMATRIX syntax or not:
+    if ( cellArg && nargin(N.lbc) == 1 )
+       bcEvalFun = N.lbc(cheb0); 
+    else
+        bcEvalFun = N.lbc(cheb0{:});
+    end
     % Store the point at which the initial condition is evaluated (left
     % endpoint):
     evalPoint = dom(1);
@@ -167,9 +186,14 @@ if ( ~isempty(N.lbc) )
 else
     % Create enough copies to allow to evaluate the initial condition for
     % systems:
-    cheb0 = repmat({cheb0}, nargin(N.rbc), 1);
-    % Evaluate the final condition:
-    bcEvalFun = N.rbc(cheb0{:});
+    cheb0 = repmat({cheb0}, length(diffOrders), 1);
+    % Evaluate the final condition, depending on whether we're dealing with
+    % CHEBMATRIX syntax or not:
+    if ( cellArg && nargin(N.rbc) == 1 )
+       bcEvalFun = N.rbc(cheb0); 
+    else
+        bcEvalFun = N.rbc(cheb0{:});
+    end
     % Store the point at which the final condition is evaluated (right
     % endpoint):
     evalPoint = dom(end);
