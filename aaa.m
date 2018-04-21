@@ -21,6 +21,10 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
+%   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
+%       Poles with residues less than this number times the maximium absolute
+%       component of F are deemed spurious by the cleanup procedure. If TOL = 0,
+%       then CLEANUPTOL defaults to 1e-13.
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
 %   This is equivalent to defining Z = LINSPACE(DOM(1), DOM(2), LENGTH(F)) if F
@@ -46,12 +50,12 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 
 
 % Parse inputs:
-[F, Z, M, dom, tol, mmax, cleanup_flag, needZ, mmax_flag] = parseInputs(F, varargin{:});
+[F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag] = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
     [r, pol, res, zer, zj, fj, wj, errvec] = ...
-        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, mmax_flag);
+        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag);
     return
 end
 
@@ -61,7 +65,6 @@ F = F(toKeep); Z = Z(toKeep);
 toKeep = ~isnan(F);
 F = F(toKeep); Z = Z(toKeep);
 M = length(Z);
-
 
 % Relative tolerance:
 reltol = tol * norm(F, inf);
@@ -132,7 +135,8 @@ r = @(zz) reval(zz, zj, fj, wj);
 
 if ( cleanup_flag )
     % Remove Froissart doublets:
-    [r, pol, res, zer, zj, fj, wj] = cleanup(r, pol, res, zer, zj, fj, wj, Z, F);
+    [r, pol, res, zer, zj, fj, wj] = ...
+        cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
 end
 
 end % of AAA()
@@ -141,7 +145,7 @@ end % of AAA()
 
 %% parse Inputs:
 
-function [F, Z, M, dom, tol, mmax, cleanup_flag, needZ, mmax_flag] = ...
+function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag] = ...
     parseInputs(F, varargin)
 % Input parsing for AAA.
 
@@ -166,8 +170,9 @@ if ( ~isempty(varargin) && isfloat(varargin{1}) )
 end
 
 % Set defaults for other parameters:
-tol = 1e-13;        % Relative tolerance.
-mmax = 100;         % Maximum number of terms.
+tol = 1e-13;         % Relative tolerance.
+mmax = 100;          % Maximum number of terms.
+cleanup_tol = 1e-13; % Cleanup tolerance.
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -176,12 +181,15 @@ else
 end
 cleanup_flag = 1;   % Cleanup on.
 mmax_flag = 0;
-
+cleanup_set = 0;    % Checks if cleanup_tol manually specified.
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
     if ( strncmpi(varargin{1}, 'tol', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             tol = varargin{2};
+            if ~cleanup_set & tol > 0 % If not manually set, set cleanup_tol to tol.
+              cleanup_tol = tol;
+            end
         end
         varargin([1, 2]) = [];
         
@@ -205,6 +213,13 @@ while ( ~isempty(varargin) )
             end
         end
         
+    elseif ( strncmpi(varargin{1}, 'cleanuptol', 10) )
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+          cleanup_tol = varargin{2};
+          cleanup_set = 1;
+        end
+        varargin([1, 2]) = [];
+
     elseif ( strncmpi(varargin{1}, 'cleanup', 7) )
         if ( strncmpi(varargin{2}, 'off', 3) || ( varargin{2} == 0 ) )
             cleanup_flag = 0;
@@ -320,11 +335,12 @@ end % End of PRZ().
 
 %% Cleanup
 
-function [r, pol, res, zer, z, f, w] = cleanup(r, pol, res, zer, z, f, w, Z, F)
+function [r, pol, res, zer, z, f, w] = ...
+    cleanup(r, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
 % Remove spurious pole-zero pairs.
 
 % Find negligible residues:
-ii = find(abs(res) < 1e-13 * norm(F, inf));
+ii = find(abs(res) < cleanup_tol * norm(F, inf));
 ni = length(ii);
 if ( ni == 0 )
     % Nothing to do.
@@ -373,7 +389,7 @@ end % End of CLEANUP().
 %% Automated choice of sample set
 
 function [r, pol, res, zer, zj, fj, wj, errvec] = ...
-    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, mmax_flag)
+    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag)
 %
 
 % Flag if function has been resolved:
@@ -385,7 +401,7 @@ for n = 5:14
     % Next line enables us to do pretty well near poles
     Z = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), 1 + 2^n).';
     [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
-        'mmax', mmax, 'cleanup', cleanup_flag);
+        'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol);
     
     % Test if rational approximant is accurate:
     reltol = tol * norm(F(Z), inf);
