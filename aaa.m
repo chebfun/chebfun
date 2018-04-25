@@ -65,6 +65,7 @@ F = F(toKeep); Z = Z(toKeep);
 toKeep = ~isnan(F);
 F = F(toKeep); Z = Z(toKeep);
 
+% Remove repeated elements of Z and corresponding elements of F:
 [Z, uni] = unique(Z); F = F(uni);
 
 M = length(Z);
