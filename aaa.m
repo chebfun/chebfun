@@ -64,6 +64,9 @@ toKeep = ~isinf(F);
 F = F(toKeep); Z = Z(toKeep);
 toKeep = ~isnan(F);
 F = F(toKeep); Z = Z(toKeep);
+
+[Z, uni] = unique(Z); F = F(uni);
+
 M = length(Z);
 
 % Relative tolerance:
