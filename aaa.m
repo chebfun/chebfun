@@ -350,9 +350,9 @@ if ( ni == 0 )
     % Nothing to do.
     return
 elseif ( ni == 1 )
-    fprintf('1 Froissart doublet.\n')
+    warning('CHEBFUN:aaa:Froissart','1 Froissart doublet');
 else
-    fprintf('%d Froissart doublets.\n', ni)
+    warning('CHEBFUN:aaa:Froissart',[int2str(ni) ' Froissart doublets']);
 end
 
 % For each spurious pole find and remove closest support point:
