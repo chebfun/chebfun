@@ -7,6 +7,7 @@ if ( nargin < 1 )
 end
 tol = 1e+4 * pref.chebfuneps;
 
+warning('off', 'CHEBFUN:aaa:Froissart');
 
 Z = linspace(-1, 1, 1000);
 F = exp(Z);
@@ -74,5 +75,7 @@ X = linspace(0,20);
 F = sin(X)./X;
 r = aaa(F,X);
 pass(18) = ( abs(r(2) - sin(2)/2) < 1e-3 );
+
+warning('on', 'CHEBFUN:aaa:Froissart');
 
 end
