@@ -25,7 +25,7 @@ pass(5) = ( length(zj) < m1 );
 %
 Z = linspace(-1, 1, 1000);
 F = @(z) tan(pi*z);
-[r, pol, res, zer] = aaa(F, Z);
+[r, pol, res, zer] = aaa(F, Z, 'intervalCleanup', 'off');
 pass(6) = ( norm(F(Z) - r(Z), inf) < 10*tol );
 pass(7) = ( min(abs(zer)) < tol );
 pass(8) = ( min(abs(pol - 0.5)) < tol );
