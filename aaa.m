@@ -280,63 +280,6 @@ end
 end % End of PARSEINPUT().
 
 
-%% Evaluate rational function in barycentric form.
-
-function r = reval(zz, zj, fj, wj)
-% Evaluate rational function in barycentric form.
-zv = zz(:);                             % vectorize zz if necessary
-CC = 1./bsxfun(@minus, zv, zj.');       % Cauchy matrix
-r = (CC*(wj.*fj))./(CC*wj);             % vector of values
-
-% Deal with input inf: r(inf) = lim r(zz) = sum(w.*f) / sum(w):
-r(isinf(zv)) = sum(wj.*fj)./sum(wj);
-
-% Deal with NaN:
-ii = find(isnan(r));
-for jj = 1:length(ii)
-    if ( isnan(zv(ii(jj))) || ~any(zv(ii(jj)) == zj) )
-        % r(NaN) = NaN is fine.
-        % The second case may happen if r(zv(ii)) = 0/0 at some point.
-    else
-        % Clean up values NaN = inf/inf at support points.
-        % Find the corresponding node and set entry to correct value:
-        r(ii(jj)) = fj(zv(ii(jj)) == zj);
-    end
-end
-
-% Reshape to input format:
-r = reshape(r, size(zz));
-
-end % End of REVAL().
-
-
-%% Compute poles, residues and zeros.
-
-function [pol, res, zer] = prz(r, zj, fj, wj)
-% Compute poles, residues, and zeros of rational function in barycentric form.
-m = length(wj);
-
-% Compute poles via generalized eigenvalue problem:
-B = eye(m+1);
-B(1,1) = 0;
-E = [0 wj.'; ones(m, 1) diag(zj)];
-pol = eig(E, B);
-% Remove zeros of denominator at infinity:
-pol = pol(~isinf(pol));
-
-% Compute residues via discretized Cauchy integral:
-dz = 1e-5*exp(2i*pi*(1:4)/4);
-res = r(bsxfun(@plus, pol, dz))*dz.'/4;
-
-% Compute zeros via generalized eigenvalue problem:
-E = [0 (wj.*fj).'; ones(m, 1) diag(zj)];
-zer = eig(E, B);
-% Remove zeros of numerator at infinity:
-zer = zer(~isinf(zer));
-
-end % End of PRZ().
-
-
 %% Cleanup
 
 function [r, pol, res, zer, z, f, w] = ...
