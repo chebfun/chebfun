@@ -162,7 +162,7 @@ end
 if ( isInterval(Z) )
     a = min(Z); b = max(Z);
     ind = imag(pol) == 0 & a <= pol & pol <= b;
-    if any(res(ind) <= 1e-2 * median(res))
+    if any(abs(res(ind)) <= 1e-2 * median(abs(res)))
       if ( intcl )
         [r, pol, res, zer, zj, fj, wj] = ...
             cleanup(zj, fj, wj, Z, F, pol(ind));
@@ -387,7 +387,7 @@ function flag = isInterval(Z)
     if isreal(Z) % checks if Z is subset of R
       a = min(Z); b = max(Z);
       sZ = sort(Z);
-      d = max(sZ(2:end) - sZ(1:end-1));
+      d = diff(sZ);
       flag = d < 0.1 * (b - a);  % checks if Z is discretization of interval 
     end
 end % End of ISINTERVAL()

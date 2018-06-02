@@ -1,9 +1,9 @@
-function [r, pol, res, zer, z, f, w] = cleanup(z, f, w, Z, F, bpol) 
-%CLEANUP   Attempts to remove spurious poles by removing support points given 
-%   [R, POL, RES, ZER, Z, F, W] = CLEANUP(R, Z, F, W, BPOL) returns function
-%   handle R, poles POL, residues RES, zeros ZER, support points Z, data values
-%   F, and barycentric weights W that result after removing input support points
-%   nearest to each of the components of BPOL.
+function [r, pol, res, zer, zj, fj, wj] = cleanup(zj, fj, wj, Z, F, bpol) 
+%CLEANUP   Attempts to remove spurious poles.
+%   [R, POL, RES, ZER, ZJ, FJ, WJ] = CLEANUP(ZJ, FJ, WJ, Z, F, BPOL) returns function
+%   handle R, poles POL, residues RES, zeros ZER, support points ZJ, data values
+%   FJ, and barycentric weights WJ that result after removing support points
+%   nearest to each entry of the bad pole vector BPOL.
 %
 % See also AAA.
 
@@ -14,40 +14,40 @@ function [r, pol, res, zer, z, f, w] = cleanup(z, f, w, Z, F, bpol)
 n = numel(bpol);
 
 for j = 1:n
-    azp = abs(z-bpol(j));
+    azp = abs(zj-bpol(j));
     jj = find(azp == min(azp),1);
     
     % Remove support point(s):
-    z(jj) = [];
-    f(jj) = [];
+    zj(jj) = [];
+    fj(jj) = [];
 end
 
 % Remove support points z from sample set:
-for jj = 1:length(z)
-    F(Z == z(jj)) = [];
-    Z(Z == z(jj)) = [];
+for jj = 1:length(zj)
+    F(Z == zj(jj)) = [];
+    Z(Z == zj(jj)) = [];
 end
-m = length(z);
+m = length(zj);
 M = length(Z);
 
 % Build Loewner matrix:
 SF = spdiags(F, 0, M, M);
-Sf = diag(f);
-C = 1./bsxfun(@minus, Z, z.');      % Cauchy matrix.
+Sf = diag(fj);
+C = 1./bsxfun(@minus, Z, zj.');      % Cauchy matrix.
 A = SF*C - C*Sf;                    % Loewner matrix.
 
 % Solve least-squares problem to obtain weights:
 [~, ~, V] = svd(A, 0);
-w = V(:,m);
+wj = V(:,m);
 
 % Remove support points corresponding to 0 weights
-I = find(w == 0);
-z(I) = [];
-w(I) = [];
-f(I) = [];
+I = find(wj == 0);
+zj(I) = [];
+wj(I) = [];
+fj(I) = [];
 
 % Build function handle and compute poles, residues and zeros:
-r = @(zz) reval(zz, z, f, w);
-[pol, res, zer] = prz(r, z, f, w);
+r = @(zz) reval(zz, zj, fj, wj);
+[pol, res, zer] = prz(r, zj, fj, wj);
 
 end % End of CLEANUP().
