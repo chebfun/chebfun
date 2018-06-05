@@ -103,7 +103,7 @@ N = size(x, 1);
 [~, pct] = chebfun.nufft(conj(f), N*x, 1);
 row = pct(ones(N,1));
 pct = @(f) conj(pct(conj(f)));
-col = pct(ones(N,1)); 
+col = conj(row); 
 row(1) = col(1);
 
 % Conjugate gradient method on normal equations:
