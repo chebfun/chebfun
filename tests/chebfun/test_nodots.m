@@ -72,7 +72,7 @@ try
     chebfun('x*x', 'vectorcheck', 'off')
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.message, 'Inner matrix dimensions must agree.');
+    pass(7) = strcmp(ME.identifier, 'MATLAB:innerdim');
 end
 
 end
