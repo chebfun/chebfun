@@ -16,8 +16,10 @@ for N = [10.^(0:3) 4000]
     F = exp(-2*pi*1i*(0:N-1)'/N*omega.');
     c = rand(N,1) + 1i*rand(N,1);
     exact = F \ c; 
-    fast = chebfun.inufft( c, omega, 1 );
+    [fast,plan] = chebfun.inufft( c, omega, 1 );
     pass(count) = norm( exact - fast, inf ) < 300*N*tol*norm(c,1);
+    count = count + 1;
+    pass(count) = norm( fast - plan(c) ) == 0;
     count = count + 1;
 end
 
@@ -28,9 +30,11 @@ for N = [10.^(0:3) 4000]
     F = exp(-2*pi*1i*x*(0:N-1)); 
     c = rand(N,1) + 1i*rand(N,1);
     exact = F \ c; 
-    fast = chebfun.inufft( c, x );
+    [fast,plan] = chebfun.inufft( c, x );
     pass(count) = norm( exact - fast, inf ) < 300*N*tol*norm(c,1);
     count = count + 1; 
+    pass(count) = norm( fast - plan(c) ) == 0;
+    count = count + 1;
 end
 
 pass = all(pass);
