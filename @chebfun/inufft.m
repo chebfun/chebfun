@@ -1,4 +1,4 @@
-function [c, p] = inufft( f, x, omega, type)
+function [c, p] = inufft( f, x, type, tol)
 %CHEBFUN.INUFFT   Inverse nonuniform fast Fourier transform
 %   [C, P]= CHEBFUN.INUFFT(F) is the same as ifft( F ). F must be a column
 %   vector. C = P(F) is a planned version of the fast transform.
@@ -37,18 +37,11 @@ elseif ( nargin == 2 )
     % default to type 2 nufft
     [c, p] = inufft2( f, x, eps );
 elseif ( nargin == 3 )
-    type = omega;
     if ( numel(type) == 1 )
         if ( type == 1 )
             [c, p] = inufft1( f, x, eps);
         elseif ( type == 2 )
-            [c, p] = inufft2( f, x, eps);
-        elseif ( type<1 && type>0 && numel(f)>1 )
-            tol = type;
-            [c, p] = inufft1( f, x, tol);
-        elseif ( numel(f) == 1 )
-            error('CHEBFUN:CHEBFUN:inufft:three', ...
-                'Type 3 NUIFFT has not been implemented');
+            [c, p] = inufft2( f, x, eps);            
         else
             error('CHEBFUN:CHEBFUN:inufft:type', ...
                 'Unrecognised NUFFT type.');
@@ -59,12 +52,34 @@ elseif ( nargin == 3 )
             'Type 3 NUIFFT has not been implemented')
     else
         error('CHEBFUN:CHEBFUN:inufft:syntax',...
-            'Unrecognised number of arguments to NUFFT.')
+            'Unrecognised input arguments to INUFFT.')
     end
-elseif ( (nargin == 4) &&  (type == 3) )
+elseif ( nargin == 4 )
+    if ( numel(type) == 1 && numel(tol) == 1 )        
+        if ( type == 1 )
+            [c, p] = inufft1( f, x, tol);
+        elseif ( type == 2 )
+            [c, p] = inufft2( f, x, tol);
+        else
+            error('CHEBFUN:CHEBFUN:inufft:type', ...
+                'Unrecognised INUFFT type.');
+        end
+    elseif ( numel(type) == size(f,1) )
+        % NUFFT-III:
         error('CHEBFUN:CHEBFUN:inufft:three', ...
             'Type 3 NUIFFT has not been implemented')
+    elseif ( numel(tol) > 1 )
+        error('CHEBFUN:CHEBFUN:inufft:tol',...
+            'Tolerance parameter to INUFFT must be a scalar.')
+    else        
+        error('CHEBFUN:CHEBFUN:inufft:syntax',...
+            'Unrecognised input arguments to INUFFT.')
+    end    
+else
+    error('CHEBFUN:CHEBFUN:inufft:syntax',...
+        'Unrecognised input arguments to INUFFT.')
 end
+
 end
 
 function [c, p] = inufft1(f, omega, tol)
