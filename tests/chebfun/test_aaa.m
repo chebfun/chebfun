@@ -7,6 +7,7 @@ if ( nargin < 1 )
 end
 tol = 1e+4 * pref.chebfuneps;
 
+warning('off', 'CHEBFUN:aaa:Froissart');
 
 Z = linspace(-1, 1, 1000);
 F = exp(Z);
@@ -74,5 +75,18 @@ X = linspace(0,20);
 F = sin(X)./X;
 r = aaa(F,X);
 pass(18) = ( abs(r(2) - sin(2)/2) < 1e-3 );
+
+% A couple of tests of residues
+X = linspace(-1.337,2,537);
+[r,pol,res] = aaa(exp(X)./X, X);
+ii = find(abs(pol)<1e-8);
+pass(19) = abs(res(ii)-1) < 1e-10;
+[r,pol,res] = aaa((1+1i)*gamma(X),X);
+ii = find(abs(pol-(-1))<1e-8);
+pass(20) = abs(res(ii)+(1+1i)) < 1e-10;
+
+
+
+warning('on', 'CHEBFUN:aaa:Froissart');
 
 end
