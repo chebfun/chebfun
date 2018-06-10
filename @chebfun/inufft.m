@@ -1,4 +1,4 @@
-function [c, p] = inufft( f, x, omega, type)
+function [c, p] = inufft( f, x, type, tol)
 %CHEBFUN.INUFFT   Inverse nonuniform fast Fourier transform
 %   [C, P]= CHEBFUN.INUFFT(F) is the same as ifft( F ). F must be a column
 %   vector. C = P(F) is a planned version of the fast transform.
@@ -19,8 +19,8 @@ function [c, p] = inufft( f, x, omega, type)
 %   a tolerance of TOL. By default, TOL = eps.
 %
 %   The algorithm in this MATLAB script is based on the paper:
-%       [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier
-%       transform based on low rank approximation", submitted, 2017.
+%    [1] D. Ruiz-Antoln and A. Townsend, "A nonuniform fast Fourier
+%    transform based on low rank approximation", SISC, 40 (2018), A529-A547.
 %   This paper relates the NUFFT to a FFT by low rank approximation.
 %   A faster MATLAB implementation outside of the Chebfun system
 %   is available from the author. Please email: townsend@cornell.edu.
@@ -37,18 +37,11 @@ elseif ( nargin == 2 )
     % default to type 2 nufft
     [c, p] = inufft2( f, x, eps );
 elseif ( nargin == 3 )
-    type = omega;
     if ( numel(type) == 1 )
         if ( type == 1 )
             [c, p] = inufft1( f, x, eps);
         elseif ( type == 2 )
-            [c, p] = inufft2( f, x, eps);
-        elseif ( type<1 && type>0 && numel(f)>1 )
-            tol = type;
-            [c, p] = inufft1( f, x, tol);
-        elseif ( numel(f) == 1 )
-            error('CHEBFUN:CHEBFUN:inufft:three', ...
-                'Type 3 NUIFFT has not been implemented');
+            [c, p] = inufft2( f, x, eps);            
         else
             error('CHEBFUN:CHEBFUN:inufft:type', ...
                 'Unrecognised NUFFT type.');
@@ -59,12 +52,34 @@ elseif ( nargin == 3 )
             'Type 3 NUIFFT has not been implemented')
     else
         error('CHEBFUN:CHEBFUN:inufft:syntax',...
-            'Unrecognised number of arguments to NUFFT.')
+            'Unrecognised input arguments to INUFFT.')
     end
-elseif ( (nargin == 4) &&  (type == 3) )
+elseif ( nargin == 4 )
+    if ( numel(type) == 1 && numel(tol) == 1 )        
+        if ( type == 1 )
+            [c, p] = inufft1( f, x, tol);
+        elseif ( type == 2 )
+            [c, p] = inufft2( f, x, tol);
+        else
+            error('CHEBFUN:CHEBFUN:inufft:type', ...
+                'Unrecognised INUFFT type.');
+        end
+    elseif ( numel(type) == size(f,1) )
+        % NUFFT-III:
         error('CHEBFUN:CHEBFUN:inufft:three', ...
             'Type 3 NUIFFT has not been implemented')
+    elseif ( numel(tol) > 1 )
+        error('CHEBFUN:CHEBFUN:inufft:tol',...
+            'Tolerance parameter to INUFFT must be a scalar.')
+    else        
+        error('CHEBFUN:CHEBFUN:inufft:syntax',...
+            'Unrecognised input arguments to INUFFT.')
+    end    
+else
+    error('CHEBFUN:CHEBFUN:inufft:syntax',...
+        'Unrecognised input arguments to INUFFT.')
 end
+
 end
 
 function [c, p] = inufft1(f, omega, tol)
@@ -77,40 +92,74 @@ function [c, p] = inufft1(f, omega, tol)
 % When A = tilde(F)_1, then (A*A^*) is a Toeplitz matrix. 
 
 N = size(omega,1);
-[~, p]  = chebfun.nufft(f, omega, 1);
-[~, pt] = chebfun.nufft(f, omega/N, 2);
-pt = @(f) conj(pt(conj(f)));
-col = p(ones(N,1));
+col  = chebfun.nufft(ones(N,1), omega, 1);
 row = conj(col);
 row(1) = col(1); 
 
-Afun = @(f) fastToeplitz(col, row, f);
-[c, ~] = pcg(Afun, f, 100*tol, 50);
-c = pt(c); 
+[~, pt] = chebfun.nufft(f, omega/N, 2);
+pt = @(f) conj(pt(conj(f)));
 
-% Planning is unavailable because of the pcg() command. 
-p = [];
+Afun = @(f) fastToeplitz(col, row, f);
+
+    % Plan: 
+    function c = plan1(f)
+        [c,flag,relres] = pcg(Afun, f, 100*tol, 50);
+        c = pt(c); 
+
+        % Report a warning if the CG failed to converge
+        if (flag ~= 0)
+            warning('CHEBFUN:CHEBFUN:inufft1:tolerance',...
+                    ['Conjugate gradient method failed to converge to a ' ...
+                     'tolerance of %1.2e in %d iterations.  ' ...
+                     'Tolerance reached was %1.2e.'],100*tol,50,relres);
+        end    
+    end
+
+c = plan1(f);
+        
+p = @plan1;
+
 end
 
 function [c, p] = inufft2(f, x, tol)
 % NUIFFT2  Compute the nonuniform IFFT of type 2.
-% We do this by solving the normal equations (F'*F)*f=F'*c, where F is the
-% NUDFT2 matrix and using the conjugate gradient method. 
+% We do this by solving the normal equations (F'*F)*c=F'*f, where F is the
+% NUDFT2 matrix and using the conjugate gradient method.
 
 N = size(x, 1);
 
-% tilde{F}_2^*tilde{F}_2 is a Toeplitz matrix, calculate this: 
-[~, pct] = chebfun.nufft(conj(f), N*x, 1);
-row = pct(ones(N,1));
-pct = @(f) conj(pct(conj(f)));
+% tilde{F}_2^*tilde{F}_2 is a Toeplitz matrix, so we only need the first
+% column, i.e. tilde{F}_2^*tilde{F}_2 e_1. Note that since tilde{F}_2 e_1 =
+% ones(N,1), we really only need to compute tilde{F}_2^*ones(N,1), which 
+% can be done with the NUFFT 1.
+[row, pct] = chebfun.nufft(ones(N,1), N*x, 1);
 col = conj(row); 
 row(1) = col(1);
 
+% Set up function for computing F'*f, which is done by applying the 
+% NUFFT-I to the conjugate of f then taking the conjugate of the result.
+pct = @(f) conj(pct(conj(f)));
+
 % Conjugate gradient method on normal equations:
 AFun = @(c) fastToeplitz(col, row, c);
-[c, ~] = pcg(AFun, pct(f), 100*tol, 50);
-% Plan: 
-p = @(f) pcg(AFun, pct(f), 100*tol, 50);
+
+    % Plan: 
+    function c = plan2(f)
+        [c,flag,relres] = pcg(AFun, pct(f), 100*tol, 50);
+
+        % Report a warning if the CG failed to converge
+        if (flag ~= 0)
+            warning('CHEBFUN:CHEBFUN:inufft2:tolerance',...
+                    ['Conjugate gradient method failed to converge to a ' ...
+                     'tolerance of %1.2e in %d iterations.  ' ...
+                     'Tolerance reached was %1.2e.'],100*tol,50,relres);
+        end    
+    end
+
+c = plan2(f);
+        
+p = @plan2;
+
 end
 
 function b = fastToeplitz(col, row, x)
