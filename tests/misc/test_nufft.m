@@ -73,9 +73,7 @@ fast = chebfun.nufft( c, x );
 pass(count) = norm( exact - fast, inf ) < 100*tol*norm(c,1);
 count = count + 1;
 
-pass = all(pass);
 end
-
 
 function f = nudft1( c, omega) 
 

@@ -19,8 +19,8 @@ function [c, p] = inufft( f, x, type, tol)
 %   a tolerance of TOL. By default, TOL = eps.
 %
 %   The algorithm in this MATLAB script is based on the paper:
-%       [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier
-%       transform based on low rank approximation", submitted, 2017.
+%    [1] D. Ruiz-Antoln and A. Townsend, "A nonuniform fast Fourier
+%    transform based on low rank approximation", SISC, 40 (2018), A529-A547.
 %   This paper relates the NUFFT to a FFT by low rank approximation.
 %   A faster MATLAB implementation outside of the Chebfun system
 %   is available from the author. Please email: townsend@cornell.edu.
