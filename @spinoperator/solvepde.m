@@ -102,14 +102,14 @@ end
 % Create a time-stepping scheme:
 schemeName = pref.scheme;
 K = [];
-try K = expint(schemeName);
+try K = expinteg(schemeName);
 catch
 end
 try K = imex(schemeName);
 catch
 end
 if ( isempty(K) == 1 )
-    error(['Unrecognized time-stepping scheme. See HELP/EXPINT and ', ...
+    error(['Unrecognized time-stepping scheme. See HELP/EXPINTEG and ', ...
         'HELP/IMEX for a list of available schemes.'])
 end
 q = K.steps;  % Number of steps of the scheme (q>1 for multistep schemes)
@@ -118,9 +118,9 @@ q = K.steps;  % Number of steps of the scheme (q>1 for multistep schemes)
 % nondiagonal SPINOPERATOR objects (sphere) use IMEX schemes. Check we're using
 % the right scheme:
 if ( isDiag(S) == 1 ) % 1D/2D/3D
-    if ( isa(K, 'expint') ~= 1 )
+    if ( isa(K, 'expinteg') ~= 1 )
         error(['Use exponential integrators with SPIN/SPIN2/SPIN3. ', ...
-            'See HELP/EXPINT.'])
+            'See HELP/EXPINTEG.'])
     end
 else % sphere
     if ( isa(K, 'imex') ~= 1 )
@@ -129,7 +129,7 @@ else % sphere
 end
 
 % Exponential integrators use contour integrals for computing the phi-functions:
-if ( isa(K, 'expint') == 1 )
+if ( isa(K, 'expinteg') == 1 )
     M = pref.M; % Number of points for complex means
 else
     M = [];

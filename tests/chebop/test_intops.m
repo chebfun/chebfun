@@ -40,5 +40,44 @@ err(4) = norm( A*u - f );
 
 pass = err < tol;
 
+%%
+% From #2122
+K = @(x,t) exp(t.*(x-t));
+N = chebop(@(x,y) diff(y) + y - x.*(1+2*x).*volt(K, y) - 1 - 2*x);
+N.lbc = 1;
+y = N\0;
+pass(5) = norm(N.op(y)) + abs(y(0)-1);
+
+%%
+% From #2179
+K = @(x,y) exp(-(x-y));
+A = chebop(@(x,u) diff(u) + fred(K,u));
+A.lbc = 0; 
+u = A\1;
+pass(6) = norm(A*u - 1, inf) < tol;
+
+%%
+% From https://groups.google.com/forum/#!topic/chebfun-users/0dpsggp1RyA . 
+% Also, see #2210.
+
+L = chebop(@(u) diff(u)+sum(u), [0 1]);
+L.lbc = 1; 
+u = L\0;
+pass(7) = norm(u - (1- 2*chebfun('x',[0 1])/3), inf) < tol;
+
+%%
+% From #2185 
+A = chebop(@(x,u) diff(u,2) + sin(2*pi*x)*u + sum(u).*u);
+A.bc = 'periodic'; 
+u = A\1;
+pass(8) = norm(A*u-1) < tol;
+
+f = chebfun(@(x) sin(5*pi*x));
+K = @(x,y) cos(-pi*(x-y));
+A = chebop(@(x,u) 1/25*diff(u,2) + fred(K, u));
+A.bc = 'periodic'; 
+u = A\f;
+pass(9) = norm(A*u-f) < tol;
+
 end
 

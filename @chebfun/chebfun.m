@@ -779,6 +779,9 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             op = vectorCheck(op, dom, vectorize);
         end
         if ( isa(op, 'chebfun') )
+            if ( op.isTransposed )
+                op = op';
+            end
             op = @(x) feval(op, x);
         end
         if ( isa(op, 'function_handle') && pref.enableFunqui )

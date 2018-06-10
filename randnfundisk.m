@@ -1,6 +1,6 @@
 function f = randnfundisk(lambda)
-%RANDNFUNDISK   Random smooth function on the unit disk
-%   F = RANDNFUNDISK(LAMBDA) returns a smooth DISKFUN of maximum
+%RANDNFUNDISK   Smooth random function on the unit disk
+%   F = RANDNFUNDISK(LAMBDA) returns a DISKFUN of maximum
 %   frequency about 2pi/LAMBDA and standard normal distribution N(0,1)
 %   at each point.  F is obtained by restricting output of RANDNFUN2
 %   to the unit disk.

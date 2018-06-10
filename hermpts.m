@@ -11,12 +11,14 @@ function [x, w, v] = hermpts(n, varargin)
 %   quadrature. [X,W,V] = HERMPTS(N) returns in addition a column vector V of
 %   the barycentric weights corresponding to X.
 %
-%   [X, W] = HERMPTS(N, METHOD) where METHOD is one of 'GW', 'REC', 'GLR', or 
+%   [X, W] = HERMPTS(N, METHOD) where METHOD is one of 'GW', 'REC', 'GLR', 'LAG' or 
 %   'ASY' allows the user to select which method is used. 'GW' will use the 
 %   traditional Golub-Welsch eigenvalue method [1], best when n<=20. 'REC' 
 %   uses Newton's method with polynomial evaluation via the 3-term 
 %   recurrence for Hermite polynomials. 'GLR' uses Glaser-Liu-Rokhlin 
-%   fast algorithm which is much faster for large N [2]. 'ASY' uses Newton's 
+%   fast algorithm which is much faster for large N [2]. 'LAG' uses a relation
+%   with Gauss-Laguerre for alpha^2 = 1/4, which the user can further exploit
+%   by letting lagpts only compute nonunderflowing weights. 'ASY' uses Newton's 
 %   method with polynomial evaluation via asymptotic formula. 'ASY' is the 
 %   fastest for N>=200, 'GLR' is the most accurate for nodes close to 0. 
 %   By default HERMPTS uses 'GW' when N <= 20, 'REC' for 21<=N<200, and
@@ -38,6 +40,7 @@ function [x, w, v] = hermpts(n, varargin)
 %
 % 'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
 % 'GLR' by Nick Hale, March 2010 - algorithm adapted from [2].
+% 'LAG' by Peter Opsomer, August 2017.
 
 % Defaults:
 method = 'default';
@@ -63,6 +66,8 @@ while ( ~isempty(varargin) )
         method = 'GLR';  
     elseif ( strcmpi(s,'rec') )
         method = 'REC';
+    elseif ( strcmpi(s,'lag') )
+        method = 'LAG';
     elseif ( strcmpi(s,'asy') )
         method = 'ASY';
     elseif ( strncmpi(s, 'phys', 3) )
@@ -124,6 +129,32 @@ elseif ( strcmpi(method,'GLR') )
         ii = (n/2+1):n; 
         v(ii) = -v(ii); 
     end
+    
+elseif ( strcmpi(method,'LAG') )
+    % Analogy with Gauss-Laguerre
+    
+    if mod(n,2) % Odd n
+        nh = (n-1)/2;
+        [x, w] = lagpts(nh, 1/2);
+        w = w./x'/2;
+        w0 = pi*factorial(nh)/n/gamma(nh +1/2);
+        if nh > 64
+            ratio = 1 + 1/8/nh + 1/128/nh^2 -5/1024/nh^3 -21/32768/nh^4 ...
+                + 399/262144/nh^5 + 869/4194304/nh^6 -39325/33554432/nh^7 ...
+                -334477/2147483648/nh^8 +28717403/17179869184/nh^9 ...
+                + 59697183/274877906944/nh^10;
+            w0 = pi*ratio/n*sqrt(nh);
+        end
+        w = [fliplr(w), w0, w];
+        x = sqrt(x);
+        x = [-flipud(x); 0; x];
+    else
+        [x, w] = lagpts(n/2, -1/2);
+        x = sqrt(x);
+        x = [-flipud(x); x];
+        w = [fliplr(w), w]/2;
+    end
+    v = (-1).^(0:n-1)'.*sqrt(w)/sqrt(max(w));  % Barycentric weights
     
 elseif ( (n < 200 && strcmpi(method,'default')) || strcmpi(method,'REC') )
     

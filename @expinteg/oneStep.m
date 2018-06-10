@@ -2,8 +2,8 @@ function [uSol, NuSol] = oneStep(K, ~, schemeCoeffs, Nc, Nv, nVars, S, uSol, NuS
 %ONESTEP   Compute solution at t_{n+1} from solution at previous time-steps.
 %   [USOL, NUSOL] = ONESTEP(K, SCHEMECOEFFS, NC, NV, NVARS, USOL, NUSOL) updates 
 %   the solution USOL and its nonlinear evaluations NUSOL using the coefficients 
-%   SCHEMECOEFFS of the EXPINT K, the nonlinear parts of the PDE in coefficient
-%   and value space NC and NV, the number of variables NVARS and the
+%   SCHEMECOEFFS of the EXPINTEG K, the nonlinear part of the PDE in coefficient
+%   and value spaces NC and NV, the number of variables NVARS and the 
 %   SPINOPERATOR S.
 
 % Notes: USOL and NUSOL are cell-arrays of Fourier coefficients that represent 

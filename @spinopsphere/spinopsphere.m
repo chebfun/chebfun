@@ -126,7 +126,7 @@ end
             u0 = @(lam,th) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A;
             u0 = spherefun(u0);
             u0 = .1*u0 + spherefun.sphharm(8, 6);
-            u0 = u0/norm(u0, inf);
+            u0 = rotate(u0/norm(u0, inf), 0, -pi/4, 0);
         else
             error('SPINOPSPHERE:parseInputs', 'Unrecognized PDE.')
         end

@@ -55,9 +55,21 @@ classdef (InferiorClasses = {?double}) chebop
 % left and right endpoints of the domain D. Possible values for LBC and RBC are:
 %
 %   []          : No condition (for only assigning LBC or RBC in constructor).
-%   vector      : Only supported in the scalar case. The value of the solution 
-%                 is given by the first entry of the vector, the value of its
-%                 first derivative by the second entry, etc.
+%   vector      : Only supported in the scalar case, and for first order
+%                 coupled systems (i.e. no support for higher order coupled
+%                 systems). 
+%                   * In the scalar case, the value of the solution is given by
+%                     the first entry of the vector, the value of its first
+%                     derivative by the second entry, etc. E.g. for a second
+%                     order problem on [0,1], N.lbc = [1;3] specifies
+%                         u(0) = 1, u'(0) = 3.
+%                   * In the system case, the value of the first unknown
+%                     function at the endpoint is given by the first entry of
+%                     the vector, the value of the second unknown function by
+%                     the second entry of the vector, etc. E.g. for a system
+%                     with two unknown functions on [0,1], N.lbc = [1;3]
+%                     specifies
+%                         u(0) = 1, v(0) = 1.
 %   'dirichlet' : All variables equal zero.
 %   'neumann'   : All variables have derivative zero.
 %   function    : A function handle that must accept all dependent variables as

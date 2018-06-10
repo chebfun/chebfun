@@ -81,8 +81,8 @@ end
 holdState = ishold;
 
 % Plot the potential function:
-LW = 'linewidth';
-plot(V, 'k', LW, 2, 'jumpline', '-k'), hold on   
+LW = 'linewidth'; lw = 1;
+plot(V, 'k', LW, lw, 'jumpline', '-k'), hold on   
 s = sprintf('h = %4g      %d eigenstates', h, n);
 title(s, 'fontsize', 12)
 
@@ -97,10 +97,10 @@ ymin = ymin - 0*ydiff;
 Vxmin = feval(V, xmin); 
 Vxmax = feval(V, xmax);
 if ( ymax > Vxmin )                              % The potential 
-    plot(xmin*[1 1], [ymax, Vxmin], 'k', LW, 2)  %   V(x) effectively
+    plot(xmin*[1 1], [ymax, Vxmin], 'k', LW, lw)  %   V(x) effectively
 end                                              %   goes to infinity
 if ( ymax > Vxmax )                              %   at the endpoints,
-    plot(xmax*[1 1], [ymax Vxmax], 'k', LW, 2)   %   so we make the
+    plot(xmax*[1 1], [ymax Vxmax], 'k', LW, lw)   %   so we make the
 end                                              %   plot show this.
 dx = .05*(xmax - xmin); 
 dy = .25*ydiff/max(5, n);
@@ -116,15 +116,15 @@ for j = 1:n
     W{j} = W{j} + d(j);
 end
 W = horzcat(W{:});
-plot(W, LW, 1.5)
+plot(W, LW, lw)
 
 % Plot V(x) again (so that black ends up on top):
-plot(V, 'k', LW, 2, 'jumpline', '-k')
+plot(V, 'k', LW, lw, 'jumpline', '-k')
 if ( ymax > Vxmin )
-    plot(xmin*[1, 1], [ymax, Vxmin], 'k', LW, 2)
+    plot(xmin*[1, 1], [ymax, Vxmin], 'k', LW, lw)
 end                                          
 if ( ymax > Vxmax )
-    plot(xmax*[1, 1], [ymax Vxmax], 'k', LW, 2)    
+    plot(xmax*[1, 1], [ymax Vxmax], 'k', LW, lw)    
 end
 
 % Set axis:

@@ -70,13 +70,15 @@ end
 % horner_vec_cmplx(x, c).
 function q = horner_scl_cmplx(x, c)
 N = size(c, 1);
-z = exp(1i*pi*x); % Use complex exponential
-q = c(N);  % Same as polyval for coeffs flipped from 0th deg to Nth deg
 
 % Just return the constant term.
 if N == 1
+    q = ones( size(x, 1), 1)*c(N);
     return
 end
+
+z = exp(1i*pi*x); % Use complex exponential
+q = c(N);  % Same as polyval for coeffs flipped from 0th deg to Nth deg
 
 for j = N-1:-1:2
     q = c(j) + z.*q;
