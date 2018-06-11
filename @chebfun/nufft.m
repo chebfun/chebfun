@@ -23,8 +23,8 @@ function [f, p] = nufft(c, x, omega, type)
 %   of TOL. By default, TOL = eps.
 %
 %   The algorithm in this MATLAB script is based on the paper:
-%       [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier
-%       transform based on low rank approximation", submitted, 2017.
+%    [1] D. Ruiz-Antoln and A. Townsend, "A nonuniform fast Fourier
+%    transform based on low rank approximation", SISC, 40 (2018), A529-A547.
 %   This paper relates the NUFFT to sums of FFTs by low rank approximation.
 %
 % See also chebfun.inufft and chebfun.ndct. 
