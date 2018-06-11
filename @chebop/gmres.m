@@ -1,33 +1,31 @@
 function [u,flag,relres,iter,resvec] = gmres(L,f,restart,tol,maxit,R1,R2,u0,varargin)
 %GMRES    A Preconditioned Generalized Minimal Residual method for ODEs.
-%   U = GMRES(L,F) attempts to solve the linear ODE L(U) = F on DOMAIN(L)
-%   with boundary conditions. The linop must be a self-adjoint, uniformly
-%   elliptic second-order differential operator of the form
+%   U = GMRES(L,F) attempts to solve the linear ODE L(U) = F on DOMAIN(L) with
+%   boundary conditions. The CHEBOP L must be a self-adjoint, uniformly elliptic
+%   second-order differential operator of the form
 %          L(U) = (a(x)*U')' b(x)*U' + c(x)U,
-%   with dirichlet boundary conditions.
-%   The righthand side F should be a chebfun on DOMAIN(L).
-%   By default the indefinite integral operator is employed as a
-%   preconditioner. This uses the unrestarted method with the maximum
-%   number of iteration set in chebfun.pref.
+%   with dirichlet boundary conditions. The righthand side F should be a chebfun
+%   on DOMAIN(L). By default the indefinite integral operator is employed as a
+%   preconditioner. This uses the unrestarted method with the maximum number of
+%   iteration set in chebfun.pref.
 %
-%   U = GMRES(L,F,RESTART) restarts the method every RESTART iterations.
-%   If RESTART is N or [] then GMRES uses the unrestarted method as above.
+%   U = GMRES(L,F,RESTART) restarts the method every RESTART iterations. If
+%   RESTART is N or [] then GMRES uses the unrestarted method as above.
 %
-%   U = GMRES(L,F,RESTART,TOL) specifies the tolerance of the method.  If
-%   TOL is [] then GMRES uses the default, cheboppref().bvpTol.
+%   U = GMRES(L,F,RESTART,TOL) specifies the tolerance of the method.  If TOL is
+%   [] then GMRES uses the default, cheboppref().bvpTol.
 %
 %   U = GMRES(L,F,RESTART,TOL,MAXIT) specifies the maximum number of outer
-%   iterations. Note: the total number of iterations is RESTART*MAXIT. If
-%   MAXIT is [] then GMRES uses the default,  cheboppref().maxIter; If
-%   RESTART is [] then the total number of iterations is
-%   cheboppref().maxIter.
+%   iterations. Note: the total number of iterations is RESTART*MAXIT. If MAXIT
+%   is [] then GMRES uses the default,  cheboppref().maxIter; If RESTART is []
+%   then the total number of iterations is cheboppref().maxIter.
 %
-%   U = GMRES(L,F,RESTART,TOL,MAXIT,R1,R2) use preconditioner M or M=M1*M2
-%   and effectively solve the system R2(L(R1(U))) = R2(F) for U. Only the
-%   default preconditioner is currently supported.
+%   U = GMRES(L,F,RESTART,TOL,MAXIT,R1,R2) use preconditioner M or M=M1*M2 and
+%   effectively solve the system R2(L(R1(U))) = R2(F) for U. Only the default
+%   preconditioner is currently supported.
 %
-%   U = GMRES(L,F,RESTART,TOL,MAXIT,R1,R2,U0) specifies the initial guess. If U0 is
-%   [] then GMRES uses the default, the zero function on DOMAIN(L).
+%   U = GMRES(L,F,RESTART,TOL,MAXIT,R1,R2,U0) specifies the initial guess. If U0
+%   is [] then GMRES uses the default, the zero function on DOMAIN(L).
 %
 %   [U,FLAG] = GMRES(L,F,...) also returns a convergence FLAG:
 %    0 GMRES converged to the desired tolerance TOL within MAXIT iterations.
@@ -36,15 +34,14 @@ function [u,flag,relres,iter,resvec] = gmres(L,f,restart,tol,maxit,R1,R2,u0,vara
 %    3 GMRES stagnated (two consecutive iterates were the same).
 %
 %   [U,FLAG,RELRES] = GMRES(L,F,...) also returns the relative residual
-%   NORM(R2(F)-R2(L(U)))/NORM(R2(F)). If FLAG is 0, then RELRES <= TOL. 
+%   NORM(R2(F)-R2(L(U)))/NORM(R2(F)). If FLAG is 0, then RELRES <= TOL.
 %
-%   [U,FLAG,RELRES,ITER] = GMRES(L,F,...) also returns both the outer and
-%   inner iteration numbers at which X was computed: 0 <= ITER(1) <= MAXIT
-%   and 0 <= ITER(2) <= RESTART.
+%   [U,FLAG,RELRES,ITER] = GMRES(L,F,...) also returns both the outer and inner
+%   iteration numbers at which X was computed: 0 <= ITER(1) <= MAXIT and 0 <=
+%   ITER(2) <= RESTART.
 %
-%   [U,FLAG,RELRES,ITER,RESVEC] = GMRES(L,F,...) also returns a vector of
-%   the residual norms at each inner iteration, including
-%   NORM(R2(F)-R2(L(U0)).
+%   [U,FLAG,RELRES,ITER,RESVEC] = GMRES(L,F,...) also returns a vector of the
+%   residual norms at each inner iteration, including NORM(R2(F)-R2(L(U0)).
 %
 % See also CHEBOP/PCG and CHEBOP/MINRES.
 
@@ -54,14 +51,14 @@ function [u,flag,relres,iter,resvec] = gmres(L,f,restart,tol,maxit,R1,R2,u0,vara
 % Only continue if L is a linear chebop:
 if ( ~all(islinear(L)) )
     error('CHEBFUN:CHEBOP:pcg:nonlinear', ...
-        'PCG supports only linear CHEBOP instances.');
+        'GMRES supports only linear CHEBOP instances.');
 end
 
 % At the moment, we need a second-order differential equation:
 LinearOp = linop( L );
-if ( LinearOp.diffOrder ~=2 )
+if ( LinearOp.diffOrder ~= 2 )
     error('CHEBFUN:CHEBOP:pcg:DiffOrder', ...
-        'Currently, we require the differential operator to second-order, and fundamental algorithmic questions need to be answered to extend to general linear ODEs.');
+        'GMRES supports only second-order ODEs.');
 end
 
 if (nargin < 2)
@@ -82,7 +79,7 @@ if ( isa( L, 'chebop' ) )
         % Current implementation requires Dirichlet boundary conditions: 
         if ( ~isa(left_bc, 'double' ) )
             error('CHEBFUN:CHEBOP:pcg:leftbc', ...
-                   'Currently, we require Dirichlet boundary conditions. Please supply N.lbc = double.');
+                   'GMRES only supports Dirichlet boundary conditions. Please supply N.lbc = double.');
         end
     end
     
@@ -93,7 +90,7 @@ if ( isa( L, 'chebop' ) )
         % Current implementation requires Dirichlet boundary conditions: 
         if ( ~isa(right_bc, 'double' ) )
             error('CHEBFUN:CHEBOP:pcg:rightbc', ...
-                   'Currently, we require Dirichlet boundary conditions. Please supply N.rbc = double.');
+                   'GMRES only supports Dirichlet boundary conditions. Please supply N.lbc = double.');
         end
     end
     
@@ -122,22 +119,22 @@ b = bminusa + diff(a);
 L = @(v) -diff( a.*diff( v ) ) + b.*diff( v ) +  c.*v;
 
 % Assign default values to unspecified parameters
-if (nargin < 3) || isempty(restart) 
+if ( (nargin < 3) || isempty(restart)  )
     restarted = false;
 else
     restarted = true;
 end
 
-if (nargin < 4) || isempty(tol)
+if ( (nargin < 4) || isempty(tol) )
     tol = cheboppref().bvpTol;
 end
 
 warned = 0;
-if tol < eps
+if ( tol < eps )
     warning(message('chebop:gmres:tooSmallTolerance'));
     warned = 1;
     tol = eps;
-elseif tol >= 1
+elseif ( tol >= 1 )
     warning(message('chebop:gmres:tooBigTolerance'));
     warned = 1;
     tol = 1-eps;
@@ -147,7 +144,7 @@ if (nargin < 5) || isempty(maxit)
     maxit = cheboppref().maxIter;
 end
 
-if restarted
+if ( restarted )
     outer = maxit;
     inner = restart;
 else
@@ -155,8 +152,7 @@ else
     inner = maxit;
 end
 
-
-if ((nargin < 6) || isempty(R1))
+if ( (nargin < 6) || isempty(R1) )
     % Preconditioner:
     R1 = @(u) cumsum(u);
 else
@@ -164,14 +160,13 @@ else
    error(message('chebop:gmres:OnlyDefaultPreconditionerAllowed'))
 end
 
-if ((nargin < 7) || isempty(R2))
+if ( (nargin < 7) || isempty(R2) )
     % Adjoint operator to R1:
     R2 = @(u) sum(u) - cumsum(u);
 else
    % The method only works with the default preconditioner:
    error(message('chebop:gmres:OnlyDefaultPreconditionerAllowed'))
 end
-
 
 % Projection operator
 Pi = @(g) g - mean(g);
@@ -195,7 +190,6 @@ end
 if (nargin > 8) 
     error(message('chebop:gmres:TooManyInputs'));
 end
-
 
 % Ensure that rhs is within the correct space, and if not then solve a
 % modified problem. 
@@ -221,15 +215,12 @@ else
     z = 0*f;
 end
 
-
-
 % Set up for the method
 flag = 1;
 umin = u;                        % Iterate which has minimal residual so far
 imin = 0;                        % "Outer" iteration at which xmin was computed
 jmin = 0;                        % "Inner" iteration at which xmin was computed
 tolg = tol * norm(g);                % Relative tolerance
-evalxm = 0;
 stag = 0;
 moresteps = 0;
 maxmsteps = 5;
@@ -237,10 +228,10 @@ maxstagsteps = 3;
 minupdated = 0;
 
 r = g - Tu;
-normr = norm(r,2);                   % Norm of residual
+normr = norm(r,2);               % Norm of residual
 normr_act = normr;
 
-if (normr <= tolg)                 % Initial guess is a good enough solution
+if (normr <= tolg)               % Initial guess is a good enough solution
     flag = 0;
     relres = normr / n2f;
     resvec = normr;
@@ -249,9 +240,8 @@ if (normr <= tolg)                 % Initial guess is a good enough solution
     return
 end
 
-
 normr = norm(r);                 % norm of the preconditioned residual
-n2g = norm(g);         % norm of the preconditioned rhs
+n2g = norm(g);                   % norm of the preconditioned rhs
 tolg = tol * n2g;
 if (normr <= tolg)               % Initial guess is a good enough solution
     flag = 0;
@@ -261,21 +251,18 @@ if (normr <= tolg)               % Initial guess is a good enough solution
     return
 end
 
-resvec = zeros(inner*outer+1,1);  % Preallocate vector for norm of residuals
-resvec(1) = normr;                % resvec(1) = norm(b-A*x0)
-normrmin = normr;                 % Norm of residual from xmin
-
-
+resvec = zeros(inner*outer+1,1); % Preallocate vector for norm of residuals
+resvec(1) = normr;               % resvec(1) = norm(b-A*x0)
+normrmin = normr;                % Norm of residual from xmin
 R = zeros(inner,inner);
 
-for outiter = 1 : outer
-    
-    
+for outiter = 1:outer
+
     H = [];
     QTb = norm(r);
-    Q = r/QTb ;                                    % Krylov basis
+    Q = r/QTb ;                  % Krylov basis
     
-    for initer = 1 : inner
+    for initer = 1:inner
         
         % Next Krylov vector, with preconditioners.
         q = Q(:,initer);
@@ -287,11 +274,10 @@ for outiter = 1 : outer
             v = v - H(k,initer)*Q(:,k);
         end
         H(initer+1,initer) = norm(v);                          
-
         
         % Use QR factorization to find the residual norm.
         % TODO: This could be made more efficient (worthwhile?).
-        QTb(initer+1,1) = 0;                              % by orthogonality
+        QTb(initer+1,1) = 0;      % by orthogonality
         [P, R] = qr(H);
  
         % New basis vector:
@@ -301,10 +287,10 @@ for outiter = 1 : outer
         resvec((outiter-1)*inner+initer+1) = normr;
         normr_act = normr;
         
-        if (normr <= tolg || stag >= maxstagsteps || moresteps)
+        if ( normr <= tolg || stag >= maxstagsteps || moresteps )
             % Evalute this outer loop's solution
-            y = R(1:initer,1:initer)\(P(:,1:initer)'*QTb);                % least squares soln
-            additive = Q(:,1:initer)*y;                               % new part of solution
+            y = R(1:initer,1:initer)\(P(:,1:initer)'*QTb);  % least squares soln
+            additive = Q(:,1:initer)*y;                     % new part of solution
             if norm(additive) < eps*norm(u)
                 stag = stag + 1;
             else
@@ -313,12 +299,12 @@ for outiter = 1 : outer
             % Current total solution
             um = u + additive;
 
-            %Evaluate current residual
+            % Evaluate current residual
             r = g - T(um);
             normr_act = norm(r);
             resvec((outiter-1)*inner+initer+1) = normr_act;
             
-            if normr_act <= normrmin
+            if ( normr_act <= normrmin )
                 normrmin = normr_act;
                 imin = outiter;
                 jmin = initer;
@@ -326,18 +312,18 @@ for outiter = 1 : outer
                 minupdated = 1;
             end
             
-            if normr_act <= tolg
+            if ( normr_act <= tolg )
                 u = um;
                 flag = 0;
                 iter = [outiter, initer];
                 break
             else
-                if stag >= maxstagsteps && moresteps == 0
+                if ( stag >= maxstagsteps && moresteps == 0 )
                     stag = 0;
                 end
                 moresteps = moresteps + 1;
-                if moresteps >= maxmsteps
-                    if ~warned
+                if ( moresteps >= maxmsteps )
+                    if ( ~warned )
                         warning(message('chebop:gmres:tooSmallTolerance'));
                     end
                     flag = 3;
@@ -347,28 +333,26 @@ for outiter = 1 : outer
             end
         end
         
-        if normr_act <= normrmin
+        if ( normr_act <= normrmin )
             normrmin = normr_act;
             imin = outiter;
             jmin = initer;
             minupdated = 1;
         end
         
-        if stag >= maxstagsteps
+        if ( stag >= maxstagsteps )
             flag = 3;
             break;
         end
     end         % ends inner loop
-    
-    evalxm = 0;
-    
-    if flag ~= 0
+
+    if ( flag ~= 0 )
         if minupdated
             idx = jmin;
         else
             idx = initer;
         end
-        y = R(1:idx,1:idx)\(P(:,1:idx)'*QTb);                % least squares soln
+        y = R(1:idx,1:idx)\(P(:,1:idx)'*QTb); % least squares soln
         additive = Q(:,1:idx)*y;   
         u = u + additive;
         umin = u;
@@ -376,26 +360,26 @@ for outiter = 1 : outer
         normr_act = norm(r);
     end
     
-    if normr_act <= normrmin
+    if ( normr_act <= normrmin )
         umin = u;
         normrmin = normr_act;
         imin = outiter;
         jmin = initer;
     end
     
-    if flag == 3
-        break;
+    if ( flag == 3 )
+        break
     end
-    if normr_act <= tolg
+    if ( normr_act <= tolg )
         flag = 0;
         iter = [outiter, initer];
-        break;
+        break
     end
     minupdated = 0;
 end         % ends outer loop
 
 % returned solution is that with minimum residual
-if flag == 0
+if ( flag == 0 )
     relres = normr_act / n2g;
 else
     u = umin;
@@ -403,11 +387,11 @@ else
     relres = normr_act / n2g;
 end
 
-%Undo preconditioner, readd BC subsolution
+%Undo preconditioner, read BC subsolution
 u = R1(u) + z;
 
 resvec = resvec(1:(outiter-1)*inner+initer+1);
-if flag == 2 && initer ~= 0
+if ( flag == 2 && initer ~= 0 )
     resvec(end) = [];
 end
 

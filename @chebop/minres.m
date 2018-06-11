@@ -1,27 +1,26 @@
 function [u,flag,relres,iter,resvec] = minres(L,f,tol,maxit,R1,R2,u0,varargin)
 %MINRES    A Preconditioned Minimal Residual method for ODEs.
-%   U = MINRES(L,F) attempts to solve the linear ODE L(U) = F on DOMAIN(L)
-%   with boundary conditions. The linop must be a self-adjoint, uniformly
-%   elliptic second-order differential operator of the form
+%   U = MINRES(L,F) attempts to solve the linear ODE L(U) = F on DOMAIN(L) with
+%   boundary conditions. The CHEBOP L must be a self-adjoint, uniformly elliptic
+%   second-order differential operator of the form
 %          L(U) = (a(x)*U')' + c(x)U,
-%   with dirichlet boundary conditions.
-%   The righthand side F should be a chebfun on DOMAIN(L).
-%   By default the indefinite integral operator is employed as a
+%   with dirichlet boundary conditions. The righthand side F should be a chebfun
+%   on DOMAIN(L). By default the indefinite integral operator is employed as a
 %   preconditioner.
 %
-%   U = MINRES(L,F,TOL) specifies the tolerance of the method. If TOL is []
-%   then MINRES uses the default in cheboppref.
+%   U = MINRES(L,F,TOL) specifies the tolerance of the method. If TOL is [] then
+%   MINRES uses the default in cheboppref.
 %
 %   U = MINRES(L,F,TOL,MAXIT) specifies the maximum number of iterations. If
 %   MAXIT is [] then MINRES uses the default in cheboppref.
 %
 %   U = MINRES(L,F,TOL,MAXIT,R1,R2) solves the preconditioned linear ODE of
-%   (R2*L*R1)(V) = R2*f, where R2 must be the adjoint of R1. R1 and R2 must
-%   be function handles. If R1 = [], then the default preconditioner is
-%   employed. Only the default preconditioner is currently supported.
+%   (R2*L*R1)(V) = R2*f, where R2 must be the adjoint of R1. R1 and R2 must be
+%   function handles. If R1 = [], then the default preconditioner is employed.
+%   Only the default preconditioner is currently supported.
 %
-%   U = MINRES(L,F,TOL,MAXIT,R1,R2,U0) specifies the initial guess. If U0 is
-%   [] then MINRES MINRES the default, the zero function on DOMAIN(L).
+%   U = MINRES(L,F,TOL,MAXIT,R1,R2,U0) specifies the initial guess. If U0 is []
+%   then MINRES MINRES the default, the zero function on DOMAIN(L).
 %
 %   [U,FLAG] = MINRES(L,F,...) also returns a convergence FLAG:
 %    0 MINRES converged to the desired tolerance TOL within MAXIT iterations
@@ -34,12 +33,11 @@ function [u,flag,relres,iter,resvec] = minres(L,f,tol,maxit,R1,R2,u0,varargin)
 %   [U,FLAG,RELRES] = MINRES(L,F,...) also returns the relative residual
 %    NORM(R2(F)-R2(L(U)),2)/NORM(F,2). If FLAG is 0, then RELRES <= TOL.
 %
-%   [U,FLAG,RELRES,ITER] = MINRES(L,F,...) also returns the iteration number
-%   at which U was computed: 0 <= ITER <= MAXIT.
+%   [U,FLAG,RELRES,ITER] = MINRES(L,F,...) also returns the iteration number at
+%   which U was computed: 0 <= ITER <= MAXIT.
 %
-%   [U,FLAG,RELRES,ITER,RESVEC] = MINRES(L,F,...) also returns a vector of the
-%   estimated residual norms at each iteration including
-%   NORM(R2(F)-R2(L(Uk)),2).
+%   [U,FLAG,RELRES,ITER,RESVEC] = MINRES(L,F,...) returns a vector of estimated
+%   residual norms at each iteration including NORM(R2(F)-R2(L(Uk)),2).
 %
 % See also CHEBOP/PCG and CHEBOP/GMRES.
 
@@ -49,17 +47,17 @@ function [u,flag,relres,iter,resvec] = minres(L,f,tol,maxit,R1,R2,u0,varargin)
 % Only continue if L is a linear chebop:
 if ( ~all(islinear(L)) )
     error('CHEBFUN:CHEBOP:pcg:nonlinear', ...
-        'PCG supports only linear CHEBOP instances.');
+        'MINRES supports only linear CHEBOP instances.');
 end
 
 % At the moment, we need a second-order differential equation:
 LinearOp = linop( L );
 if ( LinearOp.diffOrder ~=2 )
     error('CHEBFUN:CHEBOP:pcg:DiffOrder', ...
-        'Currently, we require the differential operator to second-order, and fundamental algorithmic questions need to be answered to extend to general linear ODEs.');
+        'MINRES supports only second-order ODEs.');
 end
 
-if (nargin < 2)
+if ( nargin < 2 )
     error(message('chebop:minres:NotEnoughInputs'));
 end
 
@@ -82,7 +80,7 @@ if ( isa( L, 'chebop' ) )
         end
     end
     
-    if isempty(L.rbc)
+    if ( isempty(L.rbc) )
         right_bc = 0;
     else
         right_bc = L.rbcShow;
@@ -115,7 +113,7 @@ a = -L(x, x.^2/2) - (-L(x, x) + c.*x).*x + c.*(x.^2/2);
 L = @(v) -diff( a.*diff( v ) ) + c.*v;
 
 % Assign default values to unspecified parameters
-if (nargin < 3) || isempty(tol)
+if ( (nargin < 3) || isempty(tol) )
     tol = cheboppref().bvpTol;
 end
 warned = 0;
@@ -128,11 +126,11 @@ elseif ( tol >= 1 )
     warned = 1;
     tol = 1-eps;
 end
-if (nargin < 4) || isempty(maxit)
+if ( (nargin < 4) || isempty(maxit) )
     maxit = cheboppref().maxIter;
 end
 
-if ((nargin < 5) || isempty(R1))
+if ( (nargin < 5) || isempty(R1) )
     % Preconditioner:
     R1 = @(u) cumsum(u);
 else
@@ -140,7 +138,7 @@ else
     error(message('chebop:pcg:OnlyDefaultPreconditionerAllowed'))
 end
 
-if ((nargin < 6) || isempty(R2))
+if ( (nargin < 6) || isempty(R2) )
     % Adjoint operator to R1:
     R2 = @(u) sum(u) - cumsum(u);
 else
@@ -155,7 +153,7 @@ Pi = @(g) g - mean(g);
 x = chebfun( @(x) x, dom );
 T = @(v) Pi( R2( L( R1( v ) ) ) );
 
-if ((nargin >= 7) && ~isempty(u0))
+if ( (nargin >= 7) && ~isempty(u0) )
     if ( ~domainCheck(f, u0) )
         error(message('chebop:pcg:WrongInitGuessDomain'));
     else
@@ -168,12 +166,12 @@ else
     Tu = u;
 end
 
-if (nargin > 7)
+if ( nargin > 7 )
     error(message('chebop:minres:TooManyInputs'));
 end
 
-% Ensure that rhs is within the correct space, and if not then solve a
-% modified problem.
+% Ensure that rhs is within the correct space, and if not then solve a modified
+% problem.
 R2f = R2( f );
 PiR2f = Pi( R2f );
 if ( norm( R2f - PiR2f ) > tol || norm(left_bc)> tol || norm(right_bc) > tol )
@@ -196,19 +194,17 @@ else
     z = 0*f;
 end
 
-
-
 % Set up for the method
 flag = 1;
 iter = 0;
 umin = u;                          % Iterate which has minimal residual so far
 imin = 0;                          % Iteration at which xmin was computed
-tolg = tol * normest(g);                  % Relative tolerance
+tolg = tol * normest(g);           % Relative tolerance
 r = g - Tu;
-normr = norm(r,2);                   % Norm of residual
+normr = norm(r,2);                 % Norm of residual
 normr_act = normr;
 
-if (normr <= tolg)                 % Initial guess is a good enough solution
+if ( normr <= tolg )               % Initial guess is a good enough solution
     flag = 0;
     relres = normr / n2f;
     resvec = normr;
@@ -224,7 +220,7 @@ normrmin = normr;                  % Norm of minimum residual
 vold = r;
 v = vold;
 beta1 = innerProduct(vold, v);
-if (beta1 <= 0)
+if ( beta1 <= 0 )
     flag = 5;
     relres = normr / n2b;
     resvec = resvec(1);
@@ -247,7 +243,7 @@ volder = vold;
 vold = v;
 betaold = beta1;
 beta = innerProduct(v,v);
-if (beta < 0)
+if ( beta < 0 )
     flag = 5;
     relres = normr / n2b;
     resvec = resvec(1);
@@ -267,15 +263,13 @@ Am = Amvv / gamma;
 cs = gammabar / gamma;
 sn = beta / gamma;
 u = u + snprod * cs * m;
-snprodold = snprod;
 snprod = snprod * sn;
 
 normr = abs(snprod);
 resvec(2,1) = normr;
 
-
 % Check for convergence after first step.
-if normr <= tolg
+if ( normr <= tolg )
     flag = 0;
     relres = normr / n2f;
     resvec = resvec(1:2);
@@ -289,8 +283,7 @@ maxmsteps = min([floor(n/50),5,n-maxit]);
 maxstagsteps = 3;
 
 % loop over maxit iterations (unless convergence or failure)
-
-for ii = 2 : maxit
+for ii = 2:maxit
     
     vv = v * (1/beta);
     v = T(vv);
@@ -330,13 +323,12 @@ for ii = 2 : maxit
         stag = 0;
     end
     u = u + (snprod * cs) * m;
-    snprodold = snprod;
     snprod = snprod * sn;
     normr = abs(snprod);
     
     resvec(ii+1,1) = normr;
     
-    % check for convergence
+    % Check for convergence
     if ( ( normr <= tolg ) || ( stag >= maxstagsteps ) || moresteps)
         % double check residual norm is less than tolerance
         r = g - T( u );
@@ -362,18 +354,18 @@ for ii = 2 : maxit
         end
     end
     
-    if (normr < normrmin)      % update minimal norm quantities
+    if ( normr < normrmin )        % update minimal norm quantities
         normrmin = normr;
         umin = u;
         imin = ii;
     end
     
-    if (stag >= maxstagsteps)      % 3 iterates are the same
+    if ( stag >= maxstagsteps )    % 3 iterates are the same
         flag = 3;
         break
     end
 end                                % for ii = 1 : maxit
-if isempty(ii)
+if ( isempty(ii) )
     ii = 1;
 end
 
@@ -396,7 +388,7 @@ end
 u = R1( u ) + z;
 
 % truncate the zeros from resvec
-if ((flag <= 1) || (flag == 3))
+if ( (flag <= 1) || (flag == 3) )
     resvec = resvec(1:ii+1);
 else
     resvec = resvec(1:ii);
