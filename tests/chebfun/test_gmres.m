@@ -13,7 +13,7 @@ d = [-1 1];
 x = chebfun('x', d, pref);
 f = chebfun('exp(x)', d, pref);
 w = 100;
-L = chebop(@(u) diff(u) + 1i*w*u, d);
+L = @(u) diff(u) + 1i*w*u;
 
 [u, flag] = gmres(L, f);
 pass(1) = ~flag;
