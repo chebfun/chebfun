@@ -1,5 +1,5 @@
 function varargout = svds(A, varargin)
-%SVDS    Eigenvalues and eigenfunctions of a linear operator.
+%SVDS   Find selected singularvalues and singularfunctions of a linear operator.
 %   Important (1): While you can construct a LINOP and apply this method, the
 %   recommended procedure is to use CHEBOP/SVDS instead.
 %   Important (2): A CHEBOPPREF object PREFS has to be passed. When this method
