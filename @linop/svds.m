@@ -82,11 +82,11 @@ if ( isempty(k) || isnan(k) )
     k = 6;
 end
 
-% construct adjoint
-Astar = adjoint(A,bcType);
+% Construct adjoint
+Astar = linopAdjoint(A,bcType);
 
-% initialize superA to 0
-[m n] = size(A);
+% Initialize superA to 0
+[m, n] = size(A);
 dom = A.domain;
 nm = n + m;
 superA = linop(mat2cell(zeros(nm),ones(1,nm),ones(1,nm)));
@@ -98,7 +98,7 @@ for ii = 1:nm
 end
 superA.domain = A.domain;
 
-% fill the appropriate blocks
+% Fill the appropriate blocks
 for ii = 1:m
     for jj = 1:n
         superA.blocks{n+ii,jj} = A.blocks{ii,jj};
@@ -110,15 +110,15 @@ for ii = 1:n
     end
 end
 
-% get constraints
+% Get constraints
 C = A.constraint;
 Cstar = Astar.constraint;
 
-% get funs
+% Get funs
 Cfuns = C.functional; nc = size(Cfuns,1);
 Csfuns = Cstar.functional; ncs = size(Csfuns,1);
 
-% make superC
+% Make superC
 dor = max(max(A.diffOrder));
 superC.functional = [];
 z = functionalBlock.zero(dom);
@@ -144,32 +144,28 @@ for ii = 1:ncs
 end
 superC.values = zeros(dor*nm,1);
 
-% finish superA
+% Finish superA
 superA.constraint = superC;
 
-% count number of null vectors for A and Astar
+% Count number of null vectors for A and Astar
 nulA = dor*n-nc;
 
-% set number of singular values 
-% If the null space is empty then there are
-% exactly 2 copies +/- of k singular values.
-% If the null space is non-empty then those
-% zero singular values won't be repeated.
-% We compute two extra just to make sure 
-% got didn't lose one to a sign change.
+% Set number of singular values. If the null space is empty then there are
+% exactly 2 copies +/- of k singular values. If the null space is non-empty then
+% those zero singular values won't be repeated. We compute two extra just to
+% make sure got didn't lose one to a sign change.
 nsvals = 2 + 2*k-abs(nulA);
 
-% call linop/eigs using sigma = 0 since we
-% are assuming L is an unbounded differential 
-% operator
-warning('off','all') % turn warnings off
-if strcmp(bcType,'periodic')
+% Call linop/eigs using sigma = 0 since we are assuming L is an unbounded
+% differential operator
+% warning('off','all') % turn warnings off
+if ( strcmp(bcType,'periodic') )
     prefs.discretization = @trigcolloc;
 else
     prefs.discretization = @chebcolloc2;
 end
 [ Q, D ] = eigs( superA, nsvals, 0, prefs, 'rayleigh' );
-warning('on','all') % turn warnings back on
+% warning('on','all') % turn warnings back on
 
 % make sure singular values are real
 if ( any(imag(diag(D)) ~= 0) )
@@ -177,34 +173,35 @@ if ( any(imag(diag(D)) ~= 0) )
         'Computed singular values are not strictly real.');
 end
 
-% set tiny values of D to zero
+% Set tiny values of D to zero
 D = diag(D);
 D(abs(D) < prefs.bvpTol*max(abs(D))) = 0;
 
-% Sort by first inverting the singular values.
-% This works because for differential operators
-% the smoothest singular functions always correspond
-% to the tiniest singular values.
+% Sort by first inverting the singular values. This works because for
+% differential operators the smoothest singular functions always correspond to
+% the tiniest singular values.
 [D,id] = sort(1./D,'descend');
 Q = Q(:,id);
 
-% flip, reorder and discard unwanted functions.
+% Flip, reorder and discard unwanted functions.
 S = diag(1./D(k:-1:1));
 Q = Q(:,k:-1:1);
 
-% rescale singular vectors
+% Rescale singular vectors
 V = Q(1:n,:); nrmV = sqrt(diag(V'*V)); 
-nrmV( nrmV < prefs.bvpTol ) = 1; V = V*diag(1./nrmV);
-U = Q(n+1:end,:); nrmU = sqrt(diag(U'*U));
-nrmU( nrmU < prefs.bvpTol ) = 1; nrmU = 1./nrmU;
+nrmV( nrmV < prefs.bvpTol ) = 1; 
+V = V*diag(1./nrmV);
+U = Q(n+1:end,:); 
+nrmU = sqrt(diag(U'*U));
+nrmU( nrmU < prefs.bvpTol ) = 1; 
+nrmU = 1./nrmU;
 U = U*diag(nrmU);
 
-% set output
-if nargout <= 1
+% Set output
+if ( nargout <= 1 )
     varargout = { diag(S) };
-elseif nargout == 3
+elseif ( nargout == 3 )
     varargout = { U, S, V };
 else
-    error('CHEBFUN:LINOP:svds:outputs', ...
-        'SVDS requires one or three outputs.');
+    error('CHEBFUN:LINOP:svds:outputs', 'SVDS requires one or three outputs.');
 end
