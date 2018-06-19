@@ -6,9 +6,9 @@ classdef spinopsphere < spinoperator
 %   L is a linear operator and N is a nonlinear operator. 
 %
 %   S = SPINOPSPHERE(PDECHAR) creates a SPINOPSPHERE object S defined by the 
-%   string PDECHAR. Strings available include 'AC' for the Allen-Cahn equation,
-%   GL' for the Ginzburg-Landau equation and 'NLS' for the nonlinear 
-%   Schroedinger equation.
+%   string PDECHAR. Strings available include 'AC' for Allen-Cahn equation, 'GL'
+%   GL' for Ginzburg-Landau equation, 'GM' for Gierer-Meinhardt equations and 
+%   'NLS' for the nonlinear Schroedinger equation.
 %
 %   S = SPINOPSPHERE(TSPAN) creates a SPINOPSPHERE object S on SPHERE x TSPAN. 
 %   The other fields of a SPINOPSPHERE are its linear part S.LIN, its nonlienar 
@@ -30,7 +30,7 @@ classdef spinopsphere < spinoperator
 %
 %            tspan = [0 100];
 %            S = spinopsphere(tspan);
-%            S.lin = @(u) 1e-3*lap(u);
+%            S.lin = @(u) 5e-4*lap(u);
 %            S.nonlin = @(u) u - (1+1.5i)*u.*(abs(u).^2);
 %            S.init = spherefun.sphharm(8, 2);
 %
@@ -102,20 +102,31 @@ end
         elseif ( strcmpi(pdechar, 'GL') == 1 )
             L = @(u) 1e-3*lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-            u0 = @(x,y,z) cos(3*x)+cos(3*y)+cos(3*z);
-            tt = pi/8; c = cos(tt); s = sin(tt);
-            u0 = 1/3*spherefun(@(x,y,z) u0(c*x-s*z,y,s*x+c*z)); 
-            tspan = [0 30];
+            u0 = randnfunsphere(.1);
+            u0 = u0/norm(u0, inf);
+            tspan = [0 100];
             
+        % Gierer-Meinhardt equations:
+        elseif ( strcmpi(pdechar, 'GM') == 1 )
+            L = @(u,v) [4e-3*lap(u);4e-2*lap(v)];
+            N = @(u,v) [u.^2./v-u;u.^2-v]; 
+            tspan = [0 80];
+            u01 = @(x,y,z) 1 + .1*(cos(20*x)+cos(20*z)+cos(20*y));
+            u02 = @(x,y,z) 1 - .1*(cos(20*x)+cos(20*z)+cos(20*y));
+            u0 = chebmatrix([]);
+            u0(1,1) = spherefun(u01); 
+            u0(2,1) = spherefun(u02);
+              
         % Focusing nonlinear Schroedinger equation
         elseif ( strcmpi(pdechar, 'NLS') == 1 )
             L = @(u) 1i*lap(u);
             N = @(u) 1i*u.*abs(u).^2;
-            tspan = [0 10];
-            A = 2; B = 1;
+            tspan = [0 3];
+            A = 1; B = 1;
             u0 = @(lam,th) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A;
             u0 = spherefun(u0);
-            u0 = u0 + 4*spherefun.sphharm(6, 6);
+            u0 = .1*u0 + spherefun.sphharm(8, 6);
+            u0 = rotate(u0/norm(u0, inf), 0, -pi/4, 0);
         else
             error('SPINOPSPHERE:parseInputs', 'Unrecognized PDE.')
         end

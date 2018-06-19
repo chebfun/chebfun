@@ -1,86 +1,117 @@
 function [uout, tout] = spin2(varargin)
-%SPIN2  Solve a time-dependent PDE in 2D with periodicity in space, using a
-%Fourier spectral method and an exponential integrator time-stepping scheme.
+%SPIN2  Solve stiff PDEs in 2D periodic domains, Fourier spectral method and 
+%exponential integrators.
 %
 %   UOUT = SPIN2(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution as it computes it; it is a demo mode.
-%   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'GL2' for Ginzburg-Landau
-%   equation and 'GS2' for Gray-Scott equations. Many other PDEs are available,
-%   see Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding
-%   to the solution at the final time (a CHEBMATRIX for systems of equations,
-%   each row representing one variable).
+%   plays a movie of the solution. Possible strings include 'GL' and 'GS' for 
+%   the Ginzburg-Landau and Gray-Scott equations. Other PDEs are available, see 
+%   Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding to 
+%   the solution at the final time (a CHEBMATRIX for systems of equations, each 
+%   row representing one variable).
 %
 %   UOUT = SPIN2(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
-%   points in each direction and time-step DT. It plots a movie of the solution
-%   as it computes it. See HELP/SPINOP2 and Example 5.
-%
-%   UOUT = SPIN2(S, N, DT, PREF) allows one to use the preferences specified by
-%   the SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.
-%
-%   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
-%   alternative to the previous syntax. See Example 6.
+%   points in each direction and time-step DT, and plays a movie of the solution. 
+%   See HELP/SPINOP2 and Example 5.
 %
 %   [UOUT, TOUT] = SPIN2(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
 %
-% Remark 1: Available (case-insensitive) strings PDECHAR are
+%   Users of SPIN2 will quickly find they want to vary aspects of the plotting.
+%   The fully general syntax for this involves using preferences specified by
+%   a SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6. However for many 
+%   purposes it is most convenient to use the syntax
 %
-%    - 'GL2' for Ginzburg-Landau equation,
-%    - 'GS2' for Gray-Scott equations,
-%    - 'Schnak2' for Schnakenberg equations,
-%    - 'SH2' for Swift-Hohenberg equation.
+%   UOUT = SPIN2(..., 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
+%
+%   For example:
+%
+%   UOUT = SPIN2(..., 'Clim', [a b]) changes colorbar limits to [a b] 
+%   UOUT = SPIN2(..., 'colormap', 'jet') changes the colormap to 'jet'
+%   UOUT = SPIN2(..., 'dataplot', 'abs') plots absolute value
+%   UOUT = SPIN2(..., 'iterplot', 4) plots only every 4th time step 
+%   UOUT = SPIN2(..., 'Nplot', 256) plays a movie at 256x256 resolution
+%   UOUT = SPIN2(..., 'plot', 'off') for no movie
+%   UOUT = SPIN2(..., 'view', [a b]) changes the view angle to [a b]
+%
+% Remark 1: List of PDEs (case-insensitive)
+%
+%    - 'GL' for the Ginzburg-Landau equation,
+%    - 'GS' for the Gray-Scott equations (stripes),
+%    - 'GSspots' for the Gray-Scott equations (spots),
+%    - 'SCHNAK' for the Schnakenberg equations,
+%    - 'SH' for the Swift-Hohenberg equation.
 %
 % Example 1: Ginzburg-Landau equation (spiral waves)
 %
-%       u = spin2('GL2');
+%       u = spin2('GL');
 %
 %    solves the Ginzburg-Landau equation
 %
-%        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
+%       u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on [0 100]^2 from t=0 to t=100, with a random initial condition. 
-%    The movie plots the real part of u.
+%    on [0 100]^2 from t=0 to t=100, with a RANDNFUN2 initial condition. 
+%    The movie shows the real part of u.  For a movie of the absolute
+%    value of u rather than the real part, execute
 %
-% Example 2: Gray-Scott equations (fingerprints patterns)
+%       S = spinop2('GL');
+%       u = spin2(S, 128, 1e-1, 'dataplot', 'abs');
 %
-%       u = spin2('GS2');
+% Example 2: Gray-Scott equations (pattern formation - stripes)
+%
+%       u = spin2('GS');
 %
 %    solves the Gray-Scott equations
 %
-%       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
-%       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
+%       u_t = 2e-5*laplacian(u) + F*(1-u) - u*v^2,
+%       v_t = 1e-5*laplacian(v) - (F+K)*v + u*v^2,
 %
-%    on [0 1.25]^2 from t=0 to t=8000, with initial condition
+%    on [0 1]^2 from t=0 to t=5000, with initial condition
 %
-%       u0(x,y) = 1 - exp(-150*((x-G/2.05)^2 + (y-G/2.05)^2)),
-%       v0(x,y) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=1.25.
+%       u0(x,y) = 1 - exp(-100*((x-1/2.05)^2 + (y-1/2.05)^2)),
+%       v0(x,y) = exp(-100*((x-1/2)^2 + 2*(y-1/2)^2)),
 %
-% Example 3: Schnakenberg equations (pattern formation)
+%    with F=0.030 and K=0.057.
+% 
+% Example 2 (bis): Gray-Scott equations (pattern formation - spots)
 %
-%       u = spin2('Schnak2');
+%       u = spin2('GSspots');
+%
+%    solves the Gray-Scott equations
+%
+%       u_t = 2e-5*laplacian(u) + F*(1-u) - u*v^2,
+%       v_t = 1e-5*laplacian(v) - (F+K)*v + u*v^2,
+%
+%    on [0 1]^2 from t=0 to t=5000, with initial condition
+%
+%       u0(x,y) = 1 - exp(-100*((x-1/2.05)^2 + (y-1/2.05)^2)),
+%       v0(x,y) = exp(-100*((x-1/2)^2 + 2*(y-1/2)^2)), 
+%
+%    with F=0.026 and K=0.059.
+%
+% Example 3: Schnakenberg equations (pattern formation - spots)
+%
+%       u = spin2('SCHNAK');
 %
 %    solves the Schnakenberg equations
 %
-%       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
-%       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
+%       u_t = laplacian(u) + 3*(a - u + u^2*v),
+%       v_t = 10*laplacian(v) + 3*(b - u^2*v),
 %
-%    on [0 30]^2 from t=0 to t=800, with initial condition
+%    on [0 50]^2 from t=0 to t=500, with initial condition
 %
-%       u0(x,y) = 1 - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
-%       v0(x,y) = .9/(.1^2+.9^2) + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=50.
+%       u0(x,y) = (a+b) - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
+%       v0(x,y) = b/(a+b)^2 + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
+%           with G=50, a=0.1 and b=0.9.
 %
-% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
+% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection rolls)
 %
-%       u = spin2('SH2');
+%       u = spin2('SH');
 %
 %    solves the Swift-Hohenberg equation
 %
-%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
+%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u - u^3,
 %
-%    on [0 20]^2 from t=0 to t=200, with a random initial condition.
+%    on [0 50]^2 from t=0 to t=800, with a RANDNFUN2 initial condition.
 %
 % Example 5: PDE specified by a SPINOP2
 %
@@ -88,24 +119,25 @@ function [uout, tout] = spin2(varargin)
 %       S = spinop2(dom, tspan);
 %       S.lin = @(u) lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-%       S.init = chebfun2(.1*randn(128, 128), dom, 'trig')
-%       u = spin2(S, 64, 2e-1);
+%       S.init = randnfun2(4, dom, 'trig');
+%       S.init = S.init/norm(S.init, inf);
+%       u = spin2(S, 128, 1e-1);
 %
-%   is equivalent to u = spin2('GL2');
+%   is equivalent to u = spin2('GL');
 %
 % Example 6: Using preferences
 %
 %       pref = spinpref2('plot', 'off', 'scheme', 'pecec433');
-%       S = spinop2('sh2');
-%       u = spin2(S, 64, 5e-1, pref);
+%       S = spinop2('SH');
+%       u = spin2(S, 128, 5e-1, pref);
 %   or simply,
-%       u = spin2(S, 64, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
+%       u = spin2(S, 128, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
 %
-%   solves the Swift-Hohenberg equation using N=64 grid points in each
-%   direction, a time-step dt=5e-1, doesn't produce any movie use the
+%   solves the Swift-Hohenberg equation using N=128 grid points in each
+%   direction, a time-step dt=5e-1, doesn't play any movie and uses the
 %   time-stepping scheme PECEC433.
 %
-% See also SPINOP2, SPINPREF2, EXPINT.
+% See also SPINOP2, SPINPREF2, EXPINTEG.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -119,32 +151,73 @@ function [uout, tout] = spin2(varargin)
 % where S is a SPINOP2 object, N is the number of grid points in each direction, 
 % DT is the time-step and PREF is a SPINPREF2 oject.
 
-if ( nargin == 1 ) % e.g., u = spin2('gl2')
+% CASE 1. U = SPIN2('GL'):
+if ( nargin == 1 ) 
+    
     try spinop2(varargin{1});
     catch
-        error('Unrecognized PDE. See HELP/SPIN2 for the list of PDEs.')
+        error('Unrecognized PDE. See HELP/SPINSPHERE for the list of PDEs.')
     end
     [S, N, dt, pref] = parseInputs(varargin{1});
     varargin{1} = S;
     varargin{2} = N;
     varargin{3} = dt;
     varargin{4} = pref;
-elseif ( nargin == 3 ) % e.g., u = spin2(S, 128, 1e-1)
-    % Nothing to do here.
-elseif ( nargin == 4 ) % e.g., u = spin2(S, 128, 1e-1, pref)
-    % Nothing to do here.
-elseif ( nargin >= 5 ) % u.g., u = spin2(S, 128, 1e-1, 'plot', 'off')
-    % In this case, put the options in a SPINPREF2 object.
-    pref = spinpref2();
-    j = 4;
-    while j < nargin
-        pref.(varargin{j}) = varargin{j+1};
-        varargin{j} = [];
-        varargin{j+1} = [];
-        j = j + 2;
+    
+% CASE 2. U = SPIN2('GL', 'PREF1', VALUE1) or U = SPINSPHERE(S, N, DT):
+elseif ( nargin == 3 ) 
+    
+    % CASE 2.1. U = SPIN2('GL', 'PREF1', VALUE1):
+    if ( isa(varargin{1}, 'char') == 1 && isa(varargin{2}, 'char') == 1 )
+        [S, N, dt, pref] = parseInputs(varargin{1});
+        pref.(varargin{2}) = varargin{3};
+        varargin{1} = S;
+        varargin{2} = N;
+        varargin{3} = dt;
+        varargin{4} = pref;
+        
+    % CASE 2.2. U = SPIN2(S, N, DT):
+    else
+        % Nothing to do here.
     end
-    varargin{end + 1} = pref;
-    varargin = varargin(~cellfun(@isempty, varargin));
+    
+% CASE 3. U = SPIN2(S, N, DT, PREF)
+elseif ( nargin == 4 ) 
+    % Nothing to do here.
+    
+% CASE 4. 
+elseif ( nargin >= 5 )
+    
+    % CASE 4.1. U = SPIN2('GL', 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
+    if ( isa(varargin{1}, 'char') == 1 && isa(varargin{2}, 'char') == 1 )
+        [S, N, dt, pref] = parseInputs(varargin{1});
+        j = 2;
+        while j < nargin
+            pref.(varargin{j}) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j+1} = [];
+            j = j + 2;
+        end
+        varargin{1} = S;
+        varargin{2} = N;
+        varargin{3} = dt;
+        varargin{4} = pref;
+        varargin = varargin(~cellfun(@isempty, varargin));
+        
+    % CASE 4.2. U = SPIN2(S, N, DT, 'PREF1', VALUE1, 'PREF2', VALUE2, ...)
+    else
+        pref = spinpref2();
+        j = 4;
+        while j < nargin
+            pref.(varargin{j}) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j+1} = [];
+            j = j + 2;
+        end
+        varargin{4} = pref;
+        varargin = varargin(~cellfun(@isempty, varargin));
+    end
+    
 end
 
 % SPIN2 is a wrapper for SOLVPDE:
@@ -157,20 +230,36 @@ function [S, N, dt, pref] = parseInputs(pdechar)
 
 pref = spinpref2();
 S = spinop2(pdechar);
-if ( strcmpi(pdechar, 'GL2') == 1 )
-    dt = 2e-1;
+if ( strcmpi(pdechar, 'GL') == 1 )
+    dt = 1e-1;
+    N = 128;
+    pref.Clim = [-1 1];
+    pref.iterplot = 2;
+    pref.Nplot = 256;
+elseif ( strcmpi(pdechar, 'GS') == 1 )
+    dt = 5;
     N = 64;
-elseif ( strcmpi(pdechar, 'GS2') == 1 )
-    dt = 4;
-    pref.iterplot = 8;
-    N = 64;
-elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
-    dt = 5e-1;
+    pref.Clim = [.25 .8 0 .35];
     pref.iterplot = 10;
+    pref.Nplot = 128;
+elseif ( strcmpi(pdechar, 'GSspots') == 1 )
+    dt = 2;
     N = 64;
-elseif ( strcmpi(pdechar, 'SH2') == 1 )
+    pref.Clim = [.25 .85 0 .35];
+    pref.iterplot = 25;
+    pref.Nplot = 128;
+elseif ( strcmpi(pdechar, 'SCHNAK') == 1 )
+    dt = 5e-1;
+    N = 64;
+    pref.Clim = [.7 1.7 .65 1.05];
+    pref.iterplot = 10;
+    pref.Nplot = 128;
+elseif ( strcmpi(pdechar, 'SH') == 1 )
     dt = 1;
-    N = 64;
+    N = 128;
+    pref.Clim = [-.4 .5];
+    pref.iterplot = 4;
+    pref.Nplot = 256;
 end
 
 end

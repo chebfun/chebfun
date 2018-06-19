@@ -55,9 +55,21 @@ classdef (InferiorClasses = {?double}) chebop
 % left and right endpoints of the domain D. Possible values for LBC and RBC are:
 %
 %   []          : No condition (for only assigning LBC or RBC in constructor).
-%   vector      : Only supported in the scalar case. The value of the solution 
-%                 is given by the first entry of the vector, the value of its
-%                 first derivative by the second entry, etc.
+%   vector      : Only supported in the scalar case, and for first order
+%                 coupled systems (i.e. no support for higher order coupled
+%                 systems). 
+%                   * In the scalar case, the value of the solution is given by
+%                     the first entry of the vector, the value of its first
+%                     derivative by the second entry, etc. E.g. for a second
+%                     order problem on [0,1], N.lbc = [1;3] specifies
+%                         u(0) = 1, u'(0) = 3.
+%                   * In the system case, the value of the first unknown
+%                     function at the endpoint is given by the first entry of
+%                     the vector, the value of the second unknown function by
+%                     the second entry of the vector, etc. E.g. for a system
+%                     with two unknown functions on [0,1], N.lbc = [1;3]
+%                     specifies
+%                         u(0) = 1, v(0) = 1.
 %   'dirichlet' : All variables equal zero.
 %   'neumann'   : All variables have derivative zero.
 %   function    : A function handle that must accept all dependent variables as
@@ -254,6 +266,7 @@ classdef (InferiorClasses = {?double}) chebop
     properties ( Access = public )
         domain = [];    % Domain of the operator
         op = [];        % The operator
+        opShow = [];    % Pretty print the operator
         lbc = [];       % Left boundary condition(s)
         lbcShow = [];   % Pretty print left boundary condition(s)
         rbc = [];       % Right boundary condition(s)
@@ -365,6 +378,17 @@ classdef (InferiorClasses = {?double}) chebop
         % Clear periodic boundary conditions.
         [N, L] = clearPeriodicBCs(N, L)
         
+        function funArgs = getFunArgs(N)
+            % GETFUNARGS  Get input argument list of a CHEBOP .op fields as a string
+            if ( isempty(N.op) )
+                funArgs = '';
+                return
+            end
+            funString = func2str(N.op);                       % Anon. func. string
+            firstRightParLoc = min(strfind(funString, ')'));  % First ) in string
+            funArgs = funString(3:firstRightParLoc-1);        % Grab variables name
+        end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -418,7 +442,7 @@ classdef (InferiorClasses = {?double}) chebop
         % Solve a linear problem posed with CHEBOP.
         [u, info] = solvebvpLinear(L, rhs, Ninit, displayInfo, pref)
         
-    end
+    end 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     %% METHODS IMPLEMENTED IN THIS FILE:
@@ -584,5 +608,12 @@ classdef (InferiorClasses = {?double}) chebop
                 isempty(N.rbc) && isempty(N.bc) && isempty(N.init);
         end
         
+        function out = hasbc(N)
+            %HASBC   Test for BCs in a CHEBOP.
+            %   HASBC(N) returns logical true if N has a non-empty BC, LBC, or
+            %   RBC field.
+            out = ~isempty(N.rbc) || ~isempty(N.bc) || ~isempty(N.init);
+        end
+       
     end    
 end

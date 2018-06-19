@@ -100,22 +100,27 @@ Resolved_x = 0;
 Resolved_y = 0; 
 Resolved = Resolved_x & Resolved_y;
 
+% Should we check the resolution of the BCs?
+bctype = chebop2.checkBC(N, 2, 2);
+
 while ( ( ~Resolved ) && ( m < maxDiscretise_y ) &&...
                          ( n < maxDiscretise_x ) )
                      
     % Solve PDE, return an m x n matrix of coefficients:
-    X = chebop2.denseSolve(N, f, n, m);
+    X = chebop2.denseSolve(N, f, m, n);
+    old_m = m;
+    old_n = n;
     
     if ( adaptive_y ) 
         % Resolved in y-direction?
-        [Resolved_y, m] = resolveCheck(X, m, tol);
+        [Resolved_y, m] = resolveCheck(X.', old_m, old_n, tol, N.lbc, N.rbc, bctype);
     else
         Resolved_y = 1; 
     end
     
     if ( adaptive_x ) 
         % Resolved in x-direction?
-        [Resolved_x, n] = resolveCheck(X.', n, tol);
+        [Resolved_x, n] = resolveCheck(X, old_n, old_m, tol, N.dbc, N.ubc, bctype);
     else 
         Resolved_x = 1; 
     end
@@ -147,17 +152,24 @@ u = chebfun2(X, rect, 'coeffs');
 
 end
 
-function [Resolved, newDisc] = resolveCheck(coeffs, oldDisc, tol)
+function [Resolved, newDisc] = resolveCheck(coeffs, m, n, tol, lbc, rbc, bctype)
 % Basic Resolution check:
 
 tail = max(abs(coeffs(:,end-8:end)));
-Resolved = all(tail < 20*oldDisc*tol);
+Resolved = all(tail < 20*m*tol);
+
+% Check resolution of the Dirichlet BCs
+if ( bctype == 1 )
+    lval = (-1).^(0:n-1) * coeffs; lbc_cfs = chebcoeffs(lbc, m);
+    rval = ones(1,n) * coeffs;     rbc_cfs = chebcoeffs(rbc, m);
+    Resolved = Resolved & norm(lval' - lbc_cfs) < tol & norm(rval' - rbc_cfs) < tol;
+end
 
 % If unresolved, then increase the grid:
 if ( ~Resolved )
-    newDisc = 2^(floor(log2(oldDisc))+1) + 1;
+    newDisc = 2^(floor(log2(m))+1) + 1;
 else
-    newDisc = oldDisc;
+    newDisc = m;
 end
 
 end
@@ -167,7 +179,7 @@ function tol = updateTolerance(tol, m, n)
 
 % Increase tolerance on large grids:
 if ( max(m, n) > 250 )
-    tol = max(tol, 1e-10);
+    tol = max(tol, 1e-11);
 end
 
 end

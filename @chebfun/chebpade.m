@@ -22,7 +22,7 @@ function varargout = chebpade(F, m, n, varargin)
 %   then R_HANDLE is returned, while P and Q are returned if two output
 %   arguments are specified. 
 %
-% See also PADEAPPROX.
+% See also AAA, CF, MINIMAX, PADEAPPROX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -113,7 +113,7 @@ l = max(m, n);
 
 % Limit to fixed number of coefficients if specified.
 if ( M >= 0 )
-    F = chebfun(@(x) feval(F, x), F.ends([1 end]), M + 1);
+    F = chebfun(@(x) feval(F, x), F.domain([1 end]), M + 1);
 elseif ( numel(F.funs) > 1 )
     error('CHEBFUN:CHEBFUN:chebpade:chebpadeClenshawLord:multipleFuns', ...
         ['For a function with multiple funs, the number of coefficients ' ...

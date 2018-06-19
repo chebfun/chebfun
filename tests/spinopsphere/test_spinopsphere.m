@@ -3,7 +3,7 @@
 function pass = test_spinopsphere()
 
 % Construction from STRING for GL equation:
-S = spinopsphere('gl');
+S = spinopsphere('GL');
 N = S.nonlin;
 pass(1) = strcmpi(func2str(N), '@(u)u-(1+1.5i)*u.*(abs(u).^2)');
 

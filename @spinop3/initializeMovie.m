@@ -11,34 +11,33 @@ function [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 % data is complex-valued).
 
 % Set-up:
-nVars = S.numVars;
-vscale = max(abs(v(:)));
-dataplot = str2func(pref.dataplot);
-dom = S.domain;
-xx = compGrid{1};
-yy = compGrid{2};
-zz = compGrid{3};
-N = size(xx, 1) - 1;
-xxx = plotGrid{1};
-yyy = plotGrid{2};
-zzz = plotGrid{3};
-Nplot = size(xxx, 1) - 1;
-FS = 'fontsize';
-fs = 12;
+dom = S.domain;                       % Spatial domain
+nVars = S.numVars;                    % Number of variables (>1 for systems)
+vscale = max(abs(v(:)));              % Scale of the solution 
+dataplot = str2func(pref.dataplot);   % Plot 'abs', 'real' or 'imag'
+xx = compGrid{1};                     % Computation grid (x-direction)
+yy = compGrid{2};                     % Computation grid (y-direction)
+zz = compGrid{3};                     % Computation grid (z-direction)
+N = size(xx, 1) - 1;                  % Size of computation grid (same in x,y&z)
+xxx = plotGrid{1};                    % Movie grid (x-direction)
+yyy = plotGrid{2};                    % Movie grid (y-direction)
+zzz = plotGrid{3};                    % Movie grid (z-direction)
+Nplot = size(xxx, 1) - 1;             % Size of movie grid (same in x,y&z)
+FS = 'fontsize'; fs = 12;             % Fontsize for title
 
-% Slices:
+% Slices x=cst (Sx), y=cst (Sy) and z=cst (Sz) for 3D plotting (see SPINPREF3):
 ttx = trigpts(N, dom(1:2));
 tty = trigpts(N, dom(3:4));
 ttz = trigpts(N, dom(5:6));
 ttx = [ttx; 2*ttx(end) - ttx(end-1)];
 tty = [tty; 2*tty(end) - tty(end-1)];
 ttz = [ttz; 2*ttz(end) - ttz(end-1)];
-if ( isempty(pref.slices) == 1 )
+if ( isempty(pref.slices) == 1 ) % Default slices (middle of each interval)
     Sx = ttx(floor(N/2) + 1);
     Sy = tty(floor(N/2) + 1);
     Sz = ttz(floor(N/2) + 1);
-else
-    slices = pref.slices;
+else % Slices given by user 
+    slices = pref.slices;   
     Sx = slices{1};
     for k = 1:length(Sx)
         pos = Sx(k);
@@ -85,13 +84,13 @@ for k = 1:nVars
         vvv = vv;
     end
     
-    % Plot each variable:
+    % Plot each variable on the slices Sx/Sy/Sz:
     subplot(1, nVars, k) 
     p{1,k} = slice(xxx, yyy, zzz, vvv, Sx, Sy, Sz);
     set(p{1,k}, 'edgecolor', 'none', 'facecolor', 'interp')
     ax = p{1,k}.Parent;
     set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
-    axis equal, axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)])
+    axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)])
     colorbar, colormap(pref.colormap)
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
     drawnow

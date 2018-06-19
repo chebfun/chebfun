@@ -1,10 +1,10 @@
 classdef spinscheme
 %SPINSCHEME   Abstract class for representing time-stepping schemes.
 %   SPINSCHEME is an abstract class for representing time-stepping schemes.
-%   Full implementations are EXPINT (exponential integrators) and IMEX 
+%   Full implementations are EXPINTEG (exponential integrators) and IMEX 
 %   (implicit-explcit schemes).
 %
-% See also EXPINT and IMEX.
+% See also EXPINTEG and IMEX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

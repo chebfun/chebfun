@@ -1,11 +1,11 @@
-classdef expint < spinscheme
-%EXPINT   Class for representing exponential integrators.
-%   EXPINT is a class for representing exponential integrators. Exponential
-%   integrators are used for the time integration with SPIN, SPIN2 and SPIN3.
+classdef expinteg < spinscheme
+%EXPINTEG   Class for representing exponential integrators.
+%   EXPINTEG is a class for representing exponential integrators, which are used 
+%   for the time integration in SPIN, SPIN2 and SPIN3.
 %
 % Construction: 
 %
-%   K = EXPINT(SCHEME) constructs an EXPINT object corresponding to the 
+%   K = EXPINTEG(SCHEME) constructs an EXPINTEG object corresponding to the 
 %   exponential integrator SCHEME. SCHEME is a (case-insensitive) STRING.
 %
 % Available exponential integrators:
@@ -27,7 +27,7 @@ classdef expint < spinscheme
 %   PREDICTOR-CORRECTOR: 'pec423', 'pecec433', 'pec524', 'pecec534', 'pec625',
 %                        'pecec635', 'pec726', 'pecec736'
 %
-% See also SPIN, SPIN2, SPIN3, IMEX.
+% See also SPIN, SPIN2, SPIN3.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -37,7 +37,7 @@ classdef expint < spinscheme
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function K = expint(schemeName)
+        function K = expinteg(schemeName)
             
             if ( nargin == 0 )
                 return
@@ -248,7 +248,7 @@ classdef expint < spinscheme
                 K.scheme = schemeName;
   
             else
-                error('EXPINT:constructor', 'Unrecognized scheme.')
+                error('EXPINTEG:constructor', 'Unrecognized scheme.')
             end
         
         end

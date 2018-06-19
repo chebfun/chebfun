@@ -67,6 +67,21 @@ correct = [15 9 4 1 12 11 6 5 3 7 16 2 8 13 10 14];
 idx = treeVar.sortConditions(icFun, dom, [4 4 4 4]);
 pass(10) = all( idx == correct );
 
+%% Second order coupled IVP, two variables, arbitrary order, CHEBMATRIX syntax
+icFun = @(u) [u{1}; diff(u{2}); diff(u{1}); u{2}];
+correct = [1 3 4 2];
+idx = treeVar.sortConditions(icFun, dom, [2 2]);
+pass(11) = all( idx == correct );
+
+%% Fourth order coupled IVP, four variables, arbitrary order, CHEBMATRIX syntax
+icFun = @(u) [diff(u{1}, 3); diff(u{3},3); u{3}; diff(u{1},2); ...
+    diff(u{2}, 3); diff(u{2}, 2); diff(u{3}); u{4}; ...
+    diff(u{1}); diff(u{4}, 2); diff(u{2}); u{2}; ...
+    diff(u{4}, 1); diff(u{4}, 3); u{1}; diff(u{3}, 2)];
+correct = [15 9 4 1 12 11 6 5 3 7 16 2 8 13 10 14];
+idx = treeVar.sortConditions(icFun, dom, [4 4 4 4]);
+pass(12) = all( idx == correct );
+
 %% Unsupported format, multiplying unknown function
 icFun = @(x,u) 5*u -1;
 try
@@ -103,7 +118,7 @@ end
 %% Unsupported format, unknown function appears twice, system
 icFun = @(x,u,v) u + diff(u);
 try
-    treeVar.sortConditions(icFun, dom);
+    treeVar.sortConditions(icFun, dom, 2);
 catch ME
     % The highest order derivatives of u and v appear in the same line -- this
     % should give us an error.

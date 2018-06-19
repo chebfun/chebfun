@@ -1,4 +1,4 @@
-% Test file for SPINCHEME/PHIFUN:
+% Test file for EXPINTEG/PHIFUN:
 
 function pass = test_phiFun()
 
@@ -11,10 +11,10 @@ phi2ex = @(z) (exp(z) - z - 1)./z.^2;
 phi3ex = @(z) (exp(z) - z.^2/2 - z - 1)./z.^3;
 
 % Get the same functions with PHIFUN:
-phi0 = spinscheme.phiFun(0);
-phi1 = spinscheme.phiFun(1);
-phi2 = spinscheme.phiFun(2);
-phi3 = spinscheme.phiFun(3);
+phi0 = expinteg.phiFun(0);
+phi1 = expinteg.phiFun(1);
+phi2 = expinteg.phiFun(2);
+phi3 = expinteg.phiFun(3);
 
 % Grid for comparisons:
 [xx, yy] = meshgrid([-10:-1, 1:10]);                           

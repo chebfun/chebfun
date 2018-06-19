@@ -43,8 +43,6 @@ for jj = 1:length(Battery)
     err(jj) = norm(Y(1) - Mini(jj)) + norm(Y(2) - Maxi(jj));
 end
 
-
-
 %%
 pass = err < tol;
 

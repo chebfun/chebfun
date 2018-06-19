@@ -68,9 +68,7 @@ elseif ( isa(f, 'chebfun') )
         for k = numelB:-1:1
             g(k) = columnPower(f, b(k), pref);
         end
-        if ( all((b > 0) & (round(b) == b)) )
-            g = quasi2cheb(g);
-        end
+        g = quasi2cheb(g);
     elseif ( numelB == 1 )
         % e.g., [x sin(x)].^2
         if ( numel(f) == 1 )

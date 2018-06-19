@@ -57,7 +57,7 @@ function varargout = ratinterp(varargin)
 %       INTERPOLATION IN ROOTS OF UNITY AND CHEBYSHEV POINTS", Submitted to
 %       SIAM Journal on Numerical Analysis, 2011.
 %
-% See also INTERP1, CHEBPADE.
+% See also AAA, CF, CHEBPADE, INTERP1, MINIMAX, PADEAPPROX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -591,8 +591,8 @@ if ( nu > 0 )
     q = chebfun(Cf(:,1:nu+1) * b, dom, 'tech', @chebtech2);
     r = @(x) p(x) ./ q(x);
 else
-    q = chebfun(b, dom, 'tech', @chebtech2);
-    r = @(x) p(x)/b;
+    q = chebfun(b/R(1, 1), dom, 'tech', @chebtech2);
+    r = @(x) p(x)/(b/R(1, 1));
 end
 
 end

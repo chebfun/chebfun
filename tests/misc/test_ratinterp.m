@@ -106,4 +106,10 @@ pass(21) = err < 1e-10;
 err = norm(r(xx) - f(xx));
 pass(22) = err < 1e-10;
 
+% Check that interpolation in arbitrary points works when the denominator can
+% be reduced to a constant.
+[p, q, r] = ratinterp(ones(5, 1), 1, 1, [], chebpts(5));
+err = abs(r(1) - 1);
+pass(23) = err < 1e-10;
+
 end

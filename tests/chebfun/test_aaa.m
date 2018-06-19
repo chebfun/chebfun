@@ -7,6 +7,7 @@ if ( nargin < 1 )
 end
 tol = 1e+4 * pref.chebfuneps;
 
+warning('off', 'CHEBFUN:aaa:Froissart');
 
 Z = linspace(-1, 1, 1000);
 F = exp(Z);
@@ -49,6 +50,43 @@ pass(13) = ( r1(1.4) == 2^311*r3(1.4) );
 
 % Make sure the gamma function gives something reasonable:
 r = aaa(@gamma);
-pass(14) = abs(r(1.5) - gamma(1.5)) < 1e-3;
+pass(14) = ( abs(r(1.5) - gamma(1.5)) < 1e-3 );
+
+%
+rng(0); Z = randn(10000,1)+3i*randn(10000,1);
+f = @(z) log(5-z)./(1+z.^2);
+r = aaa(f(Z),Z);
+pass(15) = ( abs(r(0) - f(0)) < tol );
+
+% Test behavior for string inputs:
+Z = linspace(-1,1,10001);
+r1 = aaa(@(x) abs(x), Z);
+r2 = aaa('abs(x)', Z);
+x = -1 +2*rand(1);
+pass(16) = ( r1(x) == r2(x) );
+
+% Test that constructor does not fail when a data value is infinite:
+Z = linspace(-1,1);
+r = aaa(gamma(Z),Z);
+pass(17) = ( abs(r(0.63) - gamma(0.63)) < 1e-3 );
+
+% Test for NaNs
+X = linspace(0,20);
+F = sin(X)./X;
+r = aaa(F,X);
+pass(18) = ( abs(r(2) - sin(2)/2) < 1e-3 );
+
+% A couple of tests of residues
+X = linspace(-1.337,2,537);
+[r,pol,res] = aaa(exp(X)./X, X);
+ii = find(abs(pol)<1e-8);
+pass(19) = abs(res(ii)-1) < 1e-10;
+[r,pol,res] = aaa((1+1i)*gamma(X),X);
+ii = find(abs(pol-(-1))<1e-8);
+pass(20) = abs(res(ii)+(1+1i)) < 1e-10;
+
+
+
+warning('on', 'CHEBFUN:aaa:Froissart');
 
 end

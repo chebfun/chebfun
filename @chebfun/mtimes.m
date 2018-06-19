@@ -2,9 +2,12 @@ function f = mtimes(f, g)
 %*   CHEBFUN multiplication.
 %   A*F and F*A multiplies the CHEBFUN F by the scalar A.
 %
-%   If F is an m-by-Inf row CHEBFUN and G is an Inf-by-n column CHEBFUN, F*G
-%   returns the m-by-n matrix of pairwise inner products. F and G must have
-%   the same domain.
+%   If F is an m-by-Inf row CHEBFUN and G is an Inf-by-n column CHEBFUN,
+%   F*G returns the m-by-n matrix of pairwise inner products. F and G must
+%   have the same domain.
+%
+%   If F and G are both row (or both column) CHEBFUNs, then F*G is
+%   equivalent to F.*G.
 %
 % See also TIMES.
 
@@ -19,24 +22,28 @@ if ( isempty(f) || isempty(g) )             % [] * CHEBFUN or CHEBFUN * []
     f = [];
 
 elseif ( fIsChebfun && gIsChebfun )         % CHEBFUN * CHEBFUN
-
-    % We can't do MTIMES() on two CHEBFUNs that have the same transpose state.
-    if ( f(1).isTransposed == g(1).isTransposed )
-        if ( numColumns(f) ~= numColumns(g) )
-            error('CHEBFUN:CHEBFUN:mtimes:dims', ...
-                ['Matrix dimensions must agree. Use f.*g to multiply ' ...
-                 'two CHEBFUN objects.']);
-        else
-            error('CHEBFUN:CHEBFUN:mtimes:dims', ...
-                'Matrix dimensions must agree.');
+    
+    % Get transpose state:
+    fIsTrans = f(1).isTransposed;
+    gIsTrans = g(1).isTransposed;
+    
+    if ( fIsTrans == gIsTrans )
+        try
+            f = times(f, g);
+        catch ME
+            if ( strcmp(ME.identifier, ...
+                    'CHEBFUN:SINGFUN:cancelExponent:arrayvalued') )
+                f = times(quasimatrix(f), quasimatrix(g));
+            else
+                rethrow(ME)
+            end
         end
-    end
-
-    if ( f(1).isTransposed && ~g(1).isTransposed ) % Row times column.
-        % Compute the inner product (we call CONJ() here because INNERPRODUCT()
-        % is semilinear in the first factor, and we want to undo that):
+    elseif ( fIsTrans && ~gIsTrans ) % Row times column.
+        % Compute the inner product (we call CONJ() here because
+        % INNERPRODUCT() is semilinear in the first factor, 
+        % and we want to undo that):
         f = innerProduct(conj(f), g);
-    else                                           % Column times row.
+    else                             % Column times row.
         % Outer-product of two CHEBFUNs is a CHEBFUN2.
         f = chebfun2.outerProduct(f, g);
     end

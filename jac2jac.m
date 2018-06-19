@@ -59,6 +59,11 @@ Lambda4 = @(z) exp( gammaln( z+beta+1 ) - gammaln( z + alpha +beta + 1) );
 
 % Diagonal matrices in A = D1(T.*H)D2:
 [N, numCols] = size(v); % Size of coefficients.
+if ( N == 1 )
+    c_jac = v;
+    return
+end
+
 D1 = spdiags( ((2*(0:N-1)+gam+beta+1).*Lambda3([1 1:N-1]))',0,N,N ); 
 D1(1,1) = 1;
 D2 = 1./gamma(alpha-gam)*spdiags( Lambda4([1 1:N-1])', 0, N, N );
@@ -95,6 +100,9 @@ while ( mx > tol )
 end
 sz = size(C, 2);                                     % Numerical rank of H.
 C = C * spdiags( sqrt( pivotValues ), 0, sz, sz );   % Share out scaling.
+if ( sz == 1 )
+    C = full(C); % (C will be sparse if sz = 1)
+end
 
 % Upper-triangular Toeplitz matrix in A = D1(T.*H)D2:
 T_row = Lambda2( [1, 1:N-1] );

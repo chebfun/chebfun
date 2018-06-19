@@ -1,4 +1,4 @@
-function [uOut, tOut, computingTime] = solvepde(varargin)
+    function [uOut, tOut, computingTime] = solvepde(varargin)
 %SOLVEPDE   Solve a PDE defined by a SPINOP, SPINOP2, SPINOP3 or SPINOPSPHERE.
 %   SOLVEPDE is called by SPIN, SPIN2, SPIN3 and SPINSPHERE. It is not called
 %   directly by the user. Appropriate help texts can be found in SPIN, SPIN2,
@@ -11,8 +11,8 @@ function [uOut, tOut, computingTime] = solvepde(varargin)
 
 %% Parse inputs:
 
-% SOLVEPDE has been called by SPIN/SPIN2/SPIN3. The inputs have been parsed in
-% those files and are expeceted to be:
+% SOLVEPDE has been called by SPIN/SPIN2/SPIN3/SPINSPHERE. The inputs have been 
+% parsed in those files and are expeceted to be:
 %
 % OPTION 1.     SOLVEPDE(S, N, DT), S is a SPINOPERATOR object, N is the number
 %               of grid points and DT is the time-step.
@@ -20,11 +20,11 @@ function [uOut, tOut, computingTime] = solvepde(varargin)
 % OPTION 2.     SOLVEPDE(S, N, DT, PREF), PREF is a SPINPREFERENCE.
 
 % Get the inputs:
-pref = [];
 if ( nargin == 3 ) % OPTION 1
     S = varargin{1};
     N = varargin{2};
     dt = varargin{3};
+    pref = getPreference(S); % get the default preferences
 elseif ( nargin == 4 ) % OPTION 2
     S = varargin{1};
     N = varargin{2};
@@ -34,11 +34,6 @@ end
 
 % Dimension:
 dim = getDimension(S);
-
-% Create a SPINPREFERENCE object if none:
-if ( isempty(pref) == 1 )
-    pref = getPreference(S);
-end
 
 %% Pre-processing:
 
@@ -80,42 +75,6 @@ dealias = pref.dealias;   % Use a dealiasing procedure if DEALIAS = 1
 iterplot = pref.iterplot; % plot every ITERPLOT iterations if 'movie'
 plotStyle = pref.plot;    % Plotting options
 
-% Create a time-stepping scheme:
-schemeName = pref.scheme;
-K = [];
-try K = expint(schemeName);
-catch
-end
-try K = imex(schemeName);
-catch
-end
-if ( isempty(K) == 1 )
-    error(['Unrecognized time-stepping scheme. See HELP/EXPINT and ', ...
-        'HELP/IMEX for a list of available schemes.'])
-end
-q = K.steps;  % Number of steps of the scheme (q>1 for multistep schemes)
-
-% Diagonal SPINOPERATOR objects (1D/2D/3D) use exponential integtrators while
-% nondiagonal SPINOPERATOR objects (sphere) use IMEX schemes. Check we're using
-% the right scheme:
-if ( isDiag(S) == 1 ) % 1D/2D/3D
-    if ( isa(K, 'expint') ~= 1 )
-        error(['Use exponential integrators with SPIN/SPIN2/SPIN3. ', ...
-            'See HELP/EXPINT.'])
-    end
-else % sphere
-    if ( isa(K, 'imex') ~= 1 )
-        error('Use IMEX schemes with SPINSPHERE. See HELP/IMEX.')
-    end
-end
-
-% Exponential integrators use contour integrals for computing the phi-functions:
-if ( isa(K, 'expint') == 1 )
-    M = pref.M; % Number of points for complex means
-else
-    M = [];
-end
-
 % Operators: linear part L, and nonlinear parts Nc (in coefficient space) and 
 % Nv (in value space). The nonlinear opeartor, acting on the Fourier coeffs
 % is written as 
@@ -128,6 +87,53 @@ end
 %
 [L, Nc] = discretize(S, N);
 Nv = S.nonlinearPartVals;
+
+% For PDEs on the sphere, if the constant in front of the Laplacian is real,
+% use IMEX-BDF4, otherwise use LIRK4 (unless a specific scheme has been given
+% by the user):
+if ( isDiag(S) == 0 ) % Nondiagonal operators = operators on the sphere.
+    if ( isreal(L) == 1 && isempty(pref.scheme) == 1 )
+        pref.scheme = 'imexbdf4';
+    elseif ( isreal(L) == 0 && isempty(pref.scheme) == 1 )
+        pref.scheme = 'lirk4';
+    end
+end
+
+% Create a time-stepping scheme:
+schemeName = pref.scheme;
+K = [];
+try K = expinteg(schemeName);
+catch
+end
+try K = imex(schemeName);
+catch
+end
+if ( isempty(K) == 1 )
+    error(['Unrecognized time-stepping scheme. See HELP/EXPINTEG and ', ...
+        'HELP/IMEX for a list of available schemes.'])
+end
+q = K.steps;  % Number of steps of the scheme (q>1 for multistep schemes)
+
+% Diagonal SPINOPERATOR objects (1D/2D/3D) use exponential integtrators while
+% nondiagonal SPINOPERATOR objects (sphere) use IMEX schemes. Check we're using
+% the right scheme:
+if ( isDiag(S) == 1 ) % 1D/2D/3D
+    if ( isa(K, 'expinteg') ~= 1 )
+        error(['Use exponential integrators with SPIN/SPIN2/SPIN3. ', ...
+            'See HELP/EXPINTEG.'])
+    end
+else % sphere
+    if ( isa(K, 'imex') ~= 1 )
+        error('Use IMEX schemes with SPINSPHERE. See HELP/IMEX.')
+    end
+end
+
+% Exponential integrators use contour integrals for computing the phi-functions:
+if ( isa(K, 'expinteg') == 1 )
+    M = pref.M; % Number of points for complex means
+else
+    M = [];
+end
 
 % Set-up spatial grid for computation:
 compGrid = getGrid(S, N, dom);
@@ -242,7 +248,7 @@ if ( q > 1 )
     [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, NcInit);
 end
 
-% Compute the coefficients of the exponential integrators (phi-functions):
+% Compute the coefficients of the time-stepping schemes:
 schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 
 % Indexes for dealiasing:

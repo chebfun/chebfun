@@ -5,32 +5,32 @@ classdef spherefun < separableApprox
 %   functions should be smooth.
 %
 % SPHEREFUN(F) constructs a SPHEREFUN object representing the function F on
-% the unit. F can have the following form:
+% the unit sphere. F can have the following form:
 %    1. A function handle in (x,y,z), e.g., @(x,y,z) x.*y.*z + cos(x).
-%    2. A function handle in spherical coordinates (lambdda,theta), where
+%    2. A function handle in spherical coordinates (lambda,theta), where
 %       lambda is the azimuthal variable and satisfies -pi <= lambda <= pi
 %       and theta is the polar angle and satisfies 0 <= theta < pi,
 %       e.g., @(lambda,theta) cos(cos(lambda).*sin(theta))
 %    3. A matrix of numbers. 
-% If F is a function handle then it should allow for vectorized 
-% evaluations.
+% If F is a function handle then it should allow for vectorized evaluations.
 %
 % If F is a matrix, F = (f_ij), the numbers fij are used as function values
 % at tensor equally-spaced points in the intrinsic spherical coordinate 
 % system, i.e., [-pi,pi]x[0,pi].
 %
-% DISKFUN(F, k) returns a rank k approximation to F.
+% SPHEREFUN(F, k) returns a rank k approximation to F.
 %
-% DISKFUN(F, [m n]) returns a representation of F using a degree m
-% trigonometric approximation of F in the radial direction and a degree n
-% approximation in the angular direction. The result is compressed in low
-% rank form and the rank k is still determined adaptively (satisfying
-% k<=min(m,n)+1).
-%
+% SPHEREFUN(F, [m n]) returns a representation of F using a degree m
+% trigonometric approximation of F in the theta (polar) direction and a
+% degree n trigonometric approximation in the lambda (azimuthal) direction.
+% The result is compressed in low rank form and the rank k is still
+% determined adaptively (satisfying k<=min(m,n)+1).
+% 
 % The SPHEREFUN software system is based on: 
 %
-% A. Townsend, H. Wilber, and G. Wright, Computing with function on
-% spherical and polar geometries I: The sphere, submitted, 2015. 
+% A. Townsend, H. Wilber, and G. Wright, Computing with functions in
+% spherical and polar geometries I: The sphere, SIAM. J. Sci. Comput., 38-4
+% (2016), C403-C425.
 %
 % See also CHEBFUN2, DISKFUN, SPHEREFUNV
 
@@ -69,7 +69,12 @@ classdef spherefun < separableApprox
     %% HIDDEN METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods (Access = public, Static = false, Hidden = true)
-       f = projectOntoBMCI(f);
+        % Project a spherefun to have exact BMC-I symmetry so that it is 
+        % a continuous function on the sphere.
+        f = projectOntoBMCI(f);
+       
+        % Fast evaluation of a spherefun using non-uniform fft.
+        vals = fastSphereEval( f, lambda, theta );
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -105,13 +110,14 @@ classdef spherefun < separableApprox
         
         % Plot the outline of the landmasses of earth
         h = plotEarth(linespec);
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private Static methods implemented by SPHEREFUN class.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods (Access = private, Static = true)
-        
+        % Fast evaluation of a spherefun using non-uniform fft.
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -11,14 +11,14 @@ function g = besseli(nu, f, varargin)
 %
 %   The relationship between I_NU(Z) and J_NU(Z) = BESSELJ(NU, Z) is
 %
-%        I_NU(Z) = 1i^NU * J_NU(1i*Z).
+%        I_NU(Z) = 1i^-NU * J_NU(1i*Z).
 %
 % See also AIRY, BESSELH, BESSLJ, BESSELK, BESSELY.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-scl = 1i.^nu;
+scl = 1i.^-nu;
 g = scl*besselj(nu, 1i*f, varargin{:});
 
 end

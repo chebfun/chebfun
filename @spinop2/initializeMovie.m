@@ -11,24 +11,25 @@ function [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 % complex-valued).
 
 % Set-up:
-dom = S.domain;
-nVars = S.numVars;
+dom = S.domain;                       % Spatial domain
+nVars = S.numVars;                    % Number of variables (>1 for systems)
+vscale = max(abs(v(:)));              % Scale of the solution
+dataplot = str2func(pref.dataplot);   % Plot 'abs', 'real' or 'imag'
+xx = compGrid{1};                     % Computation grid (x-direction)
+yy = compGrid{2};                     % Computation grid (y-direction)
+N = size(xx, 1) - 1;                  % Size of computation grid (same in x&y)
+xxx = plotGrid{1};                    % Movie grid (x-direction)
+yyy = plotGrid{2};                    % Movie grid (y-direction)
+Nplot = size(xxx, 1) - 1;             % Size of movie grid (same in x&y)
+FS = 'fontsize'; fs = 12;             % Fontsize for title
+
+% Viewpoint specification (see SPINPREF2):
 viewSpec = pref.view;
-vscale = max(abs(v(:)));
-dataplot = str2func(pref.dataplot);
 defaultPref = spinpref2();
 defaultView = defaultPref.view;
-while ( length(viewSpec) < 2*nVars )
+while ( length(viewSpec) < 2*nVars ) 
     viewSpec = [viewSpec, defaultView];
 end
-xx = compGrid{1};
-yy = compGrid{2};
-N = size(xx, 1) - 1;
-xxx = plotGrid{1};
-yyy = plotGrid{2};
-Nplot = size(xxx, 1) - 1;
-FS = 'fontsize';
-fs = 12;
 
 % Loop over the variables:
 p = cell(2, nVars); clf reset
@@ -59,7 +60,7 @@ for k = 1:nVars
     subplot(1, nVars, k)
     p{1,k} = surf(xxx, yyy, vvv, 'edgecolor', 'none', 'facecolor', 'interp');
     set(p{1,k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
-    axis equal, axis([dom(1) dom(2) dom(3) dom(4)])
+    axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2))
     colorbar, colormap(pref.colormap)
     xlabel('x'), ylabel('y'), set(gca, FS, fs), box on

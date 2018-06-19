@@ -41,7 +41,7 @@ f = spherefun(@(x,y,z) 4*(x.^2-1).*sin(4*x));
 g = spherefun(@(x,y,z) 4*x.*y.*sin(4*x));
 h = spherefun(@(x,y,z) 4*x.*z.*sin(4*x));
 exact = spherefunv(f,g,h);
-pass(5) = norm(u-exact) < 10*tol; 
+pass(5) = norm(u-exact) < 20*tol; 
 
 % Example 4
 u = grad(spherefun(@(x,y,z) cos(4*y)));
