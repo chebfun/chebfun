@@ -135,7 +135,25 @@ end
 % idea as settled and reliable enough to be publicized to users
 % in the help text.  The default operation of aaa invokes no
 % Lawson steps, so users will not notice the existence of this
-% feature.  - Nick Trefethen and Abi Gopal, 29 June 2018.
+% feature.
+%
+% Note that Lawson steps are generally useless for approximations
+% down near machine precision.  They should be used in the
+% context of a looser aaa 'tol' or a restricted aaa 'mmax'.
+% 
+% Examples:
+%
+% X = linspace(-1,1,1000); F = tanh(20*X);
+% subplot(1,2,1)
+% r = aaa(F,X,'mmax',16); plot(X,F-r(X)), hold on
+% r = aaa(F,X,'mmax',16,'lawson',50); plot(X,F-r(X)), hold off
+% 
+% Z = exp(1i*pi*linspace(-1,1,1000)); G = exp(Z);
+% subplot(1,2,2)
+% r = aaa(G,Z,'tol',1e-6); plot(G-r(Z)), axis equal, hold on
+% r = aaa(G,Z,'tol',1e-6,'lawson',10); plot(G-r(Z)), axis equal, hold off
+% 
+%         - Nick Trefethen and Abi Gopal, 29 June 2018.
 
 if ( nlawson > 0 )      % nlawson steps of Lawson iteration
 
@@ -158,26 +176,6 @@ if ( nlawson > 0 )      % nlawson steps of Lawson iteration
   end
   wj = c(2:2:end);
   fj = -c(1:2:end)./wj;
-
-% From the Ratmemos:
-% nj = length(zj); Z2 = Z; F2 = F; t2 = t; np2 = np - nj; Zsupp = []; tsupp = [];
-% for j = 1:nj
-%   [i,~] = find(Z2==zj(j));
-%   Zsupp = [Zsupp Z2(i)]; tsupp = [tsupp t2(i)];
-%   Z2(i) = []; F2(i) = []; t2(i) = [];
-% end
-% A = []; for j = 1:nj, A = [A 1./(Z2-zj(j)) F2./(Z2-zj(j))]; end
-% wt = ones(np2,1); plotvec = [0 2.^(0:5)]; nplot = 0;
-% for n = 0:nlawson
-%   W = spdiags(sqrt(wt),0,np2,np2); [U,S,V] = svd(W*A,0); c = V(:,end);
-%   denom = zeros(np2,1); num = zeros(np2,1);
-%   for j = 1:nj
-%     denom = denom + c(2*j)./(Z2-zj(j));
-%     num = num - c(2*j-1)./(Z2-zj(j));
-%   end
-%   err = F2 - num./denom; abserr = abs(err);
-%   wt = wt.*abserr; wt = wt/norm(wt,inf);
-% end
 
 end
 
