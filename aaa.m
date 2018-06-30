@@ -41,7 +41,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %
 %   Reference:
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
-%   for rational approximation", arXiv:1612.00337.
+%   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
 %
 % See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
@@ -50,7 +50,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 
 
 % Parse inputs:
-[F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag] = parseInputs(F, varargin{:});
+[F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, nlawson] ...
+    = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
@@ -125,6 +126,61 @@ if ( M == 2 )
     errvec(2) = 0;
 end
 
+% The following Lawson iteration option is, as of mid-2018,
+% an undocumented feature.  The reason for introducing this is
+% that we are in the midst of extensive experiments with 
+% the AAA-Lawson idea, for which we want it to be conveniently
+% available as an option in the aaa code.  However, until the
+% experiments reach their conclusion, we don't regard the Lawson
+% idea as settled and reliable enough to be publicized to users
+% in the help text.  The default operation of aaa invokes no
+% Lawson steps, so users will not notice the existence of this
+% feature.  - Nick Trefethen and Abi Gopal, 29 June 2018.
+
+if ( nlawson > 0 )      % nlawson steps of Lawson iteration
+
+  nj = length(zj); Z2 = Z; F2 = F; np2 = M - nj;
+  for j = 1:nj
+    [i,~] = find(Z2==zj(j));
+    Z2(i) = []; F2(i) = [];
+  end
+  A = []; for j = 1:nj, A = [A 1./(Z2-zj(j)) F2./(Z2-zj(j))]; end
+  wt = ones(np2,1);
+  for n = 0:nlawson
+    W = spdiags(sqrt(wt),0,np2,np2); [U,S,V] = svd(W*A,0); c = V(:,end);
+    denom = zeros(np2,1); num = zeros(np2,1);
+    for j = 1:nj
+      denom = denom + c(2*j)./(Z2-zj(j));
+      num = num - c(2*j-1)./(Z2-zj(j));
+    end
+    err = F2 - num./denom; abserr = abs(err);
+    wt = wt.*abserr; wt = wt/norm(wt,inf);
+  end
+  wj = c(2:2:end);
+  fj = -c(1:2:end)./wj;
+
+% From the Ratmemos:
+% nj = length(zj); Z2 = Z; F2 = F; t2 = t; np2 = np - nj; Zsupp = []; tsupp = [];
+% for j = 1:nj
+%   [i,~] = find(Z2==zj(j));
+%   Zsupp = [Zsupp Z2(i)]; tsupp = [tsupp t2(i)];
+%   Z2(i) = []; F2(i) = []; t2(i) = [];
+% end
+% A = []; for j = 1:nj, A = [A 1./(Z2-zj(j)) F2./(Z2-zj(j))]; end
+% wt = ones(np2,1); plotvec = [0 2.^(0:5)]; nplot = 0;
+% for n = 0:nlawson
+%   W = spdiags(sqrt(wt),0,np2,np2); [U,S,V] = svd(W*A,0); c = V(:,end);
+%   denom = zeros(np2,1); num = zeros(np2,1);
+%   for j = 1:nj
+%     denom = denom + c(2*j)./(Z2-zj(j));
+%     num = num - c(2*j-1)./(Z2-zj(j));
+%   end
+%   err = F2 - num./denom; abserr = abs(err);
+%   wt = wt.*abserr; wt = wt/norm(wt,inf);
+% end
+
+end
+
 % Remove support points with zero weight:
 I = find(wj == 0);
 zj(I) = [];
@@ -146,11 +202,10 @@ end
 end % of AAA()
 
 
-
 %% parse Inputs:
 
-function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag] = ...
-    parseInputs(F, varargin)
+function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
+    needZ, mmax_flag, nlawson] = parseInputs(F, varargin)
 % Input parsing for AAA.
 
 % Check if F is empty:
@@ -177,6 +232,7 @@ end
 tol = 1e-13;         % Relative tolerance.
 mmax = 100;          % Maximum number of terms.
 cleanup_tol = 1e-13; % Cleanup tolerance.
+nlawson = 0;         % number of Lawson steps
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -201,6 +257,12 @@ while ( ~isempty(varargin) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             mmax = varargin{2};
             mmax_flag = 1;
+        end
+        varargin([1, 2]) = [];
+        
+    elseif ( strncmpi(varargin{1}, 'lawson', 6) )
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+            nlawson = varargin{2};
         end
         varargin([1, 2]) = [];
         
