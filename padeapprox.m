@@ -100,7 +100,7 @@ else                                           % General case.
 
         % Do final computation via reweighted QR for better zero preservation.
         D = diag(abs(b) + sqrt(eps));
-        [Q, R] = qr((C*D).');
+        [Q, R] = qr((C*D)');           % until July 2018 there was an erroneous .' here
 
         % Compensate for reweighting.
         b = D*Q(:,n+1);
