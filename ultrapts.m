@@ -49,7 +49,7 @@ function [x, w, v, t] = ultrapts(n, lambda, int, meth)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
 % 'REC' by Lourenco Peixoto, Jul 2015 - see [3].
-% 'ASY' by Lourenco Peixoto, Jan 2019 - see [2] and [4].
+% 'ASY' by Lourenco Peixoto, Jan 2016 - see [2] and [4].
 %
 %  References:
 %   [1] G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature rules",
