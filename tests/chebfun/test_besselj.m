@@ -63,6 +63,17 @@ catch ME
     pass(8) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:besselj:nu');
 end
 
+%% Test support for vector nu.
+nu = [1 2 3];
+x = chebfun('x');
+f = besselj(nu, x);
+g = 0*x;
+for k = 1:3
+    g(:,k) = besselj(nu(k), x);
+end
+pass(9) = norm(f - g) < 1e2*eps*vscale(g);
+
+
 end
 
 function y = complex_test_fn(x)
