@@ -1,7 +1,8 @@
 function h = times(f, g)
-% TIMES Component-wise multiplication of two BALLFUNV
-%   TIMES(f, g) is the component-wise multiplication between the BALLFUNV 
-%   f and g
+%.*   BALLFUNV multiplication.
+%   F.*G multiplies F and G, where F and G may be BALLFUNV objects or scalars.
+%
+% See also MTIMES.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

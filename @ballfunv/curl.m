@@ -1,6 +1,8 @@
 function v = curl(w)
-% CURL Curl of a BALLFUNV
-%   CURL(w) is the curl of the BALLFUNV w
+%CURL Curl of a BALLFUNV in cartesian coordinates.
+%   CURL(w) is the curl of the BALLFUNV w.
+%
+% See also DIV. 
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

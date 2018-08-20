@@ -1,6 +1,7 @@
 function b=isequal(f, g)
-% ISEQUAL Test the equality between two BALLFUNV
-%   ISEQUAL(f, g) is the boolean f == g
+%ISEQUAL   Equality test for two BALLFUNVs.
+%   ISEQUAL(f, g) returns logical 1 (TRUE) if the BALLFUNV objects F and G
+%   contain identical components, and logical 0 (FALSE) otherwise.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

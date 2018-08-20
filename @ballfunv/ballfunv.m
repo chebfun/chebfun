@@ -1,10 +1,10 @@
+%BALLFUNV   Vector-valued functions defined on the unit ball.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 classdef ballfunv
-    %BALLFUNV  A library for the DFS method in the solid sphere.
-    
+
     properties
         
         comp   % Components Vx, Vy, Vz of a BALLFUNV

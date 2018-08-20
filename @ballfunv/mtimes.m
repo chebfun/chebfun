@@ -1,6 +1,6 @@
 function h = mtimes(f, g)
-% MTIMES Multiplication of a BALLFUNV by a scalar
-%   MTIMES(f, g) is the multiplication of f by g
+%*   BALLFUNV multiplication.
+%   A*F and F*A multiplies the BALLFUNV F by the scalar A.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

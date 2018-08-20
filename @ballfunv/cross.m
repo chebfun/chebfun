@@ -1,6 +1,6 @@
 function h = cross(f,g)
-% CROSS Cross product of two BALLFUNV
-%   CROSS(f, g) is the cross product of the BALLFUNV f and g
+%CROSS  Cross product of two BALLFUNVs.
+%   CROSS(F, G) is the cross product of the BALLFUNV F and G.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
