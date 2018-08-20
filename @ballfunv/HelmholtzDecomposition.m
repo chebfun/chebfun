@@ -36,12 +36,9 @@ v_Boundary = ComputeNormalBoundary(v);
 
 % Solve the Poisson equation Delta f = div(v) with Boundary conditions
 % df/dr = vr[r=1
-% Convert div v to SH basis
-div_v = ballfun2SH(div(v));
-f = spherical_helmholtz(div_v,0,Fourier2SH(v_Boundary),"Neumann");
+div_v = div(v);
+f = helmholtz_neumann(div_v,0,v_Boundary);
 
-% Convert to ballfun
-f = SH2ballfun(f);
 
 % Divergence-free vector field
 v_1 = v - grad(f);
@@ -71,9 +68,7 @@ v_Boundary = ComputeNormalBoundary(v_1);
 
 % Solve Delta phi = 0 with Neumann boundary condition
 % r.grad(phi) = dphi/dr = r.v_1
-Nord = (n-1)/2;
-phi = spherical_helmholtz(zeros(m,(Nord+1)^2),0,Fourier2SH(v_Boundary),"Neumann");
-phi = SH2ballfun(phi);
+phi = helmholtz_neumann(ballfun(zeros(m,n,p)),0,v_Boundary);
 
 % Divergence-free and tangential-free vector field
 v_2 = v_1 - grad(phi);
@@ -96,10 +91,6 @@ function v_Boundary = ComputeNormalBoundary(v)
 % Get the discretization
 [~,n,p] = size(v);
 
-% Increase the discretization
-n_tilde = n + 2;
-p_tilde = p + 2;
-
 % Get the components
 [Vx,Vy,Vz] = v.comp{:};
 Vx = Vx.coeffs;
@@ -111,23 +102,12 @@ Vx = reshape(sum(Vx,1),n,p);
 Vy = reshape(sum(Vy,1),n,p);
 Vz = reshape(sum(Vz,1),n,p);
 
-% Expand the matrices
-Vxexp = zeros(n_tilde,p_tilde);
-Vyexp = zeros(n_tilde,p_tilde);
-Vzexp = zeros(n_tilde,p_tilde);
-Vxexp(2:n_tilde-1,2:p_tilde-1) = Vx;
-Vyexp(2:n_tilde-1,2:p_tilde-1) = Vy;
-Vzexp(2:n_tilde-1,2:p_tilde-1) = Vz;
-
 % Useful spectral matrices
-MsinL = trigspec.multmat(n_tilde, [0.5i;0;-0.5i] ); 
-McosL = trigspec.multmat(n_tilde, [0.5;0;0.5] );
-MsinT = trigspec.multmat(p_tilde, [0.5i;0;-0.5i] ); 
-McosT = trigspec.multmat(p_tilde, [0.5;0;0.5] );
+MsinL = trigspec.multmat(n, [0.5i;0;-0.5i] ); 
+McosL = trigspec.multmat(n, [0.5;0;0.5] );
+MsinT = trigspec.multmat(p, [0.5i;0;-0.5i] ); 
+McosT = trigspec.multmat(p, [0.5;0;0.5] );
 
 % Compute the boundary Vr|r=1
-v_Boundary = McosL*Vxexp*MsinT.' + MsinL*Vyexp*MsinT.' + Vzexp*McosT.';
-
-% Interpolate on the previous grid
-v_Boundary = trigtech.alias(trigtech.alias(v_Boundary,n).',p).';
+v_Boundary = McosL*Vx*MsinT.' + MsinL*Vy*MsinT.' + Vz*McosT.';
 end
