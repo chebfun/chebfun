@@ -1,6 +1,9 @@
 function v = rcurl(P)
 % Compute v = curl(rw)
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [m,n,p] = size(P);
 
 % If m and p are odd, make them even

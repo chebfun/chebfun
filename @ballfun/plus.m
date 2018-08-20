@@ -2,6 +2,9 @@ function h = plus(f, g)
 % PLUS Addition of two BALLFUN functions
 %   PLUS(f, g) is addition of the BALLFUN functions f and g
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 fIsBallfun = isa(f, 'ballfun');
 gIsBallfun = isa(g, 'ballfun');
 

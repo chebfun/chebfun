@@ -2,6 +2,10 @@ function vals = feval(f, r, lambda, theta)
 % FEVAL Evaluate a BALLFUNV
 %   FEVAL(f, r, lambda, theta) is the array of values of the BALLFUNV f 
 %   at the grid r x lambda x theta
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 F = f.comp;
 
 % Get the size of the lists

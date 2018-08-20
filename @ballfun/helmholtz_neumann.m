@@ -5,6 +5,9 @@ function u = helmholtz_neumann(f, K, g, varargin)
 %   equation with right hand side f and Neumann boundary condition
 %   g(lambda, theta)
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % PROBLEM: We solve:
 %
 %  r^2sin(th)^2u_rr + 2r(sin(th))^2u_r + (sin(th))^2u_{thth}

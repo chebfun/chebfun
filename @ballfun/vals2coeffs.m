@@ -3,6 +3,9 @@ function X = vals2coeffs( X )
 % to an array of values
 %   VALS2COEFFS(VALS) is the array of values corresponding to VALS
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [m, n, p] = size( X );
 
 % Old, slow, approach: 

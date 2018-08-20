@@ -2,6 +2,9 @@ function X = coeffs2vals( X )
 % COEFFS2VALS Convert an array of values to a Chebyshev--Fourier--Fourier array of coefficients 
 %   COEFFS2VALS(CFS) is the array of coefficients corresponding to CFS
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [m, n, p] = size( X );
 
 % Old slow approach:

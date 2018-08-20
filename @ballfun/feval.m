@@ -3,6 +3,9 @@ function H = feval(f,r,lambda,theta)
 %   FEVAL(f, r, lambda, theta) is the array of values of the BALLFUN
 %   function f at the grid r x lambda x theta
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.\
+
 F = f.coeffs;
 [m,n,p] = size(f);
 

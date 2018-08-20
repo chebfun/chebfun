@@ -2,6 +2,9 @@ function b = isequal(f, g)
 % ISEQUAL Test the equality between two BALLFUN functions
 %   ISEQUAL(f, g) is the boolean f == g
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Test if f = g
 if (nnz(size(f)-size(g))==0)
     b = iszero(f-g);

@@ -3,6 +3,9 @@ function f = fun2ballfun(g,S)
 %   FUN2BALLFUN(g, S) is the BALLFUN function 
 %   f = g(r, lambda, theta)
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Convert a handle_function to a ballfun function
 m = S(1); n = S(2); p = S(3);
 

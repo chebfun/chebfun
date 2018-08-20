@@ -1,5 +1,9 @@
 %% Apply the 3/2 rule
 function Vexp = Orsag_Expand(V)
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [m,n,p] = size(V);
 m_tilde = ceil(3*m/2);
 n_tilde = ceil(3*n/2);

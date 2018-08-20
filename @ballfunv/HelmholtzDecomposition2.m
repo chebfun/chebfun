@@ -1,30 +1,40 @@
-function varargout = HelmholtzDecomposition(v)
+function varargout = HelmholtzDecomposition2(v,form)
 % HELMHOLTZDECOMPOSITION Helmholtz decomposition of a BALLFUNV
-%   HELMHOLTZDECOMPOSITION returns the two-component form or the three-component
-%   form according to the number of output arguments
-%   two-component form:
+%   HELMHOLTZDECOMPOSITION(v,"two") is the two-component form of the 
+%   Helmholtz decomposition of the BALLFUNV 
 %   v = grad(f) + Psi, where Psi = curl(curl(rPpsi)) + curl(rTpsi)
-%   three-component form:
+%
+%   HELMHOLTZDECOMPOSITION(v,"three") is the three-component form of the 
+%   Helmholtz decomposition of the BALLFUNV 
 %   v = grad(f) + curl(Psi) + grad(phi), where Psi = curl(curl(rPpsi)) + curl(rTpsi)
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if nargout == 3
+if strcmp(form,"two")
     % Compute the decomposition
     [f,Ppsi,Tpsi] = HelmholtzDecomposition_2(v);
     % Return the decomposition
-    varargout = { f,Ppsi,Tpsi };
+    if ( nargout <= 1 ) 
+        varargout = { [f,Ppsi,Tpsi] };
+    else 
+        varargout = { f,Ppsi,Tpsi };
+    end
     
-elseif nargout == 4
+elseif strcmp(form,"three")
     % Compute the decomposition
     [f,Ppsi,Tpsi,phi] = HelmholtzDecomposition_3(v);
     % Return the decomposition
-    varargout = { f,Ppsi,Tpsi,phi };
+    if ( nargout <= 1 ) 
+        varargout = { [f,Ppsi,Tpsi,phi] };
+    else 
+        varargout = { f,Ppsi,Tpsi,phi };
+    end
     
 else
     error('BALLFUNV:HelmholtzDecomposition:unknown', ...
-          'Undefined function ''HelhmoltzDecomposition'' for %d output arguments', nargout);    
+                ['Undefined function ''HelhmoltzDecomposition'' for input arguments of type ' ...
+                '%s.'], class(form));    
 end
 end
 
@@ -68,6 +78,7 @@ v_Boundary = ComputeNormalBoundary(v_1);
 
 % Solve Delta phi = 0 with Neumann boundary condition
 % r.grad(phi) = dphi/dr = r.v_1
+Nord = (n-1)/2;
 phi = helmholtz_neumann(ballfun(zeros(m,n,p)),0,v_Boundary);
 
 % Divergence-free and tangential-free vector field
@@ -91,6 +102,10 @@ function v_Boundary = ComputeNormalBoundary(v)
 % Get the discretization
 [~,n,p] = size(v);
 
+% Increase the discretization
+n_tilde = n + 2;
+p_tilde = p + 2;
+
 % Get the components
 [Vx,Vy,Vz] = v.comp{:};
 Vx = Vx.coeffs;
@@ -102,12 +117,23 @@ Vx = reshape(sum(Vx,1),n,p);
 Vy = reshape(sum(Vy,1),n,p);
 Vz = reshape(sum(Vz,1),n,p);
 
+% Expand the matrices
+Vxexp = zeros(n_tilde,p_tilde);
+Vyexp = zeros(n_tilde,p_tilde);
+Vzexp = zeros(n_tilde,p_tilde);
+Vxexp(2:n_tilde-1,2:p_tilde-1) = Vx;
+Vyexp(2:n_tilde-1,2:p_tilde-1) = Vy;
+Vzexp(2:n_tilde-1,2:p_tilde-1) = Vz;
+
 % Useful spectral matrices
-MsinL = trigspec.multmat(n, [0.5i;0;-0.5i] ); 
-McosL = trigspec.multmat(n, [0.5;0;0.5] );
-MsinT = trigspec.multmat(p, [0.5i;0;-0.5i] ); 
-McosT = trigspec.multmat(p, [0.5;0;0.5] );
+MsinL = trigspec.multmat(n_tilde, [0.5i;0;-0.5i] ); 
+McosL = trigspec.multmat(n_tilde, [0.5;0;0.5] );
+MsinT = trigspec.multmat(p_tilde, [0.5i;0;-0.5i] ); 
+McosT = trigspec.multmat(p_tilde, [0.5;0;0.5] );
 
 % Compute the boundary Vr|r=1
-v_Boundary = McosL*Vx*MsinT.' + MsinL*Vy*MsinT.' + Vz*McosT.';
+v_Boundary = McosL*Vxexp*MsinT.' + MsinL*Vyexp*MsinT.' + Vzexp*McosT.';
+
+% Interpolate on the previous grid
+v_Boundary = trigtech.alias(trigtech.alias(v_Boundary,n).',p).';
 end

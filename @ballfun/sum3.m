@@ -3,6 +3,9 @@ function I = sum3(f, varargin)
 %   SUM3(f) is the integration of the BALLFUN function f over the
 %   ballfun
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Second argument: integral over the sphere of radius -1
 [m,n,p] = size(f);
 

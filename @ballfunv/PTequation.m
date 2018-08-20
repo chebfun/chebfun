@@ -4,7 +4,10 @@ function u = PTequation(f)
 %   PTEQUATION(f, varargin) is the solution to the equation 
 %   sin^2(theta)Delta_S u = f with the condition that the 0th Fourier mode  
 %   in lambda and theta is 0. 
- 
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Solve the equation with optimal complexity O(m2n^3), where n is the 
 % level of discretization in one variable and m = 2 is the Fourier number 
 % of sin(th)^2 and sin(th)*cos(th). m corresponds to the bandwidth of  
