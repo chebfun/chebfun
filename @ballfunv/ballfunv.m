@@ -1,13 +1,24 @@
-%BALLFUNV   Vector-valued functions defined on the unit ball.
+classdef ballfunv
+%BALLFUNV   BALLFUNV class for representing vector-valued functions on the unit ball.
+%
+%  Class for approximating smooth vector-valued functions defined on the unit ball.
+%
+% BALLFUNV(F, G, H) constructs a BALLFUNV object representing the vector-valued
+% function [F;G;H] on the unit ball. F, G, and H may be BALLFUN objects, function
+% handles or scalars. If they are function handles, then they those function handles
+% should be vectorized.
+%
+% See also BALLFUN.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-classdef ballfunv
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% CLASS PROPERTIES:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties
         
-        comp   % Components Vx, Vy, Vz of a BALLFUNV
+        comp   % The three components Vx, Vy, Vz of a BALLFUNV
         
     end
     
@@ -56,7 +67,10 @@ classdef ballfunv
             F.comp = fh;
         end
     end
-    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% STATIC METHODS:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         v = PT2ballfunv(P,T);
         v = rcurl(P);
@@ -65,10 +79,6 @@ classdef ballfunv
     methods ( Access = private, Static = true )
         u = PTequation(f);
     end
-    
-    methods ( Access = private, Static = false )
-        
 
-    end
     
 end
