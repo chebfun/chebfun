@@ -13,7 +13,7 @@ function varargout = PTdecomposition(v)
 Mr = ultraS.multmat(m, [0;1], 0);
 MsinL = trigspec.multmat(n, [0.5i;0;-0.5i]); 
 McosL = trigspec.multmat(n, [0.5;0;0.5]);
-DF1L = 1i*spdiags((-floor(p/2):floor(p/2))', 0, n,n);
+DF1L = 1i*spdiags((-floor(n/2):floor(n/2))', 0, n,n);
 
 MsinT = trigspec.multmat(p, [0.5i;0;-0.5i]);
 Msin2T = trigspec.multmat(p, [-0.25;0;0.5;0;-0.25]);

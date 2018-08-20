@@ -220,7 +220,7 @@ for k = ListFourierMode
     % the 0th Fourier mode in lambda and theta is 0
     if k == floor(n/2)+1 && K == 0
                 
-        % Increase m if it's equal to 3 mod 4
+        % Increase m if it isn't equal to 3 mod 4
         if mod(m,4) ~= 3
             mexp = m + mod(3-mod(m,4),4);
             DC2Exp = ultraS.diffmat(mexp, 2);
@@ -243,7 +243,7 @@ for k = ListFourierMode
             bc2Exp = bc2;
         end
         
-        % Increase p if it's equal to 1 mod 4
+        % Increase p if it isn't equal to 1 mod 4
         if mod(p,4) ~= 1
             pexp = p + mod(1-mod(p,4),4);
             Msin2Exp = trigspec.multmat(pexp, [-.25;0;0.5;0;-0.25] );
