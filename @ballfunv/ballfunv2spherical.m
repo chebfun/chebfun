@@ -1,6 +1,9 @@
 function varargout = ballfunv2spherical(v)
 % Convert a ballfunv to spherical system and return Vr, Vlam, Vth
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 %% We might need to improve this code by doing n+2 and p+2 and interpolating the result
 
 [Vx,Vy,Vz] = v.comp{:};

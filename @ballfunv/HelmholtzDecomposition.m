@@ -7,6 +7,9 @@ function varargout = HelmholtzDecomposition(v)
 %   three-component form:
 %   v = grad(f) + curl(Psi) + grad(phi), where Psi = curl(curl(rPpsi)) + curl(rTpsi)
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if nargout == 3
     % Compute the decomposition
     [f,Ppsi,Tpsi] = HelmholtzDecomposition_2(v);

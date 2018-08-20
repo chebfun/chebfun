@@ -6,6 +6,9 @@ function varargout = size(v)
 %   [M, N, P] = SIZE(V) is the same as S = SIZE(V) with M = S(1), N = S(2),
 %   and P = S(3). 
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Return the list [m,n,p] corresponding to the size of the ballfun
 % functions in f
 S = size(v.comp{1});

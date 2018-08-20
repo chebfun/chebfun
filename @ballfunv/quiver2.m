@@ -2,6 +2,9 @@ function quiver2(v,varargin)
 % QUIVER2 Plot of a BALLFUNV on the ball with uniformly
 % distributed points
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Number of points
 [m,n,p] = size(v);
 

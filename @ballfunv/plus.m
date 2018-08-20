@@ -1,6 +1,10 @@
 function h = plus(f, g)
 % PLUS Addition of two BALLFUNVCART
 %   PLUS(f, g) is addition of the BALLFUNV f and g
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 fIsBallfunv = isa(f, 'ballfunv');
 gIsBallfunv = isa(g, 'ballfunv');
 

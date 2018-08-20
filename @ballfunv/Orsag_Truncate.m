@@ -1,5 +1,9 @@
 %% Apply the 2/3 rule
 function V = Orsag_Truncate(Vexp,S)
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [~,n_tilde,p_tilde] = size(Vexp);
 m = S(1); n = S(2); p = S(3);
 [VexpX,VexpY,VexpZ] = Vexp.comp{:};

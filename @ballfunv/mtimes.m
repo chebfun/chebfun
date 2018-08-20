@@ -1,6 +1,10 @@
 function h = mtimes(f, g)
 % MTIMES Multiplication of a BALLFUNV by a scalar
 %   MTIMES(f, g) is the multiplication of f by g
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 fIsBallfunv = isa(f, 'ballfunv');
 gIsBallfunv = isa(g, 'ballfunv');
 

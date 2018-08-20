@@ -1,6 +1,10 @@
 function h = cross(f,g)
 % CROSS Cross product of two BALLFUNV
 %   CROSS(f, g) is the cross product of the BALLFUNV f and g
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 F = f.comp;
 G = g.comp;
 % Get the values of f and g

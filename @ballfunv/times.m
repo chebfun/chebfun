@@ -3,6 +3,9 @@ function h = times(f, g)
 %   TIMES(f, g) is the component-wise multiplication between the BALLFUNV 
 %   f and g
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 %   F.*G if F is a ballfunv and G is double returns the ballfunv after
 %   componentwise multiplication.F = f.comp;
 F = f.comp;

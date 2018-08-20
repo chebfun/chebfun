@@ -1,6 +1,9 @@
 function quiver(v,varargin)
 % QUIVER Plot of a BALLFUNV on the ball
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Take a vector field Vx, Vy, Vz and plot it
 [Vx,Vy,Vz] = v.comp{:};
 

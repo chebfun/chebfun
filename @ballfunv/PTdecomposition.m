@@ -4,6 +4,9 @@ function varargout = PTdecomposition(v)
 %   The Poloidal-toroidal decomposition of a divergence-free BALLFUNV v 
 %   is of the form V = P + T
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [Vx,Vy,Vz] = v.comp{:};
 
 % Get the discretization
