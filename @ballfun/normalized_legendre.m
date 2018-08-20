@@ -4,6 +4,9 @@ function A = normalized_legendre(n)
 % Normalization for the Spherical harmonics : \tilde{P}^m_l =
 % P^m_l/(2*sqrt(pi))
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % We save the polynomials P^m_l in a matrix.
 % In order to create the integral constraints, we have the following
 % inequalities

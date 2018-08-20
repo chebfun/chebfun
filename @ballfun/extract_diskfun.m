@@ -6,6 +6,9 @@ function g = extract_diskfun(f, a, b, varargin)
 %   EXTRACT_DISKFUN(f, 'x', 'y', r) is the slice of the BALLFUN function f
 %   corresponding to the plane X-Y at radius r
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Take a ballfun function and a point on the sphere (r, lambda, theta), 
 % Return is in [0, 1], lambda is in [-pi, pi], theta is in [0, pi]
 % r the function f on the disk parametrized by the normal 0-(r, lambda,

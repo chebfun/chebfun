@@ -3,6 +3,9 @@ function g = extract_spherefun(f, varargin)
 %   EXTRACT_SPHEREFUN(f, r) is the SPHEREFUN function 
 %   g(lambda, theta) = f(r, :, :)
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 F = f.coeffs;
 [m,n,p] = size(f);
 

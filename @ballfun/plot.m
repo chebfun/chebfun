@@ -1,6 +1,9 @@
 function plot(f,varargin)
 % PLOT Plot a BALLFUN function on the ballfun
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Get the coeffs of the ballfun function F(r,lam,th), lam is the
 % azimuthal variable in [-pi,pi] and theta the polar variable in [0,pi]
 F = f.coeffs;

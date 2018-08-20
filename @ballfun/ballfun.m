@@ -1,3 +1,7 @@
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 classdef ballfun
     %BALLFUN  A library for the DFS method in the solid sphere.
     

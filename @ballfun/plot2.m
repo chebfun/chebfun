@@ -1,6 +1,9 @@
 function plot2(f)
 % PLOT2 Plot a BALLFUN function on the ballfun and its slices
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 clf
 
 % Plot f on the plane X-Y

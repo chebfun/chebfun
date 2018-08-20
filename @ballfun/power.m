@@ -2,6 +2,9 @@ function g = power(f,n)
 % POWER Return a BALLFUN function to the power n
 %   POWER(f) is the BALLFUN function f^n
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Fast power implementation
 if (n >= 0)
     S = size(f);

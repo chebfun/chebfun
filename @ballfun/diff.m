@@ -9,6 +9,9 @@ function g = diff(f, varargin)
 %   F = DIFF( F, DIM, K, "cart") computes the kth derivatives of F in the 
 %   cartesian variable x, y or z given by DIM.
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Parse user inputs:
 if ( nargin == 2 )
     dim = varargin{1};

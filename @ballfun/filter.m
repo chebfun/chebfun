@@ -2,6 +2,9 @@ function g = filter( f )
 % FILTER Filter of a nonsmooth BALLFUN function
 %   FILTER(f) removes the discontinuities of the BALLFUN function f
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Test with f(x,y,z) = cos(x*y):
 % f=ballfun(@(r,lam,th)cos(r^2*sin(th)^2*cos(lam)*sin(lam)),[20,20,20]);
 

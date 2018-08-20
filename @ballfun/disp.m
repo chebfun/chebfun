@@ -1,6 +1,9 @@
 function disp(f)
 %DISP Display a BALLFUN function to the command line
 
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 Nfunctions = numel(f);
 % Vectorize the array
 f = f(:);

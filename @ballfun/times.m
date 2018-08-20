@@ -2,6 +2,10 @@ function h=times(f,g)
 % TIMES Multiplication of two BALLFUN functions
 %   TIMES(f, g) is the multiplication between the BALLFUN functions f
 %   and g
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if (nnz(size(f)-size(g))==0)
     F = f.coeffs;
     G = g.coeffs;
