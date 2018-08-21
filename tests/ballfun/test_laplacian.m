@@ -1,4 +1,4 @@
-function pass = test_laplace( )
+function pass = test_laplacian( )
 
 % Test with different parity of m,p
 % Example 1:
