@@ -53,14 +53,14 @@ g = @(r,lam,th)r.^2.*sin(th).^2.*exp(2*1i*lam);
 f = ballfun(g,S);
 bc = @(lam,th)g(1,lam,th);
 u = helmholtz(zero,0,bc);
-pass(6) = isequal(laplace(f),zero) && isequal(u,f);
+pass(6) = isequal(laplacian(f),zero) && isequal(u,f);
 
 % Example 7:
 g = @(r,lam,th)r.^5.*exp(3*1i*lam).*sin(th).^3.*(9*cos(th).^2-1);
 f = ballfun(g,S);
 bc = @(lam,th)g(1,lam,th);
 u = helmholtz(zero,0,bc);
-pass(7) = isequal(laplace(f),zero) && isequal(u,f);
+pass(7) = isequal(laplacian(f),zero) && isequal(u,f);
 
 %% HELMHOLTZ WITH K = 2
 
