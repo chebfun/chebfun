@@ -29,7 +29,7 @@ classdef ballfunv
         % Take the 3 components
         function F = ballfunv(varargin)
             
-            % Return an empty BALLFUNVCART:
+            % Return an empty BALLFUNV:
             if ( (nargin == 0) || isempty(varargin) )
                 return
             end
@@ -40,30 +40,54 @@ classdef ballfunv
                 return
             end
             
-            % BALLFUNVCART objects are vector-valued so complain if there 
+            % BALLFUNV objects are vector-valued so complain if there 
             % are less than 3 components: 
             if ( numel(varargin) < 3 )
                 error('BALLFUNV:ballfunv', ...
                     'Less than three components is not supported.')
             end
             
-            % BALLFUNV objects cannot contain more than three components. 
-            % Complain if we have been given four or more.  
-            if ( numel(varargin) > 3 )
+            % BALLFUNV objects cannot contain more than five components. 
+            % Complain if we have been given six or more.  
+            if ( numel(varargin) > 5 )
                 error('BALLFUNV:ballfunv', ...
-                    'More than three components is not supported.')
+                    'More than four components is not supported.')
             end
             
-            for jj = 1:3
-               if isa(varargin{jj}, 'ballfun') == 0
-                   error('BALLFUNV:ballfunv', ...
-                    'Input arguments should be ballfun functions')
-               end
+            % Create a BALLFUNV from 3 BALLFUN objects
+            if ( numel(varargin) == 3 )
+                for jj = 1:3
+                   if isa(varargin{jj}, 'ballfun') == 0
+                       error('BALLFUNV:ballfunv', ...
+                        'Input arguments should be ballfun functions')
+                   end
+                end
+
+                fh{1} = varargin{1};
+                fh{2} = varargin{2};
+                fh{3} = varargin{3};
+            end
+           
+            % Create a BALLFUNV from 3 function handles and an array
+            if ( numel(varargin) == 4 )
+                S = varargin{4};
+                fh{1} = ballfun(varargin{1},S);
+                fh{2} = ballfun(varargin{2},S);
+                fh{3} = ballfun(varargin{3},S);
             end
             
-            fh{1} = varargin{1};
-            fh{2} = varargin{2};
-            fh{3} = varargin{3};
+            % Create a BALLFUNV from 3 function handles and an array
+            if ( numel(varargin) == 5 )
+                if ~strcmp(varargin{4}, 'cart')
+                    error('BALLFUNV:ballfunv', ...
+                        'Input arguments not supported')
+                end
+                S = varargin{5};
+                fh{1} = ballfun(varargin{1},'cart',S);
+                fh{2} = ballfun(varargin{2},'cart',S);
+                fh{3} = ballfun(varargin{3},'cart',S);
+            end
+            
             F.comp = fh;
         end
     end
