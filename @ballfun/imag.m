@@ -1,6 +1,8 @@
 function g = imag(f)
-% IMAG Imaginary part of a BALLFUN function
-%   IMAG(f) is the imaginary part of the BALLFUN function f
+%IMAG   Complex imaginary part of a BALLFUN.
+%   IMAG(F) is the imaginary part of F.
+%
+% See also REAL.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

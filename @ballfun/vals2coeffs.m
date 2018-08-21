@@ -1,7 +1,13 @@
 function X = vals2coeffs( X )
-% VALS2COEFFS Convert a Chebyshev--Fourier--Fourier array of coefficients 
-% to an array of values
-%   VALS2COEFFS(VALS) is the array of values corresponding to VALS
+%VALS2COEFFS   BALLFUN values to coefficients.
+%
+% C = VALS2COEFFS( V ) converts values in (r, lambda, theta)
+% in spherical coordinates at a chebpts x trigpts x trigpts grid to
+% Chebyshev x Fourier x Fourier coefficients.
+%
+% This command is mainly for internal use.
+%
+% See also CHEBFUN.VALS2COEFFS, COEFFS2VALS.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -35,7 +41,7 @@ X = X.*repmat( Enp, m, 1, 1);
 end
 
 function scl = even_odd_fix( n )
-
+% Even/odd scaling:
 if ( mod(n, 2) ) 
     scl = (-1).^(-(n-1)/2:(n-1)/2);
 else

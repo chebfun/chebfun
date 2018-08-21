@@ -1,7 +1,7 @@
 function H = feval(f,r,lambda,theta)
-% FEVAL Evaluate a BALLFUN function
-%   FEVAL(f, r, lambda, theta) is the array of values of the BALLFUN
-%   function f at the grid r x lambda x theta
+%FEVAL Evaluate a BALLFUN.
+%   FEVAL(F, r, lambda, theta) is the array of values of the BALLFUN
+%   function F at the grid r x lambda x theta.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.\

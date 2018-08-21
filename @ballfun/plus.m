@@ -1,6 +1,9 @@
 function h = plus(f, g)
-% PLUS Addition of two BALLFUN functions
-%   PLUS(f, g) is addition of the BALLFUN functions f and g
+%+   BALLFUN plus.
+%   F + G adds BALLFUNs F and G, or a scalar to a BALLFUN if either F or G is a
+%   scalar.
+%
+%   H = PLUS(F, G) is called for the syntax 'F + G'.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

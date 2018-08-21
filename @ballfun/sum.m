@@ -1,6 +1,6 @@
-function g = sum1(f)
-% SUM1 Integration of a BALLFUN function over r
-%   SUM1(f) is the integration of the BALLFUN function f over r
+function g = sum(f)
+% SUM Integration of a BALLFUN function over r
+%   SUM(f) is the integration of the BALLFUN function f over r
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

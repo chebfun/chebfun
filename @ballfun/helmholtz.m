@@ -1,9 +1,10 @@
 function u = helmholtz(f, K, g)
-% HELMHOLTZ Solve the Helmholtz equation with
-% Dirichlet boundary condition
-%   HELMHOLTZ(f, K, g) is the solution to the Helmholtz
-%   equation with right hand side f and Dirichlet boundary condition
-%   g(lambda, theta)
+%HELMHOLTZ   Helmholtz solver with Dirichlet boundary conditions.
+%   HELMHOLTZ(F, K, G) is the solution to the Helmholtz
+%   equation with right-hand side F, frequency K, and Dirichlet boundary
+%   data given by g(lambda, theta).
+%
+% Also see POISSON, HELMHOLTZ_NEUMANN.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

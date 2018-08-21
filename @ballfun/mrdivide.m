@@ -1,6 +1,8 @@
 function g = mrdivide(f,c)
-% MRDIVIDE / Right scalar divide for BALLFUN object
-%   MRDIVIDE(f,c) divides the BALLFUN function f by the scalar c
+%/   Right matrix divide for BALLFUN objects.
+%   X = B/A or X = mrdivide(B, A) is equivalent to X = B./A.
+%
+% See also MLDIVIDE.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

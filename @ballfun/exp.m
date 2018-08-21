@@ -1,6 +1,6 @@
 function g = exp(f)
-% EXP Absolue value of a BALLFUN function
-%   EXP(f) is the absolute value of the BALLFUN function f
+%EXP   Exponential of a BALLFUN.
+%   EXP(F) computes the exponential of the BALLFUN F.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

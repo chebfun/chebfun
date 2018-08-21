@@ -1,6 +1,6 @@
 function g = abs(f)
-% ABS Absolue value of a BALLFUN function
-%   ABS(f) is the absolute value of the BALLFUN function f
+%ABS Absolute value of a BALLFUN.
+%   ABS(f) is the absolute value of the BALLFUN F.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

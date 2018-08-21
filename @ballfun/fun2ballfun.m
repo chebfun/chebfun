@@ -1,5 +1,5 @@
 function f = fun2ballfun(g,S)
-% FUN2BALLFUN Conversion of a FUNCTION_HANDLE to a BALLFUN function
+%FUN2BALLFUN Conversion of a FUNCTION_HANDLE to a BALLFUN function
 %   FUN2BALLFUN(g, S) is the BALLFUN function 
 %   f = g(r, lambda, theta)
 

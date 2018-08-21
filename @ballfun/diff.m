@@ -1,13 +1,17 @@
 function g = diff(f, varargin) 
-% DIFF Differentiate a BALLFUN function 
-%   DIFF(f, dim) compute the first derivatives of F. If DIM = 1, the
-%   derivative is taken in the r-direction. If DIM = 2, the derivative
-%   is taken in the lambda-direction. If DIM = 2, the derivative is 
-%   taken in the theta-direction.
+%DIFF   Differentiation of a BALLFUN.
+%   DIFF(F, DIM) computes the derivative of F. If DIM = 1, the
+%   derivative is taken in the r-variable. If DIM = 2, the derivative
+%   is taken in the lambda-variable. If DIM = 3, the derivative is
+%   taken in the theta-variable.
+%
 %   F = DIFF( F, DIM, K) computes the kth derivatives of F in the variable
 %   given by DIM.
+%
 %   F = DIFF( F, DIM, K, "cart") computes the kth derivatives of F in the 
-%   cartesian variable x, y or z given by DIM.
+%   cartesian variables x, y or z given by DIM.
+%
+% See also SUM, SUM2, SUM3.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

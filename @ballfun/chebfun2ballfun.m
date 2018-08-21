@@ -1,7 +1,6 @@
 function g = chebfun2ballfun(f,S)
-% CHEBFUN2BALLFUN Convert a CHEBFUN of r to a BALLFUN
-% function
-%   CHEBFUN2BALLFUN(f,S) is the ballfun function g(r,lam,th) = f(r)
+%CHEBFUN2BALLFUN   Convert a CHEBFUN in the r-variable to a BALLFUN.
+%   CHEBFUN2BALLFUN(f) is the ballfun function g(r,lam,th) = f(r)
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

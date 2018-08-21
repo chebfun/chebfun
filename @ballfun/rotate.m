@@ -1,7 +1,7 @@
 function g = rotate(f, lambda, theta)
-% ROTATE Rotation of a BALLFUN function
+%ROTATE  Rotate a BALLFUN.
 %   ROTATE(f, lambda, theta) is the rotation of f by the azimuthal angle
-%   lambda and polar angle theta
+%   lambda and polar angle theta.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,6 +1,8 @@
 function f = uplus(f)
-% UPLUS BALLFUN unary plus
-%   UPLUS(f) is the BALLFUN function f
+%+   BALLFUN unary plus.
+%   +F of a BALLFUN is F.
+%
+%   G = UPLUS(F) is called for the syntax '+F'.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

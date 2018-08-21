@@ -1,5 +1,5 @@
-function disp(f)
-%DISP Display a BALLFUN function to the command line
+function disp( f )
+%DISP Display a BALLFUN object to the command line.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -9,7 +9,7 @@ Nfunctions = numel(f);
 f = f(:);
 
 % Display the object
-if Nfunctions == 1
+if ( Nfunctions == 1 )
     % Get information that we want to display:
     display_ballfun(f);
 else

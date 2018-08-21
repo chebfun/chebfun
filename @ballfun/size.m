@@ -1,6 +1,6 @@
 function varargout = size( F )
-% SIZE  Number of expansion coefficients of a BALLFUN
-%   S = SIZE(F) returns the size of the tensor of expansion coefficients 
+%SIZE   Size of a BALLFUN.
+%   S = SIZE(F) returns the size of the tensor of expansion coefficients
 %   for F, where S = [m,n,p] for an mxnxp tensor of coefficients. 
 %   
 %   [M, N, P] = SIZE(F) is the same as S = SIZE(F) with M = S(1), N = S(2),

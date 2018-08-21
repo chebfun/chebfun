@@ -1,7 +1,9 @@
 function I = sum3(f, varargin)
-% SUM3 Integration of a BALLFUN function over the ballfun
-%   SUM3(f) is the integration of the BALLFUN function f over the
-%   ballfun
+% SUM3 Integration of a BALLFUN function over the unit ball. 
+%   SUM3(F) is the integration of the BALLFUN function f over the
+%   unit ball.
+%
+% See also SUM, SUM2.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,8 +1,9 @@
 function A = normalized_legendre(n)
-% NORMALIZED_LEGENDRE Generate the normalized associated Legendre
-% polynomials
-% Normalization for the Spherical harmonics : \tilde{P}^m_l =
-% P^m_l/(2*sqrt(pi))
+%NORMALIZED_LEGENDRE   Generate the normalized associated Legendre
+% polynomials.
+%
+% Normalization for the spherical harmonics is \tilde{P}^m_l =
+% P^m_l/(2*sqrt(pi)).
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

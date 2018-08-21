@@ -1,7 +1,7 @@
 function ff = sum2(f)
-% SUM2 Integration of a BALLFUN function over lambda and theta
-%   SUM2(f) is the integration of the BALLFUN function f over lambda 
-%   and theta
+%SUM2  Integration of a BALLFUN function over lambda and theta
+%   SUM2(F) is the integration of the BALLFUN function f over lambda
+%   and theta.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

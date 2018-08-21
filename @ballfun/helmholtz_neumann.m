@@ -1,9 +1,10 @@
 function u = helmholtz_neumann(f, K, g, varargin)
-% HELMHOLTZ_NEUMANN Solve the Helmholtz equation with
-% Dirichlet boundary condition
-%   HELMHOLTZ_NEUMANN(f, K, g) is the solution to the Helmholtz
-%   equation with right hand side f and Neumann boundary condition
-%   g(lambda, theta)
+%HELMHOLTZ_NEUMANN   Helmholtz solver with Neumann conditions.
+%   HELMHOLTZ_NEUMANN(F, K, G) is the solution to the Helmholtz
+%   equation with right-hand side F, Helmholtz frequency K, and Neumann
+%   data g(lambda, theta).
+%
+% See also HELMHOLTZ, POISSON.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
