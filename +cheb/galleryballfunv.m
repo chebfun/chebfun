@@ -3,14 +3,25 @@ function v = galleryballfunv(name,S)
 %   CHEB.GALLERYBALLFUNV(NAME, S) returns a ballfunv corresponding to
 %   NAME with size S.  See the listing below for available names.
 %
-%   random         Smooth random vector field
-%   zero           Zero vector field
+%   divergence-free Random divergence-free vector field
+%   random          Smooth random vector field
+%   zero            Zero vector field
 
 % The main switch statement.
 switch lower(name)
     
+    case 'divergence-free'
+        % Random vector field
+        v = cheb.galleryballfunv('random',S);
+        % Extract the divergence-free component
+        [~,P,T] = HelmholtzDecomposition(v);
+        v = ballfunv.PT2ballfunv(P,T);
+        
     case 'random'
-        v = randnfunballv(5,S);
+        vx = randnfunballv(5,S);
+        vy = randnfunballv(5,S);
+        vz = randnfunballv(5,S);
+        v = ballfunv(vx,vy,vz);
         
     % Zero vector field
     case 'zero'
