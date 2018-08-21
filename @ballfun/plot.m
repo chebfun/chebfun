@@ -1,4 +1,21 @@
-function plot(f)
+function plot(f, varargin)
+% PLOT Plot a BALLFUN function on the ballfun
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+clf
+
+if nargin == 1
+    plot1(f)
+elseif nargin == 2 && strcmp(varargin{1},'slice')
+    plot2(f)
+else
+    error('BALLFUNV:ballfunv Invalid input arguments')
+end
+end
+
+function plot1(f)
 % PLOT Plot a BALLFUN function on the ballfun
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
@@ -61,6 +78,39 @@ xlabel('X')
 ylabel('Y')
 zlabel('Z')
 end
+
+function plot2(f)
+% PLOT2 Plot a BALLFUN function on the ballfun and its slices
+
+% Plot f on the plane X-Y
+subplot(2,2,2);
+plot(extract_diskfun(f,'x','y'))
+colorbar
+xlabel('X')
+ylabel('Y')
+
+% Plot f on the plane X-Z
+subplot(2,2,3);
+plot(extract_diskfun(f,'x','z'));
+colorbar
+xlabel('X')
+ylabel('Z')
+
+% Plot f on the plane Y-Y
+subplot(2,2,4);
+plot(extract_diskfun(f,'y','z'));
+colorbar
+xlabel('Y')
+ylabel('Z')
+
+% Plot f
+subplot(2,2,1);
+plot1(f)
+colorbar
+
+set(gcf,'PaperPositionMode','auto','PaperPosition',[0 0 15 10])
+end
+
 
 function G = expand(F)
 
