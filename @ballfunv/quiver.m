@@ -55,14 +55,14 @@ end
 q = quiver3(xx,yy,zz,real(Vxx),real(Vyy),real(Vzz), 'AutoScaleFactor',4);
 
 % Color the vectors according to their magnitude
-if (nargin==1 || (nargin==2 && varargin{1}~="Color") ||  (nargin>2 && varargin{1}~="Color" && varargin{2}~="Color"))
+if  nargin==1
     % Compute the magnitude of the vectors
     mags = sqrt(sum(cat(2, q.UData(:), q.VData(:), ...
                 reshape(q.WData, numel(q.UData), [])).^2, 2));
             
     % Scale the colormap to data
     caxis([0,max(mags)]);
-    colorbar;
+    %colorbar;
             
     % Get the current colormap
     currentColormap = colormap(jet);
@@ -89,12 +89,6 @@ if (nargin==1 || (nargin==2 && varargin{1}~="Color") ||  (nargin>2 && varargin{1
 end
 hold on;
 
-% Sphere grid
-if (nargin==1 || (nargin==2 && varargin{1}~="Grid") ||  (nargin>2 && varargin{1}~="Grid" && varargin{2}~="Grid"))
-    [x,y,z] = sphere(16);
-    surf(x, y, z, 'linestyle',':','FaceAlpha', 0);
-end
-
 % Add label
 xlabel('X')
 ylabel('Y')
@@ -103,6 +97,5 @@ zlabel('Z')
 % % Axis
 axis([-1 1 -1 1 -1 1]);
 daspect([1 1 1]);
-axis off
 hold off;
 end
