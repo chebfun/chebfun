@@ -54,7 +54,7 @@ hold off
 camlight;
 lighting phong;
 colormap(jet);
-colorbar;
+%colorbar;
 
 % Add label
 xlabel('X')
