@@ -1,4 +1,4 @@
-function plot(f,varargin)
+function plot(f)
 % PLOT Plot a BALLFUN function on the ballfun
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
@@ -49,11 +49,6 @@ delete(hslicer);
 axis([-1 1 -1 1 -1 1])
 daspect([1 1 1])
 
-% Sphere grid
-if (nargin==1 || varargin{1}~="Grid")
-    [x, y, z] = sphere(16);
-    surf(x, y, z, 'linestyle',':','FaceAlpha', 0);
-end
 hold off
 
 camlight;
@@ -77,9 +72,9 @@ end
 m = S(1); n = S(2); p = S(3);
 
 % Compute the new size of the tensor
-mExpand = max(m + mod(4-mod(m,4),4), 20);
-nExpand = max(n + mod(4-mod(n,4),4), 20);
-pExpand = max(p + mod(4-mod(p,4),4), 20);
+mExpand = max(m + mod(4-mod(m,4),4), 26);
+nExpand = max(n + mod(4-mod(n,4),4), 26);
+pExpand = max(p + mod(4-mod(p,4),4), 26);
 
 % Find the list of coefficients which corresponds to the coefficients of F
 if mod(n,2) == 0

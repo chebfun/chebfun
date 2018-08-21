@@ -112,6 +112,25 @@ v = grad(f) + ballfunv.PT2ballfunv(P,T);
 [f,Ppsi,Tpsi,phi] = HelmholtzDecomposition(v);
 pass(12) = isequal(v,grad(f)+curl(ballfunv.PT2ballfunv(Ppsi,Tpsi))+grad(phi));
 
+S = [52,54,56];
+
+% Example 13 :
+vx = ballfun(@(x,y,z)cos(x.*y),'cart',S);
+vy = ballfun(@(x,y,z)sin(x.*z),'cart',S);
+vz = ballfun(@(x,y,z)cos(y.*z),'cart',S);
+v = ballfunv(vx,vy,vz);
+[f,Ppsi,Tpsi,phi] = HelmholtzDecomposition(v);
+pass(13) = isequal(v,grad(f)+curl(ballfunv.PT2ballfunv(Ppsi,Tpsi))+grad(phi));
+
+% Example 14 :
+f = ballfun(@(x,y,z)cos(y.*z),'cart',S);
+P = ballfun(@(x,y,z)cos(x.*y),'cart',S);
+T = ballfun(@(x,y,z)sin(x.*z),'cart',S);
+v = grad(f) + ballfunv.PT2ballfunv(P,T);
+[f,Ppsi,Tpsi,phi] = HelmholtzDecomposition(v);
+pass(14) = isequal(v,grad(f)+curl(ballfunv.PT2ballfunv(Ppsi,Tpsi))+grad(phi));
+
+
 if (nargout > 0)
     pass = all(pass(:));
 end

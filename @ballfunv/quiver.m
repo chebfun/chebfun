@@ -1,50 +1,68 @@
 function quiver(v,varargin)
-% QUIVER Plot of a BALLFUNV on the ball
+% QUIVER2 Plot of a BALLFUNV on the ball with uniformly
+% distributed points
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Take a vector field Vx, Vy, Vz and plot it
-[Vx,Vy,Vz] = v.comp{:};
-
+% Number of points
 [m,n,p] = size(v);
 
 % Create the grid
-r   = chebpts(m);
-lam = pi*trigpts(n);
-th  = [pi*trigpts(p); pi];
-
-% Convert the coeffs of the vector field to vals
-Vx = ballfun.coeffs2vals(Vx.coeffs);
-Vy = ballfun.coeffs2vals(Vy.coeffs);
-Vz = ballfun.coeffs2vals(Vz.coeffs);
-
-% Remove the doubles-up data: [0,1]x[-pi,pi[x[0,pi]
-Vx = real(Vx(floor(m/2)+1:end,:,[ceil(p/2)+1:end 1]));
-Vy = real(Vy(floor(m/2)+1:end,:,[ceil(p/2)+1:end 1]));
-Vz = real(Vz(floor(m/2)+1:end,:,[ceil(p/2)+1:end 1]));
+r = chebpts(m);
 
 % Resize the indices and grid
 r = r(floor(m/2)+1:end);
-th = th(ceil(p/2)+1:end);
+m = length(r);
 
-% Convert the spherical points to cartesian points
-[Lam,R,Th] = meshgrid(lam,r,th);
-x = R.*cos(Lam).*sin(Th);
-y = R.*sin(Lam).*sin(Th);
-z = R.*cos(Th);
+% Create the vector in cartesian system
+Vxx = [];
+Vyy = [];
+Vzz = [];
 
-q = quiver3(x,y,z,Vx,Vy,Vz, 'AutoScaleFactor',0.5);
+% Initialize the array of points
+xx = [];
+yy = [];
+zz = [];
+
+for i = 1:m
+    % Coordinates of the points on the sphere of radius r(i)
+    Nth = max(ceil(p*r(i)/2),1);
+    th_i  = linspace(0,pi,Nth);
+    
+    for k = 1:Nth
+        Dth = min(th_i(k),abs(th_i(k)-pi));
+        Nlam = max(ceil(n*r(i)*Dth*2/pi),1);
+        lam_i = trigpts(Nlam)*pi;
+        
+        % Get the values of the vector field at these points
+        vals = feval(v,r(i),lam_i,th_i(k));
+        VX = vals(:,:,:,1);
+        VY = vals(:,:,:,2);
+        VZ = vals(:,:,:,3);
+        Vxx = [Vxx;VX(1,:,1).'];
+        Vyy = [Vyy;VY(1,:,1).'];
+        Vzz = [Vzz;VZ(1,:,1).'];
+        x = r(i)*cos(lam_i)*sin(th_i(k));
+        y = r(i)*sin(lam_i).*sin(th_i(k));
+        z = repmat(r(i)*cos(th_i(k)),Nlam,1);
+        xx = [xx;x];
+        yy = [yy;y];
+        zz = [zz;z];
+    end
+end
+
+q = quiver3(xx,yy,zz,real(Vxx),real(Vyy),real(Vzz), 'AutoScaleFactor',4);
 
 % Color the vectors according to their magnitude
-if (nargin==1 || (nargin==2 && varargin{1}~="Color") ||  (nargin>2 && varargin{1}~="Color" && varargin{2}~="Color"))
+if  nargin==1
     % Compute the magnitude of the vectors
     mags = sqrt(sum(cat(2, q.UData(:), q.VData(:), ...
                 reshape(q.WData, numel(q.UData), [])).^2, 2));
             
     % Scale the colormap to data
     caxis([0,max(mags)]);
-    colorbar;
+    %colorbar;
             
     % Get the current colormap
     currentColormap = colormap(jet);
@@ -71,18 +89,12 @@ if (nargin==1 || (nargin==2 && varargin{1}~="Color") ||  (nargin>2 && varargin{1
 end
 hold on;
 
-% Sphere grid
-if (nargin==1 || (nargin==2 && varargin{1}~="Grid") ||  (nargin>2 && varargin{1}~="Grid" && varargin{2}~="Grid"))
-    [x,y,z] = sphere(16);
-    surf(x, y, z, 'linestyle',':','FaceAlpha', 0);
-end
-
 % Add label
 xlabel('X')
 ylabel('Y')
 zlabel('Z')
 
-% Axis
+% % Axis
 axis([-1 1 -1 1 -1 1]);
 daspect([1 1 1]);
 hold off;
