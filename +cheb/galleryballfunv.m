@@ -10,7 +10,10 @@ function v = galleryballfunv(name,S)
 switch lower(name)
     
     case 'random'
-        v = randnfunballv(5,S);
+        vx = randnfunballv(5,S);
+        vy = randnfunballv(5,S);
+        vz = randnfunballv(5,S);
+        v = ballfunv(vx,vy,vz);
         
     % Zero vector field
     case 'zero'
