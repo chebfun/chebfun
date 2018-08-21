@@ -101,7 +101,7 @@ classdef ballfunv
     end
     
     methods ( Access = private, Static = true )
-        u = PTequation(f);
+
     end
 
     

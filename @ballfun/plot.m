@@ -1,5 +1,6 @@
 function plot(f, varargin)
 % PLOT Plot a BALLFUN function on the ballfun
+% PLOT(f, 'slice') plot a BALLFUN function and its slices X-Y, Y-Z and X-Z
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
