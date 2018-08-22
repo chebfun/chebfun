@@ -25,7 +25,7 @@ if ( isa(op, 'ballfun') )     % BALLFUN( BALLFUN )
     f = op;
     return
 elseif ( isa(op, 'double') )   % BALLFUN( DOUBLE )
-    f = constructFromDouble(op, pref);
+    f = constructFromDouble(f, op);
     return
 end
 
@@ -47,27 +47,29 @@ while ( ~isHappy && ~failure )
     end
     
     % If the rank of the function is above maxRank then stop.
-    if ( max(grid1*grid2, grid2*grid3, grid1*grid3) > maxSample )
+    if ( max([grid1*grid2, grid2*grid3, grid1*grid3]) > maxSample )
         warning('CHEBFUN:BALLFUN:constructor:dimensions', ...
             'Not well-approximated by a Chebyshev-Fourier-Fourier expansion.');
         failure = 1;
     end
     
-    [grid1, grid2, grid3, isHappy] = happinessCheck( vals, vscale );
+    [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref );
     
 end
 
+% We are now happy so make a BALLFUN from its values: 
+f.coeffs = ballfun.vals2coeffs(vals);
 end
 
 %%
-function f = constructFromDouble( op )
+function f = constructFromDouble( f, op )
 %CONSTRUCTFROMDOUBLE  Constructor BALLFUN from matrix of values.
 
 if ( numel(op) == 1 )
     f = ballfun(@(x,y,z) op + 0*x, dom);
     return
 end
-f = ballfun( op );
+f.coeffs = ballfun.vals2coeffs(op);
 end
 
 
@@ -151,16 +153,16 @@ end
 
 % If the vectorize flag is off, do we need to give user a warning?
 if ( ~vectorize && ~isnumeric(op) ) % another check
-    [vectorize, op] = vectorCheck(op, dom);
+    [vectorize, op] = vectorCheck(op);
 end
 
 end
 
 %% 
-function [grid1, grid2, grid3, isHappy] = happinessCheck( vals )
+function [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref )
 % Check if the function has been resolved. 
     
-    r_vals = sum(sum( vals, 2),3);
+    r_vals = sum(sum( vals, 2), 3);
     l_vals = sum(sum( vals, 1), 2); 
     t_vals = sum(sum( vals, 1), 3); 
     
@@ -175,16 +177,17 @@ function [grid1, grid2, grid3, isHappy] = happinessCheck( vals )
     tData.hscale = pi;
     tData.vscale = max( abs( t_vals(:) ) );
     
-    resolved_r = happinessCheck(rTech,[],r_vals, rData, pref);
-    resolved_l = happinessCheck(lTech,[],l_vals, lData, pref);
-    resolved_t = happinessCheck(tTech,[],t_vals, tData, pref);
+    resolved_r = happinessCheck(rTech, [], r_vals, rData, pref);
+    resolved_l = happinessCheck(lTech, [], l_vals, lData, pref);
+    resolved_t = happinessCheck(tTech, [], t_vals, tData, pref);
 
     isHappy = resolved_r & resolved_l & resolved_t;
     
+    [grid1, grid2, grid3] = size(vals);
     if ( ~resolved_r ) 
         grid1 = round( 1.5*size(vals,1) );
     end
-    if ( ~resolved_l ) 
+    if ( ~resolved_l )
         grid2 = round( 1.5*size(vals,2) );
     end
     if ( ~resolved_t ) 
@@ -194,11 +197,11 @@ function [grid1, grid2, grid3, isHappy] = happinessCheck( vals )
 end
 
 %%
-function [vectorize, op] = vectorCheck(op, dom)
+function [vectorize, op] = vectorCheck(op)
 % Check for cases like op = @(x,y,z) x*y^2*z
 
 vectorize = false;
-[xx, yy, zz] = ndgrid(dom(1:2), dom(3:4), dom(5:6));
+[xx, yy, zz] = ndgrid([-1,1], [-pi,pi], [-pi,pi]);
 try
     A = feval(op, xx, yy, zz);
 catch
