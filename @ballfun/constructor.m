@@ -11,7 +11,7 @@ function f = constructor( f, op, varargin )
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[op, pref, vectorize] = parseInputs(op, varargin{:});
+[op, pref, isVectorize] = parseInputs(op, varargin{:});
 
 % Set preferences:
 tech            = pref.tech();
@@ -73,7 +73,7 @@ f.coeffs = ballfun.vals2coeffs(op);
 end
 
 
-function vals = evaluate(g, S, vectorize)
+function vals = evaluate(g, S, isVectorize)
 %EVALUATE   Evaluate at a Cheb-Fourier-Fourier grid of size S.
 %  EVALUATE(g, S) returns the S(1)xS(2)xS(3) values of g at a
 %  Chebyshev-Fourier-Fourier grid for the function
@@ -90,7 +90,7 @@ lam = pi*trigpts(n);
 th = pi*trigpts(p);
 
 [rr, ll, tt] = ndgrid(r, lam, th);
-if ~vectorize
+if ~isVectorize
     % Evaluate function handle at tensor grid:
     vals = feval(g, rr, ll, tt);
 else
@@ -113,10 +113,10 @@ end
 end
 
 %%
-function [op, pref, vectorize] = parseInputs(op, varargin)
+function [op, pref, isVectorize] = parseInputs(op, varargin)
 % Parse user inputs to BALLFUN.
 
-vectorize = 0;
+isVectorize = 0;
 isCoeffs = 0;
 pref = chebfunpref();
 
@@ -138,10 +138,10 @@ for k = 1:length(varargin)
         if ( numel(varargin{k}) == 3 ) % length is specified.
             % Interpret this as the user wants a fixed degree ballfun.
             S = varargin{k};
-            op = evaluate(op, S);
+            op = evaluate(op, S, isVectorize);
         end
     elseif any(strcmpi(varargin{k}, {'vectorize', 'vectorise'}))
-        vectorize = true;
+        isVectorize = true;
     elseif strcmpi(varargin{k}, 'coeffs')
         isCoeffs = 1;
     end
@@ -152,8 +152,8 @@ if ( isCoeffs )
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
-if ( ~vectorize && ~isnumeric(op) ) % another check
-    [vectorize, op] = vectorCheck(op);
+if ( ~isVectorize && ~isnumeric(op) ) % another check
+    [isVectorize, op] = vectorCheck(op);
 end
 
 end
@@ -197,16 +197,16 @@ function [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref )
 end
 
 %%
-function [vectorize, op] = vectorCheck(op)
+function [isVectorize, op] = vectorCheck(op)
 % Check for cases like op = @(x,y,z) x*y^2*z
 
-vectorize = false;
+isVectorize = false;
 [xx, yy, zz] = ndgrid([-1,1], [-pi,pi], [-pi,pi]);
 try
     A = feval(op, xx, yy, zz);
 catch
     throwVectorWarning();
-    vectorize = true;
+    isVectorize = true;
     return
 end
 
