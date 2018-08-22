@@ -87,6 +87,8 @@ classdef ballfun
         % polynomials
         A = normalized_legendre(n);
         
+        f = solHarm(l,m);
+        
     end
     
     methods ( Access = private, Static = true )
