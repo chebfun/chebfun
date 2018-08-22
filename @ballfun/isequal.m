@@ -7,11 +7,5 @@ function b = isequal(f, g)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Test if f = g
-if (nnz(size(f)-size(g))==0)
-    b = iszero(f-g);
-else
-    error('BALLFUN:isequal:unknown', ...
-    ['Undefined function ''isequal'' for different size of ballfun functions : ' ...
-     '%s and %s.'], mat2str(size(f)), mat2str(size(g)));
-end
+b = iszero( f-g );
 end
