@@ -57,6 +57,9 @@ while ( ~isHappy && ~failure )
     
 end
 
+% Chop down to correct size: 
+vals = evaluate(op, [grid1, grid2, grid3], isVectorized);
+
 % We are now happy so make a BALLFUN from its values: 
 f.coeffs = ballfun.vals2coeffs(vals);
 end
@@ -162,36 +165,38 @@ end
 function [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref )
 % Check if the function has been resolved. 
     
-    r_vals = sum(sum( vals, 2), 3);
-    l_vals = sum(sum( vals, 1), 2); 
-    t_vals = sum(sum( vals, 1), 3); 
+    cfs = ballfun.vals2coeffs( vals ); 
     
-    rTech = chebtech2.make( r_vals );
-    lTech = trigtech.make( l_vals );
-    tTech = trigtech.make( t_vals );
+    r_cfs = sum(sum( abs(cfs), 2), 3);
+    l_cfs = sum(sum( abs(cfs), 1), 2); 
+    l_cfs = l_cfs(:);
+    t_cfs = sum(sum( abs(cfs), 1), 3); 
+    t_cfs = t_cfs(:); 
     
-    rData.hscale = 1;
-    rData.vscale = max( abs( r_vals(:) ) );
-    lData.hscale = pi;
-    lData.vscale = max( abs( l_vals(:) ) );
-    tData.hscale = pi;
-    tData.vscale = max( abs( t_vals(:) ) );
+    rTech = chebtech2.make( {'',r_cfs} );
+    lTech = trigtech.make( {'',l_cfs} );
+    tTech = trigtech.make( {'',t_cfs} );
     
-    resolved_r = happinessCheck(rTech, [], r_vals, rData, pref);
-    resolved_l = happinessCheck(lTech, [], l_vals, lData, pref);
-    resolved_t = happinessCheck(tTech, [], t_vals, tData, pref);
+    [resolved_r, cutoff_r] = happinessCheck(rTech);
+    [resolved_l, cutoff_l] = happinessCheck(lTech);
+    [resolved_t, cutoff_t] = happinessCheck(tTech);
 
     isHappy = resolved_r & resolved_l & resolved_t;
     
-    [grid1, grid2, grid3] = size(vals);
     if ( ~resolved_r ) 
         grid1 = round( 1.5*size(vals,1) );
+    else 
+        grid1 = cutoff_r;
     end
     if ( ~resolved_l )
         grid2 = round( 1.5*size(vals,2) );
+    else 
+        grid2 = cutoff_l;
     end
     if ( ~resolved_t ) 
         grid3 = round( 1.5*size(vals,3) );
+    else 
+        grid3 = cutoff_t;
     end
     
 end
