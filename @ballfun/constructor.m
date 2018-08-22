@@ -134,6 +134,16 @@ if ( isa(op, 'char') )     % CHEBFUN3( CHAR )
     op = str2op(op);
 end
 
+% Convert from cartesian to spherical, if required:
+for k = 1:length(varargin) 
+    if strcmpi(varargin{k}, 'cart')
+        x = @(r,lam,th)r.*sin(th).*cos(lam);
+        y = @(r,lam,th)r.*sin(th).*sin(lam);
+        z = @(r,lam,th)r.*cos(th);
+        op = @(r,lam,th) op(x(r,lam,th), y(r,lam,th), z(r,lam,th));
+    end
+end
+
 for k = 1:length(varargin)
     if strcmpi(varargin{k}, 'eps')
         pref.cheb3Prefs.chebfun3eps = varargin{k+1};
