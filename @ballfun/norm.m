@@ -7,5 +7,5 @@ function n = norm(f, varargin)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-n = abs(sqrt(sum3(abs(f).^2)));
+n = abs(sqrt(sum3(f.*conj(f))));
 end
