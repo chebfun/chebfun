@@ -1,34 +1,35 @@
-function pass = test_ballfun()
+function pass = test_ballfun( pref )
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = pref.techPrefs.chebfuneps; 
 
 % Example 1 :
-S = [21,53,17];
-f = ballfun(@(x,y,z)x,'cart',S);
-exact = ballfun(@(r,lam,th)r.*sin(th).*cos(lam),S);
-pass(1) = isequal(f,exact);
+f = ballfun(@(x,y,z)x, 'cart');
+exact = ballfun(@(r,lam,th)r.*sin(th).*cos(lam));
+pass(1) = norm( f - exact ) < tol;
 
 % Example 2 :
-S = [42,12,23];
-f = ballfun(@(x,y,z)y,'cart',S);
-exact = ballfun(@(r,lam,th)r.*sin(th).*sin(lam),S);
-pass(2) = isequal(f,exact);
+f = ballfun(@(x,y,z)y,'cart');
+exact = ballfun(@(r,lam,th)r.*sin(th).*sin(lam));
+pass(2) = norm( f - exact ) < tol;
 
 % Example 3 :
-S = [20,31,42];
-f = ballfun(@(x,y,z)z,'cart',S);
-exact = ballfun(@(r,lam,th)r.*cos(th),S);
-pass(3) = isequal(f,exact);
-
-S = [50,50,50];
+f = ballfun(@(x,y,z)z,'cart');
+exact = ballfun(@(r,lam,th)r.*cos(th));
+pass(3) = norm( f - exact ) < tol;
 
 % Example 4 :
-f = ballfun(@(x,y,z)x.*z,'cart',S);
-exact = ballfun(@(r,lam,th)r.*sin(th).*cos(lam).*r.*cos(th),S);
-pass(4) = isequal(f,exact);
+f = ballfun(@(x,y,z)x.*z,'cart');
+exact = ballfun(@(r,lam,th)r.*sin(th).*cos(lam).*r.*cos(th));
+pass(4) = norm( f - exact ) < tol;
 
 % Example 5 :
-f = ballfun(@(x,y,z)sin(x.*y.*z),'cart',S);
-exact = ballfun(@(r,lam,th)sin(r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam).*r.*cos(th)),S);
-pass(5) = isequal(f,exact);
+f = ballfun(@(x,y,z)sin(x.*y.*z),'cart');
+exact = ballfun(@(r,lam,th)sin(r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam).*r.*cos(th)));
+pass(5) = norm( f - exact ) < tol;
 
 if (nargout > 0)
     pass = all(pass(:));

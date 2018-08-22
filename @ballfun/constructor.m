@@ -175,6 +175,7 @@ end
 function [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref )
 % Check if the function has been resolved. 
     
+    vscl = max(1, max( abs( vals(:) ) )); 
     cfs = ballfun.vals2coeffs( vals ); 
     
     r_cfs = sum(sum( abs(cfs), 2), 3);
@@ -187,9 +188,20 @@ function [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref )
     lTech = trigtech.make( {'',l_cfs} );
     tTech = trigtech.make( {'',t_cfs} );
     
-    [resolved_r, cutoff_r] = happinessCheck(rTech);
-    [resolved_l, cutoff_l] = happinessCheck(lTech);
-    [resolved_t, cutoff_t] = happinessCheck(tTech);
+    rvals = rTech.coeffs2vals(rTech.coeffs);
+    rdata.vscale = vscl; 
+    rdata.hscale = 1;
+    lvals = lTech.coeffs2vals(lTech.coeffs);
+    ldata.vscale = vscl; 
+    ldata.hscale = 1;
+    tvals = tTech.coeffs2vals(tTech.coeffs);
+    tdata.vscale = vscl; 
+    tdata.hscale = 1;
+    
+    % Check happiness along each slice: 
+    [resolved_r, cutoff_r] = happinessCheck(rTech, [], rvals, rdata);
+    [resolved_l, cutoff_l] = happinessCheck(lTech, [], lvals, ldata);
+    [resolved_t, cutoff_t] = happinessCheck(tTech, [], tvals, tdata);
 
     isHappy = resolved_r & resolved_l & resolved_t;
     
