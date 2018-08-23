@@ -21,6 +21,10 @@ grid2           = tpref.minSamples;
 grid3           = tpref.minSamples;
 maxSample       = tpref.maxLength; % maxSample = max grid dimensions.
 
+grid1 = 33; 
+grid2 = 100; 
+grid3 = 37; 
+
 if ( isa(op, 'ballfun') )     % BALLFUN( BALLFUN )
     f = op;
     return
@@ -53,12 +57,12 @@ while ( ~isHappy && ~failure )
         failure = 1;
     end
     
-    [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref );
+    [grid1, grid2, grid3, cutoffs, isHappy] = ballfunHappiness( vals, pref );
     
 end
 
 % Chop down to correct size: 
-vals = evaluate(op, [grid1, grid2, grid3], isVectorized);
+vals = evaluate(op, cutoffs, isVectorized);
 
 % We are now happy so make a BALLFUN from its values: 
 f.coeffs = ballfun.vals2coeffs(vals);
@@ -172,7 +176,7 @@ end
 end
 
 %% 
-function [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref )
+function [grid1, grid2, grid3, cutoffs,  isHappy] = ballfunHappiness( vals, pref )
 % Check if the function has been resolved. 
     
     vscl = max(1, max( abs( vals(:) ) )); 
@@ -205,22 +209,17 @@ function [grid1, grid2, grid3, isHappy] = ballfunHappiness( vals, pref )
 
     isHappy = resolved_r & resolved_l & resolved_t;
     
+    [grid1, grid2, grid3] = size(vals);
     if ( ~resolved_r ) 
         grid1 = round( 1.5*size(vals,1) );
-    else 
-        grid1 = cutoff_r;
     end
     if ( ~resolved_l )
-        grid2 = round( 1.5*size(vals,2) );
-    else 
-        grid2 = cutoff_l;
+        grid3 = round( 1.5*size(vals,2) );
     end
     if ( ~resolved_t ) 
-        grid3 = round( 1.5*size(vals,3) );
-    else 
-        grid3 = cutoff_t;
+        grid2 = round( 1.5*size(vals,3) );
     end
-    
+    cutoffs = [cutoff_r, cutoff_l, cutoff_t];
 end
 
 %%

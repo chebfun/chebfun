@@ -8,8 +8,10 @@ function g = chebfun2ballfun(f)
 % Chebyshev coefficients of f
 F = chebcoeffs(f);
 m = length(F);
+
 % Construction of the ballfun function
-G = zeros(m,1,1);
-G(:,1,1) = F;
-g = ballfun(G);
+G = zeros(m, 1, 1);
+G(:, 1, 1) = F;
+g = ballfun();
+g.coeffs = G;
 end
