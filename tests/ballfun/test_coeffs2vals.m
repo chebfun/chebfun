@@ -1,7 +1,17 @@
-function pass = test_coeffs2vals( ) 
-% Test with function sin(r)*th*lam
-f = ballfun(@(r,lam,th)sin(r).*lam.*th,[20,20,20]);
+function pass = test_coeffs2vals( pref ) 
 
-pass(1) = (max(max(max(abs(ballfun.vals2coeffs(ballfun.coeffs2vals(f.coeffs))-f.coeffs))))<1e-15);
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e2*pref.techPrefs.chebfuneps; 
+
+% Test with function sin(r)*th*lam
+f = ballfun(@(x,y,z)sin(x).*y.*z, 'cart' );
+
+exact = f.coeffs; 
+cfs = ballfun.vals2coeffs(ballfun.coeffs2vals(f.coeffs));
+
+pass(1) = norm( exact(:) - cfs(:), inf) < tol; 
 
 end

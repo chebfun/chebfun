@@ -19,7 +19,7 @@ F = reshape(F(:,floor(n/2)+1,:), m, p);
 % Multiply f par r^2sin(theta) (= Jacobian)
 trig1 = trigtech( @(t) sin(pi*t));
 Msin = trigspec.multmat(p, trig1.coeffs );
-Mr2 = ultraS.multmat(m, [.5;0;.5], 0 );
+Mr2 = ultraS.multmat(m, chebfun(@(r) r.^2), 0 );
 F = Mr2*F*(Msin.');
 
 % Coefficients of integration between 0 and 1 of the chebyshev polynomials
