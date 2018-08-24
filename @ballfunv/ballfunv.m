@@ -97,7 +97,6 @@ classdef ballfunv
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         v = PT2ballfunv(P,T);
-        v = rcurl(P);
     end
     
     methods ( Access = private, Static = true )
