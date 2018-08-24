@@ -21,10 +21,6 @@ grid2           = tpref.minSamples;
 grid3           = tpref.minSamples;
 maxSample       = tpref.maxLength; % maxSample = max grid dimensions.
 
-grid1 = 33; 
-grid2 = 100; 
-grid3 = 37; 
-
 if ( isa(op, 'ballfun') )     % BALLFUN( BALLFUN )
     f = op;
     return
