@@ -36,9 +36,11 @@ Ftheta = exp( 1i*th.*((1:p)-floor(p/2)-1) );
 % Chebyshev functions evaluated at r
 T = zeros(Nr, m);
 T(:,1) = ones(Nr, 1); 
-T(:,2) = r;
-for i = 3:m
-    T(:, i) = 2*r.*T(:, i-1)-T(:, i-2);
+if ( m > 1 )
+    T(:,2) = r;
+    for i = 3:m
+        T(:, i) = 2*r.*T(:, i-1)-T(:, i-2);
+    end
 end
 
 G = zeros(Nr, Nlam, p);
@@ -57,5 +59,5 @@ for i = 1:Nlam
 end
 
 % Permute H to get the array of values r x lambda x theta
-vals = permute(H, [2, 3, 1]);
+vals = permute(vals, [2, 3, 1]);
 end

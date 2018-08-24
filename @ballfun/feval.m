@@ -1,52 +1,53 @@
-function H = feval(f,r,lambda,theta)
+function out = feval(f, R, Lam, Th)
 %FEVAL Evaluate a BALLFUN.
-%   FEVAL(F, r, lambda, theta) is the array of values of the BALLFUN
-%   function F at the grid r x lambda x theta.
+%   FEVAL(F, R, LAM, TH) is the array of values of the BALLFUN
+%   function F at the grid R x LAM x TH.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.\
 
-F = f.coeffs;
-[m,n,p] = size(f);
-
-% Get the size of the lists
-Nr = length(r);
-Nlam = length(lambda);
-Nth = length(theta);
-
-% Transform the lists to vectors
-r = reshape(r, Nr, 1);
-lambda = reshape(lambda, Nlam, 1);
-theta = reshape(theta, Nth, 1);
-
-% Fourier functions evaluated at theta
-Flambda = exp(1i*lambda.*((1:n)-floor(n/2)-1));
-
-% Fourier functions evaluated at lambda
-Ftheta = exp(1i*theta.*((1:p)-floor(p/2)-1));
-
-% Chebyshev functions evaluated at r
-T = zeros(Nr,m);
-T(:,1) = ones(Nr,1); T(:,2) = r;
-for i = 3:m
-    T(:,i) = 2*r.*T(:,i-1)-T(:,i-2);
+% Empty check:
+if ( isempty(f) )
+    out = [];
+    return
 end
 
-G = zeros(Nr,Nlam,p);
-% Evaluate f at the points r and lambda
-for i = 1:p
-    G(:,:,i) = T*F(:,:,i)*Flambda.';
-end
+if ( isnumeric(R) && isnumeric( Lam ) && isnumeric( Th ) ) 
+   if ( isequal(size(R), size(Lam)) && isequal(size(R), size(Th)) )
+        if ( isscalar(R) && isscalar(Lam) && isscalar(Th) ) 
+            out = fevalm( f, R, Lam, Th); 
+        else
+       
+        % If the evaluation points are derived from ndgrid, then there is a
+        % fast way to evaluate a BALLFUN. Check for this property.
+        [m, n, p] = size(R);
+        % This is the most common ndgrid input to BALLFUN, but not the only
+        % one. TODO: Add the six different types of ndgrid inputs: 
+        R_ndgrid = reshape(repmat(R(:,1,1),n*p,1),m,n,p);
+        Lam_ndgrid = repmat(kron(reshape(Lam(1,:,1),n,1),ones(m,1)),p,1);
+        Th_ndgrid = kron(reshape(Th(1,1,:),p,1),ones(m*n,1));
+        ndgrid_test = ( norm( R(:) - R_ndgrid(:), inf) == 0 ) && ... 
+                      ( norm( Lam(:) - Lam_ndgrid(:), inf) == 0 ) && ...
+                      ( norm( Th(:) - Th_ndgrid(:), inf) == 0 );
+        if ( ndgrid_test ) 
+            % Just call fevalm code: 
+            out = fevalm( f, R(:,1,1), reshape(Lam(1,:,1),n,1), reshape(Th(1,1,:),p,1) ); 
+        else 
+            % Evaluate at tensors, but didn't pass the ndgrid test.
+            out = zeros(m, n, p);
+            for i1 = 1:m 
+                for j1 = 1:n 
+                    for k1 = 1:p 
+                        out(i1, j1, k1) = feval(f, R(i1,j1,k1), Lam(i1,j1,k1), Th(i1,j1,k1) ); 
+                    end
+                end
+            end
+        end
+        end
 
-% Permute G to evaluate f at theta
-G = permute(G, [3,1,2]);
-
-H = zeros(Nth,Nr,Nlam);
-% Evaluate f at the points theta
-for i = 1:Nlam
-   H(:,:,i) = Ftheta*G(:,:,i); 
-end
-
-% Permute H to get the array of values r x lambda x theta
-H = permute(H, [2,3,1]);
+   end
+else
+    error('CHEBFUN:BALLFUN:feval:inputs', ...
+        'Unrecognized arguments for evaluation.');
+end  
 end

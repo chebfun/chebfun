@@ -73,7 +73,7 @@ function f = constructFromDouble( f, op )
 %CONSTRUCTFROMDOUBLE  Constructor BALLFUN from matrix of values.
 
 if ( numel(op) == 1 )
-    f = ballfun(@(x,y,z) op + 0*x, dom);
+    f = ballfun(@(x,y,z) op + 0*x);
     return
 end
 f.coeffs = ballfun.vals2coeffs(op);
