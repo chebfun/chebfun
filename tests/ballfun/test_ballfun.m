@@ -31,6 +31,19 @@ f = ballfun(@(x,y,z)sin(x.*y.*z),'cart');
 exact = ballfun(@(r,lam,th)sin(r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam).*r.*cos(th)));
 pass(5) = norm( f - exact ) < tol;
 
+% Example 6: (Test 'coeffs' flag.) 
+m = 10; n = 11; p = 12;
+F = zeros(m,n,p);
+F(1,floor(n/2),floor(p/2))=1/4;F(1,floor(n/2),floor(p/2)+2)=1/4;
+F(1,floor(n/2)+2,floor(p/2))=1/4;F(1,floor(n/2)+2,floor(p/2)+2)=1/4;
+F(2,floor(n/2),floor(p/2))=1/4;F(2,floor(n/2),floor(p/2)+2)=1/4;
+F(2,floor(n/2)+2,floor(p/2))=1/4;F(2,floor(n/2)+2,floor(p/2)+2)=1/4;
+
+f = ballfun(F, 'coeffs');
+g = ballfun(@(r,lam,th)(r+1).*cos(lam).*cos(th));
+
+pass(6) = norm( f - g ) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end
