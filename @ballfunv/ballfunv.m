@@ -54,12 +54,11 @@ classdef ballfunv
                     'More than four components is not supported.')
             end
             
-            % Create a BALLFUNV from 3 BALLFUN objects
+            % Create a BALLFUNV from 3 input arguments
             if ( numel(varargin) == 3 )
                 for jj = 1:3
                    if isa(varargin{jj}, 'ballfun') == 0
-                       error('BALLFUNV:ballfunv', ...
-                        'Input arguments should be ballfun functions')
+                       varargin{jj} = ballfun( varargin{jj} ); 
                    end
                 end
 
@@ -71,9 +70,9 @@ classdef ballfunv
             % Create a BALLFUNV from 3 function handles and an array
             if ( numel(varargin) == 4 )
                 S = varargin{4};
-                fh{1} = ballfun(varargin{1},S);
-                fh{2} = ballfun(varargin{2},S);
-                fh{3} = ballfun(varargin{3},S);
+                fh{1} = ballfun(varargin{1}, S);
+                fh{2} = ballfun(varargin{2}, S);
+                fh{3} = ballfun(varargin{3}, S);
             end
             
             % Create a BALLFUNV from 3 function handles and an array

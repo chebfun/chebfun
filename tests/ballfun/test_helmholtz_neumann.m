@@ -1,6 +1,11 @@
-function pass = test_helmholtz_neumann( )
+function pass = test_helmholtz_neumann( pref ) 
+% Test the Helmholtz solver with neumann bc. 
 
-eps = 1e-10;
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e4*pref.techPrefs.chebfuneps;
 
 %% NEUMANN BOUNDARY CONDITIONS
 S = [39,40,41];

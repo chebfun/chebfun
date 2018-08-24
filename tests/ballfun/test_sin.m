@@ -1,10 +1,15 @@
-function pass = test_sin( ) 
-S = [20,21,22];
+function pass = test_sin( pref ) 
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = sin(ballfun(@(r,lam,th)r,S));
-exact = ballfun(@(r,lam,th)sin(r),S);
-pass(1) = isequal(f,exact);
+f = sin(ballfun(@(r,lam,th)r));
+exact = ballfun(@(r,lam,th)sin(r));
+pass(1) = norm( f - exact ) < tol; 
 
 if (nargout > 0)
     pass = all(pass(:));

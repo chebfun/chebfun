@@ -1,6 +1,11 @@
-function pass = test_solHarm()
+function pass = test_solHarm( pref ) 
 % Test the equality for P^m_l, 0 <= l <= n and -m <= l <= m
-eps = 1e-10;
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e4*pref.techPrefs.chebfuneps;
 
 n = 10;
 Max_difference = 0;
@@ -12,5 +17,5 @@ for l = 0:n
         Max_difference = max(norm(Y-Z),Max_difference);
     end
 end
-pass = Max_difference < eps;
+pass = Max_difference < tol;
 end

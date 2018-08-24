@@ -7,7 +7,6 @@ function g = log(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Return the logarithm of the ballfun function f
-F = f.coeffs;
-G = ballfun.vals2coeffs(log(ballfun.coeffs2vals(F)));
-g = ballfun(G);
+g = compose( f, @log ); 
+
 end

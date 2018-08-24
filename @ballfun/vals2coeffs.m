@@ -26,10 +26,12 @@ function X = vals2coeffs( X )
 % end
 
 % Faster approach, but less readable code:
-X = ifft( vertcat( X(m:-1:2,:,:),X ), 2*(m-1), 1);
-X = X(1:m, :, :);
-X(1,:,:) = X(1,:,:)/2;
-X(m,:,:) = X(m,:,:)/2;
+if ( m > 1 )
+    X = ifft( vertcat( X(m:-1:2,:,:),X ), 2*(m-1), 1);
+    X = X(1:m, :, :);
+    X(1,:,:) = X(1,:,:)/2;
+    X(m,:,:) = X(m,:,:)/2;
+end
 
 X = fftshift(fftshift(fft(fft(X, [], 2),[],3), 2), 3);
 

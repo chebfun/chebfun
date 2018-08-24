@@ -1,5 +1,11 @@
-function pass = test_filter()
+function pass = test_filter( pref ) 
 % Check that we can create the filter without errors
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
 S = [10,10,10];

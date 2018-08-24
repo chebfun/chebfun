@@ -12,7 +12,14 @@ fIsBallfun = isa(f, 'ballfun');
 gIsBallfun = isa(g, 'ballfun');
 
 if (fIsBallfun && gIsBallfun)
-    X = f.coeffs+g.coeffs;
+    [mf,nf,pf] = size(f.coeffs); 
+    [mg,ng,pg] = size(g.coeffs); 
+    m = max(mf,mg); 
+    n = max(nf,ng);
+    p = max(pf,pg); 
+    X = zeros(m,n,p); 
+    X(1:mf,1:nf,1:pf) = f.coeffs; 
+    X(1:mg,1:ng,1:pg) = X(1:mg,1:ng,1:pg) + g.coeffs;
     h = ballfun(X);
 elseif (fIsBallfun && isnumeric(g))
     S = size(f.coeffs);

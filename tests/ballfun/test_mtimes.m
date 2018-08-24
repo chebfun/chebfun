@@ -1,7 +1,14 @@
-function pass = test_mtimes( ) 
+function pass = test_mtimes( pref ) 
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e4*pref.techPrefs.chebfuneps;
+
 % Test with function coeffs 1
 f = ballfun(ones(20,21,22));
 g = ballfun(2*ones(20,21,22));
 
-pass(1) = (isequal(2*f,g) && isequal(f*2,g));
+pass(1) = (norm(2*f-g)<tol && norm(f*2-g)<tol);
 end

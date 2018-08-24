@@ -1,17 +1,20 @@
-function pass = test_feval( ) 
+function pass = test_feval( pref ) 
 
-eps = 1e-10;
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
 F = zeros(10,10,10);
-F(2,7,7)=1;
-f = ballfun(F);
+F(2,7,7) = 1;
+f = ballfun(F, 'coeffs');
 g = @(r,lam,th)r.*exp(1i*lam).*exp(1i*th);
 pass(1) = (feval(f,0.5,1,0.7)==g(0.5,1,0.7));
 
 % Example 2
-S = [21,22,23];
-f = ballfun(@(r,lam,th)r.^2.*cos(lam).*sin(th),S);
+f = ballfun(@(r,lam,th)r.^2.*cos(lam).*sin(th));
 F = feval(f,[0.5,0.7], 0, pi/2);
 exact = [0.5^2, 0.7^2];
 pass(2) = max((abs(F(:)-exact(:)))) < eps;
@@ -41,6 +44,21 @@ th = pi*trigpts(S(3));
 exact = ballfun.coeffs2vals(f.coeffs);
 F = feval(f,r,lam,th);
 pass(4) = max((abs(F(:)-exact(:)))) < eps;
+
+%% EXTRACT_SPHEREFUN EXAMPLES: 
+% Example 1
+f = ballfun(@(r,lam,th)cos(lam).*sin(th),S);
+g = extract_spherefun(f);
+h = spherefun(@(lam,th)cos(lam).*sin(th));
+error = coeffs2(g-h,p,n);
+pass(1) = max(abs(error(:))) < eps;
+
+% Example 2
+f = ballfun(@(r,lam,th)r,[20,21,22]);
+g = extract_spherefun(f, 0.5);
+h = spherefun(@(lam,th)0.5,p,n);
+error = coeffs2(g-h,p,n);
+pass(2) = max(abs(error(:))) < eps;
 
 if (nargout > 0)
     pass = all(pass(:));
