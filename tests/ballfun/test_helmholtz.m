@@ -1,5 +1,12 @@
-function pass = test_helmholtz( )
+function pass = test_helmholtz( pref ) 
 % Test the Helmholtz solver with Dirichlet BC
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e4*pref.techPrefs.chebfuneps;
+
 S = [39,40,41];
 
 %% POISSON WITH DIRICHLET BOUNDARY CONDITIONS

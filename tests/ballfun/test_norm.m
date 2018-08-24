@@ -1,13 +1,16 @@
-function pass = test_norm()
+function pass = test_norm( pref ) 
 
-S = [30,30,30];
-eps = 1e-10;
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = ballfun(@(r,lam,th)1,S);
-norm_f = norm(f);
+f = ballfun(@(r,lam,th) 1);
+norm_f = norm( f );
 norm_exact = sqrt(4*pi/3);
-pass(1) = abs(norm_f-norm_exact)<eps;
+pass(1) = abs( norm_f-norm_exact )<tol;
 
 if (nargout > 0)
     pass = all(pass(:));
