@@ -210,10 +210,10 @@ function [grid1, grid2, grid3, cutoffs,  isHappy] = ballfunHappiness( vals, pref
         grid1 = round( 1.5*size(vals,1) );
     end
     if ( ~resolved_l )
-        grid3 = round( 1.5*size(vals,2) );
+        grid2 = round( 1.5*size(vals,2) );
     end
     if ( ~resolved_t ) 
-        grid2 = round( 1.5*size(vals,3) );
+        grid3 = round( 1.5*size(vals,3) );
     end
     cutoffs = [cutoff_r, cutoff_l, cutoff_t];
 end
