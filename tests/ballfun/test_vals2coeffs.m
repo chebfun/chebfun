@@ -22,6 +22,14 @@ V2 = zeros(S);
 V2(1,floor(n/2)+1,floor(p/2)+1) = 1;
 pass(2) = norm(V(:)-V2(:)) < tol;
 
+% Example 3
+f = @(lam)exp(1i*lam);
+lam = pi*trigpts(3);
+vals = f(lam).';
+cfs = [0,0,1];
+ballfun.coeffs2vals(cfs)
+pass(3) = norm(ballfun.vals2coeffs(vals)-cfs) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end

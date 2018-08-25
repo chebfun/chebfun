@@ -14,4 +14,15 @@ cfs = ballfun.vals2coeffs(ballfun.coeffs2vals(f.coeffs));
 
 pass(1) = norm( exact(:) - cfs(:), inf) < tol; 
 
+% Example 2
+f = @(lam)exp(1i*lam);
+lam = pi*trigpts(3);
+vals = f(lam).';
+cfs = [0,0,1];
+pass(2) = norm(ballfun.coeffs2vals(cfs)-vals) == 0;
+
+if (nargout > 0)
+    pass = all(pass(:));
+end
+
 end

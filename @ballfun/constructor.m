@@ -179,9 +179,9 @@ function [grid1, grid2, grid3, cutoffs,  isHappy] = ballfunHappiness( vals, pref
     cfs = ballfun.vals2coeffs( vals ); 
     
     r_cfs = sum(sum( abs(cfs), 2), 3);
-    l_cfs = sum(sum( abs(cfs), 1), 2); 
+    l_cfs = sum(sum( abs(cfs), 1), 3); 
     l_cfs = l_cfs(:);
-    t_cfs = sum(sum( abs(cfs), 1), 3); 
+    t_cfs = sum(sum( abs(cfs), 1), 2); 
     t_cfs = t_cfs(:); 
     
     rTech = chebtech2.make( {'',r_cfs} );
