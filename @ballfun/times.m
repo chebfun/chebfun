@@ -29,4 +29,7 @@ Gvals = ballfun.coeffs2vals( Gf );
 % Construct ballfun: 
 h = ballfun( Fvals.*Gvals ); 
 
+% Finally simplify ballfun: 
+h = simplify( h ); 
+
 end
