@@ -226,7 +226,7 @@ K = 2;
 exact = ballfun(@(r, lam, th)1);
 f = laplacian(exact) + K^2*exact;
 bc1 = @(lam, th) 0;  % Neumann condition
-u = helmholtz_neumann(f, K, bc1,38,17,24);
+u = helmholtz_neumann(f, K, bc1, 38, 17, 24);
 pass(24) = isequal(u,exact);
 
 % Example 25:
