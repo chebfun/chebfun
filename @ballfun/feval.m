@@ -45,6 +45,9 @@ if ( isnumeric(R) && isnumeric( Lam ) && isnumeric( Th ) )
         end
         end
 
+   else 
+      error('CHEBFUN:BALLFUN:feval:inputdim', ... 
+          'Evaluation points should all be the same dimension'); t
    end
 else
     error('CHEBFUN:BALLFUN:feval:inputs', ...
