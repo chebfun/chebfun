@@ -16,11 +16,15 @@ G = g.coeffs;
 [mf, nf, pf] = size( F ); 
 [mg, ng, pg] = size( G );
 
-Fg = zeros(mf+mg, nf+ng, pf+pg); 
-Fg(1:mf, 1:nf, 1:pf) = F; 
+m = mf + mg;
+n = nf + ng;
+p = pf + pg;
 
-Gf = zeros(mf+mg, nf+ng, pf+pg); 
-Gf(1:mg, 1:ng, 1:pg) = G; 
+Fg = zeros(m,n,p); 
+Fg(1:mf,floor(n/2)+1-floor(nf/2):floor(n/2)+nf-floor(nf/2),floor(p/2)+1-floor(pf/2):floor(p/2)+pf-floor(pf/2)) = F; 
+
+Gf = zeros(m,n,p); 
+Gf(1:mg,floor(n/2)+1-floor(ng/2):floor(n/2)+ng-floor(ng/2),floor(p/2)+1-floor(pg/2):floor(p/2)+pg-floor(pg/2)) = G; 
 
 % Convert to values and do .*: 
 Fvals = ballfun.coeffs2vals( Fg );
