@@ -211,5 +211,5 @@ ord = [2 3 1];
 CFS = permute( CFS, ord);
 
 % Create ballfun object: 
-u = ballfun( CFS ); 
+u = ballfun( CFS, 'coeffs'); 
 end
