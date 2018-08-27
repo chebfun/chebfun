@@ -1,6 +1,6 @@
 function u = helmholtz(f, K, g, m, n, p)
 %HELMHOLTZ   Helmholtz solver with Dirichlet boundary conditions.
-%   HELMHOLTZ(F, K, G) is the solution to the Helmholtz
+%   HELMHOLTZ(F, K, G, m, n, p) is the solution to the Helmholtz
 %   equation with right-hand side F, frequency K, and Dirichlet boundary
 %   data given by g(lambda, theta).
 %
@@ -129,7 +129,7 @@ if isa(g, 'function_handle')
     
 %% if g is an array of fourier coefficients lambda x theta
 else
-    % BC1 is an array of coefficients theta x lambda of the size of f
+    % BC1 is an array of coefficients theta x lambda of size [m,n,p]
     g = trigtech.alias(trigtech.alias(g.',p).',n);
     BC1 = g.';
 end

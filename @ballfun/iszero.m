@@ -7,7 +7,7 @@ function b = iszero( f )
 % See http://www.chebfun.org/ for Chebfun information.
 
 pref = chebfunpref();
-tol = 1e5*pref.techPrefs.chebfuneps;
+tol = 1e7*pref.techPrefs.chebfuneps;
 
 
 % Test if f = 0 at machine precision tol

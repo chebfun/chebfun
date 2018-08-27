@@ -1,6 +1,6 @@
-function u = helmholtz_neumann(f, K, g, varargin)
+function u = helmholtz_neumann(f, K, g, m, n, p)
 %HELMHOLTZ_NEUMANN   Helmholtz solver with Neumann conditions.
-%   HELMHOLTZ_NEUMANN(F, K, G) is the solution to the Helmholtz
+%   HELMHOLTZ_NEUMANN(F, K, G, m, n, p) is the solution to the Helmholtz
 %   equation with right-hand side F, Helmholtz frequency K, and Neumann
 %   data g(lambda, theta).
 %
@@ -75,10 +75,8 @@ function u = helmholtz_neumann(f, K, g, varargin)
 %        M_{cos(th)sin(th)} = multmat in Fourier for cos(th)sin(th)
 %        D_1^F   = 1st Fourier diffmat
 
-[m,n,p] = size(f);
-
-% Get coeffs
-F = f.coeffs;
+% Adjust the size
+F = coeffs3(f,m,n,p);
 
 % The code was written with variables in the order theta, r, lambda
 ord = [3 1 2];
@@ -130,35 +128,14 @@ if isa(g, 'function_handle')
     BC1 = trigtech.vals2coeffs( trigtech.vals2coeffs( BC1 ).' ).';
     % if g is an array of fourier coefficients lambda x theta   
 else
-    % BC1 in an array of coefficients theta x lambda
+    % BC1 in an array of coefficients theta x lambda of size [m,n,p]
+    g = trigtech.alias(trigtech.alias(g.',p).',n);
     BC1 = g.';
 end
 
-if nargin < 4
-    % BC1 is the derivative of a smooth function on the ball, which contains
-    % element of the form r^k exp(i*n*theta) where mod(k,2) = mod(n,2)
-    BC2 = (-1).^((1:p)-floor(p/2)).'.*BC1;
-else
-    h = varargin{1};
-    if isa(h, 'function_handle')
-        % Grid
-        th = pi*trigpts(p);
-        lam = pi*trigpts(n);
-        % Evaluate function handle at tensor grid:
-        [ll, tt] = ndgrid(lam, th);
-        BC2 = feval(h, ll, tt).';
-        % Test if the function is constant
-    if size(BC2) == 1
-        BC2 = ones(p,n)*BC2(1);
-    end
-    % Convert boundary conditions to coeffs:
-    BC2 = trigtech.vals2coeffs( trigtech.vals2coeffs( BC2 ).' ).';
-    % if h is an array of fourier coefficients lambda x theta   
-else
-    % BC2 in an array of coefficients theta x lambda
-    BC2 = h.';
-    end
-end
+% BC1 is the derivative of a smooth function on the ball, which contains
+% element of the form r^k exp(i*n*theta) where mod(k,2) = mod(n,2)
+BC2 = (-1).^((1:p)-floor(p/2)).'.*BC1;
 
 % Fortunately, the PDE decouples in the lambda variable.
 CFS = zeros(p, m, n);
