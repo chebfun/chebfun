@@ -44,7 +44,7 @@ for j = 1:K
 end
 
 % Return the derivative ballfun function 
-g = ballfun( F ); 
+g = ballfun( F, 'coeffs' ); 
 end
 
 function F = onediff(F, dim, Cart)
@@ -101,7 +101,7 @@ function F = onediff(F, dim, Cart)
         
         % Expand F
         Fexp = zeros(m_tilde,n_tilde,p_tilde);
-        Fexp(1:m,2:n_tilde-1,2+mod(p,2):p_tilde-1) = F;
+        Fexp(1:m,floor(n_tilde/2)+1-floor(n/2):floor(n_tilde/2)+n-floor(n/2), floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = F;
         
         % Derivative wrt to r, lambda and theta
         dR = onediff(Fexp, 1, false);
@@ -210,14 +210,12 @@ function F = onediff(F, dim, Cart)
         end
         
         tol = eps;
-        
-        pmod = mod(p_tilde - p,2)+1; 
-        nmod = mod(n_tilde - n,2)+1;        
+             
         alias1 = Fexp(m+1:end,:,:); 
         a1 = norm(alias1(:),'inf') > 10*tol;
-        alias2 = Fexp(:,2:end-nmod,:); 
+        alias2 = Fexp(:,floor(n_tilde/2)+1-floor(n/2):floor(n_tilde/2)+n-floor(n/2),:); 
         a2 = norm(alias2(:),'inf') > 10*tol;
-        alias3 = Fexp(:,:,2:end-pmod); 
+        alias3 = Fexp(:,:,floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)); 
         a3 = norm(alias3(:),'inf') > 10*tol;
 
         % Truncate Fexp
@@ -228,17 +226,16 @@ function F = onediff(F, dim, Cart)
         end
         if ( a2 )
             for k = 1:p_tilde 
-                Fexp(:,2:end-nmod,k) = trigtech.alias(Fexp(:,:,k).',n).';
+                Fexp(:,floor(n_tilde/2)+1-floor(n/2):floor(n_tilde/2)+n-floor(n/2),k) = trigtech.alias(Fexp(:,:,k).',n).';
             end
         end
         if ( a3 )
             for j = 1:n
                 vj = reshape(Fexp(:,j,:), m_tilde, p_tilde);
                 vj = trigtech.alias(vj.', p).';
-                Fexp(:,j,2:end-pmod) = reshape( vj, m_tilde, 1, p );
+                Fexp(:,j,floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = reshape( vj, m_tilde, 1, p );
             end
         end
-        F = Fexp(1:m, 2:end-nmod, 2:end-pmod);
-        % F = Fexp(1:m,2:n_tilde-1,2+mod(p,2):p_tilde-1);
+        F = Fexp(1:m, floor(n_tilde/2)+1-floor(n/2):floor(n_tilde/2)+n-floor(n/2), floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2));
     end
 end
