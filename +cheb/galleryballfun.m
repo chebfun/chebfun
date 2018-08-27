@@ -1,4 +1,4 @@
-function f = galleryballfun(name,S)
+function f = galleryballfun(name,varargin)
 %CHEB.GALLERYBALLFUN   Ballfun example functions.
 %   CHEB.GALLERYBALLFUN(NAME, S) returns a ballfun function corresponding to
 %   NAME with size S.  See the listing below for available names.
@@ -11,11 +11,11 @@ switch lower(name)
     
     % Interpolant through random data
     case 'random'
-        f = randnfunball(5,S);
+        f = randnfunball(5,varargin{1});
 
     % Zero function
     case 'zero'
-        f = ballfun(@(r,lam,th)0,S);
+        f = ballfun(@(r,lam,th)0);
          
      % Raise an error if the input is unknown.
     otherwise

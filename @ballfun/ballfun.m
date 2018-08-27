@@ -40,9 +40,8 @@ classdef ballfun
         % Convert a spherefun function to a ballfun function
         f = spherefun2ballfun(g,S);
         
-        % Compute the whole set of normalized associated Legendre
-        % polynomials
-        A = normalized_legendre(n);
+        % Compute the solid harmonics
+        f = solHarm(l,m);
         
     end
     
