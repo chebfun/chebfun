@@ -42,6 +42,25 @@ I = sum3(f);
 exact = pi^2/4;
 pass(6) = abs(I-exact)<tol;
 
+% Example 7
+f = ballfun(@(r,lam,th)1);
+I = sum3(f);
+exact = 4*pi/3;
+pass(7) = abs(I-exact)<tol;
+
+% Example 8
+f = ballfun(@(r,lam,th)sin(th));
+I = sum3(f);
+exact = pi^2/3;
+pass(8) = abs(I-exact)<tol;
+
+% Example 9
+f = ballfun(@(r,lam,th)r.^2.*sin(lam),[20,20,20]);
+I = sum3(f);
+exact = 0;
+pass(9) = abs(I-exact)<tol;
+
+
 if (nargout > 0)
     pass = all(pass(:));
 end

@@ -17,24 +17,25 @@ if (fIsBallfun && gIsBallfun)
     m = max(mf,mg); 
     n = max(nf,ng);
     p = max(pf,pg); 
-    X = zeros(m,n,p); 
-    X(1:mf,1:nf,1:pf) = f.coeffs; 
-    X(1:mg,1:ng,1:pg) = X(1:mg,1:ng,1:pg) + g.coeffs;
-    h = ballfun(X);
+    X = zeros(m,n,p);
+    X(1:mf,floor(n/2)+1-floor(nf/2):floor(n/2)+nf-floor(nf/2),floor(p/2)+1-floor(pf/2):floor(p/2)+pf-floor(pf/2)) = f.coeffs;
+    X(1:mg,floor(n/2)+1-floor(ng/2):floor(n/2)+ng-floor(ng/2),floor(p/2)+1-floor(pg/2):floor(p/2)+pg-floor(pg/2)) = ...
+    X(1:mg,floor(n/2)+1-floor(ng/2):floor(n/2)+ng-floor(ng/2),floor(p/2)+1-floor(pg/2):floor(p/2)+pg-floor(pg/2)) + g.coeffs;
+    h = ballfun(X,'coeffs');
 elseif (fIsBallfun && isnumeric(g))
     S = size(f.coeffs);
     X = f.coeffs;
     % Add the constant g
     X(1,floor(S(2)/2)+1,floor(S(3)/2)+1) = X(1,floor(S(2)/2)+1,floor(S(3)/2)+1) + g;
-    h = ballfun(X);
+    h = ballfun(X,'coeffs');
 elseif (isnumeric(f) && gIsBallfun)
     S = size(g.coeffs);
     X = g.coeffs;
     % Add the constant f
     X(1,floor(S(2)/2)+1,floor(S(3)/2)+1) = X(1,floor(S(2)/2)+1,floor(S(3)/2)+1) + f;
-    h = ballfun(X);
+    h = ballfun(X,'coeffs');
 else
-    error('BALLFUN:mtimes:unknown', ...
+    error('BALLFUN:plus:unknown', ...
           ['Undefined function ''plus'' for input arguments of type ' ...
            '%s and %s.'], class(f), class(g));
 end

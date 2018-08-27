@@ -11,11 +11,11 @@ fIsBallfun = isa(f, 'ballfun');
 gIsBallfun = isa(g, 'ballfun');
 
 if (fIsBallfun && isnumeric(g))
-    H = g*f.coeffs;
-    h = ballfun(H);
+    h = f;
+    h.coeffs = g*f.coeffs;
 elseif (isnumeric(f) && gIsBallfun)
-    H = f*g.coeffs;
-    h = ballfun(H);
+    h = g;
+    h.coeffs = f*g.coeffs;
 elseif (fIsBallfun && gIsBallfun)
     h = times(f,g);
 else
