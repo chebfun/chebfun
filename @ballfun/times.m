@@ -8,18 +8,25 @@ function h = times(f, g)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if (nnz(size(f)-size(g))==0)
-    F = f.coeffs;
-    G = g.coeffs;
-    Fvals = ballfun.coeffs2vals(F);
-    Gvals = ballfun.coeffs2vals(G);
-    Hvals = Fvals.*Gvals;
-    H = ballfun.vals2coeffs(Hvals);
-    h = ballfun(H);
-else
-    error('BALLFUN:isequal:unknown', ...
-    ['Undefined function ''times'' for different size of ballfun functions : ' ...
-     '%s and %s.'], mat2str(size(f)), mat2str(size(g)));
-end
+% Get coeffs: 
+F = f.coeffs; 
+G = g.coeffs; 
+
+% Pad so F and G are the same size: 
+[mf, nf, pf] = size( F ); 
+[mg, ng, pg] = size( G );
+
+Fg = zeros(mf+mg, nf+ng, pf+pg); 
+Fg(1:mf, 1:nf, 1:pf) = F; 
+
+Gf = zeros(mf+mg, nf+ng, pf+pg); 
+Gf(1:mg, 1:ng, 1:pg) = G; 
+
+% Convert to values and do .*: 
+Fvals = ballfun.coeffs2vals( Fg );
+Gvals = ballfun.coeffs2vals( Gf ); 
+
+% Construct ballfun: 
+h = ballfun( Fvals.*Gvals ); 
 
 end

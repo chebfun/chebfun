@@ -28,14 +28,15 @@ function X = vals2coeffs( X )
 % Faster approach, but less readable code:
 if ( m > 1 )
     X = ifft( vertcat( X(m:-1:2,:,:),X ), 2*(m-1), 1);
-    X = X(1:m, :, :);
+    X = 2*X(1:m, :, :);
     X(1,:,:) = X(1,:,:)/2;
     X(m,:,:) = X(m,:,:)/2;
 end
 
-X = fftshift(fftshift(fft(fft(X, [], 2),[],3), 2), 3);
+X = fftshift( fft( X, [], 2), 2); 
+X = fftshift( fft( X, [], 3), 3); 
 
-scl_p = (2/n/p)*even_odd_fix( p );
+scl_p = (1/n/p)*even_odd_fix( p );
 scl_n = even_odd_fix( n );
 Enp = reshape(scl_n.'*scl_p, [1 n p]);
 X = X.*repmat( Enp, m, 1, 1);

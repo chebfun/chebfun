@@ -21,14 +21,14 @@ function X = coeffs2vals( X )
 %     X(:,j,:) = reshape( vj, m, 1, p );
 % end
 
-% Faster approach, but code less readable: 
-X(1, :, :) = X(1, :, :)*2;
-X(m, :, :) = X(m, :, :)*2;
+% Faster approach, but code less readable:
+if ( m > 1 ) 
+    X(2:m-1, :, :) = X(2:m-1, :, :)/2; 
+    X = fft( vertcat(X, X(m-1:-1:2,:,:)), [], 1 );
+    X = X(m:-1:1, :, :);
+end
 
-X = fft( vertcat(X, X(m-1:-1:2,:,:)), [], 1 );
-X = X(m:-1:1, :, :);
-
-scl_p = (n*p/2)*even_odd_fix( p );
+scl_p = (n*p)*even_odd_fix( p );
 scl_n = even_odd_fix( n );
 Enp = reshape(scl_n.'*scl_p, [1 n p]);
 

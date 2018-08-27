@@ -27,7 +27,6 @@ f = @(lam)exp(1i*lam);
 lam = pi*trigpts(3);
 vals = f(lam).';
 cfs = [0,0,1];
-ballfun.coeffs2vals(cfs)
 pass(3) = norm(ballfun.vals2coeffs(vals)-cfs) < tol;
 
 if (nargout > 0)
