@@ -43,11 +43,15 @@ tdata.hscale = 1;
 if ( resolved_r )
     cfs = cfs(1:cutoff_r, :, :); 
 end
+n = size(cfs,2); 
+mid = floor(n/2)+1; 
 if ( resolved_l )
-    cfs = cfs(:, 1:cutoff_l, :); 
+    cfs = cfs(:, mid-cutoff_l+1:mid+cutoff_l-1, :); 
 end
+p = size(cfs,3); 
+mid = floor(p/2)+1;
 if ( resolved_t )
-    cfs = cfs(:, :, 1:cutoff_t); 
+    cfs = cfs(:, :, mid-cutoff_t+1:mid+cutoff_t-1); 
 end
 
 f.coeffs = cfs;
