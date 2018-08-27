@@ -23,7 +23,10 @@ function X = coeffs2vals( X )
 
 % Faster approach, but code less readable: 
 X(1, :, :) = X(1, :, :)*2;
-X(m, :, :) = X(m, :, :)*2;
+
+if m > 1
+    X(m, :, :) = X(m, :, :)*2;
+end
 
 X = fft( vertcat(X, X(m-1:-1:2,:,:)), [], 1 );
 X = X(m:-1:1, :, :);

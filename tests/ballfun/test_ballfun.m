@@ -42,7 +42,7 @@ F(2,floor(n/2)+2,floor(p/2))=1/4;F(2,floor(n/2)+2,floor(p/2)+2)=1/4;
 f = ballfun(F, 'coeffs');
 g = ballfun(@(r,lam,th)(r+1).*cos(lam).*cos(th));
 
-pass(6) = norm( f - g ) < tol;
+pass(6) = norm( f - g ) < 2*tol;
 
 if (nargout > 0)
     pass = all(pass(:));

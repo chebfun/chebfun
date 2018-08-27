@@ -16,9 +16,13 @@ F = f.coeffs;
 % Extract the 0-th Fourier mode
 F = reshape(F(:,floor(n/2)+1,:), m, p);
 
+% Increase the discretization by 2 in the r and theta direction
+F = [zeros(m,1),F,zeros(m,1);zeros(2,p+2)];
+m = m+2;
+p = p+2;
+
 % Multiply f par r^2sin(theta) (= Jacobian)
-trig1 = trigtech( @(t) sin(pi*t));
-Msin = trigspec.multmat(p, trig1.coeffs );
+Msin = trigspec.multmat(p, [0.5i;0;-0.5i] );
 Mr2 = ultraS.multmat(m, chebfun(@(r) r.^2), 0 );
 F = Mr2*F*(Msin.');
 

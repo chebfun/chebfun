@@ -19,7 +19,7 @@ f = @(lam)exp(1i*lam);
 lam = pi*trigpts(3);
 vals = f(lam).';
 cfs = [0,0,1];
-pass(2) = norm(ballfun.coeffs2vals(cfs)-vals) == 0;
+pass(2) = norm(ballfun.coeffs2vals(cfs)-vals) < tol;
 
 if (nargout > 0)
     pass = all(pass(:));

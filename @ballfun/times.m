@@ -14,8 +14,7 @@ if (nnz(size(f)-size(g))==0)
     Fvals = ballfun.coeffs2vals(F);
     Gvals = ballfun.coeffs2vals(G);
     Hvals = Fvals.*Gvals;
-    H = ballfun.vals2coeffs(Hvals);
-    h = ballfun(H);
+    h = ballfun(Hvals);
 else
     error('BALLFUN:isequal:unknown', ...
     ['Undefined function ''times'' for different size of ballfun functions : ' ...
