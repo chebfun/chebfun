@@ -35,11 +35,21 @@ tdata.vscale = vscl;
 tdata.hscale = 1;
 
 % Check happiness along each slice:
-[ignored, cutoff_r] = happinessCheck(rTech, [], rvals, rdata);
-[ignored, cutoff_l] = happinessCheck(lTech, [], lvals, ldata);
-[ignored, cutoff_t] = happinessCheck(tTech, [], tvals, tdata);
+[resolved_r, cutoff_r] = happinessCheck(rTech, [], rvals, rdata);
+[resolved_l, cutoff_l] = happinessCheck(lTech, [], lvals, ldata);
+[resolved_t, cutoff_t] = happinessCheck(tTech, [], tvals, tdata);
 
 % Simplify: 
-f.coeffs = cfs(1:cutoff_r, 1:cutoff_t, 1:cutoff_l); 
+if ( resolved_r )
+    cfs = cfs(1:cutoff_r, :, :); 
+end
+if ( resolved_l )
+    cfs = cfs(:, 1:cutoff_l, :); 
+end
+if ( resolved_t )
+    cfs = cfs(:, :, 1:cutoff_t); 
+end
+
+f.coeffs = cfs;
 
 end
