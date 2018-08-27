@@ -1,4 +1,4 @@
-function u = helmholtz(f, K, g)
+function u = helmholtz(f, K, g, m, n, p)
 %HELMHOLTZ   Helmholtz solver with Dirichlet boundary conditions.
 %   HELMHOLTZ(F, K, G) is the solution to the Helmholtz
 %   equation with right-hand side F, frequency K, and Dirichlet boundary
@@ -75,10 +75,8 @@ function u = helmholtz(f, K, g)
 %        M_{cos(th)sin(th)} = multmat in Fourier for cos(th)sin(th)
 %        D_1^F   = 1st Fourier diffmat
 
-[m,n,p] = size(f);
-
-% Get coeffs
-F = f.coeffs;
+% Adjust the size
+F = coeffs3(f,m,n,p);
 
 % The code was written with variables in the order theta, r, lambda
 ord = [3 1 2];
@@ -131,7 +129,8 @@ if isa(g, 'function_handle')
     
 %% if g is an array of fourier coefficients lambda x theta
 else
-    % BC1 is an array of coefficients theta x lambda
+    % BC1 is an array of coefficients theta x lambda of the size of f
+    g = trigtech.alias(trigtech.alias(g.',p).',n);
     BC1 = g.';
 end
 
@@ -211,5 +210,5 @@ ord = [2 3 1];
 CFS = permute( CFS, ord);
 
 % Create ballfun object: 
-u = ballfun( CFS, 'coeffs'); 
+u = ballfun( CFS, 'coeffs');
 end

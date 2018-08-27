@@ -6,10 +6,11 @@ function b = iszero( f )
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Test if f = 0 at machine precision eps
-eps = 1e-10;
-% Test on the coeffs
-b = max(max(max(abs(f.coeffs))))<eps;
-% Test on the values
-%b = max(max(max(abs(ballfun.coeffs3vals(f.coeffs)))))<eps;
+pref = chebfunpref();
+tol = 1e5*pref.techPrefs.chebfuneps;
+
+
+% Test if f = 0 at machine precision tol
+F = f.coeffs;
+b = norm(F(:),inf) < tol;
 end

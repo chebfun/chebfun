@@ -32,6 +32,12 @@ g = 3+f+2;
 exact = ballfun(@(r,lam,th)r.*sin(th).^2.*cos(lam)+6,S);
 pass(4) = norm( g - exact ) < tol;
 
+% Example 5
+f = ballfun(@(r,lam,th)1);
+g = f+f;
+exact = ballfun(@(r,lam,th)2);
+pass(5) = norm( g - exact ) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end
