@@ -84,6 +84,12 @@ g = diff(f,3,2,"cart");
 exact = ballfun(@(r,lam,th)2);
 pass(13) = norm(g - exact) < tol;
 
+% Example 14 : dx
+f = ballfun(@(x,y,z)x.^2+y.^2+z.^2,'cart');
+g = diff(f,1,1,"cart");
+exact = ballfun(@(x,y,z)2*x,'cart');
+pass(14) = norm(g - exact) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end
