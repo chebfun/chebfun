@@ -7,9 +7,15 @@ end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
+<<<<<<< HEAD
 f = log(ballfun(@(r,lam,th)10));
 exact = ballfun(@(r,lam,th)log(10));
 pass(1) = norm( f - exact ) < tol;
+=======
+f = log(ballfun(@(r,lam,th)exp(1i*th),S));
+exact = ballfun(@(r,lam,th)1i*th,S);
+pass(1) = norm( f - exact ) < 1e3*tol;
+>>>>>>> master
 
 % Example 2
 f = log(ballfun(@(r,lam,th)exp(r)));
