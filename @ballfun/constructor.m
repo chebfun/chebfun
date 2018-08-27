@@ -161,7 +161,10 @@ for k = 1:length(varargin)
 end
 
 if ( isCoeffs )
-    op = ballfun.coeffs2vals(op);
+    % We have all we need:
+    cfs = op;
+    op = ballfun();
+    op.coeffs = cfs;
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
