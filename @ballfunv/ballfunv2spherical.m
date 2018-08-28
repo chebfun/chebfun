@@ -7,11 +7,19 @@ function varargout = ballfunv2spherical(v)
 %% We might need to improve this code by doing n+2 and p+2 and interpolating the result
 
 [Vx,Vy,Vz] = v.comp{:};
-Vx = Vx.coeffs;
-Vy = Vy.coeffs;
-Vz = Vz.coeffs;
 
-[m,n,p] = size(Vx);
+% Get the sizes
+[mx,nx,px] = size(Vx);
+[my,ny,py] = size(Vy);
+[mz,nz,pz] = size(Vz);
+m = max([mx,my,mz]);
+n = max([nx,ny,nz]);
+p = max([px,py,pz]);
+
+% Expand Vx, Vy, Vz to the same size
+Vx = coeffs3(Vx,m,n,p);
+Vy = coeffs3(Vy,m,n,p);
+Vz = coeffs3(Vz,m,n,p);
 
 % Useful spectral matrices
 MsinL = trigspec.multmat(n, [0.5i;0;-0.5i] ); 
@@ -40,9 +48,9 @@ Vr = permute(Vr,[3,1,2]);
 Vlam = permute(Vlam,[3,1,2]);
 Vth = permute(Vth,[3,1,2]);
 
-Vr = ballfun(Vr);
-Vlam = ballfun(Vlam);
-Vth = ballfun(Vth);
+Vr = ballfun(Vr, 'coeffs');
+Vlam = ballfun(Vlam, 'coeffs');
+Vth = ballfun(Vth, 'coeffs');
 
 % Prepare output:
 if ( nargout <= 1 ) 

@@ -55,10 +55,11 @@ function varargout = HelmholtzDecomposition_3(v)
 % Compute the three-component form of the Helmholtz decomposition
 
 % Get the discretization
-[m,n,p] = size(v);
+div_v = div(v);
+[~,n,p] = size(div_v);
 
 % Solve the Poisson equation Delta f = div(v)
-f = helmholtz(div(v),0,zeros(n,p));
+f = helmholtz(div_v,0,zeros(n,p));
 
 % Divergence free vector field
 v_1 = v - grad(f);
@@ -68,7 +69,8 @@ v_Boundary = ComputeNormalBoundary(v_1);
 
 % Solve Delta phi = 0 with Neumann boundary condition
 % r.grad(phi) = dphi/dr = r.v_1
-phi = helmholtz_neumann(ballfun(zeros(m,n,p)),0,v_Boundary);
+zero = ballfun(zeros(size(v_1)),'coeffs');
+phi = helmholtz_neumann(zero,0,v_Boundary);
 
 % Divergence-free and tangential-free vector field
 v_2 = v_1 - grad(phi);
@@ -78,6 +80,7 @@ v_2 = v_1 - grad(phi);
 
 % Use the PT decomposition of v to compute phi
 % Solve 2 Poisson equations to find Ppsi and Tpsi
+[~,n,p] = size(Tv);
 Ppsi = helmholtz(-Tv,0,zeros(n,p));
 Tpsi = Pv;
 

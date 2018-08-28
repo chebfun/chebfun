@@ -42,7 +42,7 @@ classdef ballfunv
             
             % BALLFUNV objects are vector-valued so complain if there 
             % are less than 3 components: 
-            if ( numel(varargin) < 3 )
+            if ( numel(varargin) < 2 )
                 error('BALLFUNV:ballfunv', ...
                     'Less than three components is not supported.')
             end
@@ -54,7 +54,7 @@ classdef ballfunv
                     'More than four components is not supported.')
             end
             
-            % Create a BALLFUNV from 3 input arguments
+            % Create a BALLFUNV from 3 ballfun or function handles
             if ( numel(varargin) == 3 )
                 for jj = 1:3
                    if isa(varargin{jj}, 'ballfun') == 0
@@ -66,25 +66,18 @@ classdef ballfunv
                 fh{2} = varargin{2};
                 fh{3} = varargin{3};
             end
-           
-            % Create a BALLFUNV from 3 function handles and an array
-            if ( numel(varargin) == 4 )
-                S = varargin{4};
-                fh{1} = ballfun(varargin{1}, S);
-                fh{2} = ballfun(varargin{2}, S);
-                fh{3} = ballfun(varargin{3}, S);
-            end
             
-            % Create a BALLFUNV from 3 function handles and an array
-            if ( numel(varargin) == 5 )
-                if ~strcmp(varargin{4}, 'cart')
+            % Create a BALLFUNV from 3 function handles in cartesian
+            % coordinates
+            if ( numel(varargin) == 4 )
+                if strcmp(varargin{4}, 'cart')
+                    fh{1} = ballfun(varargin{1},'cart');
+                    fh{2} = ballfun(varargin{2},'cart');
+                    fh{3} = ballfun(varargin{3},'cart');
+                else
                     error('BALLFUNV:ballfunv', ...
                         'Input arguments not supported')
                 end
-                S = varargin{5};
-                fh{1} = ballfun(varargin{1},'cart',S);
-                fh{2} = ballfun(varargin{2},'cart',S);
-                fh{3} = ballfun(varargin{3},'cart',S);
             end
             
             F.comp = fh;
