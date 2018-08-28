@@ -1,4 +1,4 @@
-function f = rotate(f, phi, theta, psi)
+function g = rotate(f, phi, theta, psi)
 %ROTATE   Rotates a BALLFUN using Euler angles.
 %   Y = ROTATE(F, PHI, THETA, PSI) rotates F using Euler angles phi, theta, 
 %   and psi with the ZXZ convention:  Rotate first about the z-axis by an
@@ -30,42 +30,56 @@ n = p + mod(p,2);         % Number of columns must be even.
 % doubled up grid will have n rows (n/2+2 because the pole is included in
 % the sampled grid, and the doubled up grid does not contain -pi).
 p = ceil(p/2)+2;
+m = ceil(m/2)+2;
 
-% Sampling grid.
-[lam, r, th] = meshgrid(trigpts(n,[-pi pi]), chebpts(m),linspace(0,pi,p));
-%[th, r, lam] = meshgrid(linspace(0,pi,p), chebpts(m), trigpts(n,[-pi pi]));
+r = chebpts(m);
 
-lam(:,:,1) = 0;
-lam(:,:,p) = 0;
-x = r.*cos(lam).*sin(th);
-y = r.*sin(lam).*sin(th);
-z = r.*cos(th);
+G = zeros(n,p,m);
 
-% Rotation built up from zxz Euler angle rotations
-D = [cos(phi) sin(phi) 0; -sin(phi) cos(phi) 0; 0 0 1];
-C = [1 0 0; 0 cos(theta) sin(theta); 0 -sin(theta) cos(theta)];
-B = [cos(psi) sin(psi) 0; -sin(psi) cos(psi) 0; 0 0 1];
-R = B*C*D;
+for k = 1:m
+    % Rotate each sphere of radius r(k)
+    fsph = extract_spherefun(f, r(k));
+    fi = rotate(fsph, phi, theta, psi);
+    G(:,:,k) = coeffs2(fi,n,p);
+end
 
-% Rotate the sampling grid
-u = R(1,1)*x + R(1,2)*y + R(1,3)*z;
-v = R(2,1)*x + R(2,2)*y + R(2,3)*z;
-w = R(3,1)*x + R(3,2)*y + R(3,3)*z;
+G = permute(G,[3,1,2]);
+% Convert Cheb values to coeffs
+for k = 1:p
+    G(:,:,k) = chebtech2.vals2coeffs(G(:,:,k));
+end
 
-% Get the spherical coordinates of the rotated grid
-[lam, th, r] = cart2sph(u, v, w);
-th = pi/2-th;  % Adjust elevation angle since matlab uses latitude.
-    
-% FEVAL evalutation
-g = zeros(m,n,p);
+g = ballfun(G,'coeffs');
+end
 
-for i = 1:m
-    for j = 1:n
-        for k = 1:p
-            g(i,j,k) = feval(f, r(i,j,k), lam(i,j,k), th(i,j,k));
-        end
+function g = extract_spherefun(f, r)
+% EXTRACT_SPHEREFUN SPHEREFUN corresponding to the value of f at radius r
+%   EXTRACT_SPHEREFUN(f, r) is the SPHEREFUN function 
+%   g(lambda, theta) = f(r, :, :)
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+F = f.coeffs;
+[m,n,p] = size(f);
+
+if m == 1
+    G = reshape(F(1,:,:),n,p);
+else
+    % Chebyshev functions evaluated at r
+    T = zeros(1,m);
+    T(1) = 1; T(2) = r;
+    for i = 3:m
+        T(i) = 2*r*T(i-1)-T(i-2);
+    end
+
+    % Build the array of coefficient of the spherefun function
+    G = zeros(n,p);
+    for i = 1:p
+        G(:,i) = T*F(:,:,i);
     end
 end
-f = ballfun( g, 'vals' );
-    
+% Build the spherefun function; coeffs2spherefun takes the theta*lambda matrix
+% of coefficients
+g = spherefun.coeffs2spherefun(G.');
 end
