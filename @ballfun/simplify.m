@@ -14,10 +14,10 @@ vals = ballfun.coeffs2vals( cfs );
 
 vscl = max(1, max( abs( vals(:) ) ));
 
-r_cfs = sum(sum( abs(cfs), 2), 3);
-l_cfs = sum(sum( abs(cfs), 1), 3);
+r_cfs = max(max( abs(cfs), 2), 3);
+l_cfs = max(max( abs(cfs), 1), 3);
 l_cfs = l_cfs(:);
-t_cfs = sum(sum( abs(cfs), 1), 2);
+t_cfs = max(max( abs(cfs), 1), 2);
 t_cfs = t_cfs(:);
 
 rTech = chebtech2.make( {'',r_cfs} );
