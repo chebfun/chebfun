@@ -1,4 +1,10 @@
-function pass = test_power( )
+function pass = test_power( pref ) 
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e2*pref.techPrefs.chebfuneps;
 
 S = [38,37,40];
 f = ballfun(@(r,lam,th)r.*cos(lam),S);
@@ -10,21 +16,21 @@ F = ballfunv(f,zero,zero);
 n = 2;
 H = power(F,n);
 Hexact = ballfunv(power(f,n),zero,zero);
-pass(1) = isequal(H,Hexact);
+pass(1) = norm(H-Hexact) < tol;
 
 % Example 3:
 F = ballfunv(f,2*f,3*f);
 n = 0;
 H = power(F,n);
 Hexact = ballfunv(one,one,one);
-pass(2) = isequal(H,Hexact);
+pass(2) = norm(H-Hexact) < tol;
 
 % Example 3:
 F = ballfunv(f,2*f,3*f);
 n = 3;
 H = power(F,n);
 Hexact = ballfunv(power(f,3),8*power(f,3),27*power(f,3));
-pass(3) = isequal(H,Hexact);
+pass(3) = norm(H-Hexact) < tol;
 
 if (nargout > 0)
     pass = all(pass(:));

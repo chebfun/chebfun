@@ -1,4 +1,10 @@
-function pass = test_curl()
+function pass = test_curl( pref ) 
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e2*pref.techPrefs.chebfuneps;
 
 S = [40,41,42];
 
@@ -12,7 +18,7 @@ Exactx = ballfun(@(r,lam,th)r.*sin(th).*cos(lam),S);
 Exacty = ballfun(@(r,lam,th)-r.*sin(th).*sin(lam),S);
 Exactz = ballfun(@(r,lam,th)1,S);
 Exact = ballfunv(Exactx,Exacty,Exactz);
-pass(1) = isequal(W,Exact);
+pass(1) = norm(W-Exact)<tol;
 
 if (nargout > 0)
     pass = all(pass(:));

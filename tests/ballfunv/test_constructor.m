@@ -1,4 +1,10 @@
-function pass = test_constructor( )
+function pass = test_constructor( pref ) 
+
+% Grab some preferences
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
+tol = 1e2*pref.techPrefs.chebfuneps;
 
 % Can we make a ballfun object:
 
@@ -15,7 +21,8 @@ vx = ballfun(@(x,y,z)x.*z,'cart',S);
 vy = ballfun(@(x,y,z)y,'cart',S);
 vz = ballfun(@(x,y,z)y.*x,'cart',S);
 w = ballfunv(vx,vy,vz);
-pass(2) = isequal(v,w);
+pass(2) = norm(v-w)<tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end
