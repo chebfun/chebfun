@@ -19,11 +19,9 @@ function [x, w, v] = lagpts(n, int, meth, alf)
 %   METHOD = 'REC' or 'RECW' use Newton iterations on the recurrence relation.
 %   METHOD = 'EXP' or 'EXPW' uses explicit expansions of nodes and weights.
 %
-%   [X, W] = LAGPTS(N, alpha) or LAGPTS(N, [0, inf], METHOD, alpha) will return
+%   [X, W] = LAGPTS(N, ALPHA) or LAGPTS(N, [0, inf], METHOD, alpha) will return
 %   the nodes and weights for the generalised Laguerre polynomials with 
-%   parameter alpha.
-%
-%   By default LAGPTS uses 'REC' when N < 128, and else 'EXP'.
+%   parameter ALPHA. ALPHA must a real-valued scalar >= -1.
 %
 % See also CHEBPTS, LEGPTS, HERMPTS, and JACPTS.
 
@@ -58,6 +56,7 @@ function [x, w, v] = lagpts(n, int, meth, alf)
 %   April 2009 - GLR [2] added for N >= 129.
 %   July 2016 - RH and RHW [3] replace GLR [2].
 %   August 2017 - Added forward recurrence and explicit expansions [4].
+%   Sept 2018 - See GitHub issue #2270
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults:
@@ -93,9 +92,7 @@ if ( nargin > 1 )
             interval = int;
         end
     end
-    if ( ~any(strcmpi(method, {'default', 'GW', 'fast', 'RH', 'RHW', 'REC', 'RECW', 'EXP', 'EXPW'})) )
-        error('CHEBFUN:lagpts:inputs', 'Unrecognised input string %s.', method);
-    elseif ( imag(alpha) ~= 0 ) || ( alpha < -1 )
+    if ( ~isreal(alpha) ) || ( alpha < -1 )
         error('CHEBFUN:lagpts:inputs', ['alpha = ' num2str(alpha) ...
             ' is not allowed.']);
     end
@@ -105,35 +102,56 @@ if ( nargin > 1 )
         interval = interval([1, end]);
     end
 end
-
 if ( sum(isinf(interval)) ~= 1 )
     error('CHEBFUN:lagpts:inf', 'LAGPTS only supports semi-infinite domains.');
 end
 
-% Decide to use GW or RH.
-
-if strcmpi(method,'GW')
-    % GW, see [1]
-    alph = 2*(1:n)-1 + alpha;  % 3-term recurrence coeffs
-    beta = sqrt( (1:n-1).*(alpha + (1:n-1) ) );
-    T = diag(beta,1) + diag(alph) + diag(beta,-1);  % Jacobi matrix
-    [V, D] = eig(T);                      % eigenvalue decomposition
-    [x, indx] = sort(diag(D));            % Laguerre points
-    w = V(1,indx).^2;                     % Quadrature weights
-    
-elseif any(strcmpi(method, {'RH', 'RHW'}))
-    % RH, see [3] and [5]
-    [x, w] = newton(n, strcmpi(method, 'RHW'), alpha, 1);
-    
-elseif ( any(strcmpi(method,{'rec', 'recW'}))  || ( ( n < 128 ) && strcmpi(method,'default') ) )
-    % Forward recurrence
-    [x, w] = newton(n, strcmpi(method, 'recW'), alpha, 0);
-    
-else
-    % Explicit expansions, see [4]
-    [x,w] = laguerreExp(n, strcmpi(method,'expW'), alpha);
-    
+% Determine default method (heuristic):
+if ( strcmpi(method, 'default') )
+    if ( n < 300 )
+        method = 'rec';
+    elseif ( n < 1000 )
+        method = 'gw';        
+    elseif ( n < 3000 )
+        if ( alpha == 0 )
+            method = 'glr';
+        else
+            method = 'gw';
+        end
+    else
+        method = 'RH';
+    end
 end
+
+% Terminate at zero (floating point arithmetic) weights?
+Wmethod = strcmpi(method(end), 'W');
+
+if ( strcmpi(method,'GW') )
+    % GW, see [1]
+    [x, w] = gw(n, alpha);
+    
+elseif ( strncmpi(method, 'rec', 3) )
+%     [x, w] = newton(n, Wmethod, alpha, 0);
+    [x, w] = lag_rec(n, alpha, Wmethod);
+    
+elseif ( strncmpi(method, 'glr', 3) )
+    
+    if ( alpha ~= 0 )
+        error('CHEBFUN:lagpts:glr0', 'GLR method not support for nonzero alpha.');
+    end
+    [x, w] = glr(n);
+
+elseif ( strncmpi(method, 'RH', 3) )
+    % RH, see [3] and [5]
+    [x, w] = newton(n, Wmethod, alpha);
+    
+elseif ( strncmpi(method, 'exp', 3) )
+    % Explicit expansions, see [4]
+    [x, w] = laguerreExp(n, Wmethod, alpha);
+else
+    error('CHEBFUN:lagpts:inputs', 'Unrecognised input string %s.', method)
+end
+
 w = (gamma(alpha+1)/sum(w))*w;    % Normalise so that sum(w) = Gamma(alpha+1)
 v = (-1).^(0:n-1)'.*sqrt(w'.*x);  % Barycentric weights
 v = v./max(abs(v));
@@ -153,14 +171,243 @@ end
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%% Recurrence Routine %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [x, w] = gw(n, alpha)
+% See G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature rules",
+% Math. Comp. 23:221-230, 1969.
+
+    alph = 2*(1:n)-1 + alpha;                      % 3-term recurrence coeffs
+    beta = sqrt( (1:n-1).*(alpha + (1:n-1) ) );
+    T = diag(beta,1) + diag(alph) + diag(beta,-1); % Jacobi matrix
+    [V, D] = eig(T);                               % eigenvalue decomposition
+    [x, indx] = sort(diag(D));                     % Laguerre points
+    w = V(1,indx).^2;                              % Quadrature weights
+
+end
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%% Recurrence Routine %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [x,w] = lag_rec(n, alpha, flag)
+% This code computes the zeros and the weights for Gauss-Laguerre
+% quadrature. See Stroud and Secrest (also in NUMERICAL RECIPES p. 146).
+
+% Initialise outputs:
+x = zeros(n,1);
+w = zeros(1,n);
+for i = 1:n
+    
+    % Initial approximations
+    if ( i == 1 )
+        z = (1+alpha)*(3+.92*alpha) / (1+2.4*n+1.8*alpha); 
+    elseif ( i == 2 )
+        z = x(1) + (15+6.25*alpha) / (1+.9*alpha+2.5*n);
+    else
+        ai = i-2;
+        z = x(i-1)+((1+2.55*ai)/(1.9*ai)+1.26*ai*alpha/(1+3.5*ai))*(x(i-1)-x(i-2))/(1+.3*alpha);
+    end
+    
+    % Newton iterations:
+    for k = 1:10
+        p1 = 1; p2 = 0;
+        % Recurrence relation:
+        for j = 0:n-1
+            p3 = p2; p2 = p1;
+            p1 = ( (-z+alpha+2*j+1)*p2 - (alpha+j)*p3 )/(j+1); 
+        end
+        pp = (n*p1 - (n+alpha)*p2)/z; % derivative
+        z1 = z;
+        z = z1 - (p1/pp);
+        if ( abs(z-z1) < 1e-15 )
+            break
+        end
+    end
+    % Once more for derivative:
+    p1 = 1; p2 = 0;
+    % recurrence relation:
+    for j = 0:n-1
+        p3 = p2; p2 = p1;
+        p1 = ( (-z+alpha+2*j+1)*p2 - (alpha+j)*p3 )/(j+1);
+    end
+    pp = (n*p1 - (n+alpha)*p2)/z; % derivative
+    
+    % Store the zero and the weight: 
+    x(i) = z;
+    w(i) = exp(gammaln(alpha+n+1)-gammaln(n+1))/(z*pp.^2); 
+    % TODO: use the ratio of gamma functions when n > 100. 
+    
+    % Breaks the code if the weight is smaller than realmin. Then returns 
+    % the zeros and the weights already computed. Without this break, the
+    % code can returns NaN in the weights starting from on n=366 because p1
+    % becomes NaN.
+    if ( ( w(i) == 0 ) && flag )
+        x = x(1:i);
+        w = w(1:i);
+        break
+    end
+
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GLR Routines %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       A. Glaser, X. Liu and V. Rokhlin, "A fast algorithm for the
+%       calculation of the roots of special functions", SIAM Journal
+%       on Scientific Computing", 29(4):1420-1438:, 2007.
+
+function [x, w] = glr(n)
+    [x, ders] = alg0_Lag(n);              % Nodes and L_n'(x)
+    w = exp(-x)./(x.*ders.^2); w = w';    % Quadrature weights
+end
+
+function [x, ders] = alg0_Lag(n)
+ders = zeros(n, 1);
+xs = 1/(2*n+1);
+n1 = 20;
+n1 = min(n1, n);
+x = zeros(n, 1);
+for k = 1:n1
+    [xs, ders(k)] = alg3_Lag(n, xs);
+    x(k) = xs;
+    xs = 1.1*xs;
+end
+[x, ders] = alg1_Lag(x, ders, n, n1);
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [roots, ders] = alg1_Lag(roots, ders, n, n1)
+
+% number of terms in Taylor expansion
+m = 30;
+
+% initialise
+hh1 = ones(m+1, 1); 
+zz = zeros(m, 1); 
+u = zeros(1, m+1); 
+up = zeros(1, m+1);
+
+x = roots(n1);
+for j = n1:(n - 1)
+    
+    % initial approx
+    h = rk2_Lag(pi/2, -pi/2, x, n) - x;
+    
+    % scaling:
+    M = 1/h; M2 = M^2; M3 = M^3; M4 = M^4;
+    
+    % Recurrence relation for Laguerre polynomials
+    r = x*(n + .5 - .25*x);  
+    p = x^2;
+    u(1:2) = [0 ; ders(j)/M];
+    u(3) = -.5*u(2)/(M*x) - (n + .5 - .25*x)*u(1)/(x*M2);
+    u(4) = -u(3)/(M*x) + ( -(1+r)*u(2)/6/M2 - (n+.5-.5*x)*u(1)/M3 ) / p;
+    up(1:3) = [u(2) ; 2*u(3)*M ; 3*u(4)*M];
+    for k = 2:(m - 2)
+        u(k+3) = ( -x*(2*k+1)*(k+1)*u(k+2)/M - (k*k+r)*u(k+1)/M2 - ...
+                   (n+.5-.5*x)*u(k)/M3 + .25*u(k-1)/M4 ) / (p*(k+2)*(k+1));
+        up(k+2) = (k+2)*u(k+3)*M;
+    end
+    up(m+1) = 0;
+    
+    % Flip for more accuracy in inner product calculation.
+    u = u(m+1:-1:1); up = up(m+1:-1:1);
+    
+    % Newton iteration
+    hh = hh1; 
+    hh(end) = M;    
+    step = inf;  
+    l = 0;
+    if ( M == 1 )
+        Mhzz = (M*h) + zz;
+        hh = [M ; cumprod(Mhzz)];
+        hh = hh(end:-1:1);
+    end
+    while ( (abs(step) > eps) && (l < 10) )
+        l = l + 1;
+        step = (u*hh)/(up*hh);
+        h = h - step;
+        Mhzz = (M*h) + zz;
+        % Powers of h (This is the fastest way!)
+        hh = [M ; cumprod(Mhzz)];     
+        % Flip for more accuracy in inner product
+        hh = hh(end:-1:1);          
+    end
+    
+    % Update
+    x = x + h;
+    roots(j+1) = x;
+    ders(j+1) = up*hh;
+    
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [x1, d1] = alg3_Lag(n, xs)
+[u, up] = eval_Lag(xs, n);
+theta = atan(sqrt(xs/(n + .5 - .25*xs))*up/u);
+x1 = rk2_Lag(theta, -pi/2, xs, n);
+
+% Newton iteration
+step = inf;  
+l = 0;
+while ( (abs(step) > eps || abs(u) > eps) && (l < 200) )
+    l = l + 1;
+    [u, up] = eval_Lag(x1, n);
+    step = u/up;
+    x1 = x1 - step;
+end
+
+[ignored, d1] = eval_Lag(x1, n);
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Evauate Laguerre polynomial via recurrence
+function [L, Lp] = eval_Lag(x, n)
+Lm2 = 0; Lm1 = exp(-x/2); 
+Lpm2 = 0; Lpm1 = 0;
+for k = 0:n-1
+    L = ( (2*k+1-x).*Lm1 - k*Lm2 ) / (k + 1);
+    Lp = ( (2*k+1-x).*Lpm1 - Lm1 - k*Lpm2 ) / (k + 1);
+    Lm2 = Lm1; Lm1 = L; Lpm2 = Lpm1;  Lpm1 = Lp;
+end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Runge-Kutta for Laguerre Equation
+function x = rk2_Lag(t, tn, x, n)
+m = 10; 
+h = (tn - t)/m;
+for j = 1:m
+    f1 = (n + .5 - .25*x);
+    k1 = -h/( sqrt(f1/x) + .25*(1/x-.25/f1)*sin(2*t) );
+    t = t + h;  
+    x = x + k1;   
+    f1 = (n + .5 - .25*x);
+    k2 = -h/( sqrt(f1/x) + .25*(1/x-.25/f1)*sin(2*t) );
+    x = x + .5*(k2 - k1);
+end
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% Newton Routine %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [x, w] = newton(n, compRepr, alpha, rh)
+function [x, w] = newton(n, compRepr, alpha)
 
-if compRepr
+if ( compRepr )
     % Get a heuristic for the indices where the weights are about above realmin.
     mn = min(n,ceil(17*sqrt(n)));
 else
@@ -168,62 +415,55 @@ else
 end
 w = zeros(1, mn);
 
-if ~rh % Use forward recurrence
-    bes = besselroots(alpha, min(mn, 7) ).^2; 
-    % [Tricomi 1947 pg. 296]
-    bes = bes/(4*n + 2*alpha+2).*(1 + (bes + 2*(alpha^2 - 1) )/(4*n + 2*alpha+2)^2/3 );
-    x = [ bes; zeros(mn - length(bes), 1)];
-else
-    itric = round(3.6*n^0.188);
-    % Heuristics to switch between Bessel, extrapolation and Airy initial guesses.
-    igatt = round(mn + 1.31*n^0.4 - n);
-    
-    bes = besselroots(alpha, itric).^2; % [Tricomi 1947 pg. 296]
-    bes = bes/(4*n + 2*alpha+2).*(1 + (bes + 2*(alpha^2 - 1) )/(4*n + 2*alpha+2)^2/3 );
-    
-    ak = [-13.69148903521072; -12.828776752865757; -11.93601556323626;...
-        -11.00852430373326; -10.04017434155809; -9.02265085340981; -7.944133587120853;...
-        -6.786708090071759; -5.520559828095551; -4.08794944413097; -2.338107410459767];
-    t = 3*pi/2*( (igatt:-1:12)'-0.25); % [DLMF (9.9.6)]
-    ak = [-t.^(2/3).*(1 + 5/48./t.^2 - 5/36./t.^4 + 77125/82944./t.^6 ...
-        -10856875/6967296./t.^8); ak(max(1,12-igatt):end)];
-    nu = 4*n+2*alpha+2; % [Gatteshi 2002 (4.9)]
-    air = (nu+ak*(4*nu)^(1/3)+ ak.^2*(nu/16)^(-1/3)/5 + (11/35-alpha^2-12/175*...
-        ak.^3)/nu + (16/1575*ak+92/7875*ak.^4)*2^(2/3)*nu^(-5/3) -(15152/3031875*...
-        ak.^5+1088/121275*ak.^2)*2^(1/3)*nu^(-7/3));
-    
-    x = [ bes; zeros(mn - itric -max(igatt,0), 1) ; air];
-    fact = zeros(2,1);
-    for k = 1:2
-        a = alpha + k - 1;
-        fact(k) = fact(k) + (1/3840*a^10 - 5/2304*a^9 + 11/2304*a^8 + 7/1920*a^7 ...
-            - 229/11520*a^6 + 107/34560*a^5 + 2653/103680*a^4 - 989/155520*a^3 - ...
-            3481/311040*a^2 + 139/103680*a + 9871/6531840)/(n - k + 1)^5;
-        fact(k) = fact(k) + (1/384*a^8 - 1/96*a^7 + 1/576*a^6 + 43/1440*a^5 - 5/384*...
-            a^4 - 23/864*a^3 + 163/25920*a^2 + 31/6480*a - 139/155520)/(n - k + 1)^4;
-        fact(k) = fact(k) + (1/48*a^6 - 1/48*a^5 - 1/24*a^4 + 5/144*a^3 + ...
-            1/36*a^2 - 1/144*a - 31/6480)/(n - k + 1)^3;
-        fact(k) = fact(k) + (1/8*a^4 + 1/12*a^3 - 1/24*a^2 + 1/72)/(n - k + 1)^2;
-        fact(k) = fact(k) + (1/2*a^2 + 1/2*a + 1/6)/(n - k + 1)^1 +1;
-    end
-    % We factored out some constants from the ratio or product of the asymptotics.
-    factorx = sqrt(fact(1)/fact(2) )/2/(1 - 1/n)^(1+alpha/2);
-    factorw =  -(1 - 1/(n + 1) )^(n + 1+ alpha/2)*(1 - 1/n)^(1 + alpha/2)*...
-        exp(1 + 2*log(2) )*4^(1+alpha)*pi*n^alpha*sqrt(prod(fact))*...
-        (1 + 1/n)^(alpha/2);
-    
-    % This is a heuristic for the number of terms in the expansions that follow.
-    T = ceil(34/log(n) );
-    if ( alpha^2/n > 1 )
-        warning('CHEBFUN:lagpts:inputs',['A large alpha may lead to inaccurate ' ...
-            'results because the weight is low and R(z) is not close to identity.']);
-    end
+itric = round(3.6*n^0.188);
+% Heuristics to switch between Bessel, extrapolation and Airy initial guesses.
+igatt = round(mn + 1.31*n^0.4 - n);
+
+bes = besselroots(alpha, itric).^2; % [Tricomi 1947 pg. 296]
+bes = bes/(4*n + 2*alpha+2).*(1 + (bes + 2*(alpha^2 - 1) )/(4*n + 2*alpha+2)^2/3 );
+
+ak = [-13.69148903521072; -12.828776752865757; -11.93601556323626;...
+    -11.00852430373326; -10.04017434155809; -9.02265085340981; -7.944133587120853;...
+    -6.786708090071759; -5.520559828095551; -4.08794944413097; -2.338107410459767];
+t = 3*pi/2*( (igatt:-1:12)'-0.25); % [DLMF (9.9.6)]
+ak = [-t.^(2/3).*(1 + 5/48./t.^2 - 5/36./t.^4 + 77125/82944./t.^6 ...
+    -10856875/6967296./t.^8); ak(max(1,12-igatt):end)];
+nu = 4*n+2*alpha+2; % [Gatteshi 2002 (4.9)]
+air = (nu+ak*(4*nu)^(1/3)+ ak.^2*(nu/16)^(-1/3)/5 + (11/35-alpha^2-12/175*...
+    ak.^3)/nu + (16/1575*ak+92/7875*ak.^4)*2^(2/3)*nu^(-5/3) -(15152/3031875*...
+    ak.^5+1088/121275*ak.^2)*2^(1/3)*nu^(-7/3));
+
+x = [bes; zeros(mn - itric -max(igatt,0), 1) ; air];
+fact = zeros(2,1);
+for k = 1:2
+    a = alpha + k - 1;
+    fact(k) = fact(k) + (1/3840*a^10 - 5/2304*a^9 + 11/2304*a^8 + 7/1920*a^7 ...
+        - 229/11520*a^6 + 107/34560*a^5 + 2653/103680*a^4 - 989/155520*a^3 - ...
+        3481/311040*a^2 + 139/103680*a + 9871/6531840)/(n - k + 1)^5;
+    fact(k) = fact(k) + (1/384*a^8 - 1/96*a^7 + 1/576*a^6 + 43/1440*a^5 - 5/384*...
+        a^4 - 23/864*a^3 + 163/25920*a^2 + 31/6480*a - 139/155520)/(n - k + 1)^4;
+    fact(k) = fact(k) + (1/48*a^6 - 1/48*a^5 - 1/24*a^4 + 5/144*a^3 + ...
+        1/36*a^2 - 1/144*a - 31/6480)/(n - k + 1)^3;
+    fact(k) = fact(k) + (1/8*a^4 + 1/12*a^3 - 1/24*a^2 + 1/72)/(n - k + 1)^2;
+    fact(k) = fact(k) + (1/2*a^2 + 1/2*a + 1/6)/(n - k + 1)^1 +1;
+end
+% We factored out some constants from the ratio or product of the asymptotics.
+factorx = sqrt(fact(1)/fact(2) )/2/(1 - 1/n)^(1+alpha/2);
+factorw = -(1 - 1/(n + 1) )^(n + 1+ alpha/2)*(1 - 1/n)^(1 + alpha/2)*...
+    exp(1 + 2*log(2) )*4^(1+alpha)*pi*n^alpha*sqrt(prod(fact))*...
+    (1 + 1/n)^(alpha/2);
+
+% This is a heuristic for the number of terms in the expansions that follow.
+T = ceil(34/log(n) );
+if ( alpha^2/n > 1 )
+    warning('CHEBFUN:lagpts:inputs',['A large alpha may lead to inaccurate ' ...
+        'results because the weight is low and R(z) is not close to identity.']);
 end
 
 noUnderflow = 1;
 for k = 1:mn
     if ( x(k) == 0 ) % Use sextic extrapolation for the initial guesses.
-        x(k) = 7*x(k-1)-21*x(k-2)+35*x(k-3)-35*x(k-4)+21*x(k-5)-7*x(k-6)+x(k-7);
+        x(k) = [7 -21 35 -35 21 -7 1]*x(k-(1:7));
     end
     step = x(k);
     l = 0; % Newton-Raphson iteration number
@@ -231,38 +471,32 @@ for k = 1:mn
     ox = x(k); % Old x
     % The constants multiplying eps or the maximal l can be increased to avoid
     % the error below, at the cost of possibly lower accuracy.
-    while ( ( abs(step) > eps*400*x(k) ) && ( l < 9) )
+    while ( ( abs(step) > eps*400*x(k) ) && (l < 9) )
         l = l + 1;
-        if rh
-            pe = polyAsyRH(n, x(k), alpha, T);
-            % poly' = (p*exp(-Q/2) )' = exp(-Q/2)*(p' -p/2) with orthonormal p
-            step = pe/(polyAsyRH(n-1, x(k), alpha+1, T)*factorx - pe/2);
-        else
-            [pe, pder] = lagpnRecDer(n, alpha, x(k));
-            step = pe/pder;
-        end
-        if (abs(pe) >= abs(ov)*(1-500*eps) )
+        pe = polyAsyRH(n, x(k), alpha, T);
+        % poly' = (p*exp(-Q/2) )' = exp(-Q/2)*(p' -p/2) with orthonormal p
+        step = pe/(polyAsyRH(n-1, x(k), alpha+1, T)*factorx - pe/2);
+        if ( abs(pe) >= abs(ov)*(1-500*eps) )
             % The function values do not decrease enough any more due to
             % roundoff errors, so set to the previous value and quit.
             x(k) = ox;
             break
         end
         ox = x(k);
-        x(k) = x(k) -step;
+        x(k) = x(k) - step;
         ov = pe;
     end
     if ( x(k) < 0 ) || ( x(k) > 4*n + 2*alpha + 2 ) || ( l == 9 ) || ...
-            ( ( k ~= 1 ) && ( x(k - 1) >= x(k) ) )
-        error('CHEBFUN:lagpts:converge','Newton method may not have converged.');
+            ( ( k ~= 1 ) && ( x(k-1) >= x(k) ) )
+        error('CHEBFUN:lagpts:converge', ...
+            'Newton method may not have converged.');
     end
-    if noUnderflow && rh
-        w(k) = factorw/polyAsyRH(n-1, x(k), alpha + 1, T)/...
-            polyAsyRH(n+1, x(k), alpha, T)/exp( x(k) );
-    elseif noUnderflow
-        w(k) = (n^2 +alpha*n)^(-1/2)/lagpnRecDer(n-1, alpha, x(k))/pder;
+    if ( noUnderflow )
+        w(k) = exp(-x(k))*factorw / ...
+            (polyAsyRH(n-1,x(k),alpha+1,T)*polyAsyRH(n+1,x(k),alpha,T));
     end
-    if noUnderflow && ( w(k) == 0 ) && ( k > 1 ) && ( w(k - 1) > 0 )
-        if compRepr
+    if ( noUnderflow && ( w(k) == 0 ) && ( k > 1 ) && ( w(k - 1) > 0 ) )
+        if ( compRepr )
             w = w(1:k-1);
             x = x(1:k-1);
             return;
@@ -273,11 +507,9 @@ end
 
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%% Routines for RH algorithm %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 % Compute the expansion of the orthonormal polynomial without e^(x/2) nor a
 % constant factor based on some heuristics
@@ -285,21 +517,21 @@ function p = polyAsyRH(np, y, alpha, T)
 % We could avoid these tests by splitting the loop k=1:mn into three parts
 % with heuristics for the bounding indices. np + alpha is always n, so we
 % do not risk dividing by the derivative of an expansion in another region.
-if y < sqrt(np+alpha)
+if ( y < sqrt(np+alpha) )
     % The fixed delta in the RHP would mean this bound has to be
     % proportional to n, but x(1:k) are O(1/n) so choose the bound in between
     % them to make more use of the (cheap) expansion in the bulk.
     p = asyBessel(np, y, alpha, T);
-    return
-elseif y > 3.7*(np+alpha)
+elseif ( y > 3.7*(np+alpha) )
     % Use the expansion in terms of the (expensive) Airy function, although
     % the corresponding weights will start underflowing for n >= 186.
     p = asyAiry(np, y, alpha, T);
-    return
+else
+    p = asyBulk(np, y, alpha, T);
 end
-p = asyBulk(np, y, alpha, T);
 
 end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Compute the expansion of the orthonormal polynomial in the bulk without e^(x/2)
@@ -1071,32 +1303,12 @@ p = real( 4*sqrt(pi)/z^(1/4)/d^(1/4)*z^(-alpha/2)* ...
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% %%%%%%%%%%%%%%%%%%%%%%%% Routine for recurrence %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Orthonormal associated Laguerre polynomial with positive leading coefficient and derivative
-function [pn, pnd] = lagpnRecDer(n,alpha,x)
-    pnprev = 0*alpha;
-    pn= 1/sqrt(gamma(alpha+1) );
-    pndprev = 0*alpha;
-    pnd = 0*alpha;
-    for k=1:n
-        pnold = pn;
-        pn = (x -2*k -alpha+1)/sqrt(k*(alpha+k))*pnold-sqrt((k-1+alpha)*(k-1)/k/(k+alpha))*pnprev;
-        pnprev = pnold;
-        pndold = pnd;
-        pnd = (pnold+(x-2*k-alpha+1)*pndold)/sqrt(k*(alpha+k)) -sqrt((k-1+alpha)*(k-1)/k/(alpha+k))*pndprev;
-        pndprev = pndold;
-    end
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%% Routine for explicit expansion %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [x,w] = laguerreExp(n, compRepr, alpha)
 
-if compRepr
+if ( compRepr )
     % Get a heuristic for the indices where the weights are about above realmin.
     mn = min(n,ceil(17*sqrt(n)));
 else
@@ -1141,7 +1353,7 @@ ak = [-tair.^(2/3).*(1 + 5/48./tair.^2 - 5/36./tair.^4 + 77125/82944./tair.^6 ..
     -10856875/6967296./tair.^8); ak(max(1,12-mn+iair-1):11) ];
 air = 0*ak;
 
-if (T >= 7)
+if ( T >= 7 )
     % These higher order terms in the left and bulk region are derived in [4]
     bes = bes + (657*jak.^6 +36*jak.^4*(73*alpha^2-181) +2*jak.^2*(2459*alpha^4 -10750*alpha^2 +14051) ...
         + 4*(1493*alpha^6 -9303*alpha^4 +19887*alpha^2 - 12077) )*d^6/2835;
@@ -1171,7 +1383,7 @@ if (T >= 7)
         + 4*(604800*alpha^6 - 2630880*alpha^4 + 3447360*alpha^2 + 13*alpha- 706850)*t ...
         - 7*alpha + 342463)./(t-1).^9./t.^3;
 end
-if (T >= 5)
+if ( T >= 5 )
     bes = bes + (11*jak.^4 +3*jak.^2.*(11*alpha^2-19) +46*alpha^4 -140*alpha^2 +94)*d^4/45;
     wbes = wbes + (46*alpha^4 + 33*jak.^4 +6*jak.^2*(11*alpha^2 -19) -140*alpha^2 +94)/45*d^4;
     
@@ -1205,11 +1417,14 @@ w = [ 4*d*bes.^alpha.*exp(-bes)./(besselj(alpha-1, jak)).^2.*(1+ wbes); ...
 % extremely small or even underflow, and the formula for the expansion would be thrice as long.
 x = [ bes; bulk ; air];
 
+
+% [x, ~] = alg1_Lag(x, x, n, iair);
+
 if ( min(x) < 0.0 ) || ( max(x) > 4*n + 2*alpha + 2 ) ||  ( min(diff(x)) <= 0.0 ) || (min(w) < 0.0)
     error('Wrong node or weight.')
 end
 
-if compRepr
+if ( compRepr )
     k = find(w, 1, 'last');
     x = x(1:k)';
     w = w(1:k);

@@ -1,4 +1,4 @@
-function pass = test_lagpts2(pref)
+function pass = test_lagpts(pref)
 
 if ( nargin == 0 )
     pref = chebfunpref();
