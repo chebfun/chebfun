@@ -44,7 +44,7 @@ for j = 1:K
 end
 
 % Return the derivative ballfun function 
-g = ballfun( F, 'coeffs' ); 
+g = simplify(ballfun( F, 'coeffs' )); 
 end
 
 function F = onediff(F, dim, Cart)
@@ -208,37 +208,7 @@ function F = onediff(F, dim, Cart)
                    reshape(dTh, [], p_tilde)*MsinT.',...
                                              m_tilde, n_tilde, []);
         end
-        
-%         tol = eps;
-%         
-%         pmod = mod(p_tilde - p,2)+1; 
-%         nmod = mod(n_tilde - n,2)+1;        
-%         alias1 = Fexp(m+1:end,:,:); 
-%         a1 = norm(alias1(:),'inf') > 10*tol;
-%         alias2 = Fexp(:,2:end-nmod,:); 
-%         a2 = norm(alias2(:),'inf') > 10*tol;
-%         alias3 = Fexp(:,:,2:end-pmod); 
-%         a3 = norm(alias3(:),'inf') > 10*tol;
-% 
-%         % Truncate Fexp
-%         if ( a1 )
-%             for k = 1:p_tilde
-%                 Fexp(1:m,:,k) = chebtech2.alias(Fexp(:,:,k), m);
-%             end
-%         end
-%         if ( a2 )
-%             for k = 1:p_tilde 
-%                 Fexp(:,2:end-nmod,k) = trigtech.alias(Fexp(:,:,k).',n).';
-%             end
-%         end
-%         if ( a3 )
-%             for j = 1:n
-%                 vj = reshape(Fexp(:,j,:), m_tilde, p_tilde);
-%                 vj = trigtech.alias(vj.', p).';
-%                 Fexp(:,j,2:end-pmod) = reshape( vj, m_tilde, 1, p );
-%             end
-%         end
-%         F = Fexp(1:m, 2:end-nmod, 2:end-pmod);
         F = Fexp;
+        
     end
 end

@@ -31,14 +31,18 @@ end
 function varargout = HelmholtzDecomposition_2(v)
 % Compute the two-component form of the Helmholtz decomposition
 
+% Compute the divergence of v
+div_v = div(v);
+
+% Size of div(v)
+[m,n,p] = size(div_v);
+
 % Compute the boundary of the vector field v
-v_Boundary = ComputeNormalBoundary(v);
+v_Boundary = ComputeNormalBoundary(v,n,p);
 
 % Solve the Poisson equation Delta f = div(v) with Boundary conditions
 % df/dr = vr[r=1
-div_v = div(v);
-f = helmholtz_neumann(div_v,0,v_Boundary);
-
+f = helmholtz_neumann(div_v,0,v_Boundary,m,n,p);
 
 % Divergence-free vector field
 v_1 = v - grad(f);
@@ -56,21 +60,25 @@ function varargout = HelmholtzDecomposition_3(v)
 
 % Get the discretization
 div_v = div(v);
-[~,n,p] = size(div_v);
+[m,n,p] = size(div_v);
 
 % Solve the Poisson equation Delta f = div(v)
-f = helmholtz(div_v,0,zeros(n,p));
+f = helmholtz(div_v,0,zeros(n,p),m,n,p);
 
 % Divergence free vector field
 v_1 = v - grad(f);
 
+% Get the discretization
+S = max(size(v_1),[],1);
+m = S(1); n = S(2); p = S(3);
+
 % Compute the boundary of the vector field v_1
-v_Boundary = ComputeNormalBoundary(v_1);
+v_Boundary = ComputeNormalBoundary(v_1,n,p);
 
 % Solve Delta phi = 0 with Neumann boundary condition
 % r.grad(phi) = dphi/dr = r.v_1
-zero = ballfun(zeros(size(v_1)),'coeffs');
-phi = helmholtz_neumann(zero,0,v_Boundary);
+zero = ballfun(zeros(m,n,p),'coeffs');
+phi = helmholtz_neumann(zero,0,v_Boundary,m,n,p);
 
 % Divergence-free and tangential-free vector field
 v_2 = v_1 - grad(phi);
@@ -80,28 +88,29 @@ v_2 = v_1 - grad(phi);
 
 % Use the PT decomposition of v to compute phi
 % Solve 2 Poisson equations to find Ppsi and Tpsi
-[~,n,p] = size(Tv);
-Ppsi = helmholtz(-Tv,0,zeros(n,p));
+[m,n,p] = size(Tv);
+Ppsi = helmholtz(-Tv,0,zeros(n,p),m,n,p);
 Tpsi = Pv;
 
 % Return the decomposition
 varargout = { f,Ppsi,Tpsi,phi };
 end
 
-function v_Boundary = ComputeNormalBoundary(v)
+function v_Boundary = ComputeNormalBoundary(v,n,p)
 % COMPUTENORMALBOUNDARY compute vr|r=1
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the discretization
-[~,n,p] = size(v);
+S = size(v);
+mx = S(1,1); my = S(2,1); mz = S(3,1);
 
 % Get the components
-[Vx,Vy,Vz] = v.comp{:};
-Vx = Vx.coeffs;
-Vy = Vy.coeffs;
-Vz = Vz.coeffs;
+V = v.comp;
+Vx = coeffs3(V{1},mx,n,p);
+Vy = coeffs3(V{2},my,n,p);
+Vz = coeffs3(V{3},mz,n,p);
 
 % Evaluate at the boundary r = 1
 Vx = reshape(sum(Vx,1),n,p);

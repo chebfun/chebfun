@@ -11,7 +11,9 @@ function quiver(v,varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Number of points
-[m,n,p] = size(v);
+S = max(size(v),[],1);
+S(S<40) = 40;
+m = S(1); n = S(2); p = S(3);
 
 % Create the grid
 r = chebpts(m);

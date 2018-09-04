@@ -92,5 +92,5 @@ VyTr = permute(VyTr,[3,1,2]);
 VzTr = permute(VzTr,[3,1,2]);
 
 % Return v = curl(rP)
-v = ballfunv(ballfun(VxTr),ballfun(VyTr),ballfun(VzTr));
+v = ballfunv(ballfun(VxTr,'coeffs'),ballfun(VyTr,'coeffs'),ballfun(VzTr,'coeffs'));
 end

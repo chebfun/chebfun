@@ -10,10 +10,9 @@ function varargout = PTdecomposition(v)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[Vx,Vy,Vz] = v.comp{:};
-
-% Get the discretization
-[m,n,p] = size(Vx);
+% Get the discretization : take the maximum over the components of v
+S = max(size(v),[],1);
+m = S(1); n = S(2); p = S(3);
 
 % Spectral matrices
 Mr = ultraS.multmat(m, [0;1], 0);
@@ -30,9 +29,10 @@ DF1T = 1i*spdiags((-floor(p/2):floor(p/2))', 0, p, p);
 
 
 % Extract coeffs
-Vx = Vx.coeffs;
-Vy = Vy.coeffs;
-Vz = Vz.coeffs;
+[Vx,Vy,Vz] = v.comp{:};
+Vx = coeffs3(Vx,m,n,p);
+Vy = coeffs3(Vy,m,n,p);
+Vz = coeffs3(Vz,m,n,p);
 
 % Permute Vx, Vy and Vz
 Vx = permute(Vx,[2,3,1]);
@@ -62,8 +62,8 @@ for k = 1:p
 end
 
 % Poloidal and toroidal scalars
-P = PTequation(ballfun(RhsP));
-T = PTequation(ballfun(RhsT));
+P = PTequation(ballfun(RhsP,'coeffs'));
+T = PTequation(ballfun(RhsT,'coeffs'));
 
 % Prepare output:
 if ( nargout <= 1 ) 
@@ -153,6 +153,6 @@ ord = [2 3 1];
 CFS = permute(CFS, ord); 
  
 % Return the solution 
-u = ballfun(CFS); 
+u = ballfun(CFS,'coeffs'); 
 end 
 

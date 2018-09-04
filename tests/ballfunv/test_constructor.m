@@ -15,13 +15,20 @@ g = ballfunv(f,f,f);
 pass(1) = 1;
 
 % Example 2
-S = [11,12,13];
-v = ballfunv(@(x,y,z)x.*z,@(x,y,z)y,@(x,y,z)y.*x,'cart',S);
-vx = ballfun(@(x,y,z)x.*z,'cart',S);
-vy = ballfun(@(x,y,z)y,'cart',S);
-vz = ballfun(@(x,y,z)y.*x,'cart',S);
+v = ballfunv(@(x,y,z)x.*z,@(x,y,z)y,@(x,y,z)y.*x,'cart');
+vx = ballfun(@(x,y,z)x.*z,'cart');
+vy = ballfun(@(x,y,z)y,'cart');
+vz = ballfun(@(x,y,z)y.*x,'cart');
 w = ballfunv(vx,vy,vz);
 pass(2) = norm(v-w)<tol;
+
+% Example 3
+vx = ballfun(@(x,y,z)x.*z,'cart');
+vy = ballfun(@(x,y,z)y,'cart');
+vz = ballfun(@(x,y,z)y.*x,'cart');
+v = [vx;vy;vz];
+w = ballfunv(vx,vy,vz);
+pass(3) = norm(v-w)<tol;
 
 if (nargout > 0)
     pass = all(pass(:));

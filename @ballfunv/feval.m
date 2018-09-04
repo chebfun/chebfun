@@ -17,7 +17,7 @@ Nth = length(theta);
 
 vals = zeros(Nr, Nlam, Nth, 3);
 
-vals(:,:,:,1) = feval(F{1}, r, lambda, theta);
-vals(:,:,:,2) = feval(F{2}, r, lambda, theta);
-vals(:,:,:,3) = feval(F{3}, r, lambda, theta);
+vals(:,:,:,1) = fevalm(F{1}, r, lambda, theta);
+vals(:,:,:,2) = fevalm(F{2}, r, lambda, theta);
+vals(:,:,:,3) = fevalm(F{3}, r, lambda, theta);
 end
