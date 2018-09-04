@@ -1,15 +1,15 @@
-function v = curl(w)
+function F = curl(G)
 %CURL Curl of a BALLFUNV in cartesian coordinates.
-%   CURL(w) is the curl of the BALLFUNV w.
+%   CURL(G) is the curl of the BALLFUNV w.
 %
 % See also DIV. 
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[Wx,Wy,Wz] = w.comp{:};
-Vx = diff(Wz,2,"cart") - diff(Wy,3,"cart");
-Vy = diff(Wx,3,"cart") - diff(Wz,1,"cart");
-Vz = diff(Wy,1,"cart") - diff(Wx,2,"cart");
-v = ballfunv(Vx,Vy,Vz);
+Gc = G.comp;
+
+F = [ diff(Gc{3},2,"cart") - diff(Gc{2},3,"cart"); ...
+      diff(Gc{1},3,"cart") - diff(Gc{3},1,"cart"); ...
+      diff(Gc{2},1,"cart") - diff(Gc{1},2,"cart") ];
 end

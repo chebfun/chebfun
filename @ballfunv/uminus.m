@@ -8,5 +8,5 @@ function g = uminus(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 F = f.comp;
-g = ballfunv(-F{1},-F{2},-F{3});
+g = [ -F{1} ; -F{2} ; -F{3} ];
 end

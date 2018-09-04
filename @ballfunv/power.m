@@ -7,5 +7,5 @@ function w = power(v,n)
 % See http://www.chebfun.org/ for Chebfun information.
 
 V = v.comp;
-w = ballfunv(power( V{1},n), power(V{2},n), power(V{3},n) );
+w = ballfunv( power( V{1},n), power(V{2},n), power(V{3},n) );
 end

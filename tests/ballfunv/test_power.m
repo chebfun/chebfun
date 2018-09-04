@@ -6,10 +6,9 @@ if ( nargin == 0 )
 end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
-S = [38,37,40];
-f = ballfun(@(r,lam,th)r.*cos(lam),S);
-zero = cheb.galleryballfun('zero',S);
-one = ballfun(@(r,lam,th)1,S);
+f = ballfun(@(r,lam,th)r.*cos(lam));
+zero = cheb.galleryballfun('zero');
+one = ballfun(@(r,lam,th)1);
 
 % Example 1:
 F = ballfunv(f,zero,zero);

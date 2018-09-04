@@ -8,5 +8,5 @@ function w = imag(v)
 % See http://www.chebfun.org/ for Chebfun information.
 
 V = v.comp;
-w = ballfunv(imag(V{1}), imag(V{2}), imag(V{3}));
+w = [ imag(V{1}) ; imag(V{2}) ; imag(V{3})];
 end

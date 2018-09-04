@@ -6,17 +6,15 @@ if ( nargin == 0 )
 end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
-S = [40,41,42];
-
 % Example 1 : (0,x,xy)
-Vx = cheb.galleryballfun("zero",S);
-Vy = ballfun(@(r,lam,th)r.*sin(th).*cos(lam),S);
-Vz = ballfun(@(r,lam,th)r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam),S);
+Vx = cheb.galleryballfun("zero");
+Vy = ballfun(@(r,lam,th)r.*sin(th).*cos(lam));
+Vz = ballfun(@(r,lam,th)r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam));
 V = ballfunv(Vx,Vy,Vz);
 W = curl(V);
-Exactx = ballfun(@(r,lam,th)r.*sin(th).*cos(lam),S);
-Exacty = ballfun(@(r,lam,th)-r.*sin(th).*sin(lam),S);
-Exactz = ballfun(@(r,lam,th)1,S);
+Exactx = ballfun(@(r,lam,th)r.*sin(th).*cos(lam));
+Exacty = ballfun(@(r,lam,th)-r.*sin(th).*sin(lam));
+Exactz = ballfun(@(r,lam,th)1);
 Exact = ballfunv(Exactx,Exacty,Exactz);
 pass(1) = norm(W-Exact)<tol;
 

@@ -6,12 +6,11 @@ if ( nargin == 0 )
 end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
-S = [38,37,40];
-zero = cheb.galleryballfun('zero',S);
+zero = cheb.galleryballfun('zero');
 r = 0.5; lam = pi; th = pi/2;
 
 % Example 1:
-f = ballfun(@(r,lam,th)1,S);
+f = ballfun(@(r,lam,th)1);
 F = ballfunv(f,zero,zero);
 vals = feval(F,r,lam,th);
 vals_exact = zeros(1,1,1,3);
@@ -19,7 +18,7 @@ vals_exact(:,:,:,1) = 1;
 pass(1) = norm(vals(:) - vals_exact(:),inf) < tol;
 
 % Example 2:
-f = ballfun(@(r,lam,th)r.*sin(th),S);
+f = ballfun(@(r,lam,th)r.*sin(th));
 F = ballfunv(zero,f,zero);
 vals = feval(F,r,lam,th);
 vals_exact = zeros(1,1,1,3);
@@ -27,7 +26,7 @@ vals_exact(:,:,:,2) = 0.5;
 pass(2) = norm(vals(:) - vals_exact(:),inf) < tol;
 
 % Example 3:
-f = ballfun(@(r,lam,th)r.*sin(th).*cos(lam),S);
+f = ballfun(@(r,lam,th)r.*sin(th).*cos(lam));
 F = ballfunv(zero,zero,f);
 vals = feval(F,r,lam,th);
 vals_exact = zeros(1,1,1,3);

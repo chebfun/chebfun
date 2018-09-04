@@ -11,5 +11,5 @@ function h = times(f, g)
 %   componentwise multiplication.F = f.comp;
 F = f.comp;
 G = g.comp;
-h = ballfunv(F{1}*G{1}, F{2}*G{2}, F{3}*G{3});
+h = [F{1}.*G{1} ; F{2}.*G{2} ; F{3}.*G{3}];
 end

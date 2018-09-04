@@ -1,19 +1,12 @@
-function pass = test_size( pref ) 
+function pass = test_size( ) 
 
-% Grab some preferences
-if ( nargin == 0 )
-    pref = chebfunpref();
-end
-
-% Test with function coeffs 1
-
-f = ballfun(ones(20,21,22));
-F = ballfunv(f,f,f);
-pass(1) = all(size(F)==[20,21,22]);
-
-f = ballfun(ones(1000,1,1));
-F = ballfunv(f,f,f);
-pass(2) = all(size(F)==[1000,1,1]);
+% Example 1
+Vx = ballfun(ones(20,21,22));
+Vy = ballfun(ones(10,3,2));
+Vz = ballfun(ones(11,12,1));
+S = [20,21,22;10,3,2;11,12,1];
+V = ballfunv(Vx,Vy,Vz);
+pass(1) = isequal(S,size(V));
 
 if (nargout > 0)
     pass = all(pass(:));
