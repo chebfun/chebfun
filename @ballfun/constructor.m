@@ -163,6 +163,10 @@ end
 if ( isCoeffs )
     % We have all we need:
     cfs = op;
+    % Test if the matrix is sparse
+    if issparse(cfs)
+        cfs = full(cfs);
+    end
     op = ballfun();
     op.coeffs = cfs;
 end
