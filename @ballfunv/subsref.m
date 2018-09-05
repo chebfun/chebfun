@@ -37,7 +37,7 @@ switch index(1).type
     
     case '.'
         % Call GET() for .PROP access.
-        out = get(f, idx);
+        out = get(F, idx);
         if ( numel(index) > 1 )
             % Recurse on SUBSREF():
             index(1) = [];
