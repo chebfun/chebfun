@@ -12,7 +12,7 @@ function varargout = PTdecomposition(v)
 
 % Get the discretization : take the maximum over the components of v
 S = max(size(v),[],1);
-m = S(1); n = S(2); p = S(3);
+m = S(1)+1; n = S(2)+2; p = S(3)+6;
 
 % Spectral matrices
 Mr = ultraS.multmat(m, [0;1], 0);
@@ -26,7 +26,6 @@ McossinT = trigspec.multmat(p, [0.25i;0;0;0;-0.25i]);
 Msin2cosT = trigspec.multmat(p, [-.125;0;.125;0;.125;0;-.125]);
 Msin3T = trigspec.multmat(p, [-.125i;0;.375i;0;-.375i;0;.125i]);
 DF1T = 1i*spdiags((-floor(p/2):floor(p/2))', 0, p, p);
-
 
 % Extract coeffs
 [Vx,Vy,Vz] = v.comp{:};
@@ -62,8 +61,8 @@ for k = 1:p
 end
 
 % Poloidal and toroidal scalars
-P = PTequation(ballfun(RhsP,'coeffs'));
-T = PTequation(ballfun(RhsT,'coeffs'));
+P = PTequation(simplify(ballfun(RhsP,'coeffs')));
+T = PTequation(simplify(ballfun(RhsT,'coeffs')));
 
 % Prepare output:
 if ( nargout <= 1 ) 

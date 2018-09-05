@@ -4,7 +4,7 @@ function pass = test_HelmholtzDecomposition( pref )
 if ( nargin == 0 )
     pref = chebfunpref();
 end
-tol = 1e2*pref.techPrefs.chebfuneps;
+tol = 1e6*pref.techPrefs.chebfuneps;
 
 %% Two-component form
 

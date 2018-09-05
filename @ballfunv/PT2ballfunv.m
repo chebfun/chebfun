@@ -75,22 +75,27 @@ for k = 1:m
   Vy(:,:,k) = MsinL*Pl(:,:,k)*McosT.'/MsinT.' - McosL*Pt(:,:,k);
 end
 
-% Truncate Vx, Vy, Vz
-VxTr = zeros(n,p,m);
-VyTr = zeros(n,p,m);
-VzTr = zeros(n,p,m);
-
-for k = 1:m
-    VxTr(:,:,k) = trigtech.alias(trigtech.alias(Vx(:,:,k), n).',p).';
-    VyTr(:,:,k) = trigtech.alias(trigtech.alias(Vy(:,:,k), n).',p).';
-    VzTr(:,:,k) = trigtech.alias(trigtech.alias(Vz(:,:,k), n).',p).';
-end
+% % Truncate Vx, Vy, Vz
+% VxTr = zeros(n,p,m);
+% VyTr = zeros(n,p,m);
+% VzTr = zeros(n,p,m);
+% 
+% for k = 1:m
+%     VxTr(:,:,k) = trigtech.alias(trigtech.alias(Vx(:,:,k), n).',p).';
+%     VyTr(:,:,k) = trigtech.alias(trigtech.alias(Vy(:,:,k), n).',p).';
+%     VzTr(:,:,k) = trigtech.alias(trigtech.alias(Vz(:,:,k), n).',p).';
+% end
 
 % Permute back
-VxTr = permute(VxTr,[3,1,2]);
-VyTr = permute(VyTr,[3,1,2]);
-VzTr = permute(VzTr,[3,1,2]);
+Vx = permute(Vx,[3,1,2]);
+Vy = permute(Vy,[3,1,2]);
+Vz = permute(Vz,[3,1,2]);
+
+% Simplify
+Vx = simplify(ballfun(Vx,'coeffs'));
+Vy = simplify(ballfun(Vy,'coeffs'));
+Vz = simplify(ballfun(Vz,'coeffs'));
 
 % Return v = curl(rP)
-v = ballfunv(ballfun(VxTr,'coeffs'),ballfun(VyTr,'coeffs'),ballfun(VzTr,'coeffs'));
+v = ballfunv(Vx,Vy,Vz);
 end

@@ -34,12 +34,6 @@ classdef ballfun
         % Convert to Chebyshev--Fourier--Fourier values
         CFS = vals2coeffs(VALS);
         
-        % Convert a chebfun function to a ballfun function
-        f = chebfun2ballfun(g,S);
-        
-        % Convert a spherefun function to a ballfun function
-        f = spherefun2ballfun(g,S);
-        
         % Compute the solid harmonics
         f = solHarm(l,m);
         
