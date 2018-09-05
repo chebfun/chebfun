@@ -12,6 +12,9 @@ function varargout = subsref(f, index)
 % 
 %   F(:, :, :) returns F.
 %
+%  .
+%   F.PROP returns the property PROP of F as defined by GET(F,'PROP').
+%
 %{ } 
 %   Not supported.
 %
