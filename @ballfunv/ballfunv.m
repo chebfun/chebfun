@@ -88,7 +88,7 @@ classdef ballfunv
 %% STATIC METHODS:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
-        v = PT2ballfunv(P,T);
+        varargout = PT2ballfunv(P,T);
     end
     
     methods ( Access = private, Static = true )

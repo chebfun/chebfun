@@ -13,10 +13,10 @@ Pv = curl(rcurl(P));
 % Toroidal vector field
 Tv = rcurl(T);
 
-if nargout == 1
+if nargout <= 1
     varargout = {Pv + Tv};
 elseif nargout == 2
-    varargout = {Pv,Tv};
+    varargout = {Pv, Tv};
 else
     error('BALLFUNV:PT2ballfunv:unknown', ...
           'Undefined function ''PT2ballfunv'' for %d output arguments', nargout);   
