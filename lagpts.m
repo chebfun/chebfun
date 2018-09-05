@@ -237,9 +237,8 @@ for i = 1:n
     
     % Store the zero and the weight: 
     x(i) = z;
-    w(i) = exp(gammaln(alpha+n+1)-gammaln(n+1))/(z*pp.^2); 
-    % TODO: use the ratio of gamma functions when n > 100. 
-    
+    w(i) = gammaratio(n+1, alpha)/(z*pp.^2); 
+
     % Breaks the code if the weight is smaller than realmin. Then returns 
     % the zeros and the weights already computed. Without this break, the
     % code can returns NaN in the weights starting from on n=366 because p1
