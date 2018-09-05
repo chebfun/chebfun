@@ -10,8 +10,8 @@ function I = sum3(f, varargin)
 
 % Second argument: integral over the sphere of radius -1
 [m,n,p] = size(f);
-
-F = f.coeffs;
+m = m+2; p = p+2;
+F = coeffs3(f,m,n,p);
 
 % Extract the 0-th Fourier mode
 F = reshape(F(:,floor(n/2)+1,:), m, p);
