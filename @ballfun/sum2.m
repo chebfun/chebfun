@@ -25,8 +25,7 @@ if dim_1 == 2 && dim_2 == 3
 
     % Multiply f par r^2sin(theta) (= Jacobian)
     % Just do the multiplication for the 0-th Fourier mode
-    trig1 = trigtech( @(t) sin(pi*t));
-    Msin = trigspec.multmat(p, trig1.coeffs );
+    Msin = trigspec.multmat(p, [.5i;0;.5i] );
     Mr2 = ultraS.multmat(m, [.5;0;.5], 0 );
     F = Mr2*F*(Msin.');
 

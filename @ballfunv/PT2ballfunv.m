@@ -75,17 +75,6 @@ for k = 1:m
   Vy(:,:,k) = MsinL*Pl(:,:,k)*McosT.'/MsinT.' - McosL*Pt(:,:,k);
 end
 
-% % Truncate Vx, Vy, Vz
-% VxTr = zeros(n,p,m);
-% VyTr = zeros(n,p,m);
-% VzTr = zeros(n,p,m);
-% 
-% for k = 1:m
-%     VxTr(:,:,k) = trigtech.alias(trigtech.alias(Vx(:,:,k), n).',p).';
-%     VyTr(:,:,k) = trigtech.alias(trigtech.alias(Vy(:,:,k), n).',p).';
-%     VzTr(:,:,k) = trigtech.alias(trigtech.alias(Vz(:,:,k), n).',p).';
-% end
-
 % Permute back
 Vx = permute(Vx,[3,1,2]);
 Vy = permute(Vy,[3,1,2]);
