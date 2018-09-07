@@ -20,31 +20,36 @@ function plot1(f)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Define the size of F: 
+[m,n,p] = size(f);
+% m, n and p are equal to 0 modulo 4 to avoid errors in the plot
+m = m + mod(4-mod(m,4),4);
+n = n + mod(4-mod(n,4),4);
+p = p + mod(4-mod(p,4),4);
+% m, n and p are greater than 28
+m = 28*(m < 28) + m;
+n = 28*(n < 28) + n;
+p = 28*(p < 28) + p;
+
 % Get the coeffs of the ballfun function F(r,lam,th), lam is the
 % azimuthal variable in [-pi,pi] and theta the polar variable in [0,pi]
-F = f.coeffs;
-
-% Expand the tensor if the number of coeffs in r, lam or th isn't equal to
-% 0 modulo 4 to avoid errors in the plot
-% or if the number of coefficients is less than 20
-G = expand(F);
-[m,n,p] = size(G);
+F = coeffs3(f, m, n, p);
 
 % Permute lambda and theta
-G = permute(G,[1 3 2]);
+F = permute(F,[1 3 2]);
 
-ff = real(ballfun.coeffs2vals(G));
+ff = real(ballfun.coeffs2vals(F));
 
 r   = chebpts( m );
 lam  = [pi*trigpts( n ); pi];
-th = pi*trigpts( p )-pi/2;
+th = [pi*trigpts( p );pi]-pi/2;
 
 % Remove doubled-up data
 r   = r(floor(m/2)+1:end);
 th = th(floor(p/2)+1:end);
 % Reverse theta : 1st element of the array is theta = pi (South Pole), last element is
 % th = 0 (not included) (North Pole)
-ff  = ff(floor(m/2)+1:end,[1 end:-1:floor(p/2)+2],:);
+ff  = ff(floor(m/2)+1:end,[1 end:-1:floor(p/2)+1],:);
 ff(:,:,end+1) = ff(:,:,1);
 
 [tt, rr, ll] = meshgrid(th, r, lam);
@@ -121,24 +126,28 @@ end
 m = S(1); n = S(2); p = S(3);
 
 % Compute the new size of the tensor
-mExpand = max(m + mod(4-mod(m,4),4), 26);
-nExpand = max(n + mod(4-mod(n,4),4), 26);
-pExpand = max(p + mod(4-mod(p,4),4), 26);
+mExpand = m + mod(4-mod(m,4),4);
+nExpand = n + mod(4-mod(n,4),4);
+pExpand = p + mod(4-mod(p,4),4);
+mExpand = 28*(mExpand < 28) + mExpand;
+nExpand = 28*(nExpand < 28) + nExpand;
+pExpand = 28*(pExpand < 28) + pExpand;
 
 % Find the list of coefficients which corresponds to the coefficients of F
-if mod(n,2) == 0
-    ListLambda = 1+floor((nExpand-n)/2):n+floor((nExpand-n)/2);    
-else
-    ListLambda = 1+ceil((nExpand-n)/2):n+ceil((nExpand-n)/2); 
-end
-
-if mod(p,2) == 0
-    ListTheta = 1+floor((pExpand-p)/2):p+floor((pExpand-p)/2);    
-else
-    ListTheta = 1+ceil((pExpand-p)/2):p+ceil((pExpand-p)/2); 
-end
+% if mod(n,2) == 0
+%     ListLambda = 1+floor((nExpand-n)/2):n+floor((nExpand-n)/2);    
+% else
+%     ListLambda = 1+ceil((nExpand-n)/2):n+ceil((nExpand-n)/2); 
+% end
+% 
+% if mod(p,2) == 0
+%     ListTheta = 1+floor((pExpand-p)/2):p+floor((pExpand-p)/2);    
+% else
+%     ListTheta = 1+ceil((pExpand-p)/2):p+ceil((pExpand-p)/2); 
+% end
 
 % Return the expansion G of F
 G = zeros(mExpand, nExpand, pExpand);
+G(1:mf,floor(n/2)+1-floor(nf/2):floor(n/2)+nf-floor(nf/2),floor(p/2)+1-floor(pf/2):floor(p/2)+pf-floor(pf/2))
 G(1:m, ListLambda, ListTheta) = F;
 end
