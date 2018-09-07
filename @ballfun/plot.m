@@ -35,11 +35,13 @@ p = 28*(p < 28) + p;
 % azimuthal variable in [-pi,pi] and theta the polar variable in [0,pi]
 F = coeffs3(f, m, n, p);
 
-% Permute lambda and theta
-F = permute(F,[1 3 2]);
-
+% Convert to values
 ff = real(ballfun.coeffs2vals(F));
 
+% Permute lambda and theta
+ff = permute(ff,[1 3 2]);
+
+% Evaluation points
 r   = chebpts( m );
 lam  = [pi*trigpts( n ); pi];
 th = [pi*trigpts( p );pi]-pi/2;
@@ -60,6 +62,7 @@ tslice = tt(1,[1,floor(p/4)+1],1);
 lslice = ll(1,1,[1,floor(n/4)+1]);
 
 hslicer = slice(tt,rr,ll,ff,tslice,rslice,lslice);
+
 hold on
 for j = 1:numel(hslicer)
     h = hslicer(j);
@@ -67,10 +70,10 @@ for j = 1:numel(hslicer)
     surf(xs,ys,zs,h.CData,'EdgeColor','none','FaceColor','Interp');
 end
 delete(hslicer);
+hold off
+
 axis([-1 1 -1 1 -1 1])
 daspect([1 1 1])
-
-hold off
 
 camlight;
 lighting phong;
