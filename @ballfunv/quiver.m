@@ -43,10 +43,8 @@ for i = 1:m
         lam_i = trigpts(Nlam)*pi;
         
         % Get the values of the vector field at these points
-        vals = feval(v,r(i),lam_i,th_i(k));
-        VX = vals(:,:,:,1);
-        VY = vals(:,:,:,2);
-        VZ = vals(:,:,:,3);
+        [VX, VY, VZ] = fevalm(v,r(i),lam_i,th_i(k));
+        
         Vxx = [Vxx;VX(1,:,1).'];
         Vyy = [Vyy;VY(1,:,1).'];
         Vzz = [Vzz;VZ(1,:,1).'];
