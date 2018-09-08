@@ -20,9 +20,13 @@ else
     end
     % Normalize the solid harmonic so that its two-norm over the ball is 1
     Plm = Plm/sqrt(2*l+1);
+    
     % Compute the chebyshev coefficients of r^l
-    monomial = chebfun(@(r)r.^l,l+1);
-    monomial = monomial.coeffs;
+    r = chebpts(l+1);
+    monomial = r.^l;
+    monomial = chebtech2.vals2coeffs(monomial);
+    
+    % Return the Spherical Harmonic Y^m_l
     F = zeros(S);
     F(:,abs(m)+m+1,:) = reshape(monomial*Plm.',l+1,1,2*l+1);
     f = ballfun(F,'coeffs');
