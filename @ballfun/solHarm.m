@@ -1,4 +1,4 @@
-function f = solHarm(l,m)
+function f = solharm(l,m)
 % SOLHARM Complex-valued, solid harmonic of degree L, order M.
 %
 %   Y = SPHHARM(L, M) returns the degree L, order M real-valued 
@@ -19,7 +19,8 @@ else
        Plm = (-1)^m*Plm; 
     end
     % Normalize the solid harmonic so that its two-norm over the ball is 1
-    Plm = Plm/sqrt(2*l+1);
+    % This is the normalization constant so that the integral of r^l is 1
+    Plm = Plm*sqrt(2*l+3);
     
     % Compute the chebyshev coefficients of r^l
     r = chebpts(l+1);
@@ -45,31 +46,34 @@ function Pold = normalized_legendre(l_max,m_max)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%% Below is the implementation the Modified Forward Column (MFC) method 
+% described in the Holmes and Featherstones paper (2002)
+% It computes P^m_n/u^m by a stable recurrence to avoid numerical errors
+% near the poles
+
 % Discretization number of the polynomial
 p = 2*l_max+1;
 
 % Interpolation points
 th = trigpts(p)*pi;
 
-%% Compute P_m_max^m_max
+%% Compute P_m_max^m_max / u^m_max
 for m = 0:m_max
     if ( m == 0 )
         Pmm = ones(p, 1);
     elseif ( m == 1)
-        Pmm = sqrt(3)*sin(th).*Pmm;
+        Pmm = sqrt(3)*Pmm;
     else
         % Compute Pm^m with Pm-1^m-1
-        Pmm = sqrt((2*m+1)/(2*m))*sin(th).*Pmm;
+        Pmm = sqrt((2*m+1)/(2*m))*Pmm;
     end
 end
-
-%% Compute P_m_max^l_max using the Holmes and Featherstone (2002) reference
 
 % Initialize the recurrence (Pm^m-1 does not exist)
 Poldold = zeros(p, 1);
 Pold = Pmm;
 
-% Compute P^m_l with the recurrence formula, m_max+1 <= l <= l_max
+%% Compute P^m_l with the recurrence formula, m_max+1 <= l <= l_max
 for l = m_max+1:l_max
     anm = sqrt((4*l^2-1)/((l-m_max)*(l+m_max)));
     bnm = sqrt((2*l+1)*(l+m_max-1)*(l-m_max-1)/((l-m_max)*(l+m_max)*(2*l-3)));
@@ -83,7 +87,7 @@ end
 
 % Normalize the polynomial and recover associated Legendre polynomials
 % Divide by sqrt(2) if m_max > 0
-Pold = (-1)^m*Pold/sqrt(4*pi*(1+(m>0)));
+Pold = (-1)^m*sin(th).^m.*Pold/sqrt(4*pi*(1+(m>0)));
 
 % FFT to recover the coefficients
 Pold = trigtech.vals2coeffs(Pold);

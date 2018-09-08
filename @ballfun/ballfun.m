@@ -35,13 +35,11 @@ classdef ballfun
         CFS = vals2coeffs(VALS);
         
         % Compute the solid harmonics
-        f = solHarm(l,m);
+        f = solharm(l,m);
         
         % Project onto BMC-III symmetry
         G = projectOntoBMCIII(F);
-        
-        Pold = normalized_legendre(l_max,m_max)
-        
+                
     end
     
     methods ( Access = private, Static = true )
