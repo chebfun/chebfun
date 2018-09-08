@@ -30,6 +30,7 @@ end
 
 end
 
+
 function Pold = normalized_legendre(l_max,m_max)
 %NORMALIZED_LEGENDRE   Generate the fully normalized associated Legendre
 % polynomials P^m_max_l_max
@@ -40,23 +41,21 @@ function Pold = normalized_legendre(l_max,m_max)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Discretization number of the polynomials
+% Discretization number of the polynomial
 p = 2*l_max+1;
 
-% Define useful matrices
-Msin = trigspec.multmat(p, [0.5i;0;-0.5i] );
-Mcos = trigspec.multmat(p, [0.5;0;0.5] );
+% Interpolation points
+th = trigpts(p)*pi;
 
 %% Compute P_m_max^m_max
 for m = 0:m_max
     if ( m == 0 )
-        Pmm = zeros(p, 1);
-        Pmm( floor(p/2)+1 ) = 1;
+        Pmm = ones(p, 1);
     elseif ( m == 1)
-        Pmm = sqrt(3)*Msin*Pmm;
+        Pmm = sqrt(3)*sin(th).*Pmm;
     else
         % Compute Pm^m with Pm-1^m-1
-        Pmm = sqrt((2*m+1)/(2*m))*Msin*Pmm;
+        Pmm = sqrt((2*m+1)/(2*m))*sin(th).*Pmm;
     end
 end
 
@@ -71,7 +70,7 @@ for l = m_max+1:l_max
     anm = sqrt((4*l^2-1)/((l-m_max)*(l+m_max)));
     bnm = sqrt((2*l+1)*(l+m_max-1)*(l-m_max-1)/((l-m_max)*(l+m_max)*(2*l-3)));
     % Compute the normalized associated legendre polynomial
-    Pl = anm*Mcos*Pold - bnm*Poldold;
+    Pl = anm*cos(th).*Pold - bnm*Poldold;
 
     % Update the polynomials for the recurrence
     Poldold = Pold;
@@ -81,4 +80,7 @@ end
 % Normalize the polynomial and recover associated Legendre polynomials
 % Divide by sqrt(2) if m_max > 0
 Pold = (-1)^m*Pold/sqrt(4*pi*(1+(m>0)));
+
+% FFT to recover the coefficients
+Pold = trigtech.vals2coeffs(Pold);
 end
