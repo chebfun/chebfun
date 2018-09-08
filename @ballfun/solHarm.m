@@ -55,7 +55,9 @@ function Pold = normalized_legendre(l_max,m_max)
 p = 2*l_max+1;
 
 % Interpolation points
-th = trigpts(p)*pi;
+th = pi*trigpts(p);
+% Precompute the cos(th)
+CosTh = cos(th);
 
 %% Compute P_m_max^m_max / u^m_max
 for m = 0:m_max
@@ -78,7 +80,7 @@ for l = m_max+1:l_max
     anm = sqrt((4*l^2-1)/((l-m_max)*(l+m_max)));
     bnm = sqrt((2*l+1)*(l+m_max-1)*(l-m_max-1)/((l-m_max)*(l+m_max)*(2*l-3)));
     % Compute the normalized associated legendre polynomial
-    Pl = anm*cos(th).*Pold - bnm*Poldold;
+    Pl = anm*CosTh.*Pold - bnm*Poldold;
 
     % Update the polynomials for the recurrence
     Poldold = Pold;
