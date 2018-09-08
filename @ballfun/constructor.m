@@ -172,7 +172,7 @@ if ( isCoeffs )
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
-if ( ~isVectorized && ~isnumeric(op) ) % another check
+if ( ~isVectorized && ~isnumeric(op) && ~isCoeffs) % another check
     [isVectorized, op] = vectorCheck(op);
 end
 

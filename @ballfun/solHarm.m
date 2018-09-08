@@ -1,5 +1,5 @@
 function f = solharm(l,m)
-% SOLHARM Complex-valued, solid harmonic of degree L, order M.
+% SOLHARM Complex-valued, solid harmonic of degree L and order M.
 %
 %   Y = SPHHARM(L, M) returns the degree L, order M real-valued 
 %   solid harmonic on the ball.  Y is normalized so that its two-norm
