@@ -1,9 +1,9 @@
 function f = solharm(l,m)
 % SOLHARM Complex-valued, solid harmonic of degree L and order M.
 %
-%   Y = SPHHARM(L, M) returns the degree L, order M real-valued 
-%   solid harmonic on the ball.  Y is normalized so that its two-norm
-%   over the sphere is 1.
+%   F = SOLHARM(L, M) returns the degree L, order M real-valued 
+%   solid harmonic on the ball.  f is normalized so that its two-norm
+%   over the sphere is 1 : f = sqrt(2*l+3)*r^l^Y^m_l. 
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -56,30 +56,28 @@ p = 2*l_max+1;
 
 % Interpolation points
 th = pi*trigpts(p);
-% Precompute the cos(th)
+% Precompute vector cos(th)
 CosTh = cos(th);
 
 %% Compute P_m_max^m_max / u^m_max
-for m = 0:m_max
-    if ( m == 0 )
-        Pmm = ones(p, 1);
-    elseif ( m == 1)
-        Pmm = sqrt(3)*Pmm;
-    else
-        % Compute Pm^m with Pm-1^m-1
-        Pmm = sqrt((2*m+1)/(2*m))*Pmm;
-    end
+
+% Initialize P^0_0 / u^0
+Pold = ones(p, 1);
+
+% Compute P^m_m/u^m
+for m = 1:m_max
+    % Compute Pm^m with Pm-1^m-1
+    Pold = sqrt((2*m+1)/(2*m-(m==1)))*Pold;
 end
 
 % Initialize the recurrence (Pm^m-1 does not exist)
 Poldold = zeros(p, 1);
-Pold = Pmm;
 
-%% Compute P^m_l with the recurrence formula, m_max+1 <= l <= l_max
+%% Compute P^m_l / u^m with the recurrence formula, m_max+1 <= l <= l_max
 for l = m_max+1:l_max
     anm = sqrt((4*l^2-1)/((l-m_max)*(l+m_max)));
     bnm = sqrt((2*l+1)*(l+m_max-1)*(l-m_max-1)/((l-m_max)*(l+m_max)*(2*l-3)));
-    % Compute the normalized associated legendre polynomial
+    % Compute the normalized associated legendre polynomial P^m_l/u^m
     Pl = anm*CosTh.*Pold - bnm*Poldold;
 
     % Update the polynomials for the recurrence
@@ -89,7 +87,7 @@ end
 
 % Normalize the polynomial and recover associated Legendre polynomials
 % Divide by sqrt(2) if m_max > 0
-Pold = (-1)^m*sin(th).^m.*Pold/sqrt(4*pi*(1+(m>0)));
+Pold = (-1)^m_max*sin(th).^m_max.*Pold/sqrt(4*pi*(1+(m_max>0)));
 
 % FFT to recover the coefficients
 Pold = trigtech.vals2coeffs(Pold);
