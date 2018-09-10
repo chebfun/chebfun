@@ -1,4 +1,4 @@
-function Y = sphharm(l,m)
+function Y = sphharm(l, m)
 %SPHHARM   Real-valued, spherical harmonic of degree L, order M.
 %
 %   Y = SPHHARM(L, M) returns the degree L, order M real-valued 
