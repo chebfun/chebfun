@@ -5,33 +5,33 @@ function f = solharm(l,m)
 %   solid harmonic on the ball.  f is normalized so that its two-norm
 %   over the sphere is 1 : f = sqrt(2*l+3)*r^l^Y^m_l. 
 
-% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( l < abs(m) )
     error('CHEBFUN:BALLFUN:solHarm', 'Degree must be >= order for solid harmonic ');
-else
-    % abs(m) <= l
-    % Compute P^abs(m)_l 
-    S = [l+1,2*abs(m)+1,2*l+1];
-    Plm = normalized_legendre(l,abs(m));
-    if m < 0
-       Plm = (-1)^m*Plm; 
-    end
-    % Normalize the solid harmonic so that its two-norm over the ball is 1
-    % This is the normalization constant so that the integral of r^l is 1
-    Plm = Plm*sqrt(2*l+3);
-    
-    % Compute the chebyshev coefficients of r^l
-    r = chebpts(l+1);
-    monomial = r.^l;
-    monomial = chebtech2.vals2coeffs(monomial);
-    
-    % Return the Spherical Harmonic Y^m_l
-    F = zeros(S);
-    F(:,abs(m)+m+1,:) = reshape(monomial*Plm.',l+1,1,2*l+1);
-    f = ballfun(F,'coeffs');
 end
+
+% abs(m) <= l
+% Compute P^abs(m)_l 
+S = [l+1,2*abs(m)+1,2*l+1];
+Plm = normalized_legendre(l,abs(m));
+if m < 0
+   Plm = (-1)^m*Plm; 
+end
+% Normalize the solid harmonic so that its two-norm over the ball is 1
+% This is the normalization constant so that the integral of r^l is 1
+Plm = Plm*sqrt(2*l+3);
+
+% Compute the chebyshev coefficients of r^l
+r = chebpts(l+1);
+monomial = r.^l;
+monomial = chebtech2.vals2coeffs(monomial);
+
+% Return the Spherical Harmonic Y^m_l
+F = zeros(S);
+F(:,abs(m)+m+1,:) = reshape(monomial*Plm.',l+1,1,2*l+1);
+f = ballfun(F,'coeffs');
 
 end
 

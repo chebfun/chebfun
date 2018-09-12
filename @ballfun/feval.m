@@ -33,40 +33,40 @@ if ( isnumeric(R) && isnumeric( Lam ) && isnumeric( Th ) )
             
             % Test 2:
             R_ndgrid = reshape(repmat(R(:,1,1),n*p,1),m,n,p);
-            Lam_ndgrid = kron(reshape(Lam(1,1,:),n,1),ones(m*p,1));
-            Th_ndgrid = repmat(kron(reshape(Th(1,:,1),p,1),ones(m,1)),n,1);
+            Lam_ndgrid = kron(reshape(Lam(1,1,:),p,1),ones(m*n,1));
+            Th_ndgrid = repmat(kron(reshape(Th(1,:,1),n,1),ones(m,1)),p,1);
             ndgrid_test2 = ( norm( R(:) - R_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Lam(:) - Lam_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Th(:) - Th_ndgrid(:), inf) == 0 );
             
             % Test 3:
-            R_ndgrid = repmat(kron(reshape(R(1,:,1),m,1),ones(p,1)),n,1);
-            Lam_ndgrid = kron(reshape(Lam(1,1,:),n,1),ones(m*p,1));
-            Th_ndgrid = reshape(repmat(Th(:,1,1),m*n,1),m,n,p);
+            R_ndgrid = repmat(kron(reshape(R(1,:,1),n,1),ones(m,1)),p,1);
+            Lam_ndgrid = kron(reshape(Lam(1,1,:),p,1),ones(m*n,1));
+            Th_ndgrid = reshape(repmat(Th(:,1,1),n*p,1),m,n,p);
             ndgrid_test3 = ( norm( R(:) - R_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Lam(:) - Lam_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Th(:) - Th_ndgrid(:), inf) == 0 );
             
             % Test 4:
-            R_ndgrid = repmat(kron(reshape(R(1,:,1),m,1),ones(n,1)),p,1);
-            Th_ndgrid = kron(reshape(Th(1,1,:),p,1),ones(n*m,1));
-            Lam_ndgrid = reshape(repmat(Lam(:,1,1),m*p,1),m,n,p);
+            R_ndgrid = repmat(kron(reshape(R(1,:,1),n,1),ones(m,1)),p,1);
+            Th_ndgrid = kron(reshape(Th(1,1,:),p,1),ones(m*n,1));
+            Lam_ndgrid = reshape(repmat(Lam(:,1,1),n*p,1),m,n,p);
             ndgrid_test4 = ( norm( R(:) - R_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Lam(:) - Lam_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Th(:) - Th_ndgrid(:), inf) == 0 );
             
             % Test 5:
-            R_ndgrid = kron(reshape(R(1,1,:),m,1),ones(n*p,1));
-            Th_ndgrid = repmat(kron(reshape(Th(1,:,1),p,1),ones(n,1)),m,1);
-            Lam_ndgrid = reshape(repmat(Lam(:,1,1),m*p,1),m,n,p);
+            R_ndgrid = kron(reshape(R(1,1,:),p,1),ones(m*n,1));
+            Th_ndgrid = repmat(kron(reshape(Th(1,:,1),n,1),ones(m,1)),p,1);
+            Lam_ndgrid = reshape(repmat(Lam(:,1,1),n*p,1),m,n,p);
             ndgrid_test5 = ( norm( R(:) - R_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Lam(:) - Lam_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Th(:) - Th_ndgrid(:), inf) == 0 );
             
             % Test 6:
-            R_ndgrid = kron(reshape(R(1,1,:),m,1),ones(n*p,1));
-            Lam_ndgrid = repmat(kron(reshape(Lam(1,:,1),n,1),ones(p,1)),m,1);
-            Th_ndgrid = reshape(repmat(Th(:,1,1),m*n,1),m,n,p);
+            R_ndgrid = kron(reshape(R(1,1,:),p,1),ones(m*n,1));
+            Lam_ndgrid = repmat(kron(reshape(Lam(1,:,1),n,1),ones(m,1)),p,1);
+            Th_ndgrid = reshape(repmat(Th(:,1,1),n*p,1),m,n,p);
             ndgrid_test6 = ( norm( R(:) - R_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Lam(:) - Lam_ndgrid(:), inf) == 0 ) && ...
                 ( norm( Th(:) - Th_ndgrid(:), inf) == 0 );
@@ -80,31 +80,31 @@ if ( isnumeric(R) && isnumeric( Lam ) && isnumeric( Th ) )
             elseif ( ndgrid_test2 )
                 
                 % [R, Th, Lam] = ndgrid( r, th, lam): 
-                out = fevalm(f, R(:,1,1), reshape(Lam(1,1,:),n,1), reshape(Th(1,:,1),p,1));
+                out = fevalm(f, R(:,1,1), reshape(Lam(1,1,:),p,1), reshape(Th(1,:,1),n,1));
                 out = permute( out, [1 3 2]);
                 
             elseif ( ndgrid_test3 )
                 
                 % [Th, R, Lam] = ndgrid( th, r, lam):
-                out = fevalm(f, reshape(R(1,:,1),m,1), reshape(Lam(1,1,:),n,1), Th(:,1,1));
+                out = fevalm(f, reshape(R(1,:,1),n,1), reshape(Lam(1,1,:),p,1), Th(:,1,1));
                 out = permute( out, [3 1 2]);
                 
             elseif ( ndgrid_test4 )
                 
                 % [Lam, R, Th] = ndgrid( lam, r, th);
-                out = fevalm(f, reshape(R(1,:,1),m,1), Lam(:,1,1), reshape(Th(1,1,:),p,1));
+                out = fevalm(f, reshape(R(1,:,1),n,1), Lam(:,1,1), reshape(Th(1,1,:),p,1));
                 out = permute( out, [2 1 3]);
                 
             elseif ( ndgrid_test5 )
                 
                 % [Lam, Th, R] = ndgrid( lam, th, r);
-                out = fevalm(f, reshape(R(1,1,:),m,1), Lam(:,1,1), reshape(Th(1,:,1),p,1));
+                out = fevalm(f, reshape(R(1,1,:),p,1), Lam(:,1,1), reshape(Th(1,:,1),n,1));
                 out = permute( out, [2 3 1]);
                 
             elseif ( ndgrid_test6 )
                 
                 % [Th, Lam, R] = ndgrid( th, lam, r);
-                out = fevalm(f, reshape(R(1,1,:),m,1), reshape(Lam(1,:,1),n,1), Th(:,1,1));
+                out = fevalm(f, reshape(R(1,1,:),p,1), reshape(Lam(1,:,1),n,1), Th(:,1,1));
                 out = permute( out, [3 2 1]);
                 
             else

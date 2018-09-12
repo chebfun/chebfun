@@ -48,14 +48,12 @@ pass(4) = max((abs(F(:)-exact(:)))) < tol;
 %% EXTRACT_SPHEREFUN EXAMPLES: 
 % Example 1
 f = ballfun(@(r,lam,th)cos(lam).*sin(th),S);
-%g = extract_spherefun(f);
 g = f(1,:,:);
 h = spherefun(@(lam,th)cos(lam).*sin(th));
 pass(5) = norm( g - h ) < tol;
 
 % Example 2
 f = ballfun(@(r,lam,th)r,[20,21,22]);
-%g = extract_spherefun(f, 0.5);
 g = f(.5,:,:);
 h = spherefun(@(lam,th)0.5);
 pass(6) = norm( g - h ) < tol;

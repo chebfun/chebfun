@@ -10,7 +10,7 @@ tol = 1e4*pref.techPrefs.chebfuneps;
 f = ballfun(@(r,lam,th)1);
 ff = sum2(f,2,3);
 g = chebfun(@(r)4*pi*r.^2);
-pass(1) =norm( ff - g ) <tol;
+pass(1) = norm( ff - g ) <tol;
 
 % Example 2
 f = ballfun(@(r,lam,th)cos(lam));
