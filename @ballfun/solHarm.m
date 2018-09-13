@@ -24,7 +24,7 @@ end
 Plm = Plm*sqrt(2*l+3);
 
 % Compute the chebyshev coefficients of r^l
-r = chebpts(l+1);
+r = chebpts(l+1, [-1 1]);
 monomial = r.^l;
 monomial = chebtech2.vals2coeffs(monomial);
 
@@ -56,6 +56,7 @@ p = 2*l_max+1;
 
 % Interpolation points
 th = pi*trigpts(p);
+
 % Precompute vector cos(th)
 CosTh = cos(th);
 
