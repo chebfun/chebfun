@@ -22,8 +22,7 @@ if ( isnumeric(R) && isnumeric( Lam ) && isnumeric( Th ) )
             % fast way to evaluate a BALLFUN. Check for this property.
             [m, n, p] = size(R);
             % This is the most common ndgrid input to BALLFUN, but not the only
-            % one. TODO: Add the six different types of ndgrid inputs:
-            % Test 1:
+            % one.
             R_ndgrid = reshape(repmat(R(:,1,1),n*p,1),m,n,p);
             Lam_ndgrid = repmat(kron(reshape(Lam(1,:,1),n,1),ones(m,1)),p,1);
             Th_ndgrid = kron(reshape(Th(1,1,:),p,1),ones(m*n,1));
