@@ -36,9 +36,6 @@ classdef ballfun
         
         % Compute the solid harmonics
         f = solharm(l,m);
-        
-        % Project onto BMC-III symmetry
-        G = projectOntoBMCIII(F);
                 
     end
     

@@ -5,6 +5,12 @@ function f = randnfun3(varargin)
 %   and standard normal distribution N(0,1) at each point.  F is obtained
 %   by calling RANDNFUN3(T, 'trig') on a domain of dimensions about 20%
 %   greater and restricting the result to [-1,1,-1,1,-1,1].    
+%
+% See also RANDNFUN, RANDNFUN2.
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 
 [lambda, dom, trig] = parseInputs(varargin{:});
 
@@ -18,7 +24,9 @@ if trig    % periodic case: random bivariate Fourier series
     p2 = 2*p+1;
     c = randn(n2, m2, p2) + 1i*randn(n2, m2, p2);   % random coefficients on a cube
     [x,y,z] = ndgrid(-m:m,-n:n,-p:p);
-    c = c.*((x/m).^2 + (y/n).^2 + (z/p).^2 <= 1);  % confine to a ball for isotropy
+    if ( m>0 && n>0 && p>0 )
+        c = c.*((x/m).^2 + (y/n).^2 + (z/p).^2 <= 1);  % confine to a ball for isotropy
+    end
     c = c/sqrt(nnz(c));                     % ensure var = 1 at each point
     f = chebfun3(c, dom, 'coeffs', 'trig');
     f = real(f);
