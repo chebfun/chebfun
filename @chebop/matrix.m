@@ -1,6 +1,13 @@
 function out = matrix(N, varargin)
-%   OUT = MATRIX(N, DIM) returns an DIM-point discretization of the linear
-%   operator N. If N is not linear an error is thrown. 
+%   OUT = MATRIX(N, DIM) returns an DIM by (DIM+D) discretization of the linear
+%   operator N, where D is the differential order of the operator. If N is not
+%   linear then an error is thrown. 
+%
+%   If the operator N has assigned boundary conditions then these are included
+%   in the discretization, increasing the number of rows. If the domain of N has
+%   breakpoints then DIM must be a vector specifying the discretization size on
+%   each interval. In this case, appropriate continuity constraints are included
+%   in the discretization, again increasing the number of rows accordingly.
 %
 %   OUT = MATRIX(N, DIM, PREFS) allows additional preferences to be passed 
 %   via the CHEBOPPREF, PREFS.
@@ -39,6 +46,8 @@ end
 % Determine the discretization:
 prefs = determineDiscretization(N, L, prefs);
 
+% Derive continuity conditions in the case of breakpoints:
+L = deriveContinuity(L);
 
 % Call LINOP/FEVAL or LINOP/MATRIX:
 if ( (numel(varargin) > 1) && strcmpi(varargin{2}, 'oldschool') )
