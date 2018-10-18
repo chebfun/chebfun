@@ -17,7 +17,6 @@ E = functionalBlock.eval(dom);
 El = E(dom(1));
 Er = E(dom(end));
 
-
 %% Singular values of differential operator
 s_true = (5:-1:0)';
 L = linop(D);
@@ -32,7 +31,7 @@ L = linop(D^2);
 L = addbc(L,El,0);
 L = addbc(L,Er,0);
 [U,S,V] = svds(L, 6, 'bvp', pref);
-s = diag(S)
+s = diag(S);
 pass(3) = norm(s - s_true, inf) < max(s)*tol;
 pass(4) = norm(L*V-U*S) < max(s)*tol;
 
