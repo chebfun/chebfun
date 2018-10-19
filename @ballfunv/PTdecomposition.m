@@ -10,6 +10,11 @@ function varargout = PTdecomposition(v)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% This slows down the code a lot
+if norm(div(v)) > 1e-8
+    warning('CHEBFUN:BALLFUN:PTdecomposition: the vector is not divergence-free');
+end
+
 % Get the discretization : take the maximum over the components of v
 S = max(size(v),[],1);
 m = S(1)+1; n = S(2)+2; p = S(3)+6;
