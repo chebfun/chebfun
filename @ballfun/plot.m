@@ -57,7 +57,8 @@ ff(:,:,end+1) = ff(:,:,1);
 [tt, rr, ll] = meshgrid(th, r, lam);
 
 % Slices in the cylinder to plot
-rslice = rr(floor(m/4),1,1);
+% Plot the slice at r ~= 0.5
+rslice = rr(find(rr(:,1,1)>=.5,1),1,1);
 tslice = tt(1,[1,floor(p/4)+1],1);
 lslice = ll(1,1,[1,floor(n/4)+1]);
 
