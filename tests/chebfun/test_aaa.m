@@ -76,7 +76,7 @@ F = sin(X)./X;
 r = aaa(F,X);
 pass(18) = ( abs(r(2) - sin(2)/2) < 1e-3 );
 
-% A couple of tests of residues
+% A couple of tests of residues/intervalcleanup
 X = linspace(-1.337,2,537);
 [r,pol,res] = aaa(exp(X)./X, X);
 ii = find(abs(pol)<1e-8);
@@ -84,8 +84,9 @@ pass(19) = abs(res(ii)-1) < 1e-10;
 [r,pol,res] = aaa((1+1i)*gamma(X),X);
 ii = find(abs(pol-(-1))<1e-8);
 pass(20) = abs(res(ii)+(1+1i)) < 1e-10;
-
-
+X = linspace(-1,1,500); 
+[r, pol] = aaa(abs(X),X);
+pass(21) = isempty( find( isreal(pol) & pol<1 & pol>-1 ) );
 
 warning('on', 'CHEBFUN:aaa:Froissart');
 

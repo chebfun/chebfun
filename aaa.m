@@ -160,6 +160,7 @@ if ( cleanup_flag )
 end
 
 if ( isInterval(Z) )
+    % if working on interval, remove poles on interval 
     a = min(Z); b = max(Z);
     ind = imag(pol) == 0 & a <= pol & pol <= b;
     if any(abs(res(ind)) <= 1e-2 * median(abs(res)))
@@ -388,6 +389,6 @@ function flag = isInterval(Z)
       a = min(Z); b = max(Z);
       sZ = sort(Z);
       d = diff(sZ);
-      flag = d < 0.1 * (b - a);  % checks if Z is discretization of interval 
+      flag = max(d) < 0.1 * (b - a);  % checks if Z is discretization of interval 
     end
 end % End of ISINTERVAL()
