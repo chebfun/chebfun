@@ -23,5 +23,5 @@ else
           ['Undefined function ''mtimes'' for input arguments of type ' ...
            '%s and %s.'], class(f), class(g));
 end
-
+h = simplify(h);
 end
