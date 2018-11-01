@@ -8,5 +8,5 @@ function h = minus(f, g)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-h = simplify( f+(-g) );
+h = f + (-g);
 end
