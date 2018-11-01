@@ -22,14 +22,16 @@ function plot1(f)
 
 % Define the size of F: 
 [m,n,p] = size(f);
-% m, n and p are equal to 0 modulo 4 to avoid errors in the plot
-m = m + mod(4-mod(m,4),4);
-n = n + mod(4-mod(n,4),4);
-p = p + mod(4-mod(p,4),4);
+
 % m, n and p are greater than 28
 m = 28*(m < 28) + m;
 n = 28*(n < 28) + n;
 p = 28*(p < 28) + p;
+
+% Impose m = 1 [6] and n, p = 0 [4] to avoid errors in the plot
+m = m + mod(1-mod(m,6),6);
+n = n + mod(4-mod(n,4),4);
+p = p + mod(4-mod(p,4),4);
 
 % Get the coeffs of the ballfun function F(r,lam,th), lam is the
 % azimuthal variable in [-pi,pi] and theta the polar variable in [0,pi]
@@ -47,18 +49,21 @@ lam  = [pi*trigpts( n ); pi];
 th = [pi*trigpts( p );pi]-pi/2;
 
 % Remove doubled-up data
-r   = r(floor(m/2)+1:end);
+r = r(floor(m/2)+1:end);
 th = th(floor(p/2)+1:end);
+
 % Reverse theta : 1st element of the array is theta = pi (South Pole), last element is
 % th = 0 (not included) (North Pole)
 ff  = ff(floor(m/2)+1:end,[1 end:-1:floor(p/2)+1],:);
 ff(:,:,end+1) = ff(:,:,1);
 
+% Define the meshgrid
 [tt, rr, ll] = meshgrid(th, r, lam);
 
 % Slices in the cylinder to plot
-% Plot the slice at r ~= 0.5
-rslice = rr(find(rr(:,1,1)>=.5,1),1,1);
+% Find the indice of r = 0.5
+[~,idr]=min(abs(r-0.5));
+rslice = rr(idr,1,1);
 tslice = tt(1,[1,floor(p/4)+1],1);
 lslice = ll(1,1,[1,floor(n/4)+1]);
 
