@@ -11,7 +11,7 @@ function quiver(v,varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Number of points
-m = 50; n = 50; p = 50;
+m = 30; n = 30; p = 30;
 
 % Create the grid
 r = chebpts(m);
@@ -55,7 +55,7 @@ for i = 1:m
     end
 end
 
-q = quiver3(xx,yy,zz,real(Vxx),real(Vyy),real(Vzz), 'AutoScaleFactor',4);
+q = quiver3(xx,yy,zz,real(Vxx),real(Vyy),real(Vzz), 'AutoScaleFactor',3.5);
 
 % Color the vectors according to their magnitude
 if  nargin==1
