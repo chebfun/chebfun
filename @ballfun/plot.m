@@ -23,10 +23,10 @@ function plot1(f)
 % Define the size of F: 
 [m,n,p] = size(f);
 
-% m, n and p are greater than 28
-m = 28*(m < 28) + m;
-n = 28*(n < 28) + n;
-p = 28*(p < 28) + p;
+% m >= 25 and n, p >= 28
+m = 25*(m < 25) + m*(m >= 25);
+n = 28*(n < 28) + n*(n>=28);
+p = 28*(p < 28) + p*(p>=28);
 
 % Impose m = 1 [6] and n, p = 0 [4] to avoid errors in the plot
 m = m + mod(1-mod(m,6),6);
