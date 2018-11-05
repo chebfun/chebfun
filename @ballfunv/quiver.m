@@ -55,7 +55,7 @@ for i = 1:m
     end
 end
 
-q = quiver3(xx,yy,zz,real(Vxx),real(Vyy),real(Vzz), 'AutoScaleFactor',3.5);
+q = quiver3(xx,yy,zz,real(Vxx),real(Vyy),real(Vzz), 'AutoScaleFactor',4);
 
 % Color the vectors according to their magnitude
 if  nargin==1
@@ -65,10 +65,9 @@ if  nargin==1
             
     % Scale the colormap to data
     caxis([0,max(mags)]);
-    %colorbar;
             
     % Get the current colormap
-    currentColormap = colormap(jet);
+    currentColormap = colormap();
      
     % Now determine the color to make each arrow using a colormap
     % The colors scale to the axis of the colorbar

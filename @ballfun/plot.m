@@ -83,8 +83,6 @@ daspect([1 1 1])
 
 camlight;
 lighting phong;
-colormap(jet);
-%colorbar;
 
 % Add label
 xlabel('X')
@@ -122,41 +120,4 @@ plot1(f)
 colorbar
 
 set(gcf,'PaperPositionMode','auto','PaperPosition',[0 0 15 10])
-end
-
-
-function G = expand(F)
-
-S = size(F);
-% Avoid an issue if p = 1
-if length(S) == 2
-    S(3) = 1;
-end
-m = S(1); n = S(2); p = S(3);
-
-% Compute the new size of the tensor
-mExpand = m + mod(4-mod(m,4),4);
-nExpand = n + mod(4-mod(n,4),4);
-pExpand = p + mod(4-mod(p,4),4);
-mExpand = 28*(mExpand < 28) + mExpand;
-nExpand = 28*(nExpand < 28) + nExpand;
-pExpand = 28*(pExpand < 28) + pExpand;
-
-% Find the list of coefficients which corresponds to the coefficients of F
-% if mod(n,2) == 0
-%     ListLambda = 1+floor((nExpand-n)/2):n+floor((nExpand-n)/2);    
-% else
-%     ListLambda = 1+ceil((nExpand-n)/2):n+ceil((nExpand-n)/2); 
-% end
-% 
-% if mod(p,2) == 0
-%     ListTheta = 1+floor((pExpand-p)/2):p+floor((pExpand-p)/2);    
-% else
-%     ListTheta = 1+ceil((pExpand-p)/2):p+ceil((pExpand-p)/2); 
-% end
-
-% Return the expansion G of F
-G = zeros(mExpand, nExpand, pExpand);
-G(1:mf,floor(n/2)+1-floor(nf/2):floor(n/2)+nf-floor(nf/2),floor(p/2)+1-floor(pf/2):floor(p/2)+pf-floor(pf/2))
-G(1:m, ListLambda, ListTheta) = F;
 end
