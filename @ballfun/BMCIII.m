@@ -2,6 +2,9 @@ function F = BMCIII(f,m,n,p)
 % Take a function handle and a size and return the coefficients in the
 % CFF basis by evaluating it at only a fourth of the domain
 
+% Remove issues when f is constant
+f1 = @(r,lam,th) f(r,lam,th) + 0*r + 0*lam + 0*th;
+
 % Evaluation points
 r = chebpts(m);
 lam = [pi*trigpts(n); pi];
@@ -21,11 +24,11 @@ F = zeros(m,n,p);
 
 %% g
 % Evaluate at r(floor(m/2)+1:m), lam(1:floor(n/2)), th(floor((p+1)/2)+1:p+1)
-g = f(r(floor(m/2)+1:m), lam(1:floor((n+1)/2)), th(floor((p+1)/2)+1:p+1));
+g = reshape(f1(r(floor(m/2)+1:m), lam(1:floor((n+1)/2)), th(floor((p+1)/2)+1:p+1)),a,b,c);
 
 %% h
 % Evaluate at r(floor(m/2)+1:m), lam(floor(n/2)+1:n), th(floor((p+1)/2)+1:p+1)
-h = f(r(floor(m/2)+1:m), lam(floor((n+1)/2)+1:n+1), th(floor((p+1)/2)+1:p+1));
+h = reshape(f1(r(floor(m/2)+1:m), lam(floor((n+1)/2)+1:n+1), th(floor((p+1)/2)+1:p+1)),a,b,c);
 
 %% Flip g and h on the radial direction
 flip1g = flip(g(1+mod(m,2):end,:,:), 1);
