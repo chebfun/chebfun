@@ -36,6 +36,9 @@ classdef ballfun
         
         % Compute the solid harmonics
         f = solharm(l,m);
+        
+        % Compute BMCIII
+        F = BMCIII(f,m,n,p);
                 
     end
     
