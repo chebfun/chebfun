@@ -69,11 +69,11 @@ pass(6) = norm(F(:)-G(:)) < tol;
 % Example 7
 f = @(r,lam,th)r.*cos(th)+0*lam;
 m = 4; n = 4; p = 3;
-F = ballfun.vals2coeffs(ballfun.BMCIII(f,m,n,p));
+F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
 th = reshape(pi*trigpts(p),1,1,p);
-G = ballfun.vals2coeffs(f(r,lam,th));
+G = f(r,lam,th);
 pass(7) = norm(F(:)-G(:)) < tol;
 
 % Example 8
@@ -88,7 +88,7 @@ pass(8) = norm(F(:)-G(:)) < tol;
 
 % Example 9
 f = @(r,lam,th)r.*cos(th)+0*lam;
-m = 3; n = 6; p = 4;
+m = 4; n = 2; p = 5;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);

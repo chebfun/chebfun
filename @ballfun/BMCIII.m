@@ -41,15 +41,15 @@ F(floor(m/2)+1:m, 1:n/2+1, floor((p+1)/2)+1:p) = g(:,:,1:end-1);
 % [0,1] x [0,pi[ x [0,pi[
 F(floor(m/2)+1:m, n/2+1:n, floor((p+1)/2)+1:p) = h(:,1:end-1,1:end-1);
 % [-1,0[ x [-pi,0] x [0,pi[
-F(1:floor(m/2), 1:n/2+1, floor((p+1)/2)+1:p) = flip1h(:,:,1:end-1);
+F(1:floor(m/2), 1:n/2+1, floor((p+1)/2)+1:p) = flip(flip1h(:,:,2:end),3);
 % [-1,0[ x [0,pi[ x [0,pi[
-F(1:floor(m/2), n/2+1:n, floor((p+1)/2)+1:p) = flip1g(:,1:end-1,1:end-1);
+F(1:floor(m/2), n/2+1:n, floor((p+1)/2)+1:p) = flip(flip1g(:,1:end-1,2:end),3);
 % [0,1] x [-pi,0] x [-pi,0]
 F(floor(m/2)+1:m, 1:n/2+1, 1:floor((p+1)/2)) = flip(h(:,:,1+mod(p+1,2):end),3);
 % [0,1] x [0,pi[ x [-pi,0]
 F(floor(m/2)+1:m, n/2+1:n, 1:floor((p+1)/2)) = flip(g(:,1:end-1,1+mod(p+1,2):end),3);
 % [-1,0[ x [0,pi[ x [-pi,0]
-F(1:floor(m/2), n/2+1:n, 1:floor((p+1)/2)) = flip(flip1h(:,1:end-1,1+mod(p+1,2):end),3);
+F(1:floor(m/2), n/2+1:n, 1:floor((p+1)/2)) = flip1h(:,1:end-1,1:end-mod(p+1,2));
 % [-1,0[ x [-pi,0] x [-pi,0]
-F(1:floor(m/2), 1:n/2+1, 1:floor((p+1)/2)) = flip(flip1g(:,:,1+mod(p+1,2):end),3);
+F(1:floor(m/2), 1:n/2+1, 1:floor((p+1)/2)) = flip1g(:,:,1:end-mod(p+1,2));
 end
