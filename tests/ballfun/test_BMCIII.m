@@ -8,7 +8,7 @@ tol = 1e2*pref.techPrefs.chebfuneps;
 
 % Example 1
 f = @(r,lam,th)r.*cos(lam).*sin(th);
-m = 4; n = 4; p = 3;
+m = 3; n = 4; p = 4;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
@@ -18,7 +18,7 @@ pass(1) = norm(F(:)-G(:)) < tol;
 
 % Example 2
 f = @(r,lam,th)r.*cos(lam).*sin(th);
-m = 4; n = 4; p = 3;
+m = 5; n = 6; p = 8;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
@@ -28,7 +28,7 @@ pass(2) = norm(F(:)-G(:)) < tol;
 
 % Example 3
 f = @(r,lam,th)r.*cos(lam).*sin(th);
-m = 3; n = 6; p = 4;
+m = 3; n = 4; p = 6;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
@@ -38,7 +38,7 @@ pass(3) = norm(F(:)-G(:)) < tol;
 
 % Example 4
 f = @(r,lam,th)r.*sin(lam).*sin(th);
-m = 4; n = 4; p = 3;
+m = 3; n = 4; p = 4;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
@@ -48,7 +48,7 @@ pass(4) = norm(F(:)-G(:)) < tol;
 
 % Example 5
 f = @(r,lam,th)r.*sin(lam).*sin(th);
-m = 4; n = 4; p = 3;
+m = 5; n = 6; p = 8;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
@@ -58,7 +58,7 @@ pass(5) = norm(F(:)-G(:)) < tol;
 
 % Example 6
 f = @(r,lam,th)r.*sin(lam).*sin(th);
-m = 3; n = 6; p = 4;
+m = 3; n = 4; p = 6;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
@@ -68,7 +68,7 @@ pass(6) = norm(F(:)-G(:)) < tol;
 
 % Example 7
 f = @(r,lam,th)r.*cos(th)+0*lam;
-m = 4; n = 4; p = 3;
+m = 3; n = 4; p = 4;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
@@ -78,7 +78,7 @@ pass(7) = norm(F(:)-G(:)) < tol;
 
 % Example 8
 f = @(r,lam,th)r.*cos(th)+0*lam;
-m = 4; n = 4; p = 3;
+m = 5; n = 6; p = 8;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
@@ -88,7 +88,7 @@ pass(8) = norm(F(:)-G(:)) < tol;
 
 % Example 9
 f = @(r,lam,th)r.*cos(th)+0*lam;
-m = 4; n = 2; p = 5;
+m = 3; n = 4; p = 6;
 F = ballfun.BMCIII(f,m,n,p);
 r = reshape(chebpts(m),m,1,1);
 lam = reshape(pi*trigpts(n),1,n,1);
