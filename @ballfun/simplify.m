@@ -55,5 +55,4 @@ if ( resolved_t )
 end
 
 f.coeffs = cfs;
-
 end

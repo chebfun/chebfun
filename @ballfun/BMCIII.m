@@ -2,7 +2,7 @@ function F = BMCIII(f,m,n,p)
 % Take a function handle and a size and return the coefficients in the
 % CFF basis by evaluating it at only a fourth of the domain
 
-% Evaluation points
+% Evaluation points (assuming m odd, n even and p even > 4)
 r = reshape(chebpts(m),m,1,1);
 lam = reshape([pi*trigpts(n); pi],1,n+1,1);
 th = reshape([pi*trigpts(p); pi],1,1,p+1);
@@ -10,45 +10,33 @@ th = reshape([pi*trigpts(p); pi],1,1,p+1);
 % Array of coefficients
 F = zeros(m,n,p);
 
+% Add dependence on r, lambda and theta
 f1 = @(r,lam,th)f(r,lam,th) + 0*r + 0*lam + 0*th;
 
-% We assume m odd, n is even and p even > 4
-
-%% Chebyshev
-% m even : evaluate at half and then flip it
-% m odd : evaluate at floor(m/2)+1 and then flip floor(m/2)+1:m
-% -> Evalute at r(floor(m/2)+1:m) then flip r(floor(m/2)+1+mod(m,2):m)
-
-%% Fourier Theta
-% Evaluate at th(floor((p+1)/2)+1:p+1) then 
-% [flip(th(floor((p+1)/2)+1:p+1)) ; th(floor((p+1)/2)+1:p)]
-
-%% g
-% Evaluate at r(floor(m/2)+1:m), lam(1:n/2+1), th(floor((p+1)/2)+1:p+1)
+%% g : evaluation at [0,1] x [-pi,0] x [0,pi]
 g = f1(r(floor(m/2)+1:m), lam(1:n/2+1), th(p/2+1:p+1));
 
-%% h
-% Evaluate at r(floor(m/2)+1:m), lam(n/2+1:end), th(floor((p+1)/2)+1:p+1)
+%% h : evaluation at [0,1] x [0,pi] x [0,pi]
 h = f1(r(floor(m/2)+1:m), lam(n/2+1:end), th(p/2+1:p+1));
 
-%% Impose BMC-III Structure (We should change it do avoid counting lambda = 0 twice)
+%% Impose BMC-III Structure
 % f(0,:,:) = constant
+% Count lambda = pi only once
 % Compute the mean of f evaluated at r = 0
-m_zeroR = mean([mean(mean(g(1,:,:))), mean(mean(h(1,:,:)))]);
+m_zeroR = mean([mean(g(1,:,:),'all'), mean(h(1,2:end,:),'all')]);
 g(1,:,:) = m_zeroR;
 h(1,:,:) = m_zeroR;
 
 % f(r,:,0) = constant
-m_zeroT = mean([mean(g(:,:,1),2),mean(h(:,:,1),2)],2);
+m_zeroT = mean([mean(g(:,:,1),2),mean(h(:,2:end,1),2)],2);
 g(:,:,1) = repmat(m_zeroT,1,size(g,2));
 h(:,:,1) = repmat(m_zeroT,1,size(g,2));
 
 % f(r,:,pi) = constant
-m_piT = mean([mean(g(:,:,end),2),mean(h(:,:,end),2)],2);
+m_piT = mean([mean(g(:,:,end),2),mean(h(:,2:end,end),2)],2);
 g(:,:,end) = repmat(m_piT,1,size(g,2));
 h(:,:,end) = repmat(m_piT,1,size(g,2));
 
-%% Double in the radial and polar directions
 %% Flip g and h on the radial direction
 flip1g = flip(g(1+mod(m,2):end,:,:), 1);
 flip1h = flip(h(1+mod(m,2):end,:,:), 1);
