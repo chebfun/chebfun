@@ -35,5 +35,4 @@ h = ballfun( Fvals.*Gvals );
 
 % Finally simplify ballfun: 
 h = simplify( h ); 
-
 end

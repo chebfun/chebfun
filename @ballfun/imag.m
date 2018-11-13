@@ -7,8 +7,6 @@ function f = imag(f)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Compute the imaginary part of the values and return the corresponding array of
-% coefficients
 f.coeffs = ballfun.vals2coeffs( imag( ballfun.coeffs2vals( f.coeffs ) ) );
-
+f = simplify(f);
 end

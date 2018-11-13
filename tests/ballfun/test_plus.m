@@ -15,21 +15,21 @@ V2 = ballfun.coeffs2vals(g.coeffs);
 pass(1) = ( norm(V2(:)-2*V1(:),inf) < tol );
 
 % Example 2
-f = ballfun(@(r,lam,th)r.^2.*cos(th)+1,S);
+f = ballfun(@(x,y,z)x.^2.*cos(y)-1,'cart');
 g = f+1;
-exact = ballfun(@(r,lam,th)r.^2.*cos(th)+2,S);
+exact = ballfun(@(x,y,z)x.^2.*cos(y),'cart');
 pass(2) = norm( g - exact ) < tol;
 
 % Example 3
-f = ballfun(@(r,lam,th)r.*sin(th)+1,S);
+f = ballfun(@(x,y,z)y.*sin(z),'cart');
 g = 3+f;
-exact = ballfun(@(r,lam,th)r.*sin(th)+4,S);
+exact = ballfun(@(x,y,z)y.*sin(z)+3,'cart');
 pass(3) = norm( g - exact ) < tol;
 
 % Example 4
-f = ballfun(@(r,lam,th)r.*sin(th).^2.*cos(lam)+1,S);
+f = ballfun(@(x,y,z)x.*sin(z).^2.*cos(y),'cart');
 g = 3+f+2;
-exact = ballfun(@(r,lam,th)r.*sin(th).^2.*cos(lam)+6,S);
+exact = ballfun(@(x,y,z)x.*sin(z).^2.*cos(y)+5,'cart');
 pass(4) = norm( g - exact ) < tol;
 
 % Example 5

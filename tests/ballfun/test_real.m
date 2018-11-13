@@ -6,16 +6,14 @@ if ( nargin == 0 )
 end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
-S = [20,21,22];
-
 % Example 1
-f = real(ballfun(@(r,lam,th)exp(1i*lam),S));
-exact = ballfun(@(r,lam,th)cos(lam),S);
+f = real(ballfun(@(x,y,z)x+1i*y,'cart'));
+exact = ballfun(@(x,y,z)x,'cart');
 pass(1) = norm( f - exact ) < tol;
 
 % Example 2
-f = real(ballfun(@(r,lam,th)exp(1i*th.*lam),S));
-exact = ballfun(@(r,lam,th)cos(lam.*th),S);
+f = real(ballfun(@(x,y,z)sin(z)+1i*cos(y),'cart'));
+exact = ballfun(@(x,y,z)sin(z),'cart');
 pass(2) = norm( f - exact ) < tol;
 
 if (nargout > 0)

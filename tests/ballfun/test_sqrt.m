@@ -4,11 +4,11 @@ function pass = test_sqrt( pref )
 if ( nargin == 0 )
     pref = chebfunpref();
 end
-tol = 1e4*pref.techPrefs.chebfuneps; 
+tol = 1e7*pref.techPrefs.chebfuneps; 
 
 % Example 1
-f = sqrt(ballfun(@(r,lam,th)r.^2));
-exact = ballfun(@(r,lam,th)abs(r));
+f = sqrt(ballfun(@(x,y,z)x.^4,'cart'));
+exact = ballfun(@(x,y,z)x.^2,'cart');
 pass(1) = norm( f - exact ) < tol;
 
 if (nargout > 0)
