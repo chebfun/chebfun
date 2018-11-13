@@ -53,8 +53,8 @@ while ( ~isHappy && ~failure )
     
     % If the rank of the function is above maxRank then stop.
     if ( max([grid1*grid2, grid2*grid3, grid1*grid3]) > maxSample )
-        %warning('CHEBFUN:BALLFUN:constructor:dimensions', ...
-        %    'Not well-approximated by a Chebyshev-Fourier-Fourier expansion.');
+        warning('CHEBFUN:BALLFUN:constructor:dimensions', ...
+            'Not well-approximated by a Chebyshev-Fourier-Fourier expansion.');
         failure = 1;
     end
     
@@ -105,7 +105,7 @@ f.coeffs = ballfun.vals2coeffs(op);
 end
 
 
-function vals = evaluate(g, S, isVectorized)
+function vals = evaluate(op, S, isVectorized)
 %EVALUATE   Evaluate at a Cheb-Fourier-Fourier grid of size S.
 %  EVALUATE(g, S) returns the S(1)xS(2)xS(3) values of g at a
 %  Chebyshev-Fourier-Fourier grid for the function
@@ -116,32 +116,82 @@ m = S(1);
 n = S(2);
 p = S(3);
 
-% Build the grid of evaluation points
+% Evaluation points (assuming m odd, n even and p even > 4)
 r = chebpts(m);
-lam = pi*trigpts(n);
-th = pi*trigpts(p);
+lam = [pi*trigpts(n); pi];
+th = [pi*trigpts(p); pi];
 
-% [rr, ll, tt] = ndgrid(r, lam, th);
-% if ~isVectorized
-%     % Evaluate function handle at tensor grid:
-%     vals = feval(g, rr, ll, tt);
-% else
-%     % If vectorize flag is turned out, then FOR loop: 
-%     vals = zeros(size(rr)); 
-%     for i1 = 1:size(vals,1)
-%         for j1 = 1:size(vals,2)
-%             for k1 = 1:size(vals,3)
-%                 vals(i1,j1,k1) = g( rr(i1,j1,k1), ll(i1,j1,k1), tt(i1,j1,k1) ); 
-%             end
-%         end
-%     end
-% end
-% 
-% % Test if the function is constant
-% if size(vals) == 1
-%     vals = vals(1)*ones(S);
-% end
-vals = ballfun.BMCIII(g,m,n,p);
+% Array of coefficients
+vals = zeros(m,n,p);
+
+% Add dependence on r, lambda and theta
+f1 = @(r,lam,th)op(r,lam,th) + 0*r + 0*lam + 0*th;
+
+% Build the grid of evaluation points
+[rrg, llg, ttg] = ndgrid(r(floor(m/2)+1:m), lam(1:n/2+1), th(p/2+1:p+1));
+[rrh, llh, tth] = ndgrid(r(floor(m/2)+1:m), lam(n/2+1:end), th(p/2+1:p+1));
+
+if ~isVectorized
+    % g : evaluation at [0,1] x [-pi,0] x [0,pi]
+    g = feval(f1, rrg, llg, ttg);
+    % h : evaluation at [0,1] x [0,pi] x [0,pi]
+    h = feval(f1, rrh, llh, tth);
+else
+    % If vectorize flag is turned out, then FOR loop:
+    % g and h have the same size
+    g = zeros(size(rrg));
+    h = zeros(size(rrh)); 
+    for i1 = 1:size(g,1)
+        for j1 = 1:size(g,2)
+            for k1 = 1:size(g,3)
+                % g : evaluation at [0,1] x [-pi,0] x [0,pi]
+                g(i1,j1,k1) = f1( rrg(i1,j1,k1), llg(i1,j1,k1), ttg(i1,j1,k1) );
+                % h : evaluation at [0,1] x [0,pi] x [0,pi]
+                h(i1,j1,k1) = f1( rrh(i1,j1,k1), llh(i1,j1,k1), tth(i1,j1,k1) ); 
+            end
+        end
+    end
+end
+
+%% Impose BMC-III Structure
+% f(0,:,:) = constant
+% Count lambda = pi only once
+% Compute the mean of f evaluated at r = 0
+m_zeroR = mean([mean(g(1,:,:),'all'), mean(h(1,2:end,:),'all')]);
+g(1,:,:) = m_zeroR;
+h(1,:,:) = m_zeroR;
+
+% f(r,:,0) = constant
+m_zeroT = mean([mean(g(:,:,1),2),mean(h(:,2:end,1),2)],2);
+g(:,:,1) = repmat(m_zeroT,1,size(g,2));
+h(:,:,1) = repmat(m_zeroT,1,size(g,2));
+
+% f(r,:,pi) = constant
+m_piT = mean([mean(g(:,:,end),2),mean(h(:,2:end,end),2)],2);
+g(:,:,end) = repmat(m_piT,1,size(g,2));
+h(:,:,end) = repmat(m_piT,1,size(g,2));
+
+%% Flip g and h on the radial direction
+flip1g = flip(g(1+mod(m,2):end,:,:), 1);
+flip1h = flip(h(1+mod(m,2):end,:,:), 1);
+
+%% Fill in vals
+% [0,1] x [-pi,0] x [0,pi[
+vals(floor(m/2)+1:m, 1:n/2+1, floor((p+1)/2)+1:p) = g(:,:,1:end-1);
+% [0,1] x [0,pi[ x [0,pi[
+vals(floor(m/2)+1:m, n/2+1:n, floor((p+1)/2)+1:p) = h(:,1:end-1,1:end-1);
+% [-1,0[ x [-pi,0] x [0,pi[
+vals(1:floor(m/2), 1:n/2+1, floor((p+1)/2)+1:p) = flip(flip1h(:,:,2:end),3);
+% [-1,0[ x [0,pi[ x [0,pi[
+vals(1:floor(m/2), n/2+1:n, floor((p+1)/2)+1:p) = flip(flip1g(:,1:end-1,2:end),3);
+% [0,1] x [-pi,0] x [-pi,0]
+vals(floor(m/2)+1:m, 1:n/2+1, 1:floor((p+1)/2)) = flip(h(:,:,2:end),3);
+% [0,1] x [0,pi[ x [-pi,0]
+vals(floor(m/2)+1:m, n/2+1:n, 1:floor((p+1)/2)) = flip(g(:,1:end-1,2:end),3);
+% [-1,0[ x [0,pi[ x [-pi,0]
+vals(1:floor(m/2), n/2+1:n, 1:floor((p+1)/2)) = flip1h(:,1:end-1,1:end-1);
+% [-1,0[ x [-pi,0] x [-pi,0]
+vals(1:floor(m/2), 1:n/2+1, 1:floor((p+1)/2)) = flip1g(:,:,1:end-1);
 end
 
 %%

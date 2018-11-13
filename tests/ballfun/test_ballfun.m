@@ -44,6 +44,11 @@ f = ballfun(@(x,y,z)cos(x.*y.*z),'cart');
 g = ballfun(@(r,lam,th)cos(r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam).*r.*cos(th)));
 pass(7) = norm( f - g ) < tol;
 
+% Example 8
+f = ballfun(@(x,y,z)cos(x.*y.*z),'cart');
+g = ballfun(@(x,y,z)cos(x.*y.*z),'cart','vectorize');
+pass(8) = norm( f - g ) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end

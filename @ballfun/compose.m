@@ -17,6 +17,6 @@ else
 end    
 
 % Make BALLFUN object:
-f = ballfun( op, 'vectorize' );
+f = ballfun( op );
 end
     
