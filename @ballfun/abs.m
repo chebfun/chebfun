@@ -6,5 +6,4 @@ function g = abs( f )
 % See http://www.chebfun.org/ for Chebfun information.
 
 g = compose( f, @abs ); 
-
 end

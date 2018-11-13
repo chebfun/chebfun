@@ -31,22 +31,18 @@ f = ballfun(@(x,y,z)sin(x.*y.*z),'cart');
 exact = ballfun(@(r,lam,th)sin(r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam).*r.*cos(th)));
 pass(5) = norm( f - exact ) < tol;
 
-% Example 6 : (Test 'coeffs' flag.) 
+% Example 6 : (Test 'coeffs' flag.) with rcos(th)
 m = 10; n = 11; p = 12;
 F = zeros(m,n,p);
-F(1,floor(n/2),floor(p/2))=1/4;F(1,floor(n/2),floor(p/2)+2)=1/4;
-F(1,floor(n/2)+2,floor(p/2))=1/4;F(1,floor(n/2)+2,floor(p/2)+2)=1/4;
-F(2,floor(n/2),floor(p/2))=1/4;F(2,floor(n/2),floor(p/2)+2)=1/4;
-F(2,floor(n/2)+2,floor(p/2))=1/4;F(2,floor(n/2)+2,floor(p/2)+2)=1/4;
+F(2,floor(n/2)+1,floor(p/2))=1/2;F(2,floor(n/2)+1,floor(p/2)+2)=1/2;
 f = ballfun(F, 'coeffs');
-g = ballfun(@(r,lam,th)(r+1).*cos(lam).*cos(th));
-pass(6) = norm( f - g ) < 2*tol;
+g = ballfun(@(r,lam,th)r.*cos(th));
+pass(6) = norm( f - g ) < tol;
 
 % Example 7 :
-f = ballfun(@(x,y,z)x.*y.*z,'cart');
-g = ballfun(@(x,y,z)x.*y.*z,'cart',[50,50,50]);
+f = ballfun(@(x,y,z)cos(x.*y.*z),'cart');
+g = ballfun(@(r,lam,th)cos(r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam).*r.*cos(th)));
 pass(7) = norm( f - g ) < tol;
-
 
 if (nargout > 0)
     pass = all(pass(:));

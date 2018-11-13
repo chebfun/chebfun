@@ -7,8 +7,8 @@ end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = exp(ballfun(@(r,lam,th)r));
-exact = ballfun(@(r,lam,th)exp(r));
+f = exp(ballfun(@(x,y,z)z,'cart'));
+exact = ballfun(@(x,y,z)exp(z),'cart');
 pass(1) = norm( f - exact ) < tol;
 
 if (nargout > 0)

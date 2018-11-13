@@ -14,7 +14,7 @@ F = zeros(m,n,p);
 f1 = @(r,lam,th)f(r,lam,th) + 0*r + 0*lam + 0*th;
 
 %% g : evaluation at [0,1] x [-pi,0] x [0,pi]
-g = f1(r(floor(m/2)+1:m), lam(1:n/2+1), th(p/2+1:p+1));
+g = feval(f1, r(floor(m/2)+1:m), lam(1:n/2+1), th(p/2+1:p+1));
 
 %% h : evaluation at [0,1] x [0,pi] x [0,pi]
 h = f1(r(floor(m/2)+1:m), lam(n/2+1:end), th(p/2+1:p+1));

@@ -19,6 +19,11 @@ tpref           = tech.techPref;
 grid1           = tpref.minSamples;
 grid2           = tpref.minSamples;
 grid3           = tpref.minSamples;
+% Ensure m is odd, n is even, p is even greater than 4
+grid1 = grid1 + 1 - mod(grid1,2);
+grid2 = grid2 + mod(grid2,2);
+grid3 = max(4, grid3 + mod(grid3,2));
+
 maxSample       = tpref.maxLength; % maxSample = max grid dimensions.
 
 if ( isa(op, 'ballfun') )     % BALLFUN( BALLFUN )
@@ -48,20 +53,44 @@ while ( ~isHappy && ~failure )
     
     % If the rank of the function is above maxRank then stop.
     if ( max([grid1*grid2, grid2*grid3, grid1*grid3]) > maxSample )
-        warning('CHEBFUN:BALLFUN:constructor:dimensions', ...
-            'Not well-approximated by a Chebyshev-Fourier-Fourier expansion.');
+        %warning('CHEBFUN:BALLFUN:constructor:dimensions', ...
+        %    'Not well-approximated by a Chebyshev-Fourier-Fourier expansion.');
         failure = 1;
     end
     
-    [grid1, grid2, grid3, cutoffs, isHappy] = ballfunHappiness( vals, pref );
+    [grid1, grid2, grid3, cutoffs, resolved] = ballfunHappiness( vals );
+    isHappy = all(resolved);
     
 end
 
-% Chop down to correct size: 
-vals = evaluate(op, cutoffs, isVectorized);
+% Evaluate at correct points for the BMC
+% Ensure m is odd, n is even, p is even greater than 4
+grid1 = cutoffs(1) + 1 - mod(cutoffs(1),2);
+grid2 = cutoffs(2) + mod(cutoffs(2),2);
+grid3 = max(4, cutoffs(3) + mod(cutoffs(3),2));
+vals = evaluate(op, [grid1,grid2,grid3], isVectorized);
+
+% Chop down to correct size: build from coeffs and then cut off
 
 % We are now happy so make a BALLFUN from its values: 
-f.coeffs = ballfun.vals2coeffs(vals);
+cfs = ballfun.vals2coeffs(vals);
+
+% Simplify: 
+if ( resolved(1) )
+    cfs = cfs(1:cutoffs(1), :, :); 
+end
+n = size(cfs,2); 
+mid = floor(n/2)+1;
+if ( resolved(2) )
+    cfs = cfs(:, mid-floor(cutoffs(2)/2):mid+cutoffs(2)-floor(cutoffs(2)/2)-1, :); 
+end
+p = size(cfs,3); 
+mid = floor(p/2)+1;
+if ( resolved(3) )
+    cfs = cfs(:, :, mid-floor(cutoffs(3)/2):mid+cutoffs(3)-floor(cutoffs(3)/2)-1); 
+end
+
+f.coeffs = cfs;
 end
 
 %%
@@ -92,27 +121,27 @@ r = chebpts(m);
 lam = pi*trigpts(n);
 th = pi*trigpts(p);
 
-[rr, ll, tt] = ndgrid(r, lam, th);
-if ~isVectorized
-    % Evaluate function handle at tensor grid:
-    vals = feval(g, rr, ll, tt);
-else
-    % If vectorize flag is turned out, then FOR loop: 
-    vals = zeros(size(rr)); 
-    for i1 = 1:size(vals,1)
-        for j1 = 1:size(vals,2)
-            for k1 = 1:size(vals,3)
-                vals(i1,j1,k1) = g( rr(i1,j1,k1), ll(i1,j1,k1), tt(i1,j1,k1) ); 
-            end
-        end
-    end
-end
-
-% Test if the function is constant
-if size(vals) == 1
-    vals = vals(1)*ones(S);
-end
-
+% [rr, ll, tt] = ndgrid(r, lam, th);
+% if ~isVectorized
+%     % Evaluate function handle at tensor grid:
+%     vals = feval(g, rr, ll, tt);
+% else
+%     % If vectorize flag is turned out, then FOR loop: 
+%     vals = zeros(size(rr)); 
+%     for i1 = 1:size(vals,1)
+%         for j1 = 1:size(vals,2)
+%             for k1 = 1:size(vals,3)
+%                 vals(i1,j1,k1) = g( rr(i1,j1,k1), ll(i1,j1,k1), tt(i1,j1,k1) ); 
+%             end
+%         end
+%     end
+% end
+% 
+% % Test if the function is constant
+% if size(vals) == 1
+%     vals = vals(1)*ones(S);
+% end
+vals = ballfun.BMCIII(g,m,n,p);
 end
 
 %%
@@ -147,12 +176,6 @@ end
 for k = 1:length(varargin)
     if strcmpi(varargin{k}, 'eps')
         pref.cheb3Prefs.chebfun3eps = varargin{k+1};
-    elseif ( isnumeric(varargin{k}) )
-        if ( numel(varargin{k}) == 3 ) % length is specified.
-            % Interpret this as the user wants a fixed degree ballfun.
-            S = varargin{k};
-            op = evaluate(op, S, isVectorized);
-        end
     elseif any(strcmpi(varargin{k}, {'vectorize', 'vectorise'}))
         isVectorized = true;
     elseif strcmpi(varargin{k}, 'coeffs')
@@ -179,7 +202,7 @@ end
 end
 
 %% 
-function [grid1, grid2, grid3, cutoffs,  isHappy] = ballfunHappiness( vals, pref )
+function [grid1, grid2, grid3, cutoffs, resolved] = ballfunHappiness( vals )
 % Check if the function has been resolved. 
     
     vscl = max(1, max( abs( vals(:) ) )); 
@@ -209,20 +232,22 @@ function [grid1, grid2, grid3, cutoffs,  isHappy] = ballfunHappiness( vals, pref
     [resolved_r, cutoff_r] = happinessCheck(rTech, [], rvals, rdata);
     [resolved_l, cutoff_l] = happinessCheck(lTech, [], lvals, ldata);
     [resolved_t, cutoff_t] = happinessCheck(tTech, [], tvals, tdata);
-
-    isHappy = resolved_r & resolved_l & resolved_t;
     
     [grid1, grid2, grid3] = size(vals);
     if ( ~resolved_r ) 
         grid1 = round( 1.5*size(vals,1) );
+        grid1 = grid1 + 1 - mod(grid1,2);
     end
     if ( ~resolved_l )
         grid2 = round( 1.5*size(vals,2) );
+        grid2 = grid2 + mod(grid2,2);
     end
     if ( ~resolved_t ) 
         grid3 = round( 1.5*size(vals,3) );
+        grid3 = max(4, grid3 + mod(grid3,2));
     end
     cutoffs = [cutoff_r, cutoff_l, cutoff_t];
+    resolved = [resolved_r, resolved_l, resolved_t];
 end
 
 %%
