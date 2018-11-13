@@ -7,29 +7,29 @@ end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = ballfun(@(r,lam,th)exp(1i*lam));
+f = ballfun(@(x,y,z)z,'cart');
 V = real(ballfunv(f,f,f));
-g = ballfun(@(r,lam,th)cos(lam));
+g = ballfun(@(x,y,z)z,'cart');
 exact = ballfunv(g,g,g);
-pass(1) = norm( V - exact ) < tol;
+pass(1) = norm(V-exact)<tol;
 
 % Example 2
-f = ballfun(@(r,lam,th)exp(1i*th.*lam));
+f = ballfun(@(x,y,z)y+1i*z,'cart');
 V = real(ballfunv(f,f,f));
-g = ballfun(@(r,lam,th)cos(lam.*th));
+g = ballfun(@(x,y,z)y,'cart');
 exact = ballfunv(g,g,g);
-pass(2) = norm( V - exact ) < tol;
+pass(2) = norm(V-exact)<tol;
 
 % Example 3
-f1 = ballfun(@(r,lam,th)exp(1i*lam));
-f2 = ballfun(@(r,lam,th)exp(1i*th));
-f3 = ballfun(@(r,lam,th)exp(1i*th.*lam));
+f1 = ballfun(@(x,y,z)x,'cart');
+f2 = ballfun(@(x,y,z)1i*z,'cart');
+f3 = ballfun(@(x,y,z)cos(y)+1i*sin(x),'cart');
 V = real(ballfunv(f1,f2,f3));
-g1 = ballfun(@(r,lam,th)cos(lam));
-g2 = ballfun(@(r,lam,th)cos(th));
-g3 = ballfun(@(r,lam,th)cos(lam.*th));
+g1 = ballfun(@(x,y,z)x,'cart');
+g2 = ballfun(@(x,y,z)0,'cart');
+g3 = ballfun(@(x,y,z)cos(y),'cart');
 exact = ballfunv(g1,g2,g3);
-pass(3) = norm( V - exact ) < tol;
+pass(3) = norm(V-exact)<tol;
 
 if (nargout > 0)
     pass = all(pass(:));
