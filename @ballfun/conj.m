@@ -5,5 +5,6 @@ function g = conj(f)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-g = real(f)-1i*imag(f);
+g = compose( f, @conj ); 
+
 end

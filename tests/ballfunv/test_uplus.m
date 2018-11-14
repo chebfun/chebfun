@@ -6,10 +6,9 @@ if ( nargin == 0 )
 end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
-% Test with function rand = +rand
-F1 = ballfun(@(x,y,z)sin(x),'cart');
-F2 = ballfun(@(x,y,z)cos(y),'cart');
-F3 = ballfun(@(x,y,z)z,'cart');
+F1 = ballfun(@(x,y,z)sin(x));
+F2 = ballfun(@(x,y,z)cos(y));
+F3 = ballfun(@(x,y,z)z);
 F = ballfunv(F1,F2,F3);
 G = +F;
 pass(1) = norm( F - G ) < tol;

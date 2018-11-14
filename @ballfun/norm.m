@@ -7,5 +7,13 @@ function nm = norm(f, varargin)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-nm = sqrt(abs(sum3(f.*conj(f))));
+% Do something faster for the test
+F = f.coeffs;
+Ref = real( ballfun.coeffs2vals( F ) );
+Imf = imag( ballfun.coeffs2vals( F ) );
+
+% g = f.*conj(f)
+g = f.*ballfun(Ref-Imf);
+
+nm = sqrt(abs(sum3(g)));
 end

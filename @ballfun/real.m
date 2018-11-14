@@ -1,4 +1,4 @@
-function f = real(f)
+function g = real(f)
 %REAL Real part of a BALLFUN function
 %   REAL(F) is the real part of the BALLFUN F.
 %
@@ -7,6 +7,6 @@ function f = real(f)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-f.coeffs = ballfun.vals2coeffs( real( ballfun.coeffs2vals( f.coeffs ) ) );
-f = simplify(f);
+g = compose( f, @real ); 
+
 end

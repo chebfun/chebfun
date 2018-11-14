@@ -6,15 +6,13 @@ if ( nargin == 0 )
 end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
-S = [23,41,37];
-
 % Example 1 : (x,y,z)
-Vx = ballfun(@(r,lam,th)r.*sin(th).*cos(lam),S);
-Vy = ballfun(@(r,lam,th)r.*sin(th).*sin(lam),S);
-Vz = ballfun(@(r,lam,th)r.*cos(th),S);
+Vx = ballfun(@(r,lam,th)r.*sin(th).*cos(lam), 'polar');
+Vy = ballfun(@(r,lam,th)r.*sin(th).*sin(lam), 'polar');
+Vz = ballfun(@(r,lam,th)r.*cos(th), 'polar');
 V = ballfunv(Vx,Vy,Vz);
 f = divergence(V);
-exact = ballfun(@(r,lam,th)3,S);
+exact = ballfun(@(r,lam,th)3, 'polar');
 pass(1) = norm(f-exact)<tol;
 
 if (nargout > 0)

@@ -6,7 +6,7 @@ if ( nargin == 0 )
 end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
-f = ballfun(@(x,y,z)cos(x.*y),'cart');
+f = ballfun(@(x,y,z)x.*y);
 Z = cheb.galleryballfun('zero');
 
 % Example 1:

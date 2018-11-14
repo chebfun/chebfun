@@ -6,7 +6,7 @@ if ( nargin == 0 )
 end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
-f = ballfun(@(r,lam,th)1);
+f = ballfun(@(r,lam,th)1, 'polar');
 zero = cheb.galleryballfun('zero');
 
 % Example 1:

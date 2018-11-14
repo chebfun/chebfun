@@ -15,17 +15,17 @@ g = ballfunv(f,f,f);
 pass(1) = 1;
 
 % Example 2
-v = ballfunv(@(x,y,z)x.*z,@(x,y,z)y,@(x,y,z)y.*x,'cart');
-vx = ballfun(@(x,y,z)x.*z,'cart');
-vy = ballfun(@(x,y,z)y,'cart');
-vz = ballfun(@(x,y,z)y.*x,'cart');
+v = ballfunv(@(x,y,z)x.*z,@(x,y,z)y,@(x,y,z)y.*x);
+vx = ballfun(@(x,y,z)x.*z);
+vy = ballfun(@(x,y,z)y);
+vz = ballfun(@(x,y,z)y.*x);
 w = ballfunv(vx,vy,vz);
 pass(2) = norm(v-w)<tol;
 
 % Example 3
-vx = ballfun(@(x,y,z)x.*z,'cart');
-vy = ballfun(@(x,y,z)y,'cart');
-vz = ballfun(@(x,y,z)y.*x,'cart');
+vx = ballfun(@(x,y,z)x.*z);
+vy = ballfun(@(x,y,z)y);
+vz = ballfun(@(x,y,z)y.*x);
 v = [vx;vy;vz];
 w = ballfunv(vx,vy,vz);
 pass(3) = norm(v-w)<tol;
