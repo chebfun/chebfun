@@ -41,6 +41,30 @@ D24old = [ ...
      ];
 err(4) = norm(matrix(D2, 4, 'oldschool') - D24old);
 
+%% Boundary conditions:
+D2 = chebop(@(u) diff(u, 2), [-1 1], 0);
+D2bc = [1 0 0 0 ; 0 0 0 1 ; D22];
+err(5) = norm(matrix(D2, 2) - D2bc);
+
+D24oldbc = [1 0 0 0 ; D24old(2:3,:) ; 0 0 0 1]; 
+err(6) = norm(matrix(D2, 4, 'oldschool') - D24oldbc);
+
+%% Continuity conditions:
+D2 = chebop(@(u) diff(u, 2), [-1 0 1]);
+D22cont = [0 0 0 1 -1 0 0 0 ;
+           -1 8/3 -8 19/3 19/3 -8 8/3 -1 ;
+           4*D22 0*D22 ; 
+           0*D22 4*D22];
+err(7) = norm(matrix(D2, [2 2]) - D22cont);
+
+D24oldcont = [0 0 0 1 -1 0 0 0 ;
+              4*D24old(2:4,:) zeros(3,4) ; 
+              zeros(3,4) 4*D24old(1:3,:) ; 
+              -1 8/3 -8 19/3 19/3 -8 8/3 -1];
+err(8) = norm(matrix(D2, [4 4], 'oldschool') - D24oldcont);        
+              
+%%
+
 pass = err < tol;
  
 end
