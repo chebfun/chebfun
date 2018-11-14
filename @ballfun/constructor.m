@@ -213,9 +213,10 @@ if ( isa(op, 'char') )     % CHEBFUN3( CHAR )
     op = str2op(op);
 end
 
-% Convert from cartesian to spherical, if required:
-for k = 1:length(varargin) 
-    if strcmpi(varargin{k}, 'cart')
+if ( isa(op, 'function_handle') )
+    % Check for polar coords
+    ispolar = any(find(strcmp(varargin,'polar'))) || any(find(strcmp(varargin,'spherical')));
+    if ( ~ispolar )
         x = @(r,lam,th)r.*sin(th).*cos(lam);
         y = @(r,lam,th)r.*sin(th).*sin(lam);
         z = @(r,lam,th)r.*cos(th);

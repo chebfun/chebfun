@@ -7,18 +7,18 @@ end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = log(ballfun(@(r,lam,th)10));
-exact = ballfun(@(r,lam,th)log(10));
+f = log(ballfun(@(r,lam,th)10,'polar'));
+exact = ballfun(@(r,lam,th)log(10),'polar');
 pass(1) = norm( f - exact ) < tol;
 
 % Example 2
-f = log(ballfun(@(r,lam,th)exp(r)));
-exact = ballfun(@(r,lam,th)r);
+f = log(ballfun(@(x,y,z)exp(y)));
+exact = ballfun(@(x,y,z)y);
 pass(2) = norm( f - exact ) < tol;
 
 % Example 3
-f = log(ballfun(@(x,y,z)exp(x.*z),'cart'));
-exact = ballfun(@(x,y,z)x.*z,'cart');
+f = log(ballfun(@(x,y,z)exp(x.*z)));
+exact = ballfun(@(x,y,z)x.*z);
 pass(3) = norm( f - exact ) < tol;
 
 if (nargout > 0)

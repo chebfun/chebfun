@@ -6,7 +6,6 @@ if ( nargin == 0 )
 end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
-S = [19,20,21];
 % Example 1
 f = ballfun(ones(20,21,22));
 V1 = ballfun.coeffs2vals(f.coeffs);
@@ -15,21 +14,21 @@ V2 = ballfun.coeffs2vals(g.coeffs);
 pass(1) = ( norm(V2(:)-2*V1(:),inf) < tol );
 
 % Example 2
-f = ballfun(@(x,y,z)x.^2.*cos(y)-1,'cart');
+f = ballfun(@(x,y,z)x.^2.*cos(y)-1);
 g = f+1;
-exact = ballfun(@(x,y,z)x.^2.*cos(y),'cart');
+exact = ballfun(@(x,y,z)x.^2.*cos(y));
 pass(2) = norm( g - exact ) < tol;
 
 % Example 3
-f = ballfun(@(x,y,z)y.*sin(z),'cart');
+f = ballfun(@(x,y,z)y.*sin(z));
 g = 3+f;
-exact = ballfun(@(x,y,z)y.*sin(z)+3,'cart');
+exact = ballfun(@(x,y,z)y.*sin(z)+3);
 pass(3) = norm( g - exact ) < tol;
 
 % Example 4
-f = ballfun(@(x,y,z)x.*sin(z).^2.*cos(y),'cart');
+f = ballfun(@(x,y,z)x.*sin(z).^2.*cos(y));
 g = 3+f+2;
-exact = ballfun(@(x,y,z)x.*sin(z).^2.*cos(y)+5,'cart');
+exact = ballfun(@(x,y,z)x.*sin(z).^2.*cos(y)+5);
 pass(4) = norm( g - exact ) < tol;
 
 % Example 5

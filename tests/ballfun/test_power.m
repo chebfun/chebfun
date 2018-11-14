@@ -7,9 +7,9 @@ end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Test with function r*cos(lam)*sin(th) to the power 5
-f = ballfun(@(r,lam,th)r.*cos(lam).*sin(th));
+f = ballfun(@(r,lam,th)r.*cos(lam).*sin(th), 'polar');
 g = power(f,5);
-h = ballfun(@(r,lam,th)r.^5.*cos(lam).^5.*sin(th).^5);
+h = ballfun(@(r,lam,th)r.^5.*cos(lam).^5.*sin(th).^5, 'polar');
 
 pass(1) = norm( g - h ) < tol;
 end

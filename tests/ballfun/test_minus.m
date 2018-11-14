@@ -15,9 +15,9 @@ h = g - f;
 pass(1) = norm( h - f ) < tol;
 
 % Example 2
-f = ballfun(@(r,lam,th)r.^2.*cos(th),S);
+f = ballfun(@(r,lam,th)r.^2.*cos(th), 'polar');
 g = f-5;
-exact = ballfun(@(r,lam,th)r.^2.*cos(th)-5,S);
+exact = ballfun(@(r,lam,th)r.^2.*cos(th)-5, 'polar');
 pass(2) = norm( g - exact ) < tol;
 
 if (nargout > 0)

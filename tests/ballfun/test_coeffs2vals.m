@@ -7,7 +7,7 @@ end
 tol = 1e2*pref.techPrefs.chebfuneps; 
 
 % Test with function sin(r)*th*lam
-f = ballfun(@(x,y,z)sin(x).*y.*z, 'cart' );
+f = ballfun(@(x,y,z)sin(x).*y.*z);
 
 exact = f.coeffs; 
 cfs = ballfun.vals2coeffs(ballfun.coeffs2vals(f.coeffs));
