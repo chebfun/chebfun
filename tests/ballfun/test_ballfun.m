@@ -59,6 +59,16 @@ f = ballfun(@(x,y,z)sin(x.*y.*z));
 exact = ballfun(@(r,lam,th)sin(r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam).*r.*cos(th)),'spherical');
 pass(10) = norm( f - exact ) < tol;
 
+% Example 11:
+f = ballfun(@(x,y,z)x*y,'vectorize');
+exact = ballfun(@(x,y,z)x.*y);
+pass(11) = norm( f - exact ) < tol;
+
+% Example 12:
+f = ballfun(@(x,y,z)x*z*y,'vectorize');
+exact = ballfun(@(x,y,z)x.*z.*y);
+pass(12) = norm( f - exact ) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end
