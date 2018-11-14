@@ -30,9 +30,9 @@ exact = ballfun(@(r, lam, th)1,'polar');
 f = laplacian(exact);
 bc = @(lam, th) 0;  % Neumann condition
 u = helmholtz_neumann(f,0,bc,39,40,41);
-pass(4) = isequal(diff(u,1),diff(exact,1)) ...
-        && isequal(diff(u,2),diff(exact,2)) ...
-        && isequal(diff(u,3),diff(exact,3));
+pass(4) = isequal(diff(u,1,'polar'),diff(exact,1,'polar')) ...
+        && isequal(diff(u,2,'polar'),diff(exact,2,'polar')) ...
+        && isequal(diff(u,3,'polar'),diff(exact,3,'polar'));
 
 % Example 5:
 exact = ballfun(@(r, lam, th)r.^2.*sin(th).^2,'polar');
@@ -91,7 +91,7 @@ pass(10) = isequal(diff(u,1),diff(exact,1)) ...
 % Example 11:
 exact = ballfun(@(r,lam,th)(r.*sin(th).*cos(lam).*r.*cos(th)).^2,'polar');
 f = laplacian(exact);
-bc = diff(exact,1);
+bc = diff(exact,1,'polar');
 S = size(bc);
 bc = reshape(sum(bc.coeffs,1),S(2),S(3));
 u = helmholtz_neumann(f,0,bc,42,54,41);
@@ -102,7 +102,7 @@ pass(11) = isequal(diff(u,1),diff(exact,1)) ...
 % Example 12:
 exact = ballfun(@(r,lam,th)sin((r.*sin(th).*sin(lam)).^2),'polar');
 f = laplacian(exact);
-bc = diff(exact,1);
+bc = diff(exact,1,'polar');
 S = size(bc);
 bc = reshape(sum(bc.coeffs,1),S(2),S(3));
 u = helmholtz_neumann(f,0,bc,42,54,41);
@@ -113,7 +113,7 @@ pass(12) = isequal(diff(u,1),diff(exact,1)) ...
 % Example 13:
 exact = ballfun(@(r,lam,th)cos((r.*sin(th).*cos(lam)).^3),'polar');
 f = laplacian(exact);
-bc = diff(exact,1);
+bc = diff(exact,1,'polar');
 S = size(bc);
 bc = reshape(sum(bc.coeffs,1),S(2),S(3));
 u = helmholtz_neumann(f,0,bc,42,54,41);
@@ -160,7 +160,7 @@ pass(17) = isequal(diff(u,1),diff(exact,1)) ...
 % Example 18:
 exact = ballfun(@(r,lam,th)(r.*sin(th).*cos(lam).*r.*cos(th)).^2,'polar');
 f = laplacian(exact);
-bc = diff(exact,1);
+bc = diff(exact,1,'polar');
 S = size(bc);
 bc = reshape(sum(bc.coeffs,1),S(2),S(3));
 u = helmholtz_neumann(f,0,bc,42,42,42);
@@ -171,7 +171,7 @@ pass(18) = isequal(diff(u,1),diff(exact,1)) ...
 % Example 19:
 exact = ballfun(@(r,lam,th)sin((r.*sin(th).*sin(lam)).^2),'polar');
 f = laplacian(exact);
-bc = diff(exact,1);
+bc = diff(exact,1,'polar');
 S = size(bc);
 bc = reshape(sum(bc.coeffs,1),S(2),S(3));
 u = helmholtz_neumann(f,0,bc,42,42,42);
@@ -182,7 +182,7 @@ pass(19) = isequal(diff(u,1),diff(exact,1)) ...
 % Example 20:
 exact = ballfun(@(r,lam,th)cos((r.*sin(th).*cos(lam)).^3),'polar');
 f = laplacian(exact);
-bc = diff(exact,1);
+bc = diff(exact,1,'polar');
 S = size(bc);
 bc = reshape(sum(bc.coeffs,1),S(2),S(3));
 u = helmholtz_neumann(f,0,bc,42,42,42);

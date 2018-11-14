@@ -9,6 +9,6 @@ function f = divergence(v)
 % See http://www.chebfun.org/ for Chebfun information.
 
 [Vx,Vy,Vz] = v.comp{:};
-f = diff(Vx,1,"cart") + diff(Vy,2,"cart") + diff(Vz,3,"cart");
+f = diff(Vx,1) + diff(Vy,2) + diff(Vz,3);
 
 end

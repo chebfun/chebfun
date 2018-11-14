@@ -7,6 +7,6 @@ function g = laplacian(f)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-g = diff(f,1,2,"cart") + diff(f,2,2,"cart") + diff(f,3,2,"cart");
+g = diff(f,1,2) + diff(f,2,2) + diff(f,3,2);
 
 end

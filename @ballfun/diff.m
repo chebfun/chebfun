@@ -1,15 +1,15 @@
 function g = diff(f, varargin) 
 %DIFF   Differentiation of a BALLFUN.
 %   DIFF(F, DIM) computes the derivative of F. If DIM = 1, the
-%   derivative is taken in the r-variable. If DIM = 2, the derivative
-%   is taken in the lambda-variable. If DIM = 3, the derivative is
-%   taken in the theta-variable.
+%   derivative is taken in the x-variable. If DIM = 2, the derivative
+%   is taken in the y-variable. If DIM = 3, the derivative is
+%   taken in the z-variable.
 %
-%   F = DIFF( F, DIM, K) computes the kth derivatives of F in the variable
-%   given by DIM.
-%
-%   F = DIFF( F, DIM, K, "cart") computes the kth derivatives of F in the 
+%   F = DIFF( F, DIM, K ) computes the kth derivatives of F in the 
 %   cartesian variables x, y or z given by DIM.
+%
+%   F = DIFF( F, DIM, 'polar' ) computes the kth derivatives of F in the 
+%   spherical variables r, lambda or theta given by DIM.
 %
 % See also SUM, SUM2, SUM3.
 
@@ -20,19 +20,19 @@ function g = diff(f, varargin)
 if ( nargin == 2 )
     dim = varargin{1};
     K = 1;
-    Cart = false;
+    Cart = true;
 elseif (nargin == 3 && isnumeric(varargin{2}))
     dim = varargin{1};
     K = varargin{2};
-    Cart = false;
+    Cart = true;
 elseif (nargin == 3 && ~isnumeric(varargin{2}))
     dim = varargin{1};
     K = 1;
-    Cart = true;
+    Cart = false;
 else
     dim = varargin{1};
     K = varargin{2};
-    Cart = true;
+    Cart = false;
 end
 
 % Initialization:
@@ -63,7 +63,7 @@ function F = onediff(F, dim, Cart)
             %     F(:,:,k) = S01 \ ( DC1*F(:,:,k) ); 
             % end
             % In vectorized form this becomes: 
-            F = reshape( S01 \ ( DC1*reshape(F, m, []) ), m, n, []);
+            F = reshape( S01\(DC1*reshape(F, m, [])) , m, n, []);
             
         % Matrix of derivative in the lambda direction
         elseif dim == 2  
