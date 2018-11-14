@@ -11,9 +11,9 @@ function nm = norm(f, varargin)
 F = f.coeffs;
 Ref = real( ballfun.coeffs2vals( F ) );
 Imf = imag( ballfun.coeffs2vals( F ) );
-
-% g = f.*conj(f)
 g = f.*ballfun(Ref-Imf);
+
+% g = f.*conj(f);
 
 nm = sqrt(abs(sum3(g)));
 end

@@ -7,8 +7,7 @@ if ( nargin == 0 )
 end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
-S = [22,23,14];
-f = cheb.galleryballfun('random',S);
+f = ballfun(@(x,y,z)cos(z).*y+sin(x));
 g = +f;
 
 pass(1) = norm( f - g ) < tol;

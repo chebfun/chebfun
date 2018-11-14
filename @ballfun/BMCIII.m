@@ -23,7 +23,7 @@ h = f1(r(floor(m/2)+1:m), lam(n/2+1:end), th(p/2+1:p+1));
 % f(0,:,:) = constant
 % Count lambda = pi only once
 % Compute the mean of f evaluated at r = 0
-m_zeroR = mean([mean(g(1,:,:),'all'), mean(h(1,2:end,:),'all')]);
+m_zeroR = mean([mean2(g(1,:,:)), mean2(h(1,2:end,:))]);
 g(1,:,:) = m_zeroR;
 h(1,:,:) = m_zeroR;
 

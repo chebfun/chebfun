@@ -4,7 +4,7 @@ function pass = test_sqrt( pref )
 if ( nargin == 0 )
     pref = chebfunpref();
 end
-tol = 1e7*pref.techPrefs.chebfuneps; 
+tol = 1e8*pref.techPrefs.chebfuneps; 
 
 % Example 1
 f = sqrt(ballfun(@(x,y,z)2));
