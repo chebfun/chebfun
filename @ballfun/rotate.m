@@ -88,7 +88,6 @@ G = permute(G, [3,1,2]);
 
 % Create ballfun from values
 f = ballfun(G);
-
 end
 
 function vals = fastSphereEval(f, lambda, theta)
