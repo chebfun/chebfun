@@ -8,11 +8,17 @@ function g = sum(f, dim)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Increase the discretization by 2 in the r and theta direction
 [m,n,p] = size(f);
-F = f.coeffs;
+m = m+2; p = p+2;
+F = coeffs3(f,m,n,p);
 
-% Compute the integral over r
+% Compute the integral over r of r^2*f
 if dim == 1
+    % Multiplication by r^2 in Chebyshev basis
+    Mr2 = ultraS.multmat(m, [.5;0;.5], 0);
+    F = reshape(Mr2*reshape(F, m, []),m, n, p);
+    
     % Coefficients of integration of the Chebyshev polynomials
     K = zeros(1,m);
     for i = 0:m-1
@@ -30,31 +36,37 @@ if dim == 1
     % Matrix of coefficients of Fourier-Fourier after integration over r
     A = zeros(n,p);
     for i = 1:m
-       A = A+K(i).*reshape(F(i,:,:),n,p);
+       A = A+K(i).*reshape(F(i,:,:),n, p);
     end
 
     % Return the spherefun function of lambda,theta; coeffs2spherefun takes a
     % matrix of coefficients of theta and lambda instead of lambda, theta
     g = spherefun.coeffs2spherefun(A.');
  
-% Compute the integral over lambda
+% Compute the integral over lambda of f
 elseif dim ==2
     % Integration for the Fourier modes in lambda
     Listp = (1:n) - floor(n/2) - 1;
     C = -1i*((-1).^Listp-1)./Listp;
     C(floor(n/2)+1) = 2*pi;
+    
     % Matrix of coefficients of Chebyshev-Fourier after integration over
     % lambda
     A = zeros(m,p);
     for i = 1:n
-       A = A + C(i)*reshape(F(:,i,:),m,p); 
+       A = A + C(i)*reshape(F(:,i,:),m, p); 
     end
     
     % Return the diskfun function of r, theta
     g = diskfun.coeffs2diskfun(real(A));
     
-% Compute the integral over theta
+% Compute the integral over theta of f*sin(theta)
 elseif dim == 3
+    
+    % Multiplication by theta
+    Msin = trigspec.multmat(p, [.5i;0;-.5i]);
+    F = reshape(reshape(F, [], p)*Msin.',m, n, p);
+    
     % Integration for the Fourier modes in theta
     Listp = (1:p) - floor(p/2) - 1;
     C = -1i*((-1).^Listp-1)./Listp;

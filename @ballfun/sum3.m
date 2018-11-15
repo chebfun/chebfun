@@ -23,7 +23,7 @@ p = p+2;
 
 % Multiply f par r^2sin(theta) (= Jacobian)
 Msin = trigspec.multmat(p, [0.5i;0;-0.5i] );
-Mr2 = ultraS.multmat(m, chebfun(@(r) r.^2), 0 );
+Mr2 = ultraS.multmat(m, [0.5; 0; 0.5], 0 );
 F = Mr2*F*(Msin.');
 
 % Coefficients of integration between 0 and 1 of the chebyshev polynomials

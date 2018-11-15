@@ -12,22 +12,22 @@ function ff = sum2(f,dim_1,dim_2)
 dim = sort([dim_1,dim_2]);
 dim_1 = dim(1); dim_2 = dim(2);
 
+% Increase the discretization by 2 in the r and theta direction
 [m,n,p] = size(f);
 m = m+2; p = p+2;
 F = coeffs3(f,m,n,p);
 
 if dim_1 == 2 && dim_2 == 3
     % Integrate over lambda and theta
-    % Multiply by F by the measure r^2*sin(theta)
+    % Multiply by F by the measure sin(theta)
 
     % Extract the 0-th Fourier mode
     F = reshape(F(:,floor(n/2)+1,:), m, p);
 
-    % Multiply f par r^2sin(theta) (= Jacobian)
+    % Multiply f par sin(theta) (= Jacobian)
     % Just do the multiplication for the 0-th Fourier mode
     Msin = trigspec.multmat(p, [.5i;0;-.5i] );
-    Mr2 = ultraS.multmat(m, [.5;0;.5], 0 );
-    F = Mr2*F*(Msin.');
+    F = F*(Msin.');
 
     % Integration for the Fourier modes in theta
     Listp = (1:p) - floor(p/2) - 1;
@@ -45,6 +45,10 @@ if dim_1 == 2 && dim_2 == 3
     
 elseif dim_1 == 1 &&  dim_2 == 2
     % Integrate over r and lambda
+    
+    % Multiplication by r^2 in Chebyshev basis
+    Mr2 = ultraS.multmat(m, [.5;0;.5], 0 );
+    F = reshape(Mr2*reshape(F, m, []),m, n, p);
     
     % Coefficients of integration between 0 and 1 of the chebyshev polynomials
     IntChebyshev = zeros(1,m);
@@ -71,6 +75,14 @@ elseif dim_1 == 1 &&  dim_2 == 2
 
 elseif dim_1 == 1 && dim_2 == 3
     % Integrate over r and theta
+    
+    % Multiplication by r^2 in Chebyshev basis
+    Mr2 = ultraS.multmat(m, [.5;0;.5], 0 );
+    F = reshape(Mr2*reshape(F, m, []),m, n, p);
+    
+    % Multiplication by theta
+    Msin = trigspec.multmat(p, [.5i;0;-.5i]);
+    F = reshape(reshape(F, [], p)*Msin.',m, n, p);
     
     % Coefficients of integration between 0 and 1 of the chebyshev polynomials
     IntChebyshev = zeros(1,m);

@@ -12,13 +12,13 @@ tol = 1e4*pref.techPrefs.chebfuneps;
 % Example 1
 f = ballfun(@(r,lam,th)r.*cos(lam).*sin(th), 'polar');
 g = sum(f, 1);
-exact = spherefun(@(lam,th)cos(lam).*sin(th)/2,'vectorize');
+exact = spherefun(@(lam,th)cos(lam).*sin(th)/4);
 pass(1) = norm(g-exact) < tol;
 
 % Example 2
 f = ballfun(@(r,lam,th)1, 'polar');
 g = sum(f, 1);
-exact = spherefun(@(lam,th)1,'vectorize');
+exact = spherefun(@(lam,th)1/3);
 pass(2) = norm(g-exact) < tol;
 
 %% Integrate over lambda
@@ -26,7 +26,7 @@ pass(2) = norm(g-exact) < tol;
 % Example 3
 f = ballfun(@(r,lam,th)(r.*sin(lam).*sin(th)).^2, 'polar');
 g = sum(f, 2);
-exact = diskfun(@(th,r)pi*r.^2.*sin(th).^2,'polar','vectorize');
+exact = diskfun(@(th,r)pi*r.^2.*sin(th).^2,'polar');
 pass(3) = norm(g-exact) < tol;
 
 %% Integrate over theta
@@ -34,7 +34,7 @@ pass(3) = norm(g-exact) < tol;
 % Example 4
 f = ballfun(@(r,lam,th)r.*cos(lam).*sin(th), 'polar');
 g = sum(f, 3);
-exact = diskfun(@(lam,r)2*r.*cos(lam),'polar','vectorize');
+exact = diskfun(@(lam,r)r.*cos(lam)*pi/2,'polar');
 pass(4) = norm(g-exact) < tol;
 
 if (nargout > 0)
