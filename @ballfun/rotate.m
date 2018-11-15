@@ -81,7 +81,7 @@ G = zeros(N,P,m);
 % Loop over r and rotate each spheroid
 for k = 1:m
     Fk = F(:,:,k);
-    G(:,:,k) = fastSphereEval(Fk.', lam, th);
+    G(:,:,k) = fastSphereEval(Fk.', lam, th).';
 end
 
 % Permute G
