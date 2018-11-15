@@ -8,9 +8,9 @@ end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Test with function 1, 2*3=6
-f = ballfun(2*ones(20,21,22),"vals");
-g = ballfun(3*ones(20,21,22),"vals");
-h = ballfun(6*ones(20,21,22),"vals");
+f = ballfun(2*ones(21,12,22));
+g = ballfun(3*ones(23,20,24));
+h = ballfun(6*ones(25,20,10));
 
 pass(1) = ( norm(f*g-h)<tol );
 pass(2) = ( norm(g*f-h)<tol ); 

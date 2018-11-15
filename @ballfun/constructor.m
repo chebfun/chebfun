@@ -95,13 +95,21 @@ end
 
 %%
 function f = constructFromDouble( f, op )
-%CONSTRUCTFROMDOUBLE  Constructor BALLFUN from matrix of values.
+%CONSTRUCTFROMDOUBLE  Constructor BALLFUN from matrix of values F = (f_ij),
+% the numbers fij are used as function values at tensor equally-spaced points 
+% in the intrinsic spherical coordinate system, i.e., [0,1]x[-pi,pi]x[0,pi].
 
 if ( numel(op) == 1 )
     f = ballfun(@(x,y,z) op + 0*x);
     return
 end
-f.coeffs = ballfun.vals2coeffs(op);
+
+% Double and impose BMC structure
+vals = ImposeBMC(op);
+
+% Transform to coefficients
+f.coeffs = ballfun.vals2coeffs(vals);
+f = simplify(f);
 end
 
 
@@ -120,9 +128,6 @@ p = S(3);
 r = chebpts(m);
 lam = [pi*trigpts(n); pi];
 th = [pi*trigpts(p); pi];
-
-% Array of coefficients
-vals = zeros(m,n,p);
 
 % Add dependence on r, lambda and theta
 f1 = @(r,lam,th)op(r,lam,th) + 0*r + 0*lam + 0*th;
@@ -152,6 +157,53 @@ else
         end
     end
 end
+
+% Double the function in r and theta
+vals = ImposeBMC(g,h);
+end
+
+function vals = ImposeBMC(f,h)
+% Take a tensor of values on [0,1]x[-pi,pi[,[0,pi] and double it in the
+% direction r and theta, then impose the BMCIII structure
+
+if nargin == 1
+    % Get the size
+    [m,n,p] = size(f);
+    
+    if ( mod(n,2) ~= 0 )
+        error('BALLFUN:CONSTRUCTOR:VALUES', ... 
+        'When constructing from values the number of columns must be even.');
+    end
+    
+    if ( p < 2 )
+        error('BALLFUN:CONSTRUCTOR:VALUES', ... 
+        'When constructing from values the number of fibers must be greater than 2.');
+    end
+
+    if ( mod(p,2) ~= 0 )
+        error('BALLFUN:CONSTRUCTOR:VALUES', ... 
+        'When constructing from values the number of fibers must be even.');
+    end
+    
+    % Define the functions g on [0,1]x[-pi,0]x[0,pi] and h on [0,1]x[0,pi]x[0,pi]
+    g = f(:,1:n/2+1,:);
+    h = f(:,[n/2+1:end 1],:); 
+else
+    % Get the size
+    [m,n,p] = size(f);
+    
+    g = f;
+    % Doubled size in theta
+    n = 2*n-2;
+end
+
+% Doubled size in r
+m = 2*m-1;
+
+% Doubled size in theta
+p = 2*p-2;
+
+vals = zeros(m,n,p);
 
 %% Impose BMC-III Structure
 % f(0,:,:) = constant

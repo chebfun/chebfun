@@ -8,12 +8,12 @@ function nm = norm(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Do something faster for the test
-F = f.coeffs;
-Ref = real( ballfun.coeffs2vals( F ) );
-Imf = imag( ballfun.coeffs2vals( F ) );
-g = f.*ballfun(Ref-Imf);
+% F = f.coeffs;
+% Ref = real( ballfun.coeffs2vals( F ) );
+% Imf = imag( ballfun.coeffs2vals( F ) );
+% g = f.*ballfun(Ref-Imf);
 
-% g = f.*conj(f);
+g = f.*conj(f);
 
 nm = sqrt(abs(sum3(g)));
 end

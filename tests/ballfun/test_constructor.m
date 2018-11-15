@@ -7,8 +7,7 @@ end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
 % Can we make a ballfun object:
-n = 10; 
-f = ballfun( ones(n,n,n) );
+f = ballfun( ones(11,10,10) );
 pass(1) = 1;
 
 end

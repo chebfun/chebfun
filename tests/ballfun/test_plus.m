@@ -7,7 +7,7 @@ end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = ballfun(ones(20,21,22));
+f = ballfun(ones(21,20,22));
 V1 = ballfun.coeffs2vals(f.coeffs);
 g = f+f;
 V2 = ballfun.coeffs2vals(g.coeffs);
