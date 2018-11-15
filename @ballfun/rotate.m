@@ -19,64 +19,24 @@ elseif ( nargin == 3 )
     psi = 0;
 end
 
-S = size(f);
-m = S(1); n = S(2); p = S(3);
+[m, n, p] = size( f );
 
 % f is bandlimited of degree (n,m) so its rotation will be bandlimited will
 % limit at most max(n,m). This follows from spherical harmonic theory as
 % the rotation of a spherical harmonic of degree l is of degree l, only the
 % order will change. The degree l is given by the bandlimit m, while the
 % order is given by the bandlimit of n.
-p = max(n,p);             % Using this sampling we should exactly recover the rotated f.
-n = p + mod(p,2);         % Number of columns must be even.
+P = max(n,p);             % Using this sampling we should exactly recover the rotated f.
+N = P + mod(P,2);         % Number of columns must be even.
 % Set the number of rows in the sampled grid equal to n/2+2 so that the 
 % doubled up grid will have n rows (n/2+2 because the pole is included in
 % the sampled grid, and the doubled up grid does not contain -pi).
-p = ceil(p/2)+2;
-
-% Get coeffs
-F = coeffs3(f, m, n, p);
-
-% Convert F to chebvals * trigcoeffs
-for k = 1:p
-   F(:,:,k) = chebtech.coeffs2vals(F(:,:,k));
-end
-
-% Permute F
-F = permute(F, [2,3,1]);
-
-% Create empty tensors
-G = zeros(n,p,m);
-
-% Loop over r and rotate each spheroid
-for k = 1:m
-    Fk = F(:,:,K);
-    G(:,:,k) = rotateSphere(Fk, phi, theta, psi);
-end
-
-% Permute G
-G = permute(G, [3,1,2]);
-
-% Create ballfun from values
-f = ballfun(G);
-end
-
-function f = rotateSphere(f, phi, theta, psi)
-%ROTATE   Rotates a SPHEREFUN using Euler angles
-%   Y = ROTATE(F, PHI, THETA, PSI) rotates F using Euler angles phi, theta, 
-%   and psi with the ZXZ convention:  Rotate first about the z-axis by an
-%   angle phi, then about the (orginal) x-axis by an angle 0<=theta<=pi, 
-%   then about new z-axis by an angle psi. 
-
-% Copyright 208 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
-
-[m, n] = size( f );
+P = ceil(P/2)+2;
 
 % Sampling grid.
-[lam,th] = meshgrid(trigpts(m,[-pi pi]),linspace(0,pi,n));
+[lam,th] = meshgrid(trigpts(N,[-pi pi]),linspace(0,pi,P));
 lam(1,:) = 0;
-lam(n,:) = 0;
+lam(N,:) = 0;
 x = cos(lam).*sin(th);
 y = sin(lam).*sin(th);
 z = cos(th);
@@ -95,9 +55,41 @@ w = R(3,1)*x + R(3,2)*y + R(3,3)*z;
 % Get the spherical coordinates of the rotated grid
 [lam, th] = cart2sph(u, v, w);
 th = pi/2-th;  % Adjust elevation angle since matlab uses latitude.
- 
-% NUFFT evaluation using 2D NUFFT
-f = fastSphereEval(f, lam, th);
+
+% Get size of evaluation points and Fourier coefficients:
+m = m + (1-mod(m,2));
+n = n + (1-mod(m,2));
+p = p + (1-mod(p,2));
+F = coeffs3(f, m, n, p);
+
+% Convert F to chebvals * trigcoeffs
+for k = 1:p
+   F(:,:,k) = chebtech2.coeffs2vals(F(:,:,k));
+end
+
+F = F(ceil(m/2):end,:,:);
+
+% Restrict to [0,1]
+m = ceil(m/2);
+
+% Permute F
+F = permute(F, [2,3,1]);
+
+% Create empty tensors
+G = zeros(N,P,m);
+
+% Loop over r and rotate each spheroid
+for k = 1:m
+    Fk = F(:,:,k);
+    G(:,:,k) = fastSphereEval(Fk.', lam, th);
+end
+
+% Permute G
+G = permute(G, [3,1,2]);
+
+% Create ballfun from values
+f = ballfun(G);
+
 end
 
 function vals = fastSphereEval(f, lambda, theta)
@@ -130,12 +122,12 @@ theta  = -theta/(2*pi);
 
 % Get size of evaluation points and Fourier coefficients:
 [M, N] = size(lambda);
-[n, m] = length(f);
-m = m + (1-mod(m,2));
-n = n + (1-mod(n,2));
+[m,n] = size(f);
 
 % Low rank approximation for the coefficients of F:
-[C, D, R] = coeffs2(f, n, m);
+C = f;
+D = eye(n,n);
+R = eye(n,n);
 rk = size(D, 1);
 
 % Make columns:
