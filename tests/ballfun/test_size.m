@@ -14,7 +14,12 @@ pass(1) = min(b1)==1;
 % Example 2
 f = ballfun(@(x,y,z)x);
 b1 = size(f) == [2,3,3];
-pass(1) = min(b1)==1;
+pass(2) = min(b1)==1;
+
+% Example 3
+Vz = ballfun(ones(11,12,4));
+b1 = size(f) == [1,1,1];
+pass(3) = min(b1)==1;
 
 if (nargout > 0)
     pass = all(pass(:));

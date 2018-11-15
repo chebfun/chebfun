@@ -7,7 +7,7 @@ end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
 % Test with function 1
-f = ballfun(ones(20,21,22));
+f = ballfun(ones(21,18,22));
 F = ballfunv(f,f,f);
 G = F+F-F;
 
