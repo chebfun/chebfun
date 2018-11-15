@@ -31,12 +31,10 @@ N = P + mod(P,2);         % Number of columns must be even.
 % Set the number of rows in the sampled grid equal to n/2+2 so that the 
 % doubled up grid will have n rows (n/2+2 because the pole is included in
 % the sampled grid, and the doubled up grid does not contain -pi).
-P = ceil(P/2)+2;
+P = ceil(P/2)+2+mod(P,2);
 
 % Sampling grid.
 [lam,th] = meshgrid(trigpts(N,[-pi pi]),linspace(0,pi,P));
-lam(1,:) = 0;
-lam(N,:) = 0;
 x = cos(lam).*sin(th);
 y = sin(lam).*sin(th);
 z = cos(th);
