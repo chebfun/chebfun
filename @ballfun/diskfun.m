@@ -47,7 +47,7 @@ function [phi, theta, psi] = parseInputs(varargin)
             if strcmp(varargin{1},'x')
                 phi = 0;
                 theta = -pi/2;
-                psi = pi;
+                psi = pi/2;
                 % Evaluate at Y-Z plane
             elseif strcmp(varargin{1},'y')
                 % Evaluate at X-Z plane
