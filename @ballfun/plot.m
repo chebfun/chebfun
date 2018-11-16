@@ -95,21 +95,21 @@ function plot2(f)
 
 % Plot f on the plane X-Y
 subplot(2,2,2);
-plot(extract_diskfun(f,'x','y'))
+plot(diskfun(f,'z'))
 colorbar
 xlabel('X')
 ylabel('Y')
 
 % Plot f on the plane X-Z
 subplot(2,2,3);
-plot(extract_diskfun(f,'x','z'));
+plot(diskfun(f,'y'));
 colorbar
 xlabel('X')
 ylabel('Z')
 
 % Plot f on the plane Y-Y
 subplot(2,2,4);
-plot(extract_diskfun(f,'y','z'));
+plot(diskfun(f,'x'));
 colorbar
 xlabel('Y')
 ylabel('Z')

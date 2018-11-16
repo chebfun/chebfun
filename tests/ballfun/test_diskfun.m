@@ -30,12 +30,6 @@ g = diskfun(f,'z');
 h = diskfun(@(x,y)x.*y);
 pass(4) = norm(g-h) < tol;
 
-% Example 5
-f = ballfun(@(x,y,z)y.*z);
-g = diskfun(f,'x');
-h = diskfun(@(x,y)x.*y);
-pass(4) = norm(g-h) < tol;
-
 if (nargout > 0)
     pass = all(pass(:));
 end
