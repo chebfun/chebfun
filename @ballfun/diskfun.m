@@ -1,25 +1,21 @@
-function g = diskfun(f)
-% DISKFUN is the intersection between a BALLFUN function and a
-%   plane
-%   DISKFUN(f, lambda, theta, r) is the slice of the BALLFUN function f
-%   corresponding to the normal (lambda, theta) at radius r
-%   DISKFUN(f, 'x', 'y', r) is the slice of the BALLFUN function f
-%   corresponding to the plane X-Y at radius r
+function g = diskfun(f, varargin)
+% DISKFUN is the intersection between a BALLFUN function and a plane
+%   DISKFUN(F, PHI, THETA, PSI) rotates F using Euler angles phi, theta, 
+%   and psi with the ZXZ convention and then evaluate it at the plane Z = 0
+%   DISKFUN(f, 'x') is the slice of the BALLFUN function f corresponding to 
+%   the plane X = 0.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Take a ballfun function and a point on the sphere (r, lambda, theta), 
-% Return is in [0, 1], lambda is in [-pi, pi], theta is in [0, pi]
-% r the function f on the disk parametrized by the normal 0-(r, lambda,
-% theta)
-% The point (1-r,0) of the disk corresponds to the point (1-r, lambda, pi/2 + theta)
-% The point (-(1-r),0) of the disk corresponds to the point (1-r, pi + lambda, pi/2 -
-% theta)
+% Parse user inputs to get the Euler angles
+[phi, theta, psi] = parseInputs(varargin{:});
 
-% rotate the sphere then evaluate at theta = pi/2
+% Rotate f using Euler angles phi, theta and psi
+f = rotate(f, phi, theta, psi);
 
-[m,n,p] = size(f);
+% Get the size
+[m,n,~] = size(f);
 
 % If n is odd, make it even
 m = m + 1-mod(m,2);
@@ -32,30 +28,50 @@ r = r(ceil(m/2):end);
 % Evaluation points in [-pi,pi[
 lambda = pi*trigpts(n);
 
+% Build the grid and evaluate at the plane Z = 0
 [rr, ll, tt] = ndgrid(r, lambda, pi/2);
-
 G = feval(f,rr,ll,tt);
 
 % Return the diskfun
 g = diskfun(real(G));
 end
 
-% Take to char a and b and return the angles lambda and theta to get the
-% normal to the plane a - b
-function A = plane2angle(a,b)
-if a == 'x' && b == 'y'
-    lambda = 0;
-    theta = 0;
-elseif a == 'x' && b == 'z'
-    lambda = 0;
-    theta = pi/2;   
-elseif a == 'y' && b == 'z'
-    lambda = pi/2;
-    theta = pi/2;
-else
-    error('BALLFUN:SLICE:unknown', ...
-                ['Undefined function ''slice'' for input arguments ' ...
-                '''%s'' and ''%s''.'], a, b);
-end
-A = [lambda, theta];
+function [phi, theta, psi] = parseInputs(varargin)
+% Parse user inputs to DISKFUN.
+    if nargin == 0
+        phi = 0;
+        theta = 0;
+        psi = 0;
+    elseif nargin == 1
+        if ischar(varargin{1})
+            if strcmp(varargin{1},'x')
+                phi = 0;
+                theta = pi/2;
+                psi = pi/2;
+                % Evaluate at Y-Z plane
+            elseif strcmp(varargin{1},'y')
+                % Evaluate at X-Z plane
+                phi = -pi/2;
+                theta = pi/2;
+                psi = 0;
+            elseif strcmp(varargin{1},'z')
+                % Evaluate at X-Y plane
+                phi = 0;
+                theta = 0;
+                psi = 0;
+            end
+        else
+            phi = varargin{1};
+            theta = 0;
+            psi = 0;
+        end
+    elseif nargin == 2
+        phi = varargin{1};
+        theta = varargin{2};
+        psi = 0;
+    else
+        phi = varargin{1};
+        theta = varargin{2};
+        psi = varargin{3};
+    end
 end

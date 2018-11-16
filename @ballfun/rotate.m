@@ -5,7 +5,7 @@ function f = rotate(f, phi, theta, psi)
 %   angle phi, then about the (orginal) x-axis by an angle 0<=theta<=pi, 
 %   then about new z-axis by an angle psi. 
 %
-% See also spherefun.fastSphereEval, diskfun.rotate.
+% See also spherefun.rotate, diskfun.rotate.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
