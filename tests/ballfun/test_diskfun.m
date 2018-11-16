@@ -1,4 +1,4 @@
-function pass = test_diskfun( )
+function pass = test_diskfun( pref )
 
 eps = 1e-10;
 

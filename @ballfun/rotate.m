@@ -36,6 +36,8 @@ P = P + mod(P,2);
 
 % Sampling grid.
 [lam,th] = meshgrid(trigpts(N,[-pi pi]),linspace(0,pi,P));
+lam(1,:) = 0;
+lam(P,:) = 0;
 x = cos(lam).*sin(th);
 y = sin(lam).*sin(th);
 z = cos(th);
@@ -57,7 +59,7 @@ th = pi/2-th;  % Adjust elevation angle since matlab uses latitude.
 
 % Get size of evaluation points and Fourier coefficients:
 m = m + (1-mod(m,2));
-n = n + (1-mod(m,2));
+n = n + (1-mod(n,2));
 p = p + (1-mod(p,2));
 F = coeffs3(f, m, n, p);
 
@@ -178,20 +180,18 @@ U2 = real( chebT(K2-1,er/gam) * besselCoeffs(K2, gam) * Dx );
 V2 = chebT(K2-1, 2*nn'/n) * invDx;
 
 % Business end of the transform. (Everything above could be considered
-% precomputation.) Note that since we know the final result is going to be
-% real, as all spherefun objects are real-valued, we can remove the
-% imaginary components of FFT_rows and FFT_cols:
+% precomputation.)
 FFT_cols = zeros(m,rk,K1);
 for s = 1:K1
     % Transform in the "col" variable:
     CV1 = bsxfun(@times, C, V1(:,s));
-    FFT_cols(:,:,s) = real( fft( ifftshift(CV1, 1) ) );
+    FFT_cols(:,:,s) = fft( ifftshift(CV1, 1) );
 end
 FFT_rows = zeros(rk,n,K2);
 for r = 1:K2
     % Transform in the "row" variable:
     RV2 = bsxfun(@times, R, V2(:,r)).';
-    FFT_rows(:,:,r) = real( D*fft( ifftshift(RV2,2), [], 2 ) );
+    FFT_rows(:,:,r) = D*fft( ifftshift(RV2,2), [], 2 );
 end
 
 % Permute:
