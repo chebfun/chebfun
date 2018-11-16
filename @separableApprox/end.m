@@ -1,7 +1,7 @@
 function e = end(f, k, n)
-%END   Rightmost point of a CHEBFUN2 domain.
+%END   Rightmost point of a separableApprox domain.
 %   END(F, K, N) This function is called for indexing expressions involving a
-%   CHEBFUN2 F when END is part of the K-th index out of N indices.
+%   separableApprox F when END is part of the K-th index out of N indices.
 %
 %   If K is 1, this function returns the last point in F's domain in the 'x'
 %   direction. If K is 2, it returns the index of F's domain in the 'y'
@@ -11,7 +11,8 @@ function e = end(f, k, n)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( n > 2 )
-    error('CHEBFUN:CHEBFUN2:end:ngt2', 'Index exceeds CHEBFUN2 dimensions.');
+    error('CHEBFUN:separableApprox:end:ngt2', ...
+        'Index exceeds separableApprox dimensions.');
 end
 
 dom = f.domain;
