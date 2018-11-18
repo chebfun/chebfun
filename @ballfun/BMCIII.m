@@ -1,6 +1,18 @@
-function F = BMCIII(f,m,n,p)
-% Take a function handle and a size and return the coefficients in the
-% CFF basis by evaluating it at only a fourth of the domain
+function F = BMCIII(f, m, n, p)
+%BMCIII    Block-mirror-centrosymmetric symmetry for functions on the ball. 
+% F = BMCIII(F, M, N, P)  takes a function handle f and returns the MxNxP
+% Chebyshev-Fourier-Fourier coefficients F so that 
+% 
+% f(r,lam,th) ~= SUM_j SUM_k SUM_s F(j,k,s)*T_j(r)*exp(1i*k*lam)*exp(1i*s*th),
+%
+% where the approximant is guaranteed to be continuously differentiable in 
+% the ball. While constructing this approximant, the function handle is only 
+% evaluated in [0,1]x[-pi,pi]x[0,pi]. 
+%
+% See also spherefun/projectOntoBMCI and diskfun/projectOntoBMCI.
+
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Evaluation points (assuming m odd, n even and p even > 4)
 r = reshape(chebpts(m),m,1,1);
