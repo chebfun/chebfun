@@ -1,5 +1,32 @@
 classdef ballfun
-    %BALLFUN  A library for the DFS method in the solid sphere.
+%BALLFUN class for representing functions on the unit ball.
+% 
+%   Class for approximating functions defined on the unit ball. The 
+%   functions should be smooth.
+%
+% BALLFUN(F) constructs a BALLFUN object representing the function F on
+% the unit ball. F can have the following form:
+%    1. A function handle in (x,y,z), e.g., @(x,y,z) x.*y.*z + cos(x).
+%    2. A function handle in spherical coordinates (r,lambda,theta), where
+%       lambda is the azimuthal variable and satisfies -pi <= lambda <= pi
+%       and theta is the polar angle and satisfies 0 <= theta < pi,
+%       e.g., @(r,lambda,theta) cos(r.*cos(lambda).*sin(theta))
+%    3. A matrix of numbers. 
+% If F is a function handle then it should allow for vectorized evaluations.
+%
+% If F is a matrix, F = (f_ijk), the numbers fijk are used as function values
+% at tensor of Chebyshev-Fourier-Fourier points in the intrinsic spherical 
+% coordinate system, i.e., [0,1]x[-pi,pi]x[0,pi].
+% 
+% The BALLFUN software system is based on: 
+%
+% N. Boulle, and A. Townsend, Computing with functions in the ball, in
+% preparation.
+%
+% See also CHEBFUN2, DISKFUN, SPHEREFUN, BALLFUNV
+
+% Copyright 2018 by The University of Oxford and The CHEBFUN Developers.
+% See http://www.chebfun.org/ for CHEBFUN information.
     
     properties
         

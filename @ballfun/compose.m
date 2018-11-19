@@ -6,7 +6,7 @@ function f = compose(f, op, g )
 %   COMPOSE(F, OP, G) returns a BALLFUN representing OP(F, G) where F and G
 %   are BALLFUN objects, and OP is a function handle.
 
-% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % A very simple compose function for now: 

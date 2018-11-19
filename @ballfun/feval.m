@@ -1,10 +1,17 @@
-function out = feval(f, R, Lam, Th)
-%FEVAL Evaluate a BALLFUN.
-%   FEVAL(F, R, LAM, TH) is the array of values of the BALLFUN
-%   function F at the grid R x LAM x TH.
+function out = feval(varargin)
+%FEVAL   Evaluate a BALLFUN at one or more points.
+%   Y = FEVAL( F, X, Y, Z) evaluates a diskfun F at a point (X,Y,Z) in Cartesian
+%   cooridnates, where X, Y and Z are doubles.
+%
+%   Y = FEVAL( F, R, LAM, TH, 'spherical') evaluates a ballfun F in
+%   spherical coordinates (R,LAM,TH). Here R, LAM and THETA are doubles representing 
+%   the radius, azimuthal and polar angles (in radians) and must be points 
+%   in the unit ball.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.\
+
+f = varargin{1};
 
 % Empty check:
 if ( isempty(f) )
@@ -12,6 +19,25 @@ if ( isempty(f) )
     return
 end
 
+% Figure out if Cartesian or polar coordinates should be used.
+% Search for user-supplied 'spherical' flag in arguments:
+% isPolar = any(find(strcmp(varargin,'polar'))) || any(find(strcmp(varargin,'spherical')));
+% if ( ~isPolar )
+% X = varargin{2};
+% Y = varargin{3};
+% Z = varargin{4};
+% [Lam,Th,R] = cart2sph(X,Y,Z);
+% Th = pi/2 - Th;
+% if ( any(R > 1+1e-8) ) % Check for points off ball
+%     error('CHEBFUN:BALLFUN:FEVAL:pointsNotOnDisk',...
+%         ['The specified points to evaluate the function do not '...
+%         'lie sufficiently close to the unit ball.']);
+% end
+% out = feval(f, R, Lam, Th, 'spherical');
+
+R = varargin{2};
+Lam = varargin{3};
+Th = varargin{4};
 if ( isnumeric(R) && isnumeric( Lam ) && isnumeric( Th ) )
     if ( isequal(size(R), size(Lam)) && isequal(size(R), size(Th)) )
         if ( isscalar(R) && isscalar(Lam) && isscalar(Th) )
@@ -112,7 +138,7 @@ if ( isnumeric(R) && isnumeric( Lam ) && isnumeric( Th ) )
                 for i1 = 1:m
                     for j1 = 1:n
                         for k1 = 1:p
-                            out(i1, j1, k1) = feval(f, R(i1,j1,k1), Lam(i1,j1,k1), Th(i1,j1,k1) );
+                            out(i1, j1, k1) = feval(f, R(i1,j1,k1), Lam(i1,j1,k1), Th(i1,j1,k1), 'spherical');
                         end
                     end
                 end
