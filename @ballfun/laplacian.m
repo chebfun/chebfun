@@ -1,8 +1,8 @@
 function g = laplacian(f)
-%LAPLACIAN   Laplacian of a BALLFUN.
-%   L = LAPLACIAN(F) returns a BALLFUN representing the Laplacian of F.
+%LAPLACIAN   Scalar laplacian of a BALLFUN.
+%   G = LAPLACIAN(F) returns a BALLFUN representing the Laplacian of F.
 %
-% See also CHEBFUN2/LAPLACIAN.
+% See also DIFF, GRADIENT.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

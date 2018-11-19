@@ -7,6 +7,8 @@ function out = feval(varargin)
 %   spherical coordinates (R,LAM,TH). Here R, LAM and THETA are doubles representing 
 %   the radius, azimuthal and polar angles (in radians) and must be points 
 %   in the unit ball.
+%
+% See also FEVAL. 
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.\

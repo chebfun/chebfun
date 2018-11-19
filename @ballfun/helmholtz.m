@@ -1,14 +1,17 @@
-function u = helmholtz(f, K, g, m, n, p)
+function u = helmholtz(f, K, BC, m, n, p)
 %HELMHOLTZ   Helmholtz solver with Dirichlet boundary conditions.
-%   HELMHOLTZ(F, K, G, m, n, p) is the solution to the Helmholtz
+%   U = HELMHOLTZ(F, K, G, m, n, p) is the solution to the Helmholtz
 %   equation with right-hand side F, frequency K, and Dirichlet boundary
-%   data given by g(lambda, theta).
+%   data U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta). The
+%   equation is discretized on a M*N*P grid in spherical coordinates.
 %
 % Also see POISSON, HELMHOLTZ_NEUMANN.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% DEVELOPER'S NOTE: 
+%
 % PROBLEM: We solve:
 %
 %  r^2sin(th)^2u_rr + 2r(sin(th))^2u_r + (sin(th))^2u_{thth}
@@ -25,55 +28,6 @@ function u = helmholtz(f, K, g, m, n, p)
 % algorithm and QZ. The matrix decouples in lambda.
 %
 % SOLVE COMPLEXITY:    O( n^4 )  N = n^3 = total degrees of freedom
-%
-
-% DOUBLE FOURIER SPHERE METHOD
-%
-% Solve:
-%
-%  r^2sin(th)^2u_rr + 2r(sin(th))^2u_r + (sin(th))^2u_{thth}
-%  + cos(th)sin(th)u_th + u_{lamlam} + r^2sin(th)^2K^2 u = r^2sin(th)^2f(r,lam,th)
-% on [0,1]x[-pi,pi]x[0,pi],
-%
-% together with Dirichlet boundary conditions
-%
-%      u(1,lam,th) = [ g   h ],   (lam,th) in [-pi,pi]x[0,pi].
-%
-% Using the Double Fourier sphere method, we actually solve:
-%
-%  r^2sin(th)^2v_rr + 2r(sin(th))^2v_r + (sin(th))^2v_{thth}
-%  + cos(th)sin(th)v_th + v_{lamlam} + r^2sin(th)^2K^2 v = (rsin(th)).^2\tilde{f}(r,lam,th)
-% on [-1,1]x[-pi,pi]x[-pi,pi],
-%
-% together with Dirichlet boundary conditions
-%
-%    u(1,lam,th) = [ g   h ;  flipud(h)  flipud( g )],   (lam,th) in [-pi,pi]x[-pi,pi],
-%    u(-1,lam,th) = [ h   g ;  flipud(g)  flipud( h )],  (lam,th) in [-pi,pi]x[-pi,pi].
-
-
-% DISCRETIZING THE OPERATOR
-%
-% Laplace operator in spherical coordinates:
-% lap =  r^2sin(th)^2u_rr + 2r(sin(th))^2u_r + (sin(th))^2u_{thth}
-%                                 + cos(th)sin(th)u_lam + u_{lamlam}
-%
-% This operator can be discretized as
-%
-% kron(M_{r^2}D_2^C + 2S_{12}M_rD_1^C, M_{sin(th)^2}, I ) + ...
-%             kron(S_{02}, M_{sin(th)^2}D_2^F + M_{cos(th)sin(th)}D_1^F, I )
-%             kron(S_{02}, I, D_2^F),
-% where
-%        M_{r^2} = multmat in ultraS(2) for r^2
-%        D_2^C   = 2nd ultraS diffmat
-%        S_{12}  = ultraS convertmat from ultraS(1) -> ultraS(2)
-%        M_r     = multmat in ultraS(1) for r
-%        D_1^C   = 1st ultraS diffmat
-%        M_{sin(th)^2} = multmat in Fourier for sin(th)^2
-%        I       = identity matrix
-%        S_{02}  = ultraS convertmat from chebT -> ultraS(2)
-%        D_2^F   = 2nd Fourier diffmat
-%        M_{cos(th)sin(th)} = multmat in Fourier for cos(th)sin(th)
-%        D_1^F   = 1st Fourier diffmat
 
 % Adjust the size
 F = coeffs3(f,m,n,p);
@@ -113,13 +67,13 @@ DF2lam = trigspec.diffmat(n, 2);
 
 %% Remove this in Julia
 % if g = function_handle of lambda, th
-if isa(g, 'function_handle')
+if isa(BC, 'function_handle')
     % Grid
     th = pi*trigpts(p);
     lam = pi*trigpts(n);
     % Evaluate function handle at tensor grid:
     [ll, tt] = ndgrid(lam, th);
-    BC1 = feval(g, ll, tt).';
+    BC1 = feval(BC, ll, tt).';
     % Test if the function is constant
     if size(BC1) == 1
         BC1 = ones(p,n)*BC1(1);
@@ -130,8 +84,8 @@ if isa(g, 'function_handle')
 %% if g is an array of fourier coefficients lambda x theta
 else
     % BC1 is an array of coefficients theta x lambda of size [m,n,p]
-    g = trigtech.alias(trigtech.alias(g.',p).',n);
-    BC1 = g.';
+    BC = trigtech.alias(trigtech.alias(BC.',p).',n);
+    BC1 = BC.';
 end
 
 % Use the symmetries to find BC2

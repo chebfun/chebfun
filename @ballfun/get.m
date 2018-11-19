@@ -1,7 +1,7 @@
 function val = get( f, propName )
-%GET       GET method for BALLFUN class.
+%GET GET method for BALLFUN class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
-%   the BALLFUN object F. Valid entries for the string PROP are:
+%   the BALLFUN F. Valid entries for the string PROP are:
 %    'coeffs'
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.

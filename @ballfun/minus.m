@@ -1,5 +1,5 @@
 function h = minus(f, g)
-%-   BALLFUN minus.
+%BALLFUN minus.
 %   F - G subtracts BALLFUNs F and G, or a scalar from a BALLFUN if either F or
 %   G is a scalar.
 %
