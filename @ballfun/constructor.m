@@ -179,12 +179,7 @@ if nargin == 1
         error('BALLFUN:CONSTRUCTOR:VALUES', ... 
         'When constructing from values the number of fibers must be greater than 2.');
     end
-
-    if ( mod(p,2) ~= 0 )
-        error('BALLFUN:CONSTRUCTOR:VALUES', ... 
-        'When constructing from values the number of fibers must be even.');
-    end
-    
+  
     % Define the functions g on [0,1]x[-pi,0]x[0,pi] and h on [0,1]x[0,pi]x[0,pi]
     g = f(:,1:n/2+1,:);
     h = f(:,[n/2+1:end 1],:); 
