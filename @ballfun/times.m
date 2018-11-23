@@ -1,7 +1,7 @@
 function h = times(f, g)
-%.*   BALLFUN multiplication.
-%   F.*G multiplies F and G, where F and G may be BALLFUN objects or scalars.
-%   If F and/or G is array-valued, the dimensions must match.
+%.*   Pointwise multiplication for BALLFUN.
+%   F.*G multiplies BALLFUN F and G. Alternatively F or G could be 
+%   a double.
 %
 % See also MTIMES.
 
