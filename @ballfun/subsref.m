@@ -7,6 +7,15 @@ function varargout = subsref(f, index)
 %   F(R, L, TH, 'spherical') returns the values of the BALLFUN F evaluated 
 %   at the points (R, L, TH) in spherical scoordinates.
 %
+%   G = F(0, :, :) is the slice of the BALLFUN F corresponding to 
+%   the plane X = 0.
+%
+%   G = F(:, 0, :) is the slice of the BALLFUN F corresponding to 
+%   the plane Y = 0.
+%
+%   G = F(:, :, 0) is the slice of the BALLFUN F corresponding to 
+%   the plane Z = 0.
+%
 %   F(R, :, :, 'spherical') returns a spherefun representing the function F
 %   along a radial shell. 
 % 
@@ -36,7 +45,13 @@ switch index(1).type
             z = idx{3};
             % If x, y, z are numeric or ':' call feval().
             if ( ( isnumeric(x) ) && ( isnumeric(y) ) && ( isnumeric(z) ) )
-                out = feval(f, x, y, z); 
+                out = feval(f, x, y, z);
+            elseif ( isequal(x,0) && strcmpi(y, ':') && strcmpi(z, ':') )
+                out = diskfun(f, 'x'); 
+            elseif ( strcmpi(x, ':') && isequal(y,0) && strcmpi(z, ':') )
+                out = diskfun(f, 'y'); 
+            elseif ( strcmpi(x, ':') && strcmpi(y, ':') && isequal(z,0) )
+                out = diskfun(f, 'z'); 
             elseif ( strcmpi(x, ':') && strcmpi(y, ':') && strcmpi(z, ':') )
                 out = f; 
             else
