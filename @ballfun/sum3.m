@@ -1,7 +1,6 @@
-function I = sum3(f, varargin)
-% SUM3 Integration of a BALLFUN function over the unit ball. 
-%   SUM3(F) is the integration of the BALLFUN function f over the
-%   unit ball.
+function I = sum3(f)
+%SUM3   Triple integral of a BALLFUN over its domain.
+%   I = SUM3(F) returns the double definite integral of a BALLFUN.
 %
 % See also SUM, SUM2.
 

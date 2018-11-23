@@ -16,7 +16,7 @@ function varargout = subsref(f, index)
 %   G = F(:, :, 0) is the slice of the BALLFUN F corresponding to 
 %   the plane Z = 0.
 %
-%   F(R, :, :, 'spherical') returns a spherefun representing the function F
+%   F(R, :, :, 'spherical') returns a spherefun representing the BALLFUN F
 %   along a radial shell. 
 % 
 %   F(:, :, :) returns F.

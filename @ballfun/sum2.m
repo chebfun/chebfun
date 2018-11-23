@@ -1,16 +1,24 @@
-function ff = sum2(f,dim_1,dim_2)
-%SUM2  Integration of a BALLFUN function over lambda and theta
-%   SUM2(F,dim_1,dim_2) is the integration of the BALLFUN function f over
-%   dim_1 and dim_2
+function ff = sum2(f, dims)
+% SUM2 Definite integration of a BALLFUN in two variables.
+%   SUM2(F, DIMS) integrates F over two of the variables r, lambda or theta 
+%   where DIMS is a row vector containing two of the three indices
+%   1, 2 or 3. The output is a 1D CHEBFUN in the remaining variable.
 %
-% See also SUM, SUM3.
+%   G = SUM2(F) is the same as SUM2(F, [2, 3]).
+%
+% See also SUM, SUM3. 
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Default to lambda and theta directions: 
+if ( nargin == 1 )
+    dims = [2 3];
+end
+
 % Sort the dimensions
-dim = sort([dim_1,dim_2]);
-dim_1 = dim(1); dim_2 = dim(2);
+dims = sort(dims);
+dim_1 = dims(1); dim_2 = dims(2);
 
 % Increase the discretization by 2 in the r and theta direction
 [m,n,p] = size(f);

@@ -1,7 +1,8 @@
 function g = sum(f, dim)
-% SUM Integration of a BALLFUN function over r
-%   SUM(f, dim) is the integration of the BALLFUN function f over dim.
-%   It returns a SPHEREFUN if dim = 1 and a DISKFUN if dim = 2 or 3
+% SUM Definite integration of a BALLFUN.
+%   SUM(F, DIM) where DIM is 1, 2 or 3 integrates only over r (radial direction), 
+%   lambda (azimuthal direction) or theta (polar direction) respectively and 
+%   and returns as its output a spherefun if DIM is 1 or a diskfun otherwise.
 %
 % See also SUM2, SUM3. 
 
