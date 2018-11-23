@@ -1,9 +1,11 @@
 function f = div(v)
-%DIV  Divergence of a BALLFUNV in cartesian coordinates.
-%   DIV(f) is the divergence of the BALLFUNV v expressed in
-%   cartesian coordinates.
+%DIV   Numerical divergence of a BALLFUNV. 
+%   D = DIV( F ) returns the numerical divergence of the
+%   BALLFUNV. 
 %
-% See also CURL. 
+%  This is shorthand for the command DIVERGENCE. 
+% 
+% See also DIVERGENCE, GRAD, CURL.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

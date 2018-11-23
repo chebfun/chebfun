@@ -1,14 +1,14 @@
 function out = feval(varargin)
 %FEVAL   Evaluate a BALLFUN at one or more points.
-%   Y = FEVAL( F, X, Y, Z) evaluates a diskfun F at a point (X,Y,Z) in Cartesian
-%   cooridnates, where X, Y and Z are doubles.
+%   Y = FEVAL( F, X, Y, Z) evaluates a BALLFUN F at a point (X,Y,Z) in Cartesian
+%   coordinates, where X, Y and Z are doubles.
 %
-%   Y = FEVAL( F, R, LAM, TH, 'spherical') evaluates a ballfun F in
+%   Y = FEVAL( F, R, LAM, TH, 'spherical') evaluates a BALLFUN F in
 %   spherical coordinates (R,LAM,TH). Here R, LAM and THETA are doubles representing 
 %   the radius, azimuthal and polar angles (in radians) and must be points 
 %   in the unit ball.
 %
-% See also FEVAL. 
+% See also FEVALM. 
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.\

@@ -1,21 +1,28 @@
-function vals = feval(varargin)
-%FEVAL   Evaluate a BALLFUNV
-%   FEVAL(F, R, L, T) evaluates a BALLFUNV F at the points (R,L,T) in spherical coordinates
-%   at a tensor-product grid R x L x T.
+function vals = feval(f, varargin)
+%FEVAL   Evaluate a BALLFUNV at one or more points.
+%   Y = FEVAL( F, X, Y, Z) evaluates a BALLFUNV F at a point (X,Y,Z) in Cartesian
+%   coordinates, where X, Y and Z are doubles.
 %
-% See also SUBSREF. 
+%   Y = FEVAL( F, R, LAM, TH, 'spherical') evaluates a ballfun F in
+%   spherical coordinates (R,LAM,TH). Here R, LAM and THETA are doubles representing 
+%   the radius, azimuthal and polar angles (in radians) and must be points 
+%   in the unit ball.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-f = varargin{1};
+% 
 
+% Extract the components
 F = f.comp;
 
-V1 = feval(F{1}, varargin{2:end});
-V2 = feval(F{2}, varargin{2:end});
-V3 = feval(F{3}, varargin{2:end});
-vals = zeros(size(V1,3));
+% Evaluate the ballfun objects
+V1 = feval(F{1}, varargin{:});
+V2 = feval(F{2}, varargin{:});
+V3 = feval(F{3}, varargin{:});
+
+% Return a tensor of values
+vals = zeros([size(V1) 3]);
 vals(:,:,:,1) = V1;
 vals(:,:,:,2) = V2;
 vals(:,:,:,3) = V3;

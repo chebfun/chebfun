@@ -1,6 +1,6 @@
 function H = cross(F,G)
-%CROSS  Cross product of two BALLFUNVs.
-%   CROSS(F, G) is the cross product of the BALLFUNV F and G.
+%CROSS   Vector cross product.
+%   CROSS(F, G) returns the cross product of the BALLFUNV F and G. 
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

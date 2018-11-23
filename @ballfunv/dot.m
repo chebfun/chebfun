@@ -1,6 +1,8 @@
 function h = dot(f, g)
-%DOT  Dot product of two BALLFUNV
-%   DOT(f, g) is the dot of the BALLFUNV f and g
+%DOT   Vector dot product.
+%   DOT(F, G) returns the dot product of the BALLFUNV F and G. 
+% 
+% See also CROSS. 
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

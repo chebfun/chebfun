@@ -1,11 +1,14 @@
 function varargout = HelmholtzDecomposition(v)
-% HELMHOLTZDECOMPOSITION Helmholtz decomposition of a BALLFUNV
-%   HELMHOLTZDECOMPOSITION returns the two-component form or the three-component
-%   form according to the number of output arguments
-%   two-component form:
-%   v = grad(f) + Psi, where Psi = curl(curl(rPpsi)) + curl(rTpsi)
-%   three-component form:
-%   v = grad(f) + curl(Psi) + grad(phi), where Psi = curl(curl(rPpsi)) + curl(rTpsi)
+%HELMHOLTZDECOMPOSITION Helmholtz decomposition of a BALLFUNV
+%   [F,P,T] = HELMHOLTZDECOMPOSITION(V) returns the two-component form of
+%   the Helmholtz decomposition, where 
+%   V = grad(F) + curl(curl(rP)) + curl(rT).
+%
+%   [F,P,T,Phi] = HELMHOLTZDECOMPOSITION(V) returns the three-component form of
+%   the Helmholtz decomposition, where
+%   V = grad(F) + curl(curl(rP)) + curl(rT) + grad(phi).
+%
+%   See also PTdecomposition.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
