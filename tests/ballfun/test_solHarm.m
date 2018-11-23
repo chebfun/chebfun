@@ -15,7 +15,7 @@ Max_laplacian = 0;
 for l = 0:n
     for m = 0:l
         Yml = ballfun.solharm(l,m);
-        Y = Yml(1,:,:)*sqrt(1+(m>0))/sqrt(2*l+3);
+        Y = Yml(1,:,:,'spherical')*sqrt(1+(m>0))/sqrt(2*l+3);
         Z = spherefun.sphharm(l,m);
         % Check that the Legendre polynomials is the same as in Spherefun
         Max_difference = max(norm(Y-Z),Max_difference);
