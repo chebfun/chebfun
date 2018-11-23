@@ -1,7 +1,11 @@
 function h = times(f, g)
-%.*   BALLFUNV multiplication.
-%   F.*G multiplies F and G, where F and G may be BALLFUNV objects or scalars.
+%.*   Componentwise multiplication for BALLFUNV. 
+%   F.*G if F is a BALLFUNV and G is double returns the BALLFUNV after
+%   componentwise multiplication.
 %
+%   F.*G if F is a double and G is a BALLFUNV returns the BALLFUNV after
+%   componentwise multiplication.
+% 
 % See also MTIMES.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.

@@ -2,17 +2,17 @@ function varargout = subsref(F, index)
 %SUBSREF   BALLFUNV subsref.
 %
 % ( )
-%   F(X,Y,Z) or F(X, Y, Z, 'cart') returns the values of the BALLFUNV F 
-%   evaluated on the array (X,Y,Z) in cartesian coordinates. 
+%   F(X,Y,Z) returns the values of the BALLFUNV F evaluated on the array 
+%   (X,Y,Z) in cartesian coordinates. 
 %
-%   F(R, L, TH, 'polar') returns the values of the BALLFUNV F 
-%   evaluated on the array (R,TH,LAM) in spherical coordinates. 
+%   F(R, L, TH, 'spherical') returns the values of the BALLFUNV F evaluated
+%   on the array (R,TH,LAM) in spherical coordinates. 
 %
-%   F(k) returns the first component of F if k=1, the second if k=2, and
-%   the third if k=3.
+%   F(K) returns the first component of F if K = 1, the second if K = 2, and
+%   the third if K = 3.
 %
-%   F(R, :, :) returns a SPHEREFUNV representing the function F along a 
-%   radial shell. 
+%   F(R, :, :, 'spherical') returns a SPHEREFUNV representing the BALLFUNV 
+%   F along a radial shell. 
 %
 %   F(:, :, :) returns F.
 %

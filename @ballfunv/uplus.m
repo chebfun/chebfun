@@ -8,5 +8,4 @@ function f = uplus(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Nothing to do here.
-
 end

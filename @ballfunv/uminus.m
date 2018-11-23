@@ -1,8 +1,10 @@
 function g = uminus(f)
-%-  BALLFUNV unary minus.
-%   -F negates the BALLFUNV F.
+%- Unary minus of a BALLFUNV.
+%   -F returns the BALLFUNV negated componentwise. 
 %
-%   G = UMINUS(F) is called for the syntax '-F'.
+%   UMINUS(F) is called by the syntax -F. 
+%
+% See also UPLUS.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

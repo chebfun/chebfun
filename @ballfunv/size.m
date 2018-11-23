@@ -3,6 +3,8 @@ function S = size(v)
 %   S = SIZE(V) returns a 3 by 3 matrix whose vertical entries represent
 %   the sizes of Vx, Vy and Vz
 %
+%   See also BALLFUN/SIZE.
+
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
