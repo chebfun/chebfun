@@ -21,8 +21,13 @@ V1 = feval(F{1}, varargin{:});
 V2 = feval(F{2}, varargin{:});
 V3 = feval(F{3}, varargin{:});
 
+% Get the sizes of the evaluation points
+x = varargin{1};
+y = varargin{2};
+z = varargin{3};
+
 % Return a tensor of values
-vals = zeros([size(V1) 3]);
+vals = zeros(length(x),length(y),length(z),3);
 vals(:,:,:,1) = V1;
 vals(:,:,:,2) = V2;
 vals(:,:,:,3) = V3;
