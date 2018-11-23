@@ -1,12 +1,12 @@
 function w = real(v)
-% REAL  Real part of a BALLFUNV
-%   REAL(V) is the real part of the BALLFUNV V.
+%REAL  Real part of a BALLFUNV.
+%   REAL(F) returns the BALLFUNV representing the real part of F.
 %
 % See also IMAG.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-V = v.comp;
-w = ballfunv( real(V{1}), real(V{2}), real(V{3}) );
+% Take real part of each component:
+w = ballfunv( real(v.comp{1}), real(v.comp{2}), real(v.comp{3}) );
 end

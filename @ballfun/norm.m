@@ -1,9 +1,10 @@
 function nm = norm(f, varargin)
 %NORM  Norm of a BALLFUN.
-% 
-% For BALLFUN objects:
+%   For BALLFUN objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
-% If F is near zero, this function might be inaccurate.
+%   If F is near zero, this function might be inaccurate.
+%
+%   See also BALLFUNV/NORM.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

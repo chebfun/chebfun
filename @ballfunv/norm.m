@@ -1,7 +1,10 @@
 function v = norm(F)
-% NORM   Frobenius norm of a BALLFUNV.
-%   V = NORM(F) returns the Frobenius norm, i.e.,
-%   V = sqrt(norm(F1).^2 + norm(F2).^2 + norm(F3).^2) of the BALLFUNV V.
+%NORM  Norm of a BALLFUN.
+%   For BALLFUN objects:
+%    NORM(F) = sqrt(norm(F1).^2 + norm(F2).^2 + norm(F3).^2)
+%   If F is near zero, this function might be inaccurate.
+%
+%   See also BALLFUN/NORM.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

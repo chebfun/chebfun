@@ -1,9 +1,12 @@
-function f = laplacian(v)
-% LAPLACIAN Laplacian of a BALLFUNV.
-%   LAPLACIAN(V) is the laplacian of the BALLFUNV V.
+function L = laplacian(F)
+%LAPLACIAN Vector Laplacian of a BALLFUNV.
+%   LAPLACIAN(F) returns a BALLFUNV representing the vector Laplacian of F.
+% 
+% See also BALLFUN/LAPLACIAN
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-f = grad(div(v))-curl(curl(v));
+% Compute the vector laplacian
+L = [laplacian(F.comp{1}); laplacian(F.comp{2}); laplacian(F.comp{3})];
 end

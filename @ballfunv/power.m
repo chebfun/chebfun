@@ -1,7 +1,9 @@
 function w = power(v,n)
-% POWER Return a BALLFUNV to the power n
-%   POWER(V,N) is the BALLFUNV (Vx^N, Vy^N, Vz^N), where Vx, Vy, and Vz are the
-%   three components of V, respectively.
+%.^ Componentwise power for BALLFUNV.
+%   F.^G where F is a BALLFUNV and G is a double returns the result from
+%   componentwise powers.
+%
+%   See also BALLFUN/POWER.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

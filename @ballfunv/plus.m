@@ -1,9 +1,14 @@
 function h = plus(f, g)
-%+   BALLFUNV plus.
-%   F + G adds BALLFUNVs F and G, or a scalar to a BALLFUNV if either F or G is a
-%   scalar.
+% + PLUS of two BALLFUNV. 
+%   F + G if F and G are BALLFUNV does componentwise addition. 
 %
-%   H = PLUS(F, G) is called for the syntax 'F + G'.
+%   F + G if F is a double and G is a BALLFUNV does componentwise addition. 
+% 
+%   F + G if F is a BALLFUNV and G is a double does componentwise addition.
+% 
+%   PLUS(F,G) is called for the syntax F + G. 
+% 
+% See also MINUS.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

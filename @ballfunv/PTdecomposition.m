@@ -1,11 +1,9 @@
 function varargout = PTdecomposition(v)
 % PTDECOMPOSITION Poloidal-toroidal decomposition of a BALLFUNV
-%   [P,T] = PTDECOMPOSITION(v) is the poloidal-toroidal decomposition of the BALLFUNV v
-%   The Poloidal-toroidal decomposition of a divergence-free BALLFUNV v 
-%   is of the form V = curl(curl(rP)) + curl(rT), where P and T are 2
-%   scalar fields
+%   [P,T] = PTDECOMPOSITION(V) returns the poloidal and toroidal BALLFUN of 
+%   the BALLFUNV V, where V = curl(curl(rP)) + curl(rT).
 % 
-% Also see PT2BALLFUNV
+%   Also see PT2BALLFUNV.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

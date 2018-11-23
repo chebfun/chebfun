@@ -1,11 +1,10 @@
 function quiver(v,varargin)
-% QUIVER Plot of a BALLFUNV on the ball with uniformly
-% distributed points
-
-% QUIVER   Quiver plot of a BALLFUNV.
-%   QUIVER(V) plots the vector field of the BALLFUNV V in
-%   Cartesian coordinates in a ball. QUIVER automatically scales the colors
-%   of the arrows the data. The arrows are plotted on a regular grid.
+% QUIVER Quiver plot of BALLFUNV.
+%   QUIVER(V) plots the vector field of the BALLFUNV V. QUIVER automatically
+%   scales the colors of the arrows to the data. The arrows are plotted on 
+%   a regular grid.
+%
+%   See also BALLFUN/PLOT.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

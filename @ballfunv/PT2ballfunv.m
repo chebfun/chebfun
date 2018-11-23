@@ -1,8 +1,12 @@
 function varargout = PT2ballfunv(P,T)
-% Take 2 scalar fields P and T  in Cheb-Fourier-Fourier basis and return the vector field
-% v = curl(curl(rP)) + curl(rT)
+%PT2BALLFUNV inverse of the poloidal-toroidal decomposition.
+%   V = PT2BALLFUNV(P, T) returns the BALLFUNV V = curl(curl(rP)) +
+%   curl(rT), where P and T are poloidal and toroidal BALLFUN.
 %
-% Also see PTDECOMPOSITION
+%   [Pv, Tv] = PT2BALLFUNV(P, T) returns the poloidal and toroidal BALLFUNV
+%   defined by Pv = curl(curl(rP)) and Tv = curl(rT).
+%
+%   See also PTDECOMPOSITION.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

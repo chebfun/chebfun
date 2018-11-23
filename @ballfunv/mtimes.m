@@ -1,6 +1,9 @@
 function h = mtimes(f, g)
-%*   BALLFUNV multiplication.
-%   A*F and F*A multiplies the BALLFUNV F by the scalar A.
+%*  mtimes for BALLFUNV.
+%
+%  c*F or F*c multiplies each component of the DISKFUNV F by the scalar c.
+%
+%   See also TIMES.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
