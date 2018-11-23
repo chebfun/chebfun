@@ -8,6 +8,8 @@ function u = poisson(f, g, m, n, p, varargin)
 %   equation with right-hand side F and Dirichlet boundary
 %   data given by g(lambda, theta).
 %
+%   The equation is discretized on a M*N*P grid in spherical coordinates.
+%
 % Also see HELMHOLTZ.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.

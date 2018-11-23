@@ -1,14 +1,14 @@
 function varargout = subsref(f, index)
 %SUBSREF   BALLFUN subsref.
 %( )
-%   F(X, Y, Z) or F(X, Y, Z, 'cart') returns the values of the BALLFUN 
-%   object F evaluated at the points (X, Y, Z) in cartesian coordinates.
+%   F(X, Y, Z) returns the values of the BALLFUN F evaluated at the points 
+%   (X, Y, Z) in cartesian coordinates.
 %
-%   F(R, L, TH, 'polar') returns the values of the BALLFUN object F 
-%   evaluated at the points (R, L, TH) in spherical scoordinates.
+%   F(R, L, TH, 'spherical') returns the values of the BALLFUN F evaluated 
+%   at the points (R, L, TH) in spherical scoordinates.
 %
-%   F(R, :, :) returns a spherefun representing the function F along a 
-%   radial shell. 
+%   F(R, :, :, 'spherical') returns a spherefun representing the function F
+%   along a radial shell. 
 % 
 %   F(:, :, :) returns F.
 %
@@ -36,9 +36,7 @@ switch index(1).type
             z = idx{3};
             % If x, y, z are numeric or ':' call feval().
             if ( ( isnumeric(x) ) && ( isnumeric(y) ) && ( isnumeric(z) ) )
-                out = feval(f, x, y, z);
-            elseif ( isnumeric(x) && strcmpi(y, ':') && strcmpi(z, ':') )
-                out = extract_spherefun( f, x ); 
+                out = feval(f, x, y, z); 
             elseif ( strcmpi(x, ':') && strcmpi(y, ':') && strcmpi(z, ':') )
                 out = f; 
             else
@@ -50,15 +48,18 @@ switch index(1).type
             
             out = feval(f, idx{1}, idx{2}, idx{3});
             
-        elseif ( numel(idx) == 4 && strcmpi(idx(4),'polar') )
+        elseif ( numel(idx) == 4 && (strcmpi(idx(4),'spherical') || strcmpi(idx(4),'polar') ))
             
             r = idx{1};
             lam = idx{2};
             th = idx{3};
-            x = @(r,lam,th)r.*sin(th).*cos(lam);
-            y = @(r,lam,th)r.*sin(th).*sin(lam);
-            z = @(r,lam,th)r.*cos(th);
-            out = feval(f, x(r,lam,th), y(r,lam,th), z(r,lam,th));
+            if ( ( isnumeric(r) ) && ( isnumeric(lam) ) && ( isnumeric(th) ) )
+                % Evaluate at spherical coordinates
+                out = feval(f, r, lam, th, 'spherical');
+            elseif ( isnumeric(r) && strcmpi(lam, ':') && strcmpi(th, ':') )
+                % Evaluate at the boundary and return a spherefun
+                out = extract_spherefun( f, r );
+            end
             
         else
             error('CHEBFUN:BALLFUN:subsref:inputs', ...

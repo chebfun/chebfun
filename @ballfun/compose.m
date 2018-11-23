@@ -11,12 +11,12 @@ function f = compose(f, op, g )
 
 % A very simple compose function for now: 
 if ( nargin == 2 )
-    op = @(r, l, th) feval(op, feval(f, r, l, th));
+    op = @(r, l, th) feval(op, feval(f, r, l, th, 'spherical'));
 else
-    op = @(r, l, th) feval(op, feval(f, r, l, th), feval(g, r, l, th));
+    op = @(r, l, th) feval(op, feval(f, r, l, th, 'spherical'), feval(g, r, l, th, 'spherical'));
 end    
 
 % Make BALLFUN object:
-f = ballfun( op, 'polar' );
+f = ballfun( op, 'spherical' );
 end
     

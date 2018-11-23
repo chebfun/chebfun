@@ -3,8 +3,7 @@ function varargout = size( F )
 %   S = SIZE(F) returns the size of the tensor of expansion coefficients
 %   for F, where S = [m,n,p] for an mxnxp tensor of coefficients. 
 %   
-%   [M, N, P] = SIZE(F) is the same as S = SIZE(F) with M = S(1), N = S(2),
-%   and P = S(3).
+%   [M, N, P] = SIZE(F) is the same as S = SIZE(F) with S = [M, N, P].
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

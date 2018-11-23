@@ -23,20 +23,21 @@ end
 
 % Figure out if Cartesian or polar coordinates should be used.
 % Search for user-supplied 'spherical' flag in arguments:
-% isPolar = any(find(strcmp(varargin,'polar'))) || any(find(strcmp(varargin,'spherical')));
-% if ( ~isPolar )
-% X = varargin{2};
-% Y = varargin{3};
-% Z = varargin{4};
-% [Lam,Th,R] = cart2sph(X,Y,Z);
-% Th = pi/2 - Th;
-% if ( any(R > 1+1e-8) ) % Check for points off ball
-%     error('CHEBFUN:BALLFUN:FEVAL:pointsNotOnDisk',...
-%         ['The specified points to evaluate the function do not '...
-%         'lie sufficiently close to the unit ball.']);
-% end
-% out = feval(f, R, Lam, Th, 'spherical');
+isPolar = any(find(strcmp(varargin,'polar'))) || any(find(strcmp(varargin,'spherical')));
+if ( ~isPolar )
+X = varargin{2};
+Y = varargin{3};
+Z = varargin{4};
+[Lam,Th,R] = cart2sph(X,Y,Z);
+Th = pi/2 - Th;
+if ( any(R > 1+1e-8) ) % Check for points off ball
+    error('CHEBFUN:BALLFUN:FEVAL:pointsNotOnDisk',...
+        ['The specified points to evaluate the function do not '...
+        'lie sufficiently close to the unit ball.']);
+end
+out = feval(f, R, Lam, Th, 'spherical');
 
+else
 R = varargin{2};
 Lam = varargin{3};
 Th = varargin{4};
@@ -154,5 +155,6 @@ if ( isnumeric(R) && isnumeric( Lam ) && isnumeric( Th ) )
 else
     error('CHEBFUN:BALLFUN:feval:inputs', ...
         'Unrecognized arguments for evaluation.');
+end
 end
 end

@@ -40,7 +40,7 @@ lambda = pi*trigpts(n);
 
 % Build the grid and evaluate at the plane Z = 0
 [rr, ll, tt] = ndgrid(r, lambda, pi/2);
-G = feval(f,rr,ll,tt);
+G = feval(f,rr,ll,tt,'spherical');
 
 % Return the diskfun
 g = diskfun(real(G));

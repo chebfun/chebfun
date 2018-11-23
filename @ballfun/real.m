@@ -1,5 +1,5 @@
 function g = real(f)
-%REAL Real part of a BALLFUN function
+%REAL Real part of a BALLFUN.
 %   REAL(F) is the real part of the BALLFUN F.
 %
 % See also IMAG. 

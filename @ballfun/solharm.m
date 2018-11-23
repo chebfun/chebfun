@@ -2,8 +2,10 @@ function f = solharm(l,m)
 % SOLHARM Complex-valued, solid harmonic of degree L and order M.
 %
 %   F = SOLHARM(L, M) returns the degree L, order M real-valued 
-%   solid harmonic on the ball.  f is normalized so that its two-norm
-%   over the sphere is 1 : f = sqrt(2*l+3)*r^l^Y^m_l. 
+%   solid harmonic on the ball.  F is normalized so that its two-norm
+%   over the sphere is 1. 
+%
+% See also spherefun.sphharm.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

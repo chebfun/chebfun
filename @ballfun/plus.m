@@ -1,9 +1,6 @@
 function h = plus(f, g)
-%+   BALLFUN plus.
-%   F + G adds BALLFUNs F and G, or a scalar to a BALLFUN if either F or G is a
-%   scalar.
-%
-%   H = PLUS(F, G) is called for the syntax 'F + G'.
+%+   Plus for BALLFUN.
+% F + G adds F and G. F and G can be scalars or BALLFUN.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

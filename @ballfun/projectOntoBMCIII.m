@@ -1,13 +1,12 @@
 function f = projectOntoBMCIII( f )
-% PROJECTONTOBMCI  Projection onto BMC-I symmetry.
+% PROJECTONTOBMCI  Projection onto BMC-III symmetry.
 %
-% f = projectOntoBMCI(f) is the orthogonal projection of f onto BMC-III
+% f = projectOntoBMCIII(f) is the orthogonal projection of f onto BMC-III
 % symmetry, i.e., a function that is
 % 1. even in theta for every even wave number in lambda;
 % 2. odd in theta for every odd wave number in lambda;
 % Additionally, for all but k=0 wavenumber lambda the resulting projection
 % enforces the ballfun is zero at the poles. 
-% TODO : Add info on R
 %
 % The projection is orthogonal, i.e., the correction matrix to fix up the
 % structure has the smallest possible Frobenius norm.
