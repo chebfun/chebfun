@@ -42,7 +42,7 @@ v_Boundary = ComputeNormalBoundary(v,n,p);
 
 % Solve the Poisson equation Delta f = div(v) with Boundary conditions
 % df/dr = vr[r=1
-f = helmholtz_neumann(div_v,0,v_Boundary,m,n,p);
+f = helmholtz(div_v,0,v_Boundary,m,n,p,'neumann');
 
 % Divergence-free vector field
 v_1 = v - grad(f);
@@ -78,7 +78,7 @@ v_Boundary = ComputeNormalBoundary(v_1,n,p);
 % Solve Delta phi = 0 with Neumann boundary condition
 % r.grad(phi) = dphi/dr = r.v_1
 zero = ballfun(zeros(m,n,p),'coeffs');
-phi = helmholtz_neumann(zero,0,v_Boundary,m,n,p);
+phi = helmholtz(zero,0,v_Boundary,m,n,p,'neumann');
 
 % Divergence-free and tangential-free vector field
 v_2 = v_1 - grad(phi);
