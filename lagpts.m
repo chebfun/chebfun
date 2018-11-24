@@ -247,6 +247,7 @@ for k = 1:mn
             x(k) = ox;
             break
         end
+        l
         ox = x(k);
         x(k) = x(k) -step;
         ov = pe;
