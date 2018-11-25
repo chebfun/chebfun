@@ -44,7 +44,7 @@ for j = 1:K
 end
 
 % Return the derivative ballfun function 
-g = simplify(ballfun( F, 'coeffs' )); 
+g = ballfun( F, 'coeffs' ); 
 end
 
 function F = onediff(F, dim, Cart)

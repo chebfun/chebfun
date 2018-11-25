@@ -34,7 +34,6 @@ monomial = chebtech2.vals2coeffs(monomial);
 F = zeros(S);
 F(:,abs(m)+m+1,:) = reshape(monomial*Plm.',l+1,1,2*l+1);
 f = ballfun(F,'coeffs');
-
 end
 
 

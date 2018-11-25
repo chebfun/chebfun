@@ -113,14 +113,15 @@ f = ballfun(@(r, lam, th)r.*cos(lam).*sin(th),'spherical');
 bc = @(lam, th) 3*sin(lam).*cos(th);   % Neumann condition
 u = helmholtz(f,0,bc,39,40,41,'neumann');
 U = u.coeffs;
-pass(13) = abs(U(1,floor(n/2)+1,floor(p/2)+1))<eps;
+
+pass(13) = abs(U(1,floor(size(u,2)/2)+1,floor(size(u,3)/2)+1))<eps;
 
 % Example 14:
 f = ballfun(@(r, lam, th)r.^2.*sin(th).^2,'spherical');
 bc = @(lam, th) 2*sin(th).^2;   % Neumann condition
 u = helmholtz(f,0,bc,39,40,41,'neumann');
 U = u.coeffs;
-pass(14) = abs(U(1,floor(n/2)+1,floor(p/2)+1))<eps;
+pass(14) = abs(U(1,floor(size(u,2)/2)+1,floor(size(u,3)/2)+1))<eps;
 
 % Example 15:
 exact = ballfun(@(r, lam, th)1,'spherical');

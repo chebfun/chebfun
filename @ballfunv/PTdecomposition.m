@@ -64,8 +64,8 @@ for k = 1:p
 end
 
 % Poloidal and toroidal scalars
-P = PTequation(simplify(ballfun(RhsP,'coeffs')));
-T = PTequation(simplify(ballfun(RhsT,'coeffs')));
+P = PTequation(ballfun(RhsP,'coeffs'));
+T = PTequation(ballfun(RhsT,'coeffs'));
 
 % Prepare output:
 if ( nargout <= 1 ) 

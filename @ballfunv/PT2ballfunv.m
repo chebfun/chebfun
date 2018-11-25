@@ -85,9 +85,9 @@ Vy = permute(Vy,[3,1,2]);
 Vz = permute(Vz,[3,1,2]);
 
 % Simplify
-Vx = simplify(ballfun(Vx,'coeffs'));
-Vy = simplify(ballfun(Vy,'coeffs'));
-Vz = simplify(ballfun(Vz,'coeffs'));
+Vx = ballfun(Vx,'coeffs');
+Vy = ballfun(Vy,'coeffs');
+Vz = ballfun(Vz,'coeffs');
 
 % Return v = curl(rP)
 v = ballfunv(Vx,Vy,Vz);

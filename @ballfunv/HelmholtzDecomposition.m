@@ -80,7 +80,7 @@ v_Boundary = ComputeNormalBoundary(v_1,n,p);
 
 % Solve Delta phi = 0 with Neumann boundary condition
 % r.grad(phi) = dphi/dr = r.v_1
-zero = ballfun(zeros(m,n,p),'coeffs');
+zero = cheb.galleryballfun('zero');
 phi = helmholtz(zero,0,v_Boundary,m,n,p,'neumann');
 
 % Divergence-free and tangential-free vector field

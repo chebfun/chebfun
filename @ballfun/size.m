@@ -1,4 +1,4 @@
-function varargout = size( F )
+function varargout = size( F, varargin )
 %SIZE   Size of a BALLFUN.
 %   S = SIZE(F) returns the size of the tensor of expansion coefficients
 %   for F, where S = [m,n,p] for an mxnxp tensor of coefficients. 
@@ -17,7 +17,10 @@ if ( numel( S ) == 2 )
 end
 
 % Prepare output:
-if ( nargout <= 1 ) 
+if ( nargout <= 1 )
+    if nargin > 1
+        S = S(varargin{1});
+    end
     varargout = { S };
 else 
     varargout = { S(1), S(2), S(3) };

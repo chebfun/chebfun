@@ -11,11 +11,9 @@ fIsBallfun = isa(f, 'ballfun');
 gIsBallfun = isa(g, 'ballfun');
 
 if (fIsBallfun && isnumeric(g))
-    h = f;
-    h.coeffs = g*f.coeffs;
+    h = ballfun(g*f.coeffs, 'coeffs');
 elseif (isnumeric(f) && gIsBallfun)
-    h = g;
-    h.coeffs = f*g.coeffs;
+    h = ballfun(f*g.coeffs, 'coeffs');
 elseif (fIsBallfun && gIsBallfun)
     h = times(f,g);
 else
@@ -23,5 +21,4 @@ else
           ['Undefined function ''mtimes'' for input arguments of type ' ...
            '%s and %s.'], class(f), class(g));
 end
-h = simplify(h);
 end

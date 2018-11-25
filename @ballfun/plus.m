@@ -36,6 +36,4 @@ else
           ['Undefined function ''plus'' for input arguments of type ' ...
            '%s and %s.'], class(f), class(g));
 end
-% Try to reduce the discretization
-h = simplify(h);
 end
