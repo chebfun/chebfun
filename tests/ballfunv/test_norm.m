@@ -7,7 +7,7 @@ end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = ballfun(@(r,lam,th)1, 'polar');
+f = ballfun(@(r,lam,th)1, 'spherical');
 v = ballfunv(f,f,f);
 norm_v = norm(v);
 norm_exact = sqrt(3*(4*pi/3));

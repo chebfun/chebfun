@@ -32,63 +32,63 @@ pass(3) = Max_laplacian < tol;
 % Example 1 : Y^0_0
 m = 0; l = 0;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)0.5*sqrt(1/pi)*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)0.5*sqrt(1/pi)*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(4) = norm(Exact - f) < tol;
 
 % Example 2 : Y^-1_1
 m = -1; l = 1;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)0.5*sqrt(3/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th)*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)0.5*sqrt(3/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th)*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(5) = norm(Exact - f) < tol;
 
 % Example 4 : Y^0_1
 m = 0; l = 1;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)0.5*sqrt(3/pi)*r.^l.*exp(1i*m*lam).*cos(th)*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)0.5*sqrt(3/pi)*r.^l.*exp(1i*m*lam).*cos(th)*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(6) = norm(Exact - f) < tol;
 
 % Example 5 : Y^1_1
 m = 1; l = 1;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)-0.5*sqrt(3/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th)*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)-0.5*sqrt(3/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th)*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(7) = norm(Exact - f) < tol;
 
 % Example 6 : Y^-2_2
 m = -2; l = 2;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)0.25*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).^2*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)0.25*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).^2*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(8) = norm(Exact - f) < tol;
 
 % Example 7 : Y^-1_2
 m = -1; l = 2;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)0.5*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).*cos(th)*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)0.5*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).*cos(th)*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(9) = norm(Exact - f) < tol;
 
 % Example 8 : Y^0_2
 m = 0; l = 2;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)0.25*sqrt(5/pi)*r.^l.*exp(1i*m*lam).*(3*cos(th).^2-1)*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)0.25*sqrt(5/pi)*r.^l.*exp(1i*m*lam).*(3*cos(th).^2-1)*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(10) = norm(Exact - f) < tol;
 
 % Example 9 : Y^1_2
 m = 1; l = 2;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)-0.5*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).*cos(th)*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)-0.5*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).*cos(th)*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(11) = norm(Exact - f) < tol;
 
 % Example 10 : Y^2_2
 m = 2; l = 2;
 Normalization = sqrt(2*l+3);
-Exact = ballfun(@(r,lam,th)0.25*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).^2*Normalization, 'polar');
+Exact = ballfun(@(r,lam,th)0.25*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).^2*Normalization, 'spherical');
 f = ballfun.solharm(l,m);
 pass(12) = norm(Exact - f) < tol;
 

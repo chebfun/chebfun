@@ -7,11 +7,11 @@ end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1: xyz
-f = ballfun(@(r,lam,th)r.*cos(lam).*sin(th).*r.*sin(lam).*sin(th).*r.*cos(th),'polar');
+f = ballfun(@(r,lam,th)r.*cos(lam).*sin(th).*r.*sin(lam).*sin(th).*r.*cos(th),'spherical');
 v = gradient(f);
-exactx = ballfun(@(r,lam,th)r.*sin(lam).*sin(th).*r.*cos(th),'polar');
-exacty = ballfun(@(r,lam,th)r.*cos(lam).*sin(th).*r.*cos(th),'polar');
-exactz = ballfun(@(r,lam,th)r.*cos(lam).*sin(th).*r.*sin(lam).*sin(th),'polar');
+exactx = ballfun(@(r,lam,th)r.*sin(lam).*sin(th).*r.*cos(th),'spherical');
+exacty = ballfun(@(r,lam,th)r.*cos(lam).*sin(th).*r.*cos(th),'spherical');
+exactz = ballfun(@(r,lam,th)r.*cos(lam).*sin(th).*r.*sin(lam).*sin(th),'spherical');
 exact = ballfunv(exactx,exacty,exactz);
 pass(1) = norm( v - exact ) < tol;
 

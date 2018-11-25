@@ -6,12 +6,12 @@ f = cheb.galleryballfun('zero');       % Forcing function
 exact = @(r, lam, th) r.*sin(lam).*sin(th);
 bc = @(lam, th) exact(1, th, lam);           % Dirichlet condition around r=1
 u = poisson(f, bc, 39, 40, 41);
-exact = ballfun(exact,'polar');
+exact = ballfun(exact,'spherical');
 pass(1) = isequal(u,exact);
 
 %% Poisson with Neumann BC
 % Example 2
-exact = ballfun(@(r, lam, th)r.^2.*sin(th).^2,'polar');
+exact = ballfun(@(r, lam, th)r.^2.*sin(th).^2,'spherical');
 f = laplacian(exact);
 bc = @(lam, th) 2*sin(th).^2;  % Neumann condition
 u = poisson(f, bc, 39, 40, 41, 'neumann');

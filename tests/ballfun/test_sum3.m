@@ -7,7 +7,7 @@ end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = ballfun(@(r,lam,th)1, 'polar');
+f = ballfun(@(r,lam,th)1, 'spherical');
 I = sum3(f);
 exact = 4*pi/3;
 pass(1) = abs(I-exact)<tol;

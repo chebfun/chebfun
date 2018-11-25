@@ -7,8 +7,8 @@ end
 tol = 1e4*pref.techPrefs.chebfuneps;
 
 % Example 1
-f = log(ballfun(@(r,lam,th)10,'polar'));
-exact = ballfun(@(r,lam,th)log(10),'polar');
+f = log(ballfun(@(r,lam,th)10,'spherical'));
+exact = ballfun(@(r,lam,th)log(10),'spherical');
 pass(1) = norm( f - exact ) < tol;
 
 % Example 2
