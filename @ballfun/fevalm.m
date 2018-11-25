@@ -50,6 +50,11 @@ end
 
 % Permute H to get the array of values r x lambda x theta
 vals = permute(vals, [2, 3, 1]);
+
+% Return real values if the function is real
+if f.isReal
+   vals = real(vals); 
+end
 end
 
 % Pulled from chebtech/clenshaw: 

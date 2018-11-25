@@ -68,7 +68,7 @@ end
 grid1 = cutoffs(1) + 1 - mod(cutoffs(1),2);
 grid2 = cutoffs(2) + mod(cutoffs(2),2);
 grid3 = max(4, cutoffs(3) + mod(cutoffs(3),2));
-vals = evaluate(op, [grid1,grid2,grid3], isVectorized);
+[vals, isReal] = evaluate(op, [grid1,grid2,grid3], isVectorized);
 
 % Chop down to correct size: build from coeffs and then cut off
 
@@ -91,6 +91,7 @@ if ( resolved(3) )
 end
 
 f.coeffs = cfs;
+f.isReal = isReal;
 end
 
 %%
@@ -105,15 +106,16 @@ if ( numel(op) == 1 )
 end
 
 % Double and impose BMC structure
-vals = ImposeBMC(op);
+[vals, isReal] = ImposeBMC(op);
 
 % Transform to coefficients
 f.coeffs = ballfun.vals2coeffs(vals);
+f.isReal = isReal;
 f = simplify(f);
 end
 
 
-function vals = evaluate(op, S, isVectorized)
+function [vals, isReal] = evaluate(op, S, isVectorized)
 %EVALUATE   Evaluate at a Cheb-Fourier-Fourier grid of size S.
 %  EVALUATE(g, S) returns the S(1)xS(2)xS(3) values of g at a
 %  Chebyshev-Fourier-Fourier grid for the function
@@ -159,10 +161,10 @@ else
 end
 
 % Double the function in r and theta
-vals = ImposeBMC(g,h);
+[vals, isReal] = ImposeBMC(g,h);
 end
 
-function vals = ImposeBMC(f,h)
+function [vals, isReal] = ImposeBMC(f,h)
 % Take a tensor of values on [0,1]x[-pi,pi[,[0,pi] and double it in the
 % direction r and theta, then impose the BMCIII structure
 
@@ -239,6 +241,14 @@ vals(floor(m/2)+1:m, n/2+1:n, 1:floor((p+1)/2)) = flip(g(:,1:end-1,2:end),3);
 vals(1:floor(m/2), n/2+1:n, 1:floor((p+1)/2)) = flip1h(:,1:end-1,1:end-1);
 % [-1,0[ x [-pi,0] x [-pi,0]
 vals(1:floor(m/2), 1:n/2+1, 1:floor((p+1)/2)) = flip1g(:,:,1:end-1);
+
+% Check if the function is real
+if norm(imag(vals(:))) < eps
+   isReal = 1;
+   vals = real(vals);
+else
+    isReal = 0;
+end
 end
 
 %%
@@ -290,6 +300,7 @@ if ( isCoeffs )
     end
     op = ballfun();
     op.coeffs = cfs;
+    op.isReal = 0;
 end
 
 % If the vectorize flag is off, do we need to give user a warning?

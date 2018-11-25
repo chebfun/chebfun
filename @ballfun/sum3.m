@@ -55,4 +55,9 @@ end
 
 % Return the integral of f over the ballfun
 I = IntChebyshev*F*IntTheta;
+
+% Return real value if the function is real
+if f.isReal
+   I = real(I); 
+end
 end

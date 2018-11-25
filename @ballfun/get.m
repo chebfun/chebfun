@@ -11,6 +11,8 @@ function val = get( f, propName )
 switch ( propName )
     case 'coeffs'
         val = f.coeffs;
+    case 'isReal'
+        val = f.isReal;
 otherwise
         error('CHEBFUN:BALLFUN:get:propName', ...
             [propName,' is not a valid BALLFUN property.'])

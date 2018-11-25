@@ -157,4 +157,9 @@ else
         'Unrecognized arguments for evaluation.');
 end
 end
+
+% Return real values if the function is real
+if f.isReal
+    out = real(out);
+end
 end

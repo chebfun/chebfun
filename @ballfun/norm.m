@@ -16,7 +16,5 @@ Ref = ballfun.vals2coeffs(real( ballfun.coeffs2vals( F ) ));
 Imf = ballfun.vals2coeffs(imag( ballfun.coeffs2vals( F ) ));
 g = f.*ballfun(Ref-Imf,'coeffs');
 
-%g = f.*conj(f);
-
 nm = sqrt(abs(sum3(g)));
 end

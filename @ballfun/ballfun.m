@@ -30,7 +30,13 @@ classdef ballfun
     
     properties
         
-        coeffs   % Chebyshev-Fourier-Fourier coefficients array of a BALLFUN function
+        % Chebyshev-Fourier-Fourier coefficients array of a BALLFUN.
+        coeffs   
+        
+        % Boolean value designating whether the BALLFUN represents a
+        % real-valued function. This allows us to always return a real result
+        % for things like evaluating a BALLFUN.
+        isReal   
         
     end
     
