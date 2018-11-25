@@ -69,6 +69,10 @@ g = f(.5,:,:,'spherical');
 h = spherefun(@(lam,th)0.5.*cos(th));
 pass(9) = norm( g - h ) < tol;
 
+%% COMPLEX EVALUATION
+f = ballfun(@(x,y,z) cos(x)*1i);
+pass(10) = abs(f(0,0,0)-1i);
+
 if (nargout > 0)
     pass = all(pass(:));
 end
