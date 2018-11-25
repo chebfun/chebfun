@@ -312,6 +312,26 @@ bc1 = @(lam, th) 4*sin(th).^2;  % Neumann condition
 u = helmholtz(f, K, bc1,38,17,24,'neumann');
 pass(34) = isequal(u,exact);
 
+%% M = N = P
+
+% Example 35:
+g = @(r,lam,th)r.^5.*exp(3*1i*lam).*sin(th).^3.*(9*cos(th).^2-1);
+f = ballfun(g,'polar');
+bc = @(lam,th)g(1,lam,th);
+u = helmholtz(zero, 0, bc, 50);
+pass(35) = isequal(laplacian(u),zero) && isequal(u,f);
+
+% Example 36:
+exact = ballfun(@(r,lam,th)sin((r.*sin(th).*sin(lam)).^2),'polar');
+f = laplacian(exact);
+bc = diff(exact,1,'polar');
+S = size(bc);
+bc = reshape(sum(bc.coeffs,1),S(2),S(3));
+u = helmholtz(f,0,bc,42,'neumann');
+pass(36) = isequal(diff(u,1),diff(exact,1)) ...
+        && isequal(diff(u,2),diff(exact,2)) ...
+        && isequal(diff(u,3),diff(exact,3));
+
 if (nargout > 0)
     pass = all(pass(:));
 end

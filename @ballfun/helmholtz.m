@@ -1,19 +1,38 @@
-function u = helmholtz(f, K, BC, m, n, p, varargin)
+function u = helmholtz(f, K, BC, m, varargin)
 %HELMHOLTZ   Helmholtz solver with Dirichlet or Neumann boundary conditions.
-%   U = HELMHOLTZ(F, K, BC, m, n, p) is the solution to the Helmholtz
+%   U = HELMHOLTZ(F, K, BC, M, N, P) is the solution to the Helmholtz
 %   equation with right-hand side F, frequency K, and Dirichlet boundary
-%   data U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta). 
+%   data U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta). It uses a 
+%   discretization size of M x N x P. 
 %
-%   U = HELMHOLTZ(F, K, BC, m, n, p, 'neumann') is the solution to the Helmholtz
+%   U = HELMHOLTZ(F, K, BC, M) is the same as HELMHOLTZ(F, K, BC, M, M, M).
+%
+%   U = HELMHOLTZ(F, K, BC, M, N, P, 'neumann') is the solution to the Helmholtz
 %   equation with right-hand side F, frequency K, and Dirichlet boundary
-%   data U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta).
+%   data U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta). It uses a 
+%   discretization size of M x N x P. 
 %
-%   The equation is discretized on a M*N*P grid in spherical coordinates.
+%   U = HELMHOLTZ(F, K, BC, M, 'neumann') is the same as 
+%   HELMHOLTZ(F, K, BC, M, M, M, 'neumann').
 %
-% Also see POISSON.
+%   Also see POISSON.
 
 % Parse user input
-if isempty(varargin)
+isNeumann = any(find(cellfun(@(p) strcmp(p, 'neumann'), varargin)));
+
+if nargin > 4 && isnumeric(varargin{1})
+    n = varargin{1};
+else
+    n = m;
+end
+
+if nargin > 5 && isnumeric(varargin{2})
+    p = varargin{2};
+else
+    p = m;
+end
+
+if ~isNeumann
     % Use Dirichlet boundary condition
     u = helmholtz_dirichlet(f, K, BC, m, n, p);
 else
