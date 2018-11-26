@@ -366,89 +366,61 @@ for k = ListFourierMode
     % Add one condition for the 0th Fourier mode if K = 0:
     % the 0th Fourier mode in lambda and theta is 0
     if k == floor(n/2)+1 && K == 0
-                
-        % Increase m if it isn't equal to 3 mod 4
-        if mod(m,4) ~= 3
-            mexp = m + mod(3-mod(m,4),4);
-            DC2Exp = ultraS.diffmat(mexp, 2);
-            S01Exp = ultraS.convertmat(mexp, 0, 0);
-            S12Exp = ultraS.convertmat(mexp, 1, 1);
-            MrExp = ultraS.multmat(mexp, [0;1], 1);
-            Mr2Exp = ultraS.multmat(mexp, [0.5;0;0.5], 2 );
-            DC1Exp = ultraS.diffmat(mexp, 1);
-            S02Exp = ultraS.convertmat(mexp, 0, 1);
-            LrExp = Mr2Exp*DC2Exp + 2*S12Exp*MrExp*DC1Exp;
-            bc1Exp = (ones(1,mexp) + (-1).^(0:mexp-1))/2;
-            bc2Exp = (ones(1,mexp) - (-1).^(0:mexp-1))/2;
-            bc1Exp = bc1Exp*(S01Exp\DC1Exp);
-            bc2Exp = bc2Exp*(S01Exp\DC1Exp)/4;
-        else
-            mexp = m;
-            LrExp = Lr;
-            S02Exp = S02;
-            bc1Exp = bc1;
-            bc2Exp = bc2;
+        
+        % Multiply F by r^2
+        ff = F(:,:,k)*S02.'*Mr2.';
+        
+        % Convert the rhs to a Leg x Cheb matrix
+        for i = 1:m
+            ff(:,i) = chebvals2legcoeffs(trigtech.coeffs2vals(ff(:,i)));
         end
         
-        % Increase p if it isn't equal to 1 mod 4
-        if mod(p,4) ~= 1
-            pexp = p + mod(1-mod(p,4),4);
-            Msin2Exp = trigspec.multmat(pexp, [-.25;0;0.5;0;-0.25] );
-            DF2Exp = trigspec.diffmat(pexp, 2);
-            McossinExp = trigspec.multmat(pexp, [0.25i;0;0;0;-0.25i] );
-            DF1Exp = 1i*spdiags((-floor(pexp/2):floor(pexp/2))', 0, pexp, pexp);
-            LthExp = Msin2Exp*DF2Exp+McossinExp*DF1Exp;
-        else
-            pexp = p;
-            Msin2Exp = Msin2;
-            LthExp = Lth;
+        % Convert BC to Leg vector
+        BC1Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC1(:,k)));
+        BC2Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC2(:,k)));
+        
+        Im = Mr2*S02;
+        
+        % Solution in Cheb x Leg coeffs
+        xo = zeros(p,m);
+        
+        for j = 1:p
+            A = Lr - j*(j-1)*Im;
+            c5 = A(:,2);
+            A = A - A(:,2)*bc1;
+            c6 = A(:,3);
+            A = A - A(:,3)*bc2;
+            
+            % Eliminating boundary conditions, changes rhs:
+            ff(j,:) = ff(j,:) - ((BC1Leg(j)+BC2Leg(j))/2)*c5';
+            ff(j,:) = ff(j,:) - ((BC1Leg(j)-BC2Leg(j))/8)*c6';
+            if j > 1
+                X = ff(j,1:end-2) / A(1:end-2,[1 4:end]).' ;
+            else
+%                 bc3 = zeros(1,m);
+%                 bc3(1) = 1;
+%                 A = A - A(:,1)*bc3;
+                X = ff(j,1:end-2) / A(1:end-2,4:end).' ;
+                X = [0 X];
+            end
+            
+             % Put the bcs back in:
+            col2 = (BC1Leg(j)+BC2Leg(j))/2 - X * bc1([1 4:end]).';
+            col3 = (BC1Leg(j)-BC2Leg(j))/8 - X * bc2([1 4:end]).';
+        
+            xo(j,:) = [X(1) col2 col3 X(2:end)];
         end
         
-        % Expand ff
-        ffExp = zeros(pexp,mexp);
-        ffExp(floor(pexp/2)+1-floor(p/2):floor(pexp/2)+p-floor(p/2),1:m) = ff;
-        
-        BC1Exp = zeros(pexp,1);
-        BC2Exp = zeros(pexp,1);
-        BC1Exp(floor(pexp/2)+1-floor(p/2):floor(pexp/2)+p-floor(p/2)) = BC1(:,k);
-        BC2Exp(floor(pexp/2)+1-floor(p/2):floor(pexp/2)+p-floor(p/2)) = BC2(:,k);
-        
-        % Select m-2 rows to add the Neumann BC
-        ii = 1:mexp-2;
-        
-        B = kron( LrExp(ii,:),Msin2Exp ) + kron( S02Exp(ii,:), LthExp );
-
-        b1 = kron(bc1Exp,speye(pexp));
-        b2 = kron(bc2Exp,speye(pexp));
-        
-        B = [ b1 ; b2 ; B ];
-        % Remove the 0-th row
-        B = [B(:,1:floor(pexp/2)),B(:,floor(pexp/2)+2:end)];
-        B(end,:) = []; 
-        
-        ffExp = ffExp(:,ii);
-        ffExp = ffExp(:);
-        ffExp(end) = [];
-        
-        % Solve the linear system
-        xk = B \ [ (BC1Exp+BC2Exp)/2; (BC1Exp-BC2Exp)/8 ; ffExp ];
-        xk = [xk(1:floor(pexp/2)) ; 0 ; xk(floor(pexp/2)+1:end)];
-        xk = reshape(xk,pexp,mexp);
-        
-        % Truncate
-        if mexp ~= m
-            xk = chebtech2.alias(xk.', m).';
-        end
-        if pexp ~= p
-            xk = trigtech.alias(xk, p);
+        % Fill in the tensor of Fourier x Cheb coeffs
+        for i = 1:m
+            xo(:,i) = trigtech.vals2coeffs(legcoeffs2chebvals(xo(:,i)));
         end
         
-        % Fill in the tensor of coeffs
-        CFS(:, :, k) = xk;
+        CFS(:, :, k) = xo;
         
     else
         % Solve resulting Sylvester matrix equation:
-            % Eliminating boundary conditions, changes rhs:
+        % Eliminating boundary conditions, changes rhs:
         ff = ff - (A*(BC1(:,k)+BC2(:,k))/2)*c1';
         ff = ff - (A*(BC1(:,k)-BC2(:,k))/8)*c2';
         ff = ff - (Msin2*(BC1(:,k)+BC2(:,k))/2)*c3';
