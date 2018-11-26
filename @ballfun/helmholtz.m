@@ -378,14 +378,12 @@ for k = ListFourierMode
         % Convert BC to Leg vector
         BC1Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC1(:,k)));
         BC2Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC2(:,k)));
-        
-        Im = Mr2*S02;
-        
+                
         % Solution in Cheb x Leg coeffs
         xo = zeros(p,m);
         
         for j = 1:p
-            A = Lr - j*(j-1)*Im;
+            A = Mr2*DC2 + 2*S12*Mr*DC1 - j*(j-1)*S02;
             c5 = A(:,2);
             A = A - A(:,2)*bc1;
             c6 = A(:,3);
