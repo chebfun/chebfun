@@ -241,6 +241,8 @@ function u = helmholtz_neumann(f, K, BC, m, n, p)
 %
 % SOLVE COMPLEXITY:    O( n^4 )  N = n^3 = total degrees of freedom
 
+m = m + 1 - mod(m,2);
+
 % Adjust the size
 F = coeffs3(f,m,n,p);
 
@@ -395,8 +397,7 @@ for k = ListFourierMode
         xo = zeros(p,m);
         
         for j = 1:p
-            Mr1 = ultraS.multmat( m, [0;1], 2);
-            A = 2*Mr1*S12*DC1 + Mr2*DC2 - j*(j-1)*S02;
+            A = 2*S12*Mr*DC1 + Mr2*DC2 - j*(j-1)*S02;
             c5 = A(:,2);
             A = A - A(:,2)*bc1;
             c6 = A(:,3);
@@ -429,7 +430,6 @@ for k = ListFourierMode
             fc = [fc ; flipud(fc(2:end-1))];
             fc = trigtech.vals2coeffs(fc);
             xo(:,i) = fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2));
-            %xo(:,i) = trigtech.vals2coeffs(legcoeffs2chebvals(xo(:,i)));
         end
         
         CFS(:, :, k) = xo;
