@@ -343,7 +343,7 @@ myLr = myLr - myLr(:,3)*bc2;
 % BC2(:,k) ~= 0
 ListFourierMode = [];
 for k = 1:n
-    if (max(max(abs(F(:,:,k)))) > 1e-16) || (max(abs(BC1(:,k))) > 1e-16) || (max(abs(BC2(:,k))) > 1e-16)
+    if norm(F(:,:,k),inf) > 1e-16 || norm(BC1(:,k),inf) > 1e-16 || norm(BC2(:,k),inf) > 1e-16
         ListFourierMode = [ListFourierMode k];
     end
 end
@@ -375,25 +375,28 @@ for k = ListFourierMode
         
         % Convert the rhs to a Leg x Cheb matrix
         p_tilde = max(2*p-2,1);
-        fc = zeros(p_tilde,m);
-        fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:) = ff;
-        fc = trigtech.coeffs2vals(fc);
-        ff = chebvals2legcoeffs(fc(1:p,:));
+        Xchebvals = zeros(p_tilde,m);
+        Xchebvals(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:) = ff;
+        Xchebvals = trigtech.coeffs2vals(Xchebvals);
+        ff = chebvals2legcoeffs(Xchebvals(1:p,:));
         
         % Convert BC to Leg vector
-        fc = zeros(p_tilde,1);
-        fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC1(:,k);
-        fc = trigtech.coeffs2vals(fc);
-        BC1Leg = chebvals2legcoeffs(fc(1:p));
-        fc = zeros(p_tilde,1);
-        fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC2(:,k);
-        fc = trigtech.coeffs2vals(fc);
-        BC2Leg = chebvals2legcoeffs(fc(1:p));
+        Xchebvals = zeros(p_tilde,1);
+        Xchebvals(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC1(:,k);
+        Xchebvals = trigtech.coeffs2vals(Xchebvals);
+        BC1Leg = chebvals2legcoeffs(Xchebvals(1:p));
+        Xchebvals = zeros(p_tilde,1);
+        Xchebvals(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC2(:,k);
+        Xchebvals = trigtech.coeffs2vals(Xchebvals);
+        BC2Leg = chebvals2legcoeffs(Xchebvals(1:p));
         
-        % Solution in Cheb x Leg coeffs
-        xo = zeros(p,m);
-        
+        % Solution in Leg x Cheb coeffs
+        XLeg = zeros(p,m);
+               
+        % Loop over the Legendre degrees
         for j = 1:p
+            
+            % Use boundary rows to extract degrees of freedom from X(:,:,k):
             A = 2*S12*Mr*DC1 + Mr2*DC2 - j*(j-1)*S02;
             c5 = A(:,2);
             A = A - A(:,2)*bc1;
@@ -403,14 +406,13 @@ for k = ListFourierMode
             % Eliminating boundary conditions, changes rhs:
             ff(j,:) = ff(j,:) - ((BC1Leg(j)+BC2Leg(j))/2)*c5';
             ff(j,:) = ff(j,:) - ((BC1Leg(j)-BC2Leg(j))/8)*c6';
+            
+            % Solve for nonzero degree
             if j > 1
-                %X = ff(j,1:end-2) / A(1:end-2,[1 4:end]).' ;
                 X = A(1:end-2,[1 4:end]) \ ff(j,1:end-2).';
                 X = X.';
+            % Solve for zero degree
             else
-                bc3 = zeros(1,m);
-                bc3(1) = 1;
-                A = A - A(:,1)*bc3;
                 X = A(1:end-3,4:end) \ ff(j,1:end-3).';
                 X = [0 X.'];
             end
@@ -418,16 +420,15 @@ for k = ListFourierMode
              % Put the bcs back in:
             col2 = (BC1Leg(j)+BC2Leg(j))/2 - X * bc1([1 4:end]).';
             col3 = (BC1Leg(j)-BC2Leg(j))/8 - X * bc2([1 4:end]).';
-            xo(j,:) = [X(1) col2 col3 X(2:end)];
+            XLeg(j,:) = [X(1) col2 col3 X(2:end)];
         end
         
         % Convert back to Fourier x Cheb
-        fc = legcoeffs2chebvals(xo);
-        gc = trigtech.vals2coeffs([fc ; flipud(fc(2:end-1,:))]);
-        xo= gc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:);
+        Xchebvals = legcoeffs2chebvals(XLeg);
+        Xfourier = trigtech.vals2coeffs([Xchebvals ; flipud(Xchebvals(2:end-1,:))]);
         
         % Fill in the tensor of Fourier x Cheb coeffs
-        CFS(:, :, k) = xo;
+        CFS(:, :, k) = Xfourier(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:);
         
     else
         % Solve resulting Sylvester matrix equation:
@@ -439,7 +440,6 @@ for k = ListFourierMode
     
         X = chebop2.bartelsStewart(Msin2,myLr(1:end-2,[1 4:end]),A,...
             myS02(1:end-2,[1 4:end]),ff(:,1:end-2),0,0);
-        %     warning('on',id)
 
         % Put the bcs back in:
         col2 = (BC1(:,k)+BC2(:,k))/2 - X * bc1([1 4:end]).';
@@ -448,7 +448,6 @@ for k = ListFourierMode
         CFS(:, :, k) = [X(:,1) col2 col3 X(:,2:end)];
     end
 end
-
 
 % Permute back:
 ord = [2 3 1];
