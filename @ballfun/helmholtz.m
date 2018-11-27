@@ -381,10 +381,12 @@ for k = ListFourierMode
         
         % Convert BC to Leg vector
         %BC1Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC1(:,k)));
+        fc = zeros(p_tilde,1);
         fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC1(:,k);
         fc = trigtech.coeffs2vals(fc);
         BC1Leg = chebvals2legcoeffs(fc(1:p));
         %BC2Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC2(:,k)));
+        fc = zeros(p_tilde,1);
         fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC2(:,k);
         fc = trigtech.coeffs2vals(fc);
         BC2Leg = chebvals2legcoeffs(fc(1:p));
@@ -393,7 +395,8 @@ for k = ListFourierMode
         xo = zeros(p,m);
         
         for j = 1:p
-            A = 2*S12*Mr*DC1 + Mr2*DC2 - j*(j-1)*S02;
+            Mr1 = ultraS.multmat( m, [0;1], 2);
+            A = 2*Mr1*S12*DC1 + Mr2*DC2 - j*(j-1)*S02;
             c5 = A(:,2);
             A = A - A(:,2)*bc1;
             c6 = A(:,3);
