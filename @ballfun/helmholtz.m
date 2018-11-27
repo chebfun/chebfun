@@ -371,19 +371,29 @@ for k = ListFourierMode
         ff = F(:,:,k)*S02.'*Mr2.';
         
         % Convert the rhs to a Leg x Cheb matrix
+        p_tilde = max(2*p-2,1);
         for i = 1:m
-            ff(:,i) = chebvals2legcoeffs(trigtech.coeffs2vals(ff(:,i)));
+            fc = zeros(p_tilde,1);
+            fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = ff(:,i);
+            fc = trigtech.coeffs2vals(fc);
+            ff(:,i) = chebvals2legcoeffs(fc(1:p));
         end
         
         % Convert BC to Leg vector
-        BC1Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC1(:,k)));
-        BC2Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC2(:,k)));
-                
+        %BC1Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC1(:,k)));
+        fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC1(:,k);
+        fc = trigtech.coeffs2vals(fc);
+        BC1Leg = chebvals2legcoeffs(fc(1:p));
+        %BC2Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC2(:,k)));
+        fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC2(:,k);
+        fc = trigtech.coeffs2vals(fc);
+        BC2Leg = chebvals2legcoeffs(fc(1:p));
+        
         % Solution in Cheb x Leg coeffs
         xo = zeros(p,m);
         
         for j = 1:p
-            A = Mr2*DC2 + 2*S12*Mr*DC1 - j*(j-1)*S02;
+            A = 2*S12*Mr*DC1 + Mr2*DC2 - j*(j-1)*S02;
             c5 = A(:,2);
             A = A - A(:,2)*bc1;
             c6 = A(:,3);
@@ -393,25 +403,30 @@ for k = ListFourierMode
             ff(j,:) = ff(j,:) - ((BC1Leg(j)+BC2Leg(j))/2)*c5';
             ff(j,:) = ff(j,:) - ((BC1Leg(j)-BC2Leg(j))/8)*c6';
             if j > 1
-                X = ff(j,1:end-2) / A(1:end-2,[1 4:end]).' ;
+                %X = ff(j,1:end-2) / A(1:end-2,[1 4:end]).' ;
+                X = A(1:end-2,[1 4:end]) \ ff(j,1:end-2).';
+                X = X.';
             else
-%                 bc3 = zeros(1,m);
-%                 bc3(1) = 1;
-%                 A = A - A(:,1)*bc3;
-                X = ff(j,1:end-2) / A(1:end-2,4:end).' ;
-                X = [0 X];
+                bc3 = zeros(1,m);
+                bc3(1) = 1;
+                A = A - A(:,1)*bc3;
+                X = A(1:end-3,4:end) \ ff(j,1:end-3).';
+                X = [0 X.'];
             end
             
              % Put the bcs back in:
             col2 = (BC1Leg(j)+BC2Leg(j))/2 - X * bc1([1 4:end]).';
             col3 = (BC1Leg(j)-BC2Leg(j))/8 - X * bc2([1 4:end]).';
-        
             xo(j,:) = [X(1) col2 col3 X(2:end)];
         end
         
         % Fill in the tensor of Fourier x Cheb coeffs
         for i = 1:m
-            xo(:,i) = trigtech.vals2coeffs(legcoeffs2chebvals(xo(:,i)));
+            fc = legcoeffs2chebvals(xo(:,i));
+            fc = [fc ; flipud(fc(2:end-1))];
+            fc = trigtech.vals2coeffs(fc);
+            xo(:,i) = fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2));
+            %xo(:,i) = trigtech.vals2coeffs(legcoeffs2chebvals(xo(:,i)));
         end
         
         CFS(:, :, k) = xo;
