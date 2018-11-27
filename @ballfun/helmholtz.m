@@ -241,6 +241,7 @@ function u = helmholtz_neumann(f, K, BC, m, n, p)
 %
 % SOLVE COMPLEXITY:    O( n^4 )  N = n^3 = total degrees of freedom
 
+% Increase m if it's even (only works for odd m)
 m = m + 1 - mod(m,2);
 
 % Adjust the size
@@ -374,20 +375,16 @@ for k = ListFourierMode
         
         % Convert the rhs to a Leg x Cheb matrix
         p_tilde = max(2*p-2,1);
-        for i = 1:m
-            fc = zeros(p_tilde,1);
-            fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = ff(:,i);
-            fc = trigtech.coeffs2vals(fc);
-            ff(:,i) = chebvals2legcoeffs(fc(1:p));
-        end
+        fc = zeros(p_tilde,m);
+        fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:) = ff;
+        fc = trigtech.coeffs2vals(fc);
+        ff = chebvals2legcoeffs(fc(1:p,:));
         
         % Convert BC to Leg vector
-        %BC1Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC1(:,k)));
         fc = zeros(p_tilde,1);
         fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC1(:,k);
         fc = trigtech.coeffs2vals(fc);
         BC1Leg = chebvals2legcoeffs(fc(1:p));
-        %BC2Leg = chebvals2legcoeffs(trigtech.coeffs2vals(BC2(:,k)));
         fc = zeros(p_tilde,1);
         fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2)) = BC2(:,k);
         fc = trigtech.coeffs2vals(fc);
@@ -424,14 +421,12 @@ for k = ListFourierMode
             xo(j,:) = [X(1) col2 col3 X(2:end)];
         end
         
-        % Fill in the tensor of Fourier x Cheb coeffs
-        for i = 1:m
-            fc = legcoeffs2chebvals(xo(:,i));
-            fc = [fc ; flipud(fc(2:end-1))];
-            fc = trigtech.vals2coeffs(fc);
-            xo(:,i) = fc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2));
-        end
+        % Convert back to Fourier x Cheb
+        fc = legcoeffs2chebvals(xo);
+        gc = trigtech.vals2coeffs([fc ; flipud(fc(2:end-1,:))]);
+        xo= gc(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:);
         
+        % Fill in the tensor of Fourier x Cheb coeffs
         CFS(:, :, k) = xo;
         
     else
