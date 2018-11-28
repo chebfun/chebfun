@@ -29,6 +29,7 @@ maxSample       = tpref.maxLength; % maxSample = max grid dimensions.
 if ( isa(op, 'ballfun') )     % BALLFUN( BALLFUN )
     f = simplify(op);
     return
+    
 elseif ( isa(op, 'double') )   % BALLFUN( DOUBLE )
     f = constructFromDouble(f, op);
     return

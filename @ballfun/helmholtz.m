@@ -75,7 +75,6 @@ S02 = ultraS.convertmat(m, 0, 1);
 DF2 = trigspec.diffmat(p, 2);
 Mcossin = trigspec.multmat(p, [0.25i;0;0;0;-0.25i] );
 DF1 = trigspec.diffmat(p, 1);
-DF2lam = trigspec.diffmat(n, 2);
 
 % Boundary conditions:
 [BC1, BC2, bc] = ComputeBoundary(BC, m, n, p, isNeumann);
@@ -112,6 +111,8 @@ for k = 1:n
         ListFourierMode = [ListFourierMode k];
     end
 end
+
+shift = floor(n/2)+1;
 
 % Loop over the Fourier mode to solve the decoupled equations
 for k = ListFourierMode
@@ -176,7 +177,7 @@ for k = ListFourierMode
     else
     
         % Define the operator 
-        A = Lth + DF2lam(k,k)*I;
+        A = Lth - (k-shift)^2*I;
 
         % Multiply F by r^2*sin(th)^2
         ff = Mr2*S02*F(:,:,k)*Msin2.';
