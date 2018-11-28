@@ -4,7 +4,7 @@ function pass = test_rotate( pref )
 if ( nargin == 0 )
     pref = chebfunpref();
 end
-tol = 1e2*pref.techPrefs.chebfuneps;
+tol = 1e3*pref.techPrefs.chebfuneps;
 
 % Example 1
 f = ballfun(@(r,lam,th)r.*sin(th).*cos(lam),'spherical');

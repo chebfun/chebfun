@@ -1,10 +1,10 @@
 function pass = test_size( ) 
 
 % Example 1
-Vx = ballfun(ones(21,20,22));
-Vy = ballfun(ones(11,2,2));
-Vz = ballfun(ones(11,12,4));
-S = [1,1,1;1,1,1;1,1,1];
+Vx = ballfun(@(x,y,z)1);
+Vy = ballfun(@(x,y,z)1);
+Vz = ballfun(@(x,y,z)x);
+S = [1,1,1;1,1,1;2,3,3];
 V = ballfunv(Vx,Vy,Vz);
 pass(1) = isequal(S,size(V));
 

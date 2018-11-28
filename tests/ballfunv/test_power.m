@@ -4,7 +4,7 @@ function pass = test_power( pref )
 if ( nargin == 0 )
     pref = chebfunpref();
 end
-tol = 1e2*pref.techPrefs.chebfuneps;
+tol = 1e4*pref.techPrefs.chebfuneps;
 
 f = ballfun(@(x,y,z)cos(x.*y).*z);
 zero = cheb.galleryballfun('zero');

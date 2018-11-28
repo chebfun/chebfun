@@ -1,4 +1,4 @@
-function nm = norm(f, varargin)
+function nm = norm(f)
 %NORM  Norm of a BALLFUN.
 %   For BALLFUN objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
@@ -11,10 +11,16 @@ function nm = norm(f, varargin)
 
 % Do something faster for the test
 
-F = f.coeffs;
-Ref = ballfun.vals2coeffs(real( ballfun.coeffs2vals( F ) ));
-Imf = ballfun.vals2coeffs(imag( ballfun.coeffs2vals( F ) ));
-g = f.*ballfun(Ref-Imf,'coeffs');
+% Get the coefficients of f
+[m,n,p] = size(f);
+F = coeffs3(f,2*m,2*n,2*p);
 
+% Convert to values and conpute f*conj(f)
+Vals = ballfun.coeffs2vals(F);
+G = Vals.*conj(Vals);
+g = ballfun.vals2coeffs(G);
+g = ballfun(g,'coeffs');
+
+% Compute the norm
 nm = sqrt(abs(sum3(g)));
 end
