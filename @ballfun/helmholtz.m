@@ -59,8 +59,8 @@ end
 % Get the coeffs
 F = coeffs3(f,m,n,p);
 
-% The code was written with variables in the order theta, r, lambda
-ord = [3 1 2];
+% The code was written with variables in the order r, theta, lambda
+ord = [1 3 2];
 F = permute(F, ord);
 
 % Construct useful spectral matrices (see list above) in r and theta:
@@ -81,7 +81,7 @@ DF2lam = trigspec.diffmat(n, 2);
 [BC1, BC2, bc] = ComputeBoundary(BC, m, n, p, isNeumann);
 
 % Fortunately, the PDE decouples in the lambda variable.
-CFS = zeros(p, m, n);
+CFS = zeros(m, p, n);
 
 % Solve the Helmholtz equation
 if abs(K)>1
@@ -120,12 +120,12 @@ for k = ListFourierMode
     if( k == floor(n/2)+1 && K == 0 && isNeumann )
         
         % Multiply F by r^2
-        ff = F(:,:,k)*S02.'*Mr2.';
+        ff = Mr2*S02*F(:,:,k);
         
         % Convert the rhs to a Leg x Cheb matrix
         p_tilde = max(2*p-2,1);
         Xchebvals = zeros(p_tilde,m);
-        Xchebvals(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:) = ff;
+        Xchebvals(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:) = ff.';
         Xchebvals = trigtech.coeffs2vals(Xchebvals);
         ff = chebvals2legcoeffs(Xchebvals(1:p,:));
         
@@ -171,7 +171,7 @@ for k = ListFourierMode
         Xfourier = trigtech.vals2coeffs([Xchebvals ; flipud(Xchebvals(2:end-1,:))]);
         
         % Fill in the tensor of Fourier x Cheb coeffs
-        CFS(:, :, k) = Xfourier(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:);
+        CFS(:, :, k) = Xfourier(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:).';
         
     else
     
@@ -179,7 +179,7 @@ for k = ListFourierMode
         A = Lth + DF2lam(k,k)*I;
 
         % Multiply F by r^2*sin(th)^2
-        ff = Msin2*F(:,:,k)*S02.'*Mr2.';
+        ff = Mr2*S02*F(:,:,k)*Msin2.';
 
         if abs(K)>1
             % Divide Lth and f by K^2
@@ -189,20 +189,21 @@ for k = ListFourierMode
 
         % Eliminating boundary conditions, changes rhs:
         BC = [BC1(:,k), BC2(:,k)] / D;
-        ff = ff - A*BC*c1.' - Msin2*BC*c2.';
+        BC = BC.';
+        ff = ff - c1*BC*A.' - c2*BC*Msin2.';
 
         % Solve resulting Sylvester matrix equation: 
-        X = chebop2.bartelsStewart(Msin2,Lr(1:end-2,[1 4:end]),A,...
-            myS02(1:end-2,[1 4:end]),ff(:,1:end-2),0,0);
+        X = chebop2.bartelsStewart(Lr(1:end-2,[1 4:end]),Msin2,...
+            myS02(1:end-2,[1 4:end]),A,ff(1:end-2,:),0,0);
 
         % Put the bcs back in:
-        col = BC - X*bc(:,[1 4:end]).';
-        CFS(:, :, k) = [X(:,1) col , X(:,2:end)];
+        col = BC - bc(:,[1 4:end])*X;
+        CFS(:, :, k) = [X(1,:); col; X(2:end,:)];
     end
 end
 
 % Permute back: 
-ord = [2 3 1];
+ord = [1 3 2];
 CFS = permute( CFS, ord);
 
 % Create ballfun object: 
