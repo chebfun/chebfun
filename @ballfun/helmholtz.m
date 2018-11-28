@@ -95,7 +95,7 @@ end
 Lth = Msin2*DF2 + Mcossin*DF1;
 
 % Normalize bc such that bc(:,2:3) = identity
-D = bc(:,2:3).';
+D = bc(:,2:3);
 bc = bc(:,2:3) \ bc;
 
 % Use boundary conditions to remove degrees of freedom 
@@ -108,13 +108,16 @@ Lr = Lr - Lr(:,2:3)*bc;
 % Solve the linear system only if f(:,:,k) ~= 0 or BC1(:,k) ~= 0 or BC2(:,k) ~= 0
 ListFourierMode = [];
 for k = 1:n
-    if norm(F(:,:,k),inf) > 1e-16 || norm(BC1(:,k),inf) > 1e-16 || norm(BC2(:,k),inf) > 1e-16
+    if norm(F(:,:,k),inf) > 1e-16 || norm(BC1(k,:),inf) > 1e-16 || norm(BC2(k,:),inf) > 1e-16
         ListFourierMode = [ListFourierMode k];
     end
 end
 
 % Loop over the Fourier mode to solve the decoupled equations
 for k = ListFourierMode
+    
+    % Eliminating boundary conditions, changes rhs:
+    BC = D \ [BC1(k,:); BC2(k,:)];
     
     % Special case for Poisson equation with Neumann BC
     if( k == floor(n/2)+1 && K == 0 && isNeumann )
@@ -129,12 +132,9 @@ for k = ListFourierMode
         Xchebvals = trigtech.coeffs2vals(Xchebvals);
         ff = chebvals2legcoeffs(Xchebvals(1:p,:));
         
-        % Eliminating boundary conditions, changes rhs:
-        BC = [BC1(:,k), BC2(:,k)] / D;
-        
         % Convert BC to Leg vector
         Xchebvals = zeros(p_tilde,2);
-        Xchebvals(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:) = BC;
+        Xchebvals(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:) = BC.';
         Xchebvals = trigtech.coeffs2vals(Xchebvals);
         BCLeg = chebvals2legcoeffs(Xchebvals(1:p,:));
                
@@ -188,8 +188,6 @@ for k = ListFourierMode
         end
 
         % Eliminating boundary conditions, changes rhs:
-        BC = [BC1(:,k), BC2(:,k)] / D;
-        BC = BC.';
         ff = ff - c1*BC*A.' - c2*BC*Msin2.';
 
         % Solve resulting Sylvester matrix equation: 
@@ -220,10 +218,10 @@ if isa(BC, 'function_handle')
     lam = pi*trigpts(n);
     % Evaluate function handle at tensor grid:
     [ll, tt] = ndgrid(lam, th);
-    BC1 = feval(BC, ll, tt).';
+    BC1 = feval(BC, ll, tt);
     % Test if the function is constant
     if size(BC1) == 1
-        BC1 = ones(p,n)*BC1(1);
+        BC1 = ones(n,p)*BC1(1);
     end
     % Convert boundary conditions to coeffs:
     BC1 = trigtech.vals2coeffs( trigtech.vals2coeffs( BC1 ).' ).';
@@ -231,8 +229,7 @@ if isa(BC, 'function_handle')
 % if g is an array of fourier coefficients lambda x theta
 else
     % BC1 is an array of coefficients theta x lambda of size [m,n,p]
-    BC = trigtech.alias(trigtech.alias(BC.',p).',n);
-    BC1 = BC.';
+    BC1 = trigtech.alias(trigtech.alias(BC.',p).',n);
 end
 
 % Boundary rows: evaluation at r = 1 and -1
@@ -243,13 +240,13 @@ bc = [bc1 ; bc2];
 % Dirichlet BC
 if ~isNeumann
     % Use the symmetries to find BC2
-    BC2 = (-1).^((1:p)-floor(p/2)-1).'.*BC1;
+    BC2 = (-1).^((1:p)-floor(p/2)-1).*BC1;
 
 % Neumann BC
 else
     % BC1 is the derivative of a smooth function on the ball, which contains
     % element of the form r^k exp(i*n*theta) where mod(k,2) = mod(n,2)
-    BC2 = (-1).^((1:p)-floor(p/2)).'.*BC1;
+    BC2 = (-1).^((1:p)-floor(p/2)).*BC1;
     
     % Boundary rows
     S01 = ultraS.convertmat(m, 0, 0);
