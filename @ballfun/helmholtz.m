@@ -113,9 +113,10 @@ for k = 1:n
     end
 end
 
+% Loop over the Fourier mode to solve the decoupled equations
 for k = ListFourierMode
-    % Loop over the Fourier mode to solve the decoupled equations
     
+    % Special case for Poisson equation with Neumann BC
     if( k == floor(n/2)+1 && K == 0 && isNeumann )
         
         % Multiply F by r^2
@@ -128,26 +129,24 @@ for k = ListFourierMode
         Xchebvals = trigtech.coeffs2vals(Xchebvals);
         ff = chebvals2legcoeffs(Xchebvals(1:p,:));
         
-        % Convert BC to Leg vector
         % Eliminating boundary conditions, changes rhs:
         BC = [BC1(:,k), BC2(:,k)] / D;
-        %ff = ff - A*BC*c1.' - Msin2*BC*c2.';
         
+        % Convert BC to Leg vector
         Xchebvals = zeros(p_tilde,2);
         Xchebvals(floor(p_tilde/2)+1-floor(p/2):floor(p_tilde/2)+p-floor(p/2),:) = BC;
         Xchebvals = trigtech.coeffs2vals(Xchebvals);
         BCLeg = chebvals2legcoeffs(Xchebvals(1:p,:));
                
-        % Solution in Leg x Cheb coeffs
+        % Solution stored in a matrix of Leg x Cheb coeffs
         XLeg = zeros(p,m);
                
         % Loop over the Legendre degrees
         for j = 1:p
             
-            % Use boundary rows to extract degrees of freedom from X(:,:,k):
-            A = 2*S12*Mr*DC1 + Mr2*DC2 - j*(j-1)*S02;
-            c3 = A(:,2:3);
-            A = A - A(:,2:3)*bc;
+            % The degrees of freedom from X(:,:,k) have already been removed:
+            A = Lr - j*(j-1)*myS02;
+            c3 = c2 - j*(j-1)*c1;
             
             % Eliminating boundary conditions, changes rhs:
             ff(j,:) = ff(j,:) - BCLeg(j,:)*c3';
@@ -210,6 +209,8 @@ CFS = permute( CFS, ord);
 u = ballfun( CFS, 'coeffs');
 end
 
+% Compute boundary rows and Dirichlet and Neumann boundary conditions at
+% r = -1
 function [BC1, BC2, bc] = ComputeBoundary(BC, m, n, p, isNeumann)
 % if g = function_handle of lambda, th
 if isa(BC, 'function_handle')
