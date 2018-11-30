@@ -301,14 +301,28 @@ if ( isCoeffs )
     end
     op = ballfun();
     op.coeffs = cfs;
-    op.isReal = 0;
+    
+    % Check if the function is real
+    [~,n,p] = size(cfs);
+    % Check if f = conj(f) on the coeffs
+    CheckReal = cfs(:,2-mod(n,2):floor(n/2)+1,2-mod(p,2):floor(p/2)+1)-conj(cfs(:,end:-1:floor(n/2)+1,end:-1:floor(p/2)+1));
+    bReal = norm(CheckReal(:),inf) < eps;
+    % Additional check if n or p is even
+    if mod(n,2) == 0
+        CheckReal = cfs(:,1,:);
+        bReal = bReal && ( norm(CheckReal(:),inf) < eps ); 
+    end
+    if mod(p,2) == 0
+        CheckReal = cfs(:,:,1);
+        bReal = bReal && ( norm(CheckReal(:),inf) < eps );
+    end
+    op.isReal = bReal;
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
 if ( ~isVectorized && ~isnumeric(op) && ~isCoeffs) % another check
     [isVectorized, op] = vectorCheck(op);
 end
-
 end
 
 %% 
