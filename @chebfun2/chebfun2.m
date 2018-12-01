@@ -83,6 +83,7 @@ classdef chebfun2 < separableApprox
         
         % Fast spectrally-accurate Poisson solver:
         u = poisson(f, varargin);
+        u = poisson_lr(f, b, varargin); 
         
     end
     
