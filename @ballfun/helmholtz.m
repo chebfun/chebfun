@@ -233,15 +233,14 @@ else
     BC1 = trigtech.alias(trigtech.alias(BC.',p).',n);
 end
 
-% Boundary rows: evaluation at r = 1 and -1
-bc1 = ones(1,m);
-bc2 = (-1).^(0:m-1);
-bc = [bc1 ; bc2];
-
 % Dirichlet BC
 if ~isNeumann
     % Use the symmetries to find BC2
     BC2 = (-1).^((1:p)-floor(p/2)-1).*BC1;
+    
+    % Dirichlet boundary rows
+    bc1 = ones(1,m);
+    bc2 = (-1).^(0:m-1);
 
 % Neumann BC
 else
@@ -249,9 +248,12 @@ else
     % element of the form r^k exp(i*n*theta) where mod(k,2) = mod(n,2)
     BC2 = (-1).^((1:p)-floor(p/2)).*BC1;
     
-    % Boundary rows
-    S01 = ultraS.convertmat(m, 0, 0);
-    DC1 = ultraS.diffmat( m, 1);
-    bc = bc*(S01\DC1);
+    % Neumann boundary rows
+    bc1 = (0:m-1).^2;
+    bc2 = (-1).^(1:m).*bc1;
 end
+
+% Build boundary conditions matrix
+bc = [bc1 ; bc2];
+
 end
