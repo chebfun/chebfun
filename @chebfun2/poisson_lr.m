@@ -35,9 +35,9 @@ function u = poisson_lr( f,use_fiadi, varargin)
 % to discretize the equation, resulting in a discretization of the form
 % AX + XA = F, where A is a symmetric tridiagonal matrix.
 %
-% LINEAR ALGEBRA: Matrix equations. The matrix equation is solved by the
-% factored alternating direction implicit (fADI) method
-% or factored-independent (FI-ADI) method. 
+% LINEAR ALGEBRA: Matrix equations. The matrix equation is solved in 
+% low rank form by the factored alternating direction implicit (fADI) 
+% method or factored-independent (FI-ADI) method. 
 %
 % SOLVE COMPLEXITY:  O(M*N*log(MAX(M,N))*log(1/eps)) with M*N = total
 % degrees of freedom.
@@ -107,7 +107,6 @@ else
     % crossover point in the rank to make a rule of thumb. 
  %%  
     % Set up RHS for low rank ADI:  
-    %F = coeffs2( f, m, n );
     [U, S, V] = cdr(f);  
      U = chebcoeffs(U, m); 
      V = chebcoeffs(V, n); 
@@ -178,12 +177,11 @@ else
 
     % Construct T = D^{-1} * M:
     Tm = scl_x * invDm * Mm;
-    %F = invDm * F * invDn;
     U = invDm*U; 
     V = invDn*V; 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%  Alternating Direction Implicit method %%%%%%%
+    %%%%%%%  factored Alternating Direction Implicit method %%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Solve TmX + XTn' = F using ADI, which requires O(n^2log(n)log(1/eps))
     % operations:
@@ -196,27 +194,17 @@ else
     [p, q] = ADIshifts(a, b, c, d, tol);
 
     % Run the ADI method:
-%     X = zeros(m, n);
-%     A = Tm; B = -Tn';
-%     Im = speye(m);
-%     In = speye(n);
-%     for j = 1:numel(p)
-%         X = (F-(A+q(j)*Im)*X) / (B+q(j)*In);
-%         X = (A+p(j)*Im) \ ( F - X*(B+p(j)*In) );
-%     end
 if use_fiadi==1
     [U, S, V] = fiadi(Tm, -Tn', U, S, V, p, q); 
 else
     [U,S, V] = fadi(Tm, -Tn', U, V, p, q); 
 end
-%% add compression:
-    [U, S, V] = compression(U, diag(S), V, tol, 0); 
+    %% add compression:
+    [U, S, V] = compression(U, diag(S), V, tol); 
     % Convert back to Chebyshev
     U = ultra1mx2cheb(U); 
     V = ultra1mx2cheb(V); 
-    %X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
-    %X = X + BC;
-    %u = chebfun2( X, f.domain, 'coeffs' );
+
     
     %% build a chebfun2: 
     U = real(U); %kill any tiny imaginary things
@@ -238,10 +226,13 @@ end
     u.cols = chebfun(U, 'coeffs');      
     u.rows = chebfun(V, 'coeffs');
     u.pivotValues = ones(length(S), 1); 
-    u.pivotLocations = nan(length(S), 2); %meaningless for us.    
+    u.pivotLocations = nan(length(S), 2); %meaningless here.    
 end
 
 end
+
+%%%%%%%%%%%%%%%%%%%%%SUBROUTINES%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [p, q] = ADIshifts(a, b, c, d, tol)
 % ADISHIFTS  ADI shifts for AX-XB=F when the eigenvalues of A (B) are in [a,b] and
@@ -266,6 +257,84 @@ else
 end
 p = T( -alp*dn ); q = T( alp*dn );                  % ADI shifts for [a,b]&[c,d]
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+% factored ADI: 
+function [ZZ, DD, YY] = fadi(A,B,U,V,p,q)
+
+% fadi(A, B, U, V, p, q)
+% solves AX - XB = U*V' in low rank form using factored ADI with 
+% ADI shift parameters provided by vectors p, q.
+% OUTPUT: ZZ*DD*YY' \approx =  X.
+% References: 
+%
+% [1] Benner, Peter, Ren-Cang Li, and Ninoslav Truhar. 
+% "On the ADI method for Sylvester equations." J. of Comp. and App. Math.
+% 233.4 (2009): 1035-1045. 
+
+[m,r] = size(U);
+[n, ~] = size(V);
+compute_shifts = 0; 
+ 
+In = speye(n); 
+Im = speye(m); 
+
+%check for complex-valued shift parameters
+Ns = length(p); 
+cp = conj(p); 
+cq = conj(q); 
+
+B = B';
+
+%do factored ADI 
+Z(:, 1:r) = (A-Im*q(1))\(U);
+Y(:,1:r) = (B-cp(1)*In)\V; 
+ZZ = Z;  
+YY = Y; 
+DD =  (q(1)-p(1)).*ones(r,1); 
+    for i = 1:Ns-1 
+        Z = Z + (A - q(i+1)*Im)\((q(i+1)-p(i))*Z);
+        Y = Y + (B-cp(i+1)*In)\((cp(i+1)-cq(i))*Y);
+        ZZ = [ZZ Z]; 
+        YY = [YY Y];
+        DD = [DD; (q(i+1)-p(i+1)).*ones(r,1)];
+    end
+    DD = diag(DD); 
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+% low rank compression: 
+function [A, S, B] = compression(Z, d, Y, tol)
+% X = Z*diag(d)*Y';  
+% Compresses the factors of X:||X -A*S*B'||_2 \leq tol.
+
+%share out diag if pivots are real
+if any(~isreal(d))
+    Z= Z*diag(d); 
+else
+ds = sign(d);
+d = sqrt(abs(d));
+Z = Z*diag(d); 
+Y = (Y*diag(d.*ds));
+end
+
+%compression step
+[QZ, RZ] = qr( Z, 0); 
+[QY, RY] = qr( Y, 0);
+
+% % XX * YY^T = (QX*RX) * (QY*RY)^T = QX*(RX*RY^T)*QY^T
+inner_piece = RZ*RY'; 
+[A, S, B ] = svd( inner_piece ); 
+idx = find(diag(S)>tol, 1, 'last');
+A = A(:,1:idx); 
+B = B(:,1:idx); 
+S = S(1:idx,1:idx); 
+A = QZ * A;  
+B = QY * B; 
+
+end
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%% CONVERSION CODES %%%%%%%%%%%%%%%%%
