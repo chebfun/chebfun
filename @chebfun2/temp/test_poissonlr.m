@@ -3,7 +3,7 @@
 % test 1: zero dirichlet condition (basic accuracy)
 
 % rank 1 RHS: use fadi:
-f = chebfun2( @(x,y) exp(x +y) );
+f = chebfun2( @(x,y) exp(x.*y) + 2.^(x.*y.^2));
 % for now set discretization: 
 N = 128; 
 %%
@@ -31,7 +31,7 @@ for j = 1:K
 end
 %%
 for j = 1:length(ranks)
-    f = chebfun2(f, rank(j));
+    f = chebfun2(f, ranks(j));
     for k = 1:K
     t2 = tic; 
     u = chebfun2.poisson_lr(f, 0, N(k), N(k)); % 0 = use fadi, not fiadi.
@@ -45,7 +45,7 @@ end
 % picture
 loglog(N.', t_fullrank, 'k--', 'Linewidth', 2.5)
 hold on
-loglog(N.', t_lowrank.', 'Linewidth', 2.5)
+loglog(N.', (t_lowrank(:,1:5)).', 'Linewidth', 2.5)
 legend('adi', 'rank = 1', 'rank = 10', 'rank = 50', 'rank = 100', 'rank =200', ...
     'Location', 'Northwest')
 title('Discretization size vs. timings')

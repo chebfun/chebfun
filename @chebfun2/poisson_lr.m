@@ -121,7 +121,7 @@ else
        V = V(:, ids); 
    else
        U = U*diag(sgn)*diag(sqrt(S)); 
-       V = sqrt(S)*V; 
+       V = V*sqrt(diag(S)); 
    end
      
   %% TO-DO: low rank RHS non-zero BC adjustments
