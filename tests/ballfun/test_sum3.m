@@ -18,6 +18,12 @@ I = sum3(f);
 exact = 4*pi/3;
 pass(2) = abs(I-exact)<tol;
 
+% Example 3
+f = ballfun(@(x,y,z)x.^2);
+I = sum3(f);
+exact = 4*pi/15;
+pass(3) = abs(I-exact)<tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end
