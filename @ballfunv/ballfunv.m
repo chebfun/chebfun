@@ -67,13 +67,13 @@ classdef ballfunv
                 fh{3} = varargin{3};
             end
             
-            % Create a BALLFUNV from 3 function handles in cartesian
+            % Create a BALLFUNV from 3 function handles in spherical
             % coordinates
             if ( numel(varargin) == 4 )
-                if strcmp(varargin{4}, 'cart')
-                    fh{1} = ballfun(varargin{1},'cart');
-                    fh{2} = ballfun(varargin{2},'cart');
-                    fh{3} = ballfun(varargin{3},'cart');
+                if strcmp(varargin{4}, 'spherical') || strcmp(varargin{4}, 'polar')
+                    fh{1} = ballfun(varargin{1},'spherical');
+                    fh{2} = ballfun(varargin{2},'spherical');
+                    fh{3} = ballfun(varargin{3},'spherical');
                 else
                     error('BALLFUNV:ballfunv', ...
                         'Input arguments not supported')
