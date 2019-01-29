@@ -158,6 +158,13 @@ f = 1 - 0.2*x - abs(x-0.2);
 fsmooth = conv(f,phi(1e-4),'same');
 pass(18) = norm(f-fsmooth) < .01;
 
+%% test small intervals
+f = chebfun(@sin);
+g = chebfun(@cos, [-1 1]/1e4);
+h1 = conv(f, g);
+h2 = conv(f,g, 'Old');
+norm(h1 - h2)
+pass(19) = norm(h1 - h2) < eps*10;
 
 end
 

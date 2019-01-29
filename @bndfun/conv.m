@@ -73,6 +73,11 @@ function h = conv(f, g)
 % size, which turns out to be far more efficient. 
 %
 % Total complexity: O( R*(m*n + n*n) + m*m )
+%
+% However, in the case when R is too big we revert to a Clenshaw-Curtis
+% quadrature-based approach to compute the convolution in the inner rectangle.
+% This approach has a complexity O( (m + n)^3 ). We naively compare this with
+% the big-O term above to determine which approach to use.
 
 % [TODO]: It's possible this should be pushed further to the chebtech level.
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,22 +104,48 @@ if ( (b - a) > (d - c) )
 end
     
 % Useful things:
+M = length(f);                               % Length of F
 N = length(g);                               % Length of g
 numPatches = floor((d - c) / (b - a));       % Number of patches required
 x = chebpts(N, [b+c, a+d], 1);               % Chebyshev grid for interior piece
 y = 0*x;                                     % Initialise values in interior
 map = @(x, a, b) (x-a)/(b-a) - (b-x)/(b-a);  % Map from [a, b] --> [-1, 1]
-f_leg = cheb2leg(get(f, 'coeffs'));  % Legendre coefficients of f
 
-if ( numPatches > 100 )
-    error('CHEBFUN:BNDFUN:conv:tooManyPatches', ...
-        ['Max number of patches (100) exceeded. ', ...
-         'Small interval? Check breakpoints.']);
+% If there are too many patches then the HT approach is too slow. In such a case
+% we resort to the standard quadrature-based approach (but still use the HT
+% approach for the two triangular domains at the ends).
+coeffsConvCost = numPatches*((M+N)*N);
+quadConvCost = (M+N)^3;
+if ( numPatches > 1 && coeffsConvCost > quadConvCost )
+    h_left = conv(f, restrict(g, c+[0, b-a]));     % Left triangle
+    h_right = conv(f, restrict(g, d-[(b-a) 0]));   % Right tirangle
+    % Middle:
+    [t, w] = legpts((M+N+2)/2, [a,b]);             % Legendre grid
+    [tt, xx] = meshgrid(t,x);                      % Cheb/Leg grid to evaluate g
+    ft = feval(f,t);                               % Evaluate f
+    gxmt = feval(g, xx-tt);                        %    and g (expensive)
+    y = gxmt*(w'.*ft);                             % Compute integral
+    y = chebtech1.vals2coeffs(y);                  % Convert values to coeffs 
+    % Trim small coefficients:
+    ay = abs(y); my = max(ay); loc = max(find(ay > 10*eps*my, 1, 'last'),1);
+    if ( isempty(loc) ), loc = 1; end              % Deal with case when y = 0
+    y = y(1:loc);
+    data.domain = [b+c, a+d];
+    h_mid = bndfun({[],y}, data);                  % Make h_mid from coeffs
+    h = {h_left{1}, h_mid, h_right{end}};          % Combine three pieces
+    return
 end
+
+% Trim small coefficients in f:
+f_cheb = get(f, 'coeffs'); af = abs(f_cheb); mf = max(af); 
+loc = find(af > 10*eps*mf, 1, 'last'); if ( isempty(loc) ), loc = 1; end
+f_cheb = f_cheb(1:loc);
+f_leg = cheb2leg(f_cheb);                   % Legendre coefficients of f
 
 % Restrict g:
 doms = c + (b - a)*(0:numPatches);
 g_restricted = restrict(g, doms);
+doms = c + (b - a)*(0:numPatches);           % Subdomains
 if ( ~iscell(g_restricted) )
     % If doms happened to be domain(g), restrict would return a cell.
     g_restricted = {g_restricted};
@@ -129,13 +160,13 @@ for k = 1:numPatches
     dk_right = b + dk(2); %  dkl  dkm   dkr
     gk = g_restricted{k};                          % g on this subdomain
     gk = simplify(gk);                             % Simplify for efficiency
-    gk_leg = cheb2leg(get(gk, 'coeffs'));  % Legendre coefficients
+    gk_leg = cheb2leg(get(gk, 'coeffs'));          % Legendre coefficients
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Convolution on this domain
-    
+        
     % The left triangle for the kth patch:
     ind = (dk_left <= x) & (x < dk_mid); % Locate the grid values in [dkl, dkr]:
     if ( k == 1 ) % First piece:
-        hLegL = leg2cheb(hLegL);           % Cheb. coeffs of left tri.
+        hLegL = leg2cheb(hLegL);                   % Cheb. coeffs of left tri.
         data.domain = [dk_left, dk_mid];
         h_left = bndfun({[], hLegL}, data);        % Make BNDFUN from coeffs
     else          % Subsequent left pieces
@@ -152,13 +183,14 @@ for k = 1:numPatches
         tmp = clenshawLegendre(z, hLegR);
         y(ind) = y(ind) + tmp;
     end
+    
 end
 
 if ( abs((b-a)-(d-c)) < 10*eps(norm([a b c d], inf)) )
     % If there's only one patch, then we already have all the information reqd.
-    hLegR = leg2cheb(hLegR);       % Cheb coeffs of right tri.
+    hLegR = leg2cheb(hLegR);                        % Cheb coeffs of right tri.
     data.domain = d + [a b];
-    h_right = bndfun({[], hLegR}, data);   % Make BNDFUN from coeffs
+    h_right = bndfun({[], hLegR}, data);            % Make BNDFUN from coeffs
     h_mid = bndfun();
     
 else  
@@ -175,40 +207,41 @@ else
     gk = simplify(gk);                              % Simplify for efficiency
     gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
-    hLegR = leg2cheb(hLegR);                % Cheb coeffs on A
+    hLegR = leg2cheb(hLegR);                        % Cheb coeffs on A
     data.domain = [d+a, d+b];
     h_right = bndfun({[], hLegR}, data);            % Make BNDFUN from coeffs
-    
+
     % Remainder piece: (between fl and a+d)
     remainderWidth = d + a - finishLocation; % b+d-fl-(b-a)
     if ( remainderWidth > 0 )
         ind = finishLocation <= x;           % Discard D and E
-        
+
         % B: (Coeffs were computed above)
         z = map(x(ind), d - b + 2*a, d + a); % Map grid to [-1, 1]
         tmp = clenshawLegendre(z, hLegL);    % Evaluate via recurrence
         y(ind) = tmp;                        % Store
-        
+
         % C: 
         domfk = b + [-remainderWidth, 0];               % Domain of fk
         domfk(1) = max(domfk(1), f.domain(1));          % Ensure domfk is a
         domfk(end) = min(domfk(end), f.domain(end));    %  valid subdomain
         fk = restrict(f, domfk);                        % Restrict f
         fk = simplify(fk);                              % Simplify f
-        fk_leg = cheb2leg(get(fk, 'coeffs'));   % Legendre coeffs
+        fk_leg = cheb2leg(get(fk, 'coeffs'));           % Legendre coeffs
         domgk = [finishLocation, d + a] - b;            % Domain of gk
         domgk(1) = max(domgk(1), g.domain(1));          % Ensure domgk is a
         domgk(end) = min(domgk(end), g.domain(end));    %  valid subdomain
         gk = restrict(g, domgk);                        % Restrict g
         gk = simplify(gk);                              % Simplify g
-        gk_leg = cheb2leg(get(gk, 'coeffs'));   % Legendre coeffs
-        [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
+        gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
+        [~, hLegR] = easyConv(fk_leg, gk_leg);          % Conv 
         z = map(x(ind), finishLocation, d + a);         % Map to [-1, 1]
         tmp = clenshawLegendre(z, hLegR);               % Eval via recurrence
         y(ind) = y(ind) + tmp*remainderWidth/(b - a);   % Scale and append
     end
     % Convert values to coeffs (we don't want to construct a chebtech1)
     y = chebtech1.vals2coeffs(y);
+
     % Construct BNDFUN of the interior (rectangle) using coefficients:
     data.domain = [b+c, a+d];
     h_mid = bndfun({[], y}, data);
@@ -222,12 +255,11 @@ else
     h = {h_left*(b-a)/2, h_mid*(b-a)/2, h_right*(b-a)/2};
 end
 
-% Ensure endpoints of BNDFUNs for adjacent subintervals match exactly.
-%
-% NB:  This is a bit inefficient if consecutive endpoints get adjusted, as some
-% BNDFUNs may have their maps changed twice, but the map-change operation is
-% fast enough that this shouldn't matter.
-for (n = 2:1:numel(h))
+% Ensure endpoints of BNDFUNs for adjacent subintervals match exactly. NB: This
+% is a bit inefficient if consecutive endpoints get adjusted, as some BNDFUNs
+% may have their maps changed twice, but the map-change operation is fast enough
+% that this shouldn't matter.
+for n = 2:1:numel(h)
     end_left = h{n-1}.domain(end);
     end_right = h{n}.domain(1);
     if ( end_left ~= end_right )
