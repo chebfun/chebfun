@@ -120,7 +120,7 @@ if ( numPatches > 1 && coeffsConvCost > quadConvCost )
     h_left = conv(f, restrict(g, c+[0, b-a]));     % Left triangle
     h_right = conv(f, restrict(g, d-[(b-a) 0]));   % Right tirangle
     % Middle:
-    [t, w] = legpts((M+N+2)/2, [a,b]);             % Legendre grid
+    [t, w] = legpts((M+N+5)/2, [a,b]);             % Legendre grid
     [tt, xx] = meshgrid(t,x);                      % Cheb/Leg grid to evaluate g
     ft = feval(f,t);                               % Evaluate f
     gxmt = feval(g, xx-tt);                        %    and g (expensive)
@@ -133,6 +133,7 @@ if ( numPatches > 1 && coeffsConvCost > quadConvCost )
     data.domain = [b+c, a+d];
     h_mid = bndfun({[],y}, data);                  % Make h_mid from coeffs
     h = {h_left{1}, h_mid, h_right{end}};          % Combine three pieces
+    h = fixMaps(h);                                % Ensure domain ends match
     return
 end
 
@@ -254,7 +255,13 @@ if ( isempty(h_mid) )
 else    
     h = {h_left*(b-a)/2, h_mid*(b-a)/2, h_right*(b-a)/2};
 end
+h = fixMaps(h);
 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function h = fixMaps(h)
 % Ensure endpoints of BNDFUNs for adjacent subintervals match exactly. NB: This
 % is a bit inefficient if consecutive endpoints get adjusted, as some BNDFUNs
 % may have their maps changed twice, but the map-change operation is fast enough

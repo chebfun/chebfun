@@ -160,11 +160,16 @@ pass(18) = norm(f-fsmooth) < .01;
 
 %% test small intervals
 f = chebfun(@sin);
-g = chebfun(@cos, [-1 1]/1e4);
+g = chebfun(@cos, [-1 1]/1e3);
 h1 = conv(f, g);
 h2 = conv(f,g, 'Old');
-norm(h1 - h2)
 pass(19) = norm(h1 - h2) < eps*10;
+
+f = chebfun(@sin);
+g = chebfun(@cos, [-1 1]/1e6);
+h1 = conv(f, g);
+h2 = conv(f,g, 'Old');
+pass(20) = norm(h1 - h2) < eps*10;
 
 end
 
