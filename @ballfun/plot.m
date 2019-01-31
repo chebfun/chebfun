@@ -87,6 +87,7 @@ daspect([1 1 1])
 
 camlight;
 lighting phong;
+material dull;
 
 % Add label
 xlabel('X')
