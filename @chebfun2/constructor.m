@@ -177,7 +177,7 @@ while ( ~isHappy && ~failure )
                 colVals(PP(kk+1:nn, 1), kk)*(rowVals(kk, :)./pivotVal(kk));
         end
         
-        % If function is on rank-1 then make rowValues a row vector:
+        % If function is of rank-1 then make rowValues a row vector:
         if ( nn == 1 )
             rowVals = rowVals(:).';
         end

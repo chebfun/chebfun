@@ -101,6 +101,9 @@ elseif ( isnumeric(x) && isnumeric(y) )  % f(x, y)
     if ( isvector(x) && ~isscalar(x) && all(size(x) == size(y)) )
         % Determine whether inputs are pure vectors.
         out = feval(cols, y(:)) .* feval(rows, x(:)) * diag(D);
+        if ( size(x,1) == 1 ) 
+            takeTranspose = 1; 
+        end
     else
         out = feval(cols, y(:)) * D * feval(rows, x(:)).';
     end
