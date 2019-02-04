@@ -59,9 +59,7 @@ else
             end
             y = feval@separableApprox(f, theta, r);
         end
-        if ( (size(theta, 1) == 1) && (size(r,1) == 1) )
-            y = y.';
-        end
+
         if tns==1
             y = reshape(y, sizec1);
         end
