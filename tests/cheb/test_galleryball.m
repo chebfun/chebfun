@@ -1,6 +1,6 @@
 function pass = test_galleryball( ) 
  
-names = {'gaussian', 'solharm'}; 
+names = {'gaussian', 'peaks', 'solharm'}; 
  
 N = length(names); 
 % Test construction of each gallery function. 
