@@ -1,18 +1,62 @@
-function quiver(v,varargin)
-% QUIVER Quiver plot of BALLFUNV.
-%   QUIVER(V) plots the vector field of the BALLFUNV V. QUIVER automatically
-%   scales the colors of the arrows to the data. The arrows are plotted on 
-%   a regular grid.
+function quiver(v, varargin)
+%QUIVER   Quiver plot of CHEBFUN2V.
+%   QUIVER(F) plots the vector velocity field of F. QUIVER automatically
+%   attempts to scale the arrows to fit within the grid.
 %
-%   See also BALLFUN/PLOT.
+%   QUIVER(F,S) automatically scales the arrows to fit within the grid and then
+%   stretches them by S.  Use S=0 to plot the arrows without the automatic
+%   scaling. The arrows are on a uniform grid.
+%
+%   QUIVER(...,LINESPEC) uses the plot linestyle specified for the velocity
+%   vectors.  Any marker in LINESPEC is drawn at the base instead of an arrow on
+%   the tip.  Use a marker of '.' to specify no marker at all.  See PLOT for
+%   other possibilities.
+%
+%   QUIVER(...,'numpts',N) plots arrows on a N by N by N uniform grid.
+%
+%   QUIVER(...,'color') colors the arrows according to the magnitude of the
+%   vector field.
+%
+% See also BALLFUN/PLOT.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Number of points
-m = 30; n = 30; p = 30;
+numpts = 30;
+
+% Empty check:
+if ( isempty( v ) )
+    quiver([])
+    return
+end
+
+if ( isempty(varargin) )
+    varargin = {};
+end
+
+% Number of points to plot
+j = 1;
+argin = {};
+color = false;
+
+while ( ~isempty( varargin ) )
+    if strcmpi( varargin{1}, 'numpts' )
+        numpts = varargin{2};
+        varargin(1:2) = [];
+    elseif strcmpi( varargin{1}, 'color' )
+        color = true;
+        varargin(1) = [];
+    else
+        argin{j} = varargin{1};
+        varargin(1) = [];
+        j = j+1;
+    end
+end
+varargin = argin;
 
 % Create the grid
+m = numpts; n = numpts; p = numpts;
 r = chebpts(m);
 
 % Resize the indices and grid
@@ -24,7 +68,7 @@ Vxx = [];
 Vyy = [];
 Vzz = [];
 
-% Initialize the array of points
+% Initialize the array of equally spaced points
 xx = [];
 yy = [];
 zz = [];
@@ -54,10 +98,10 @@ for i = 1:m
     end
 end
 
-q = quiver3(xx,yy,zz,real(Vxx),real(Vyy),real(Vzz), 'AutoScaleFactor',4);
+q = quiver3(xx,yy,zz,real(Vxx),real(Vyy),real(Vzz), varargin{:});
 
 % Color the vectors according to their magnitude
-if  nargin==1
+if  color
     % Compute the magnitude of the vectors
     mags = sqrt(sum(cat(2, q.UData(:), q.VData(:), ...
                 reshape(q.WData, numel(q.UData), [])).^2, 2));
@@ -98,5 +142,6 @@ zlabel('Z')
 % % Axis
 axis([-1 1 -1 1 -1 1]);
 daspect([1 1 1]);
+axis square
 hold off;
 end
