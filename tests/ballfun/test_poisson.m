@@ -2,7 +2,7 @@ function pass = test_poisson()
 
 %% Poisson with Dirichlet BC
 % Example 1:
-f = cheb.galleryballfun('zero');       % Forcing function
+f = ballfun(@(x,y,z)0);       % Forcing function
 exact = @(r, lam, th) r.*sin(lam).*sin(th);
 bc = @(lam, th) exact(1, th, lam);           % Dirichlet condition around r=1
 u = poisson(f, bc, 39, 40, 41);

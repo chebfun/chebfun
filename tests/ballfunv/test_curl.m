@@ -7,7 +7,7 @@ end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
 % Example 1 : (0,x,xy)
-Vx = cheb.galleryballfun("zero");
+Vx = ballfun(@(x,y,z)0);
 Vy = ballfun(@(r,lam,th)r.*sin(th).*cos(lam), 'spherical');
 Vz = ballfun(@(r,lam,th)r.*sin(th).*cos(lam).*r.*sin(th).*sin(lam), 'spherical');
 V = ballfunv(Vx,Vy,Vz);

@@ -4,7 +4,7 @@ function pass = test_helmholtz( )
 %% POISSON WITH DIRICHLET BOUNDARY CONDITIONS
 
 % Example 1:
-f = cheb.galleryballfun('zero');
+f = ballfun(@(x,y,z)0);
 exact = @(r, lam, th) 1;
 bc = @(lam, th) exact(1, lam, th);  % Dirichlet condition
 u = helmholtz(f, 0, bc, 39, 40, 41);
@@ -28,7 +28,7 @@ exact = ballfun(exact,'spherical');
 pass(3) = isequal(u,exact);
 
 % Example 4:
-f = cheb.galleryballfun('zero');       % Forcing function
+f = ballfun(@(x,y,z)0);       % Forcing function
 exact = @(r, lam, th) r.*sin(lam).*sin(th);
 bc = @(lam, th) exact(1, th, lam);           % Dirichlet condition around r=1
 u = helmholtz(f, 0, bc, 39, 40, 41);
@@ -44,7 +44,7 @@ u = helmholtz(f, 0, bc, 39, 40, 41);
 exact = ballfun(exact,'spherical');
 pass(5) = isequal(u,exact);
 
-zero = cheb.galleryballfun("zero");
+zero = ballfun(@(x,y,z)0);
 
 % Example 6:
 g = @(r,lam,th)r.^2.*sin(th).^2.*exp(2*1i*lam);

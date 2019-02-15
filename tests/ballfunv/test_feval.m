@@ -6,7 +6,7 @@ if ( nargin == 0 )
 end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
-zero = cheb.galleryballfun('zero');
+zero = ballfun(@(x,y,z)0);
 r = 0.5; lam = pi; th = pi/2;
 
 % Example 1:

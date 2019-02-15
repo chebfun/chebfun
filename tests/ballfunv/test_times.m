@@ -7,7 +7,7 @@ end
 tol = 1e2*pref.techPrefs.chebfuneps;
 
 f = ballfun(@(x,y,z)x.*y);
-Z = cheb.galleryballfun('zero');
+Z = ballfun(@(x,y,z)0);
 
 % Example 1:
 F = ballfunv(f,Z,Z);

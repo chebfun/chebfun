@@ -1,6 +1,6 @@
 function pass = test_galleryballfun( ) 
  
-names = {'zero'}; 
+names = {'solharm'}; 
  
 N = length(names); 
 % Test construction of each gallery function. 
