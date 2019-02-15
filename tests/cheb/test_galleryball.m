@@ -1,12 +1,13 @@
-function pass = test_galleryballfunv( ) 
+function pass = test_galleryball( ) 
  
-names = {'zero'}; 
+names = {'gaussian', 'solharm'}; 
  
 N = length(names); 
 % Test construction of each gallery function. 
 for k = 1:N 
     pass(k) = doesNotCrash(names{k}); 
 end 
+ 
  
 if (nargout > 0) 
     pass = all(pass(:)); 
@@ -15,7 +16,7 @@ end
  
 function pass = doesNotCrash(name) 
 try 
-    vn = cheb.galleryballfunv(name);  % Test returning the vector 
+    fn = cheb.galleryball(name);  % Test returning the function 
     pass = true; 
 catch ME %#ok<NASGU> 
     pass = false; 
