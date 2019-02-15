@@ -73,6 +73,7 @@ xx = [];
 yy = [];
 zz = [];
 
+% Find the equally spaced points in the ball
 for i = 1:m
     % Coordinates of the points on the sphere of radius r(i)
     Nth = max(ceil(p*r(i)/2),1);

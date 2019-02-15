@@ -11,8 +11,6 @@ function vals = feval(f, varargin)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% 
-
 % Extract the components
 F = f.comp;
 
@@ -21,14 +19,6 @@ V1 = feval(F{1}, varargin{:});
 V2 = feval(F{2}, varargin{:});
 V3 = feval(F{3}, varargin{:});
 
-% Get the sizes of the evaluation points
-x = varargin{1};
-y = varargin{2};
-z = varargin{3};
-
-% Return a tensor of values
-vals = zeros(length(x),length(y),length(z),3);
-vals(:,:,:,1) = V1;
-vals(:,:,:,2) = V2;
-vals(:,:,:,3) = V3;
+% Return the values
+vals = [V1, V2, V3];
 end
