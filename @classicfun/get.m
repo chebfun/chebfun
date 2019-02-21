@@ -6,6 +6,7 @@ function out = get(f, prop)
 %   strings:
 %       'EXPONENTS'        - Exponents of F.ONEFUN or [0 0] if none.
 %       'DELTAS'           - CLASSICFUNs have no delta functions.  Returns [].
+%       'EXPONENTS'        - Exponents of F.ONEFUN or [0 0] if none.
 %   If PROP is a string other than those specified above, GET(F, PROP) returns
 %   the result of GET(F.ONEFUN, PROP).
 %
@@ -29,6 +30,9 @@ switch prop
         end
     case 'deltas'
         out = [];
+    case 'points'
+        out = get(f.onefun, prop);
+        out = f.mapping.For(out);
     otherwise
         out = get(f.onefun, prop);
 end
