@@ -6,7 +6,7 @@ function out = get(f, prop)
 %   strings:
 %       'EXPONENTS'        - Exponents of F.ONEFUN or [0 0] if none.
 %       'DELTAS'           - CLASSICFUNs have no delta functions.  Returns [].
-%       'EXPONENTS'        - Exponents of F.ONEFUN or [0 0] if none.
+%       'POINTS'           - Discretisation points of F.ONEFUN mapped to F.DOMAIN.
 %   If PROP is a string other than those specified above, GET(F, PROP) returns
 %   the result of GET(F.ONEFUN, PROP).
 %
