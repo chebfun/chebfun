@@ -170,6 +170,9 @@ if ( transState )
     h = h.';
 end
 
+% Simplify the result.
+h = simplify(h);
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -231,7 +234,6 @@ end
 
 % Construct CHEBFUN:
 h = chebfun(funs);
-h = simplify(h);
 h.isTransposed = f.isTransposed;
 
 end
