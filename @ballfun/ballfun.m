@@ -5,17 +5,19 @@ classdef ballfun
 %   functions should be smooth. Ballfun objects can be constructed in a 
 %   variety of ways: 
 %
-%    1. Y = ballfun(F), where F is a function handle in Cartesian coordinates
+%    1. ballfun(F), where F is a function handle in Cartesian coordinates
 %       (x,y,z), e.g., @(x,y,z) x.*y.*z + cos(x).
-%    2. Y = ballfun(F, 'spherical'), where F is a function handle in spherical
+%    2. ballfun(F, 'spherical'), where F is a function handle in spherical
 %       coordinates (r,lambda,theta). Here, r is the radial variable
-%       satisfying 0 <= r <= 1, lambda is the azimuthal variable and satisfies
-%       -pi <= lambda <= pi and theta is the polar angle and satisfies 0 <= theta < pi,
-%       e.g., @(r,lambda,theta) cos(r.*cos(lambda).*sin(theta))
-%    3. Y = ballfun(F), where F = (f_ijk) is a tensor of numbers, used as 
-%       function values at tensor of Chebyshev-Fourier-Fourier points in the
-%       intrinsic spherical coordinate system, i.e., [0,1]x[-pi,pi]x[0,pi].
-%    4. Y = ballfun(F, 'coeffs'), where F = (f_ijk) is a tensor of Chebyshev-
+%       satisfying 0 <= r <= 1, lambda is the azimuthal variable and
+%       satisfies -pi <= lambda <= pi and theta is the polar angle and
+%       satisfies 0 <= theta < pi, e.g., 
+%       @(r,lambda,theta) cos(r.*cos(lambda).*sin(theta))
+%    3. ballfun(F), where F = (f_ijk) is a tensor of numbers, used as
+%       function values at tensor of Chebyshev-Fourier-Fourier points in
+%       the intrinsic spherical coordinate system, i.e.,
+%       [0,1]x[-pi,pi]x[0,pi].
+%    4. ballfun(F, 'coeffs'), where F = (f_ijk) is a tensor of Chebyshev-
 %       Fourier-Fourier coefficients.
 %
 % If F is a function handle then it should allow for vectorized evaluations.
@@ -25,9 +27,9 @@ classdef ballfun
 % N. Boulle, and A. Townsend, Computing with functions in the ball, in
 % preparation.
 %
-% See also CHEBFUN2, DISKFUN, SPHEREFUN, BALLFUNV
+% See also CHEBFUN2, CHEBFUN3, DISKFUN, SPHEREFUN, BALLFUNV
 
-% Copyright 2018 by The University of Oxford and The CHEBFUN Developers.
+% Copyright 2019 by The University of Oxford and The CHEBFUN Developers.
 % See http://www.chebfun.org/ for CHEBFUN information.
     
     properties

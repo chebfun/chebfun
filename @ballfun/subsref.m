@@ -1,23 +1,23 @@
 function varargout = subsref(f, index)
 %SUBSREF   BALLFUN subsref.
 %( )
-%   F(X, Y, Z) returns the values of the BALLFUN F evaluated at the points 
+%   F(X, Y, Z) returns the values of F evaluated at the points 
 %   (X, Y, Z) in cartesian coordinates.
 %
-%   F(R, L, TH, 'spherical') returns the values of the BALLFUN F evaluated 
+%   F(R, L, TH, 'spherical') returns the values of F evaluated 
 %   at the points (R, L, TH) in spherical scoordinates.
 %
-%   G = F(0, :, :) is the slice of the BALLFUN F corresponding to 
-%   the plane X = 0.
+%   G = F(0, :, :) is the slice of F corresponding to 
+%   the plane X = 0; G is a diskfun.
 %
-%   G = F(:, 0, :) is the slice of the BALLFUN F corresponding to 
-%   the plane Y = 0.
+%   G = F(:, 0, :) is the slice of F corresponding to 
+%   the plane Y = 0; G is a diskfun.
 %
-%   G = F(:, :, 0) is the slice of the BALLFUN F corresponding to 
-%   the plane Z = 0.
+%   G = F(:, :, 0) is the slice of F corresponding to 
+%   the plane Z = 0; G is a diskfun.
 %
-%   F(R, :, :, 'spherical') returns a spherefun representing the BALLFUN F
-%   along a radial shell. 
+%   G = F(R, :, :, 'spherical') returns a slice of F at the given radius
+%   0<=R<=1 (i.e. F at the radius R); G is a spherefun.
 % 
 %   F(:, :, :) returns F.
 %
@@ -31,7 +31,7 @@ function varargout = subsref(f, index)
 %
 % See also BALLFUN/FEVAL, BALLFUN/GET. 
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 idx = index(1).subs;
@@ -108,7 +108,7 @@ function g = extract_spherefun(f, r)
 %   EXTRACT_SPHEREFUN(f, r) is the SPHEREFUN function 
 %   g(lambda, theta) = f(r, :, :)
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 F = f.coeffs;
