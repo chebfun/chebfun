@@ -14,7 +14,7 @@ if nargin == 1
 elseif nargin == 2 && strcmp(varargin{1},'slice')
     plot2(f)
 else
-    error('BALLFUNV:ballfunv Invalid input arguments')
+    error('CHEBFUN:BALLFUN:plot:input Invalid input arguments')
 end
 end
 
@@ -112,7 +112,7 @@ colorbar
 xlabel('X')
 ylabel('Z')
 
-% Plot f on the plane Y-Y
+% Plot f on the plane Y-Z
 subplot(2,2,4);
 plot(diskfun(f,'x'));
 colorbar

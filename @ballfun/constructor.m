@@ -3,12 +3,12 @@ function f = constructor( f, op, varargin )
 %   Given a function OP of three variables, defined on the unit ball, this
 %   code represents it as a BALLFUN object. A BALLFUN object is a
 %   tensor-product representation of a function that has been "doubled-up"
-%   in the r- and theta-variables. This doubled-up function is represented
-%   using in a Chebyshev-Fourier-Fourier basis.
+%   in the radial (r) and polar (theta) variables. This doubled-up function
+%   is represented using a Chebyshev-Fourier-Fourier basis.
 %
 % See also SPHEREFUN, DISKFUN, CHEBFUN2, CHEBFUN3.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [op, pref, isVectorized] = parseInputs(op, varargin{:});
@@ -24,7 +24,7 @@ grid1 = grid1 + 1 - mod(grid1,2);
 grid2 = grid2 + mod(grid2,2);
 grid3 = max(4, grid3 + mod(grid3,2));
 
-maxSample       = tpref.maxLength; % maxSample = max grid dimensions.
+maxSample = tpref.maxLength; % maxSample = max grid dimensions.
 
 if ( isa(op, 'ballfun') )     % BALLFUN( BALLFUN )
     f = simplify(op);
@@ -45,10 +45,10 @@ while ( ~isHappy && ~failure )
     % Does the function blow up or evaluate to NaN?:
     vscale = max(abs(vals(:)));
     if ( isinf(vscale) )
-        error('CHEBFUN:CHEBFUN3:constructor:inf', ...
+        error('CHEBFUN:BALLFUN:constructor:inf', ...
             'Function returned INF when evaluated');
     elseif ( any(isnan(vals(:))) )
-        error('CHEBFUN:CHEBFUN3:constructor:nan', ...
+        error('CHEBFUN:BALLFUN:constructor:nan', ...
             'Function returned NaN when evaluated');
     end
     
@@ -97,8 +97,8 @@ end
 
 %%
 function f = constructFromDouble( f, op )
-%CONSTRUCTFROMDOUBLE  Constructor BALLFUN from matrix of values F = (f_ij),
-% the numbers fij are used as function values at tensor equally-spaced points 
+%CONSTRUCTFROMDOUBLE  Construct BALLFUN from matrix of values F = (f_ijk),
+% the numbers fijk are used as function values at tensor equally-spaced points 
 % in the intrinsic spherical coordinate system, i.e., [0,1]x[-pi,pi]x[0,pi].
 
 if ( numel(op) == 1 )
@@ -139,13 +139,13 @@ f1 = @(r,lam,th)op(r,lam,th) + 0*r + 0*lam + 0*th;
 [rrg, llg, ttg] = ndgrid(r(floor(m/2)+1:m), lam(1:n/2+1), th(p/2+1:p+1));
 [rrh, llh, tth] = ndgrid(r(floor(m/2)+1:m), lam(n/2+1:end), th(p/2+1:p+1));
 
-if ~isVectorized
+if ( ~isVectorized )
     % g : evaluation at [0,1] x [-pi,0] x [0,pi]
     g = feval(f1, rrg, llg, ttg);
     % h : evaluation at [0,1] x [0,pi] x [0,pi]
     h = feval(f1, rrh, llh, tth);
 else
-    % If vectorize flag is turned out, then FOR loop:
+    % If vectorize flag is turned on, then FOR loop:
     % g and h have the same size
     g = zeros(size(rrg));
     h = zeros(size(rrh)); 
@@ -174,12 +174,12 @@ if nargin == 1
     [m,n,p] = size(f);
     
     if ( mod(n,2) ~= 0 )
-        error('BALLFUN:CONSTRUCTOR:VALUES', ... 
+        error('CHEBFUN:BALLFUN:constructor:sizevalues', ... 
         'When constructing from values the number of columns must be even.');
     end
     
     if ( p < 2 )
-        error('BALLFUN:CONSTRUCTOR:VALUES', ... 
+        error('CHEBFUN:BALLFUN:constructor:sizevalues', ... 
         'When constructing from values the number of fibers must be greater than 2.');
     end
   
