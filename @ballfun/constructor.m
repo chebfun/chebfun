@@ -180,7 +180,7 @@ if nargin == 1
     
     if ( p < 2 )
         error('CHEBFUN:BALLFUN:constructor:sizevalues', ... 
-        'When constructing from values the number of fibers must be greater than 2.');
+        'When constructing from values the number of tubes must be greater than 2.');
     end
   
     % Define the functions g on [0,1]x[-pi,0]x[0,pi] and h on [0,1]x[0,pi]x[0,pi]

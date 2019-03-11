@@ -2,7 +2,7 @@ function F = vertcat( varargin )
 %VERTCAT   Vertical concatenation of BALLFUN objects.
 %
 % K = VERTCAT(F, G, H) is the vertical concatenation of BALLFUN objects F, 
-% G, and H. The function K is a SPHEREFUNV object. 
+% G, and H. The function K is a BALLFUNV object. 
 % 
 % [F ; G ; H] is equivalent to VERTCAT(F, G, H).
 %
