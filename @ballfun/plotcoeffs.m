@@ -39,21 +39,21 @@ plotcoeffs(rr, varargin{:});
 ylim1 = ylim(gca);
 % Remove labels from 1D plotcoeff: 
 ylabel(gca, 'Magnitude of coefficient') 
-title('Cols')  
+title('Cols (r)')  
 
 % PLOTCOEFFS of rows:
 ax2 = subplot(1, 3, 2);
 plotcoeffs(ll, varargin{:}); 
 ylim2 = ylim(gca);
 ylabel(' ')
-title('Rows')
+title('Rows (lambda)')
 
 % PLOTCOEFFS of tubes:
 ax3 = subplot(1, 3, 3);
 plotcoeffs(tt, varargin{:}); 
 ylim3 = ylim(gca);
 ylabel(' ')
-title('Tubes')
+title('Tubes (theta)')
 
 % Find a proper ylim for all the three subplots:
 yLims = [ylim1; ylim2; ylim3];
