@@ -64,7 +64,6 @@ switch index(1).type
             out = feval(f, idx{1}, idx{2}, idx{3});
             
         elseif ( numel(idx) == 4 && (strcmpi(idx(4),'spherical') || strcmpi(idx(4),'polar') ))
-            
             r = idx{1};
             lam = idx{2};
             th = idx{3};
@@ -75,11 +74,11 @@ switch index(1).type
                 % Evaluate at the boundary and return a spherefun
                 out = extract_spherefun( f, r );
             end
-            
         else
+            % Don't know what to do.
             error('CHEBFUN:BALLFUN:subsref:inputs', ...
-                'Can only evaluate at triples (X,Y,Z) or (R,LAM,TH).')
-        end
+               'Unrecognized inputs.')
+        end  
         varargout = {out};
         
     case '.'
