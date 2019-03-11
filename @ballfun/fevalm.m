@@ -3,7 +3,7 @@ function vals = fevalm( f, r, lam, th)
 % 
 % Z = FEVALM(F, R, LAM, TH) returns a matrix of values Z of size
 % length(R)-by-length(TH)-by-length(LAM). (R,LAM,TH) are the spherical 
-% coordinates for the evaluation points in the ball, with -1<=R<=1, 
+% coordinates for the evaluation points in the ball, with 0<=R<=1, 
 % -pi <= LAM <= pi the azimuthal angle and 0 <= TH <= pi the elevation 
 % (polar) angle (both measured in radians). R, LAM, and TH should be 
 % vectors of doubles. This is equivalent to making a ndgrid of the vectors 
@@ -11,7 +11,7 @@ function vals = fevalm( f, r, lam, th)
 %
 % See also FEVAL. 
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 F = f.coeffs;
