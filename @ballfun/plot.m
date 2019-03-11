@@ -1,8 +1,7 @@
 function plot(f, varargin)
 %PLOT Plot a BALLFUN on the ball
 %
-% PLOT(f, 'slices') plot a BALLFUN function and its slices on the planes 
-% X-Y, Y-Z and X-Z
+% PLOT(f, 'slices') plot a BALLFUN and its slices on the planes X-Y, Y-Z and X-Z
 %
 % See also QUIVER
 
