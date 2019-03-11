@@ -1,6 +1,6 @@
-function m = mean(f)
-%MEAN    Average or mean value of a BALLFUN.
-%   MEAN(F) is the mean of the BALLFUN F.
+function m = mean3(f)
+%MEAN3    Average or mean value of a BALLFUN.
+%   MEAN3(F) is the mean of the BALLFUN F.
 %
 % See also SUM3.
 

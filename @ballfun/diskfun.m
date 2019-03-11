@@ -33,16 +33,18 @@ m = m + 1-mod(m,2);
 n = n + mod(n,2);
 
 % Evaluation points in [c, 1]
-r = chebpts(m, [abs(c),1]);
+rho = chebpts(m);
+rho = rho(ceil(m/2):end);
 
 % Evaluation points in [-pi,pi[
 lambda = pi*trigpts(n);
 
 % Build the grid and evaluate at the plane Z = C
-rho  = sqrt(r.^2-c^2);
+r  = sqrt(rho.^2-c^2);
+
 theta = atan2(rho,c);
-G = zeros(m,n);
-for i = 1:m
+G = zeros(length(r),n);
+for i = 1:length(r)
    G(i,:) = fevalm(f, r(i), lambda, theta(i));
 end
 
@@ -61,11 +63,11 @@ elseif ischar(varargin{1})
     phi = 0;
     if strcmp(varargin{1},'x')
         theta = -pi/2;
-        psi = -pi/2;
+        psi = pi/2;
         % Evaluate at Y-Z plane
     elseif strcmp(varargin{1},'y')
         % Evaluate at X-Z plane
-        theta = pi/2;
+        theta = -pi/2;
         psi = 0;
     elseif strcmp(varargin{1},'z')
         % Evaluate at X-Y plane
