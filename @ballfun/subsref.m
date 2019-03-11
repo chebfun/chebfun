@@ -7,17 +7,17 @@ function varargout = subsref(f, index)
 %   F(R, L, TH, 'spherical') returns the values of F evaluated 
 %   at the points (R, L, TH) in spherical scoordinates.
 %
-%   G = F(0, :, :) is the slice of F corresponding to 
-%   the plane X = 0; G is a diskfun.
+%   G = F(0, :, :) is the slice of F corresponding to the plane X = 0,
+%   scaled to the unit disk; G is a diskfun.
 %
-%   G = F(:, 0, :) is the slice of F corresponding to 
-%   the plane Y = 0; G is a diskfun.
+%   G = F(:, 0, :) is the slice of F corresponding to the plane Y = 0,
+%   scaled to the unit disk; G is a diskfun.
 %
-%   G = F(:, :, 0) is the slice of F corresponding to 
-%   the plane Z = 0; G is a diskfun.
+%   G = F(:, :, 0) is the slice of F corresponding to the plane Z = 0,
+%   scaled to the unit disk; G is a diskfun.
 %
-%   G = F(R, :, :, 'spherical') returns a slice of F at the given radius
-%   0<=R<=1 (i.e. F at the radius R); G is a spherefun.
+%   G = F(R, :, :, 'spherical') returns the evaluation of F at the given radius
+%   0<=R<=1 (i.e. F at the radius R), scaled to the unit sphere; G is a spherefun.
 % 
 %   F(:, :, :) returns F.
 %
