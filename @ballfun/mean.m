@@ -9,6 +9,11 @@ function s = mean(f, dim)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( nargin == 1) 
+    % Default to the r-direction:
+    dim = 1;    
+end
+
 % Compute the definite integral of f
 s = sum(f, dim);
 

@@ -4,7 +4,7 @@ function I = sum3(f)
 %
 % See also SUM, SUM2.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Second argument: integral over the sphere of radius -1

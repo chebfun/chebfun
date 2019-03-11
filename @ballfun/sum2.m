@@ -8,7 +8,7 @@ function ff = sum2(f, dims)
 %
 % See also SUM, SUM3. 
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default to lambda and theta directions: 
