@@ -16,6 +16,7 @@ elseif nargin == 2 && (strcmp(varargin{1},'slices') || strcmp(varargin{1},'slice
 else
     error('CHEBFUN:BALLFUN:plot:input Invalid input arguments')
 end
+
 end
 
 function plot1(f)
@@ -123,6 +124,4 @@ ylabel('Z')
 subplot(2,2,1);
 plot1(f)
 colorbar
-
-set(gcf,'PaperPositionMode','auto','PaperPosition',[0 0 15 10])
 end
