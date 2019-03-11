@@ -1,17 +1,17 @@
 function plot(f, varargin)
 %PLOT Plot a BALLFUN on the ball
 %
-% PLOT(f, 'slice') plot a BALLFUN function and its slices on the planes 
+% PLOT(f, 'slices') plot a BALLFUN function and its slices on the planes 
 % X-Y, Y-Z and X-Z
 %
 % See also QUIVER
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if nargin == 1
     plot1(f)
-elseif nargin == 2 && strcmp(varargin{1},'slice')
+elseif nargin == 2 && (strcmp(varargin{1},'slices') || strcmp(varargin{1},'slice'))
     plot2(f)
 else
     error('CHEBFUN:BALLFUN:plot:input Invalid input arguments')
