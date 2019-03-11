@@ -52,7 +52,7 @@ while ( ~isHappy && ~failure )
             'Function returned NaN when evaluated');
     end
     
-    % If the rank of the function is above maxRank then stop.
+    % If the size of the function is above maxSample then stop.
     if ( max([grid1*grid2, grid2*grid3, grid1*grid3]) > maxSample )
         warning('CHEBFUN:BALLFUN:constructor:dimensions', ...
             'Not well-approximated by a Chebyshev-Fourier-Fourier expansion.');
