@@ -2,9 +2,9 @@ function val = get( f, propName )
 %GET GET method for BALLFUN class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the BALLFUN F. Valid entries for the string PROP are:
-%    'coeffs'
+%    'coeffs', 'isReal'
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the properties.
