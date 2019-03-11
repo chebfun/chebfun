@@ -7,13 +7,13 @@ function varargout = subsref(f, index)
 %   F(R, L, TH, 'spherical') returns the values of F evaluated 
 %   at the points (R, L, TH) in spherical scoordinates.
 %
-%   G = F(0, :, :) is the slice of F corresponding to the plane X = 0,
+%   G = F(C, :, :) is the slice of F corresponding to the plane X = C,
 %   scaled to the unit disk; G is a diskfun.
 %
-%   G = F(:, 0, :) is the slice of F corresponding to the plane Y = 0,
+%   G = F(:, C, :) is the slice of F corresponding to the plane Y = C,
 %   scaled to the unit disk; G is a diskfun.
 %
-%   G = F(:, :, 0) is the slice of F corresponding to the plane Z = 0,
+%   G = F(:, :, C) is the slice of F corresponding to the plane Z = C, 
 %   scaled to the unit disk; G is a diskfun.
 %
 %   G = F(R, :, :, 'spherical') returns the evaluation of F at the given radius
@@ -46,12 +46,12 @@ switch index(1).type
             % If x, y, z are numeric or ':' call feval().
             if ( ( isnumeric(x) ) && ( isnumeric(y) ) && ( isnumeric(z) ) )
                 out = feval(f, x, y, z);
-            elseif ( isequal(x,0) && strcmpi(y, ':') && strcmpi(z, ':') )
-                out = diskfun(f, 'x'); 
-            elseif ( strcmpi(x, ':') && isequal(y,0) && strcmpi(z, ':') )
-                out = diskfun(f, 'y'); 
-            elseif ( strcmpi(x, ':') && strcmpi(y, ':') && isequal(z,0) )
-                out = diskfun(f, 'z'); 
+            elseif ( isnumeric(x) && strcmpi(y, ':') && strcmpi(z, ':') )
+                out = diskfun(f, 'x', x); 
+            elseif ( strcmpi(x, ':') && isnumeric(y) && strcmpi(z, ':') )
+                out = diskfun(f, 'y', y); 
+            elseif ( strcmpi(x, ':') && strcmpi(y, ':') && isnumeric(z) )
+                out = diskfun(f, 'z', z); 
             elseif ( strcmpi(x, ':') && strcmpi(y, ':') && strcmpi(z, ':') )
                 out = f; 
             else
