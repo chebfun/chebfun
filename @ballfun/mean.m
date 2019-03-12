@@ -4,7 +4,7 @@ function s = mean(f, dim)
 %   lambda (azimuthal direction) or theta (polar direction) respectively and 
 %   and returns as its output a spherefun if DIM is 1 or a diskfun otherwise.
 %
-% See also MEAN2, MEAN3. 
+% See also BALLFUN/MEAN2, BALLFUN/MEAN3. 
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
