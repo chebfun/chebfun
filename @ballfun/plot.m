@@ -1,4 +1,4 @@
-function plot(f, varargin)
+function varargout = plot(f, varargin)
 %PLOT   Plot a BALLFUN on the ball
 %
 %   PLOT(f, 'slices') plot a BALLFUN and its slices on the planes X-Y, Y-Z
@@ -16,20 +16,24 @@ function plot(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )
-    plotBall(f)
+    h = plotBall(f);
 elseif ( nargin == 2 ) && ( strcmpi(varargin{1},'slices') || strcmpi(varargin{1},'slice') )
-    plotSlices(f)
+    h = plotSlices(f);
 elseif ( nargin == 2 ) && ( strcmpi(varargin{1},'wedgeaz') )
-    plotWedgeAz(f)
+    h = plotWedgeAz(f);
 elseif ( nargin == 2 ) && ( strcmpi(varargin{1},'wedgepol') )
-    plotWedgePol(f)
+    h = plotWedgePol(f);
 else
     error('CHEBFUN:BALLFUN:plot:input Invalid input arguments')
 end
 
+if ( nargout > 0 )
+    varargout = { h }; 
 end
 
-function plotBall(f)
+end
+
+function h = plotBall(f)
 % Plot a BALLFUN function on the ball
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
@@ -88,7 +92,7 @@ hold on
 for j = 1:numel(hslicer)
     h = hslicer(j);
     [xs,ys,zs] = sph2cart(h.ZData,h.XData,h.YData);
-    surf(xs,ys,zs,h.CData,'EdgeColor','none','FaceColor','Interp');
+    h = surf(xs,ys,zs,h.CData,'EdgeColor','none','FaceColor','Interp');
 end
 delete(hslicer);
 hold off
@@ -106,37 +110,39 @@ ylabel('Y')
 zlabel('Z')
 end
 
-function plotSlices(f)
+function h = plotSlices(f)
 % Plot a BALLFUN function on the ballfun and its slices
 
 % Plot f on the plane X-Y
 subplot(2,2,2);
-plot(diskfun(f,'z'))
+h1 = plot(diskfun(f,'z'));
 colorbar
 xlabel('X')
 ylabel('Y')
 
 % Plot f on the plane X-Z
 subplot(2,2,3);
-plot(diskfun(f,'y'));
+h2 = plot(diskfun(f,'y'));
 colorbar
 xlabel('X')
 ylabel('Z')
 
 % Plot f on the plane Y-Z
 subplot(2,2,4);
-plot(diskfun(f,'x'));
+h3 = plot(diskfun(f,'x'));
 colorbar
 xlabel('Y')
 ylabel('Z')
 
 % Plot f
 subplot(2,2,1);
-plotBall(f)
+h4 = plotBall(f);
 colorbar
+
+h = {h1, h2, h3, h4};
 end
 
-function plotWedgeAz(f)
+function h = plotWedgeAz(f)
 % Plot a BALLFUN with a wedge in the azimuthal direction removed
 
 % Is the plot currently being held?
@@ -168,7 +174,7 @@ th = linspace(0,pi,p)';
 ff = permute(fevalm(f,1,lam,th),[3 2 1]);
 
 % Plot the result
-surf(sin(th)*cos(lam),sin(th)*sin(lam),cos(th)*ones(1,n),ff,defaultOpts{:})
+h = surf(sin(th)*cos(lam),sin(th)*sin(lam),cos(th)*ones(1,n),ff,defaultOpts{:});
 hold on
 
 % Construct the values of r and theta to plot from the origin to the outer
@@ -195,7 +201,7 @@ daspect([1 1 1])
 
 end
 
-function plotWedgePol(f)
+function h = plotWedgePol(f)
 % Plot a BALLFUN with a wedge in the polar direction removed
 
 % Is the plot currently being held?
@@ -230,7 +236,7 @@ th = linspace(pol_intvl(1),pol_intvl(2),p)';
 ff = permute(fevalm(f,1,lam,th),[3 2 1]);
 
 % Plot the result
-surf(sin(th)*cos(lam),sin(th)*sin(lam),cos(th)*ones(1,n),ff,defaultOpts{:})
+h = surf(sin(th)*cos(lam),sin(th)*sin(lam),cos(th)*ones(1,n),ff,defaultOpts{:});
 hold on
 
 % Construct the values of lambda and theta to plot on the outer sphere (r=1)
