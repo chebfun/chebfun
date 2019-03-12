@@ -1,4 +1,4 @@
-function [f,fa] = galleryball(name,varargin)
+function varargout = galleryball(name,varargin)
 %CHEB.GALLERYBALL   Ballfun example functions.
 %   F = CHEB.GALLERYBALL(NAME) returns a ballfun function corresponding to
 %   NAME.  See the listing below for available names.
@@ -91,5 +91,14 @@ switch lower(name)
     otherwise
         error('CHEB:GALLERYBALL:unknown:unknownFunction', ...
             'Unknown function.')
+end
+
+% Only return something if there is an output argument.
+if ( nargout > 0 )
+    varargout = {f, fa};
+else
+    % Otherwise, plot the function.
+    plot(f), axis off
+    title(name)
 end
 end
