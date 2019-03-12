@@ -195,10 +195,12 @@ if ~plotOnHold
     hold off;
 end
 
+camlight;
+lighting phong;
+material dull;
+
 axis([-1 1 -1 1 -1 1])
 daspect([1 1 1])
-
-
 end
 
 function h = plotWedgePol(f)
@@ -282,9 +284,11 @@ if ~plotOnHold
     hold off;
 end
 
+camlight;
+lighting phong;
+material dull;
+
 axis([-1 1 -1 1 -1 1])
 daspect([1 1 1])
-
-
 end
 
