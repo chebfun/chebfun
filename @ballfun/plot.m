@@ -247,12 +247,21 @@ hold on
 
 % Construct the values of r and theta to plot from the origin to the outer
 % sphere (r=1).
-r = chebpts(m); th = linspace(0,pol_intvl(1),p);
+r = chebpts(m); r = r(floor(m/2)+1:end); th = linspace(0,pol_intvl(1),p);
 
 % Evaluate the function on the wedge from the origin along the az_intvl(1).
 ff = permute(fevalm(f,r,lam(1),th),[1 3 2]);
 % Plot the result
 surf(r*sin(th)*cos(lam(1)),r*sin(th)*sin(lam(1)),ones(size(r))*cos(th),ff,defaultOpts{:})
+
+% Construct the values of r and theta to plot from the origin to the outer
+% sphere (r=1).
+r = chebpts(m); r = r(floor(m/2)+1:end); th = linspace(0,pol_intvl(1),p);
+
+% Evaluate the function on the wedge from the origin along the az_intvl(1).
+ff = permute(fevalm(f,r,lam(end),th),[1 3 2]);
+% Plot the result
+surf(r*sin(th)*cos(lam(end)),r*sin(th)*sin(lam(end)),ones(size(r))*cos(th),ff,defaultOpts{:})
 
 % Construct the values of r and lambda to plot from the origin to the outer
 % sphere (r=1): slice along
