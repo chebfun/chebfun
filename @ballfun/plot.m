@@ -1,14 +1,14 @@
 function plot(f, varargin)
-%PLOT Plot a BALLFUN on the ball
+%PLOT   Plot a BALLFUN on the ball
 %
-% PLOT(f, 'slices') plot a BALLFUN and its slices on the planes X-Y, Y-Z
-% and X-Z.
+%   PLOT(f, 'slices') plot a BALLFUN and its slices on the planes X-Y, Y-Z
+%   and X-Z.
 %
-% PLOT(f, 'WedgeAz') plot a BALLFUN with an wedge an the azimuthal
-% (longitude) direction removed.
+%   PLOT(f, 'WedgeAz') plot a BALLFUN with a wedge in the azimuthal
+%   (longitude) direction removed.
 %
-% PLOT(f, 'WedgePol') plot a BALLFUN with an wedge an the polar
-% (latitude) direction removed.
+%   PLOT(f, 'WedgePol') plot a BALLFUN with a wedge in the polar
+%   (latitude) direction removed.
 %
 % See also BALLFUN/SURF
 
@@ -30,7 +30,7 @@ end
 end
 
 function plotBall(f)
-% PLOT Plot a BALLFUN function on the ball
+% Plot a BALLFUN function on the ball
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -107,7 +107,7 @@ zlabel('Z')
 end
 
 function plotSlices(f)
-% PLOT2 Plot a BALLFUN function on the ballfun and its slices
+% Plot a BALLFUN function on the ballfun and its slices
 
 % Plot f on the plane X-Y
 subplot(2,2,2);
@@ -136,8 +136,8 @@ plotBall(f)
 colorbar
 end
 
-% Azimuthal wedge
 function plotWedgeAz(f)
+% Plot a BALLFUN with a wedge in the azimuthal direction removed
 
 % Is the plot currently being held?
 plotOnHold = ishold;
@@ -195,8 +195,8 @@ daspect([1 1 1])
 
 end
 
-% Polar wedge
 function plotWedgePol(f)
+% Plot a BALLFUN with a wedge in the polar direction removed
 
 % Is the plot currently being held?
 plotOnHold = ishold;
