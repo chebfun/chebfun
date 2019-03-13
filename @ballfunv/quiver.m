@@ -1,4 +1,4 @@
-function quiver(v, varargin)
+function varargout = quiver(v, varargin)
 %QUIVER   Quiver plot of CHEBFUN2V.
 %   QUIVER(F) plots the vector velocity field of F. QUIVER automatically
 %   attempts to scale the arrows to fit within the grid.
@@ -133,16 +133,14 @@ if  color
         'ColorBinding', 'interpolated', ...
         'ColorData', reshape(cmap(1:2,:,:), [], 4).');
 end
-hold on;
-
-% Add label
-xlabel('X')
-ylabel('Y')
-zlabel('Z')
 
 % % Axis
 axis([-1 1 -1 1 -1 1]);
 daspect([1 1 1]);
 axis square
-hold off;
+
+if ( nargout > 0 )
+    varargout = { q }; 
+end
+
 end

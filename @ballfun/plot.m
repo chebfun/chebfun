@@ -104,10 +104,6 @@ camlight;
 lighting phong;
 material dull;
 
-% Add label
-xlabel('X')
-ylabel('Y')
-zlabel('Z')
 end
 
 function h = plotSlices(f)
