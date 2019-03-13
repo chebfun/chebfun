@@ -42,7 +42,7 @@ switch lower(name)
     
     % A function resembling the Death Star
     case 'deathstar'
-        fa = @(x,y,z) -(exp(-30*((y+sqrt(3)/2).^2 + x.^2 + (z-1/2).^2)) + exp(-100*z.^2));
+        fa = @(x,y,z) -(exp(-30*((y+sqrt(3)/2).^2 + x.^2 + (z-1/2).^2)) + exp(-25*z.^2));
         f = ballfun(fa);
         
     % Gaussian function centered at (-0.5,0,0)
@@ -83,9 +83,8 @@ switch lower(name)
         
     % A zipper-like stripe pattern for the sphere    
     case 'stripes'
-        fa = @(x,y,z) (1 + cos(10*pi*x)).*exp(-exp(-20*z)) + (1 - cos(10*pi*x)).*exp(-exp(20*z));
+        fa = @(x,y,z) sin(50*z) - x.^2;
         f = ballfun(fa);
-        
         
     % Raise an error if the input is unknown.
     otherwise
