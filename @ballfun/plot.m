@@ -251,7 +251,6 @@ ff = permute(fevalm(f,1,lam,th),[3 2 1]);
 
 % Plot the result
 surf(sin(th)*cos(lam),sin(th)*sin(lam),cos(th)*ones(1,n),ff,defaultOpts{:})
-hold on
 
 % Construct the values of r and theta to plot from the origin to the outer
 % sphere (r=1).
