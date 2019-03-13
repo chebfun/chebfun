@@ -72,7 +72,7 @@ classdef ballfun
         CFS = vals2coeffs(VALS);
         
         % Compute the solid harmonics
-        f = solharm(l,m);
+        f = solharm(l,m,varargin);
                 
     end
     

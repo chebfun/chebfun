@@ -92,6 +92,10 @@ Exact = ballfun(@(r,lam,th)0.25*sqrt(15/(2*pi))*r.^l.*exp(1i*m*lam).*sin(th).^2*
 f = ballfun.solharm(l,m);
 pass(12) = norm(Exact - f) < tol;
 
+% Example 11: real solid harmonics
+f = ballfun.solharm(3,2,'real');
+pass(13) = abs(norm(f)-1) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end

@@ -1,14 +1,43 @@
-function f = solharm(l,m)
+function f = solharm(l, m, varargin)
 % SOLHARM Complex-valued, solid harmonic of degree L and order M.
 %
 %   F = SOLHARM(L, M) returns the degree L, order M complex-valued 
 %   solid harmonic on the ball.  F is normalized so that its two-norm
 %   over the sphere is 1. 
 %
+%   F = SOLHARM(L, M, 'real') returns the degree L, order M real-valued 
+%   solid harmonic on the ball.  F is normalized so that its two-norm
+%   over the sphere is 1. 
+%
 % See also spherefun.sphharm.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if nargin == 2
+    f = complex_solharm(l,m);
+elseif nargin > 2 && strcmp(varargin{1},'real')
+    % Create real solid harmonics
+    if m < 0
+        f = 1i*(complex_solharm(l,m)-(-1)^m*complex_solharm(l,-m))/sqrt(2);
+    elseif m == 0
+    	f = complex_solharm(l,0);
+    else
+    	f = (complex_solharm(l,-m)+(-1)^m*complex_solharm(l,m))/sqrt(2);
+    end     
+else
+    % Don't know what to do.
+    error('CHEBFUN:BALLFUN:solharm:input', ...
+                'Unrecognized inputs.')
+end
+end
+
+function f = complex_solharm(l,m)
+% SOLHARM Complex-valued, solid harmonic of degree L and order M.
+%
+%   F = SOLHARM(L, M) returns the degree L, order M complex-valued 
+%   solid harmonic on the ball.  F is normalized so that its two-norm
+%   over the sphere is 1.
 
 if ( l < abs(m) )
     error('CHEBFUN:BALLFUN:solHarm', 'Degree must be >= order for solid harmonic ');
