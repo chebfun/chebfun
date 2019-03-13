@@ -10,6 +10,13 @@ function varargout = plot(f, varargin)
 %   PLOT(f, 'WedgePol') plot a BALLFUN with a wedge in the polar
 %   (latitude) direction removed.
 %
+% EXAMPLES:
+%   f = cheb.galleryball;
+%   plot(f)
+%   plot(f, 'slices')   
+%   plot(f, 'WedgeAz')
+%   plot(f, 'WedgePol')
+%
 % See also BALLFUN/SURF
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
