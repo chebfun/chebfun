@@ -40,8 +40,8 @@ classdef ballfun
         % Boolean value designating whether the BALLFUN represents a
         % real-valued function. This allows us to always return a real result
         % for things like evaluating a BALLFUN.
-        isReal   
-        
+        isReal
+                
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,11 +54,11 @@ classdef ballfun
             
             % Return an empty BALLFUN:
             if ( (nargin == 0) || isempty(varargin{1}) )
-                return
+                f.coeffs = [];
+            else
+                % Call the constructor, all the work is done here:
+                f = constructor(f, varargin{:});
             end
-            
-            % Call the constructor, all the work is done here:
-            f = constructor(f, varargin{:});
        
         end
     end

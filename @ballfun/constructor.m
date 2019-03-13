@@ -11,6 +11,10 @@ function f = constructor( f, op, varargin )
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( nargin == 0 )          % BALLFUN( )
+    return
+end
+
 [op, pref, isVectorized] = parseInputs(op, varargin{:});
 
 % Set preferences:
