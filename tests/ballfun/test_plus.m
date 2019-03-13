@@ -37,6 +37,11 @@ g = f+f;
 exact = ballfun(@(r,lam,th)2);
 pass(5) = norm( g - exact ) < tol;
 
+% Example 6
+f = ballfun(0) + 1;
+exact = ballfun(1);
+pass(6) = norm( f - exact ) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end

@@ -9,8 +9,8 @@ fIsBallfun = isa(f, 'ballfun');
 gIsBallfun = isa(g, 'ballfun');
 
 if (fIsBallfun && gIsBallfun)
-    [mf,nf,pf] = size(f.coeffs); 
-    [mg,ng,pg] = size(g.coeffs); 
+    [mf,nf,pf] = size(f); 
+    [mg,ng,pg] = size(g); 
     m = max(mf,mg); 
     n = max(nf,ng);
     p = max(pf,pg); 
@@ -20,13 +20,13 @@ if (fIsBallfun && gIsBallfun)
     X(1:mg,floor(n/2)+1-floor(ng/2):floor(n/2)+ng-floor(ng/2),floor(p/2)+1-floor(pg/2):floor(p/2)+pg-floor(pg/2)) + g.coeffs;
     h = ballfun(X,'coeffs');
 elseif (fIsBallfun && isnumeric(g))
-    S = size(f.coeffs);
+    S = size(f);
     X = f.coeffs;
     % Add the constant g
     X(1,floor(S(2)/2)+1,floor(S(3)/2)+1) = X(1,floor(S(2)/2)+1,floor(S(3)/2)+1) + g;
     h = ballfun(X,'coeffs');
 elseif (isnumeric(f) && gIsBallfun)
-    S = size(g.coeffs);
+    S = size(g);
     X = g.coeffs;
     % Add the constant f
     X(1,floor(S(2)/2)+1,floor(S(3)/2)+1) = X(1,floor(S(2)/2)+1,floor(S(3)/2)+1) + f;
