@@ -306,15 +306,15 @@ if ( isCoeffs )
     [~,n,p] = size(cfs);
     % Check if f = conj(f) on the coeffs
     CheckReal = cfs(:,2-mod(n,2):floor(n/2)+1,2-mod(p,2):floor(p/2)+1)-conj(cfs(:,end:-1:floor(n/2)+1,end:-1:floor(p/2)+1));
-    bReal = norm(CheckReal(:),inf) < eps;
+    bReal = norm(CheckReal(:),inf) < 10^7*eps;
     % Additional check if n or p is even
     if mod(n,2) == 0
         CheckReal = cfs(:,1,:);
-        bReal = bReal && ( norm(CheckReal(:),inf) < eps ); 
+        bReal = bReal && ( norm(CheckReal(:),inf) < 10^7*eps ); 
     end
     if mod(p,2) == 0
         CheckReal = cfs(:,:,1);
-        bReal = bReal && ( norm(CheckReal(:),inf) < eps );
+        bReal = bReal && ( norm(CheckReal(:),inf) < 10^7*eps );
     end
     op.isReal = bReal;
 end

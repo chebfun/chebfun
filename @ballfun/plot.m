@@ -22,6 +22,11 @@ function varargout = plot(f, varargin)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Add a warning of the function is not real
+if (f.isReal == 0)
+    warning('CHEBFUN:BALLFUN:plot:isReal','Function is not real, plotting the real part.');
+end
+
 if ( nargin == 1 )
     h = plotBall(f);
 elseif ( nargin == 2 ) && ( strcmpi(varargin{1},'slices') || strcmpi(varargin{1},'slice') )
@@ -42,9 +47,6 @@ end
 
 function h = plotBall(f)
 % Plot a BALLFUN function on the ball
-
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
 
 % Define the size of F: 
 [m,n,p] = size(f);
