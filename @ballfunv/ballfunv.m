@@ -31,6 +31,7 @@ classdef ballfunv
             
             % Return an empty BALLFUNV:
             if ( (nargin == 0) || isempty(varargin) )
+                F.comp = {};
                 return
             end
             

@@ -12,7 +12,7 @@ if ( isempty(f) )
     return
 end
 
-disp(['   ballfunv object ' '(' tString ') containing' ])
+disp('   ballfunv object containing')
 if ( loose )
     fprintf('\n');
 end

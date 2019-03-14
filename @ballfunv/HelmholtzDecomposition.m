@@ -10,8 +10,20 @@ function varargout = HelmholtzDecomposition(v)
 %
 %   See also PTdecomposition.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% Check if one component is empty
+if isempty(v)
+    isVempty = 1;
+else
+    isVempty = cellfun(@isempty, v.comp, 'UniformOutput', false);
+    isVempty = any(cell2mat(isVempty));
+end
+if isVempty
+    error('BALLFUNV:HelmholtzDecomposition:input', ...
+          'Ballfunv must not have an empty component');    
+end
 
 if nargout == 3
     % Compute the decomposition
@@ -40,6 +52,9 @@ div_v = div(v);
 % Size of div(v)
 [m,n,p] = size(div_v);
 
+% Increase the size if it's too small
+m = max(m,5); n = max(n,5); p = max(p,5);
+
 % Compute the boundary of the vector field v
 v_Boundary = ComputeNormalBoundary(v,n,p);
 
@@ -65,6 +80,9 @@ function varargout = HelmholtzDecomposition_3(v)
 div_v = div(v);
 [m,n,p] = size(div_v);
 
+% Increase the size if it's too small
+m = max(m,5); n = max(n,5); p = max(p,5);
+
 % Solve the Poisson equation Delta f = div(v)
 f = helmholtz(div_v,0,zeros(n,p),m,n,p);
 
@@ -74,6 +92,9 @@ v_1 = v - grad(f);
 % Get the discretization
 S = max(size(v_1),[],1);
 m = S(1); n = S(2); p = S(3);
+
+% Increase the size if it's too small
+m = max(m,5); n = max(n,5); p = max(p,5);
 
 % Compute the boundary of the vector field v_1
 v_Boundary = ComputeNormalBoundary(v_1,n,p);
@@ -92,6 +113,10 @@ v_2 = v_1 - grad(phi);
 % Use the PT decomposition of v to compute phi
 % Solve 2 Poisson equations to find Ppsi and Tpsi
 [m,n,p] = size(Tv);
+
+% Increase the size if it's too small
+m = max(m,5); n = max(n,5); p = max(p,5);
+
 Ppsi = helmholtz(-Tv,0,zeros(n,p),m,n,p);
 Tpsi = Pv;
 

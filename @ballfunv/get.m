@@ -5,7 +5,7 @@ function val = get( F, propName )
 %    'comp'
 %    'components'
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the properties.

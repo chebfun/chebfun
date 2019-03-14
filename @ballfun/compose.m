@@ -17,16 +17,17 @@ else
     % A very simple compose function for now: 
     if ( nargin == 2 )
         op = @(r, l, th) feval(op, feval(f, r, l, th, 'spherical'));
+        % Make BALLFUN object:
+        f = ballfun( op, 'spherical' );
     else
-        if ( isempty(g) )
-            op = f;
+        if isempty(g)
+            f = g;
         else
             op = @(r, l, th) feval(op, feval(f, r, l, th, 'spherical'), feval(g, r, l, th, 'spherical'));
+            % Make BALLFUN object:
+            f = ballfun( op, 'spherical' );
         end
     end    
-
-    % Make BALLFUN object:
-    f = ballfun( op, 'spherical' );
 end
 end
     

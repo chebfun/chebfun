@@ -10,13 +10,19 @@ gIsBallfun = isa(g, 'ballfun');
 
 % Empty check
 if isempty( f )
-    h = ballfun(g);
+    h = g;
+    if ~gIsBallfun
+        h = ballfun(h);
+    end
     return
 end
 
 % Empty check
 if isempty( g )
-    h = ballfun(f);
+    h = f;
+    if ~fIsBallfun
+        h = ballfun(h);
+    end
     return
 end
 

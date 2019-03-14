@@ -5,8 +5,13 @@ function varargout = fevalm(f, r, lambda, theta)
 %
 % See also SUBSREF. 
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if isempty( f )
+    varargout = {};
+    return
+end
 
 F = f.comp;
 
