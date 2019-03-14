@@ -16,20 +16,20 @@ function f = solharm(l, m, varargin)
 
 if nargin == 2
     % Complex solid harmonics
-    f = complex_solharm(l,abs(m)); 
+    F = complex_solharm(l,abs(m)); 
     % Determine if the cos or sin term should be added:
     pos = abs(max(0, sign(m+1)));
     % Compute the real spherical harmonic:
-    if pos == 1
-        f = real(f);
-    else
-        f = imag(f);
-    end
+    % Real part of pos = 1, imaginary part if pos = 0
+    F(:,1,:) = (-1)^(1-pos)*F(:,2*abs(m)+1,:);
+    F = (-1i)^(1-pos)*F/(1+(m~=0));
+    f = ballfun(F,'coeffs');
     
 elseif nargin > 2 && strcmp(varargin{1},'complex')
     % Complex solid harmonics
-    f = complex_solharm(l,m)/sqrt(1+(abs(m)>0));   
-    
+    F = complex_solharm(l,m)/sqrt(1+(abs(m)>0));   
+    f = ballfun(F,'coeffs');
+
 else
     % Don't know what to do.
     error('CHEBFUN:BALLFUN:solharm:input', ...
@@ -37,7 +37,7 @@ else
 end
 end
 
-function f = complex_solharm(l,m)
+function F = complex_solharm(l,m)
 % SOLHARM Complex-valued, solid harmonic of degree L and order M.
 %
 %   F = SOLHARM(L, M) returns the degree L, order M complex-valued 
@@ -67,7 +67,6 @@ monomial = chebtech2.vals2coeffs(monomial);
 % Return the Spherical Harmonic Y^m_l
 F = zeros(S);
 F(:,abs(m)+m+1,:) = reshape(monomial*Plm.',l+1,1,2*l+1);
-f = ballfun(F,'coeffs');
 end
 
 
