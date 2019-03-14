@@ -6,8 +6,17 @@ function v = norm(F)
 %
 %   See also BALLFUN/NORM.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-v = sqrt(abs(norm(F.comp{1}))^2+abs(norm(F.comp{2}))^2+abs(norm(F.comp{3}))^2);
+if isempty( F )
+    v = [];
+    return
+end
+
+n1 = abs(norm(F.comp{1}))^2;
+n2 = abs(norm(F.comp{2}))^2;
+n3 = abs(norm(F.comp{3}))^2;
+
+v = sqrt(sum([n1,n2,n3]));
 end

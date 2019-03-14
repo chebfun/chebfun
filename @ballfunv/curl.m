@@ -1,11 +1,16 @@
 function G = curl(F)
 %CURL Curl of a BALLFUNV.
-%   S = CURL(F) returns the DISKFUN of the curl of F.
+%   G = CURL(F) returns the DISKFUN of the curl of F.
 %
 % See also DIV. 
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if isempty( F )
+    G = ballfunv();
+    return
+end
 
 % Extract the components of a BALLFUNV:
 Fc = F.comp;

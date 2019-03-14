@@ -4,7 +4,7 @@ function g = laplacian(f)
 %
 % See also DIFF, GRADIENT.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 g = diff(f,1,2) + diff(f,2,2) + diff(f,3,2);

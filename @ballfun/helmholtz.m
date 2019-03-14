@@ -15,7 +15,24 @@ function u = helmholtz(f, K, BC, m, varargin)
 %   U = HELMHOLTZ(F, K, BC, M, 'neumann') is the same as 
 %   HELMHOLTZ(F, K, BC, M, M, M, 'neumann').
 %
+% EXAMPLES:
+%   f = ballfun(@(r, lam, th) 4 + 4*r.^2.*sin(th).^2,'spherical');
+%   exact = @(r, lam, th) r.^2.*sin(th).^2;
+%   bc = @(lam, th) exact(1, lam, th);   % Dirichlet condition
+%   u = helmholtz(f, 2, bc, 50, 50, 50);
+%   exact = ballfun(exact,'spherical');
+%   norm(u - exact)
+%
+%   exact = ballfun(@(r, lam, th)r.^4.*sin(th).^2,'spherical');
+%   f = laplacian(exact) + 4*exact;
+%   bc = @(lam, th) 4*sin(th).^2;  % Neumann condition
+%   u = helmholtz(f, 2, bc, 40, 'neumann');
+%   norm(u - exact)
+%
 %   Also see POISSON.
+
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % DEVELOPER'S NOTE: 
 %
@@ -35,6 +52,12 @@ function u = helmholtz(f, K, BC, m, varargin)
 % algorithm and QZ.
 %
 % SOLVE COMPLEXITY: O( n^4 )  N = n^3 = total degrees of freedom
+
+% Empty check:
+if ( isempty(f) )
+    u = f;
+    return
+end
 
 % Parse user input
 isNeumann = any(find(cellfun(@(p) strcmp(p, 'neumann'), varargin)));

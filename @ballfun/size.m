@@ -5,15 +5,19 @@ function varargout = size( F, varargin )
 %   
 %   [M, N, P] = SIZE(F) is the same as S = SIZE(F) with S = [M, N, P].
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Grab dimensions of underlying coefficient tensor: 
-S = size( F.coeffs );
+if isempty( F )
+    S = [];
+else
+    % Grab dimensions of underlying coefficient tensor: 
+    S = size( F.coeffs );
 
-% If F.coeffs is a matrix, then it has one fiber:  
-if ( numel( S ) == 2 )
-    S(3) = 1;
+    % If F.coeffs is a matrix, then it has one fiber:  
+    if ( numel( S ) == 2 )
+        S(3) = 1;
+    end
 end
 
 % Prepare output:

@@ -10,11 +10,29 @@ function h = plus(f, g)
 % 
 % See also MINUS.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 fIsBallfunv = isa(f, 'ballfunv');
 gIsBallfunv = isa(g, 'ballfunv');
+
+% Empty check
+if isempty( f )
+    h = g;
+    if ~gIsBallfunv
+        h = ballfunv(h);
+    end
+    return
+end
+
+% Empty check
+if isempty( g )
+    h = f;
+    if ~fIsBallfunv
+        h = ballfunv(h);
+    end
+    return
+end
 
 if ( fIsBallfunv && gIsBallfunv )
     F = f.comp;

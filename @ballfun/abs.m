@@ -1,10 +1,14 @@
-function g = abs( f )
+function f = abs( f )
 %ABS Absolute value of a BALLFUN.
 %   ABS(F) is the absolute value of the BALLFUN F. This function does not work
 %   if the function passes through or becomes numerically close to zero.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-g = compose( f, @abs ); 
+if ( isempty(f) )
+    return
+end 
+
+f = compose( f, @abs ); 
 end

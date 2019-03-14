@@ -4,7 +4,7 @@ function m = mean3(f)
 %
 % See also MEAN, MEAN2.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 m = sum3(f)*3/(4*pi);

@@ -11,6 +11,11 @@ function S = size(v)
 % Return the list [m,n,p] corresponding to the size of the ballfun
 % functions in f
 
+if isempty( v )
+    S = [];
+    return
+end
+
 V = v.comp;
 
 S = [ size( V{1} );

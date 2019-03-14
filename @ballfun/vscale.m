@@ -7,6 +7,11 @@ function V = vscale( F )
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if isempty( F )
+    V = [];
+    return
+end
+
 % Convert to CFF values
 F = ballfun.coeffs2vals(coeffs3(F,65,65,65));
 

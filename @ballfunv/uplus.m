@@ -4,7 +4,7 @@ function f = uplus(f)
 %
 %   G = UPLUS(F) is called for the syntax '+F'.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Nothing to do here.

@@ -6,10 +6,16 @@ function nm = norm(f)
 %
 %   See also BALLFUNV/NORM.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Do something faster for the test
+
+% Empty check:
+if ( isempty(f) )
+    nm = [];
+    return
+end
 
 % Get the coefficients of f
 [m,n,p] = size(f);

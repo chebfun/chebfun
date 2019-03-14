@@ -7,6 +7,12 @@ function I = sum3(f)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Empty check 
+if ( isempty(f) )
+    I = [];
+    return
+end
+
 % Second argument: integral over the sphere of radius -1
 [m,n,p] = size(f);
 m = m+2; p = p+2;

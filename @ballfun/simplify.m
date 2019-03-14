@@ -6,8 +6,12 @@ function f = simplify( f, pref )
 %
 % This function is for internal use only.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if isempty( f )
+    return
+end
 
 cfs = f.coeffs;
 vals = ballfun.coeffs2vals( cfs );

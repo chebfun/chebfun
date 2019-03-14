@@ -5,8 +5,13 @@ function h = mtimes(f, g)
 %
 %   See also TIMES.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if isempty( f ) || isempty( g )
+    h = ballfunv();
+    return
+end
 
 fIsBallfunv = isa(f, 'ballfunv');
 gIsBallfunv = isa(g, 'ballfunv');
@@ -17,6 +22,8 @@ if (fIsBallfunv && isnumeric(g))
 elseif (isnumeric(f) && gIsBallfunv)
     G = g.comp;
     h = ballfunv(f*G{1},f*G{2},f*G{3});
+elseif fIsBallfunv && gIsBallfunv
+    h = f.*g;
 else 
     error('BALLFUNV:mtimes:unknown', ...
           ['Undefined function ''mtimes'' for input arguments of type ' ...

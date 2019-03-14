@@ -19,6 +19,11 @@ function g = diskfun(f, varargin)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if isempty( f )
+   g = diskfun();
+   return
+end
+
 % Parse user inputs to get the Euler angles
 [phi, theta, psi, c] = parseInputs(varargin{:});
 

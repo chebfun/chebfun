@@ -107,8 +107,10 @@ function g = extract_spherefun(f, r)
 %   EXTRACT_SPHEREFUN(f, r) is the SPHEREFUN function 
 %   g(lambda, theta) = f(r, :, :)
 
-% Copyright 2019 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+if isempty( f )
+   g = spherefun();
+   return
+end
 
 F = f.coeffs;
 [m,n,p] = size(f);

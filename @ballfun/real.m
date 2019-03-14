@@ -4,7 +4,7 @@ function g = real(f)
 %
 % See also IMAG. 
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 g = compose( f, @real ); 

@@ -10,10 +10,27 @@ function varargout = plot(f, varargin)
 %   PLOT(f, 'WedgePol') plot a BALLFUN with a wedge in the polar
 %   (latitude) direction removed.
 %
+% EXAMPLES:
+%   f = cheb.galleryball;
+%   plot(f)
+%   plot(f, 'slices')   
+%   plot(f, 'WedgeAz')
+%   plot(f, 'WedgePol')
+%
 % See also BALLFUN/SURF
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% Check if the function is empty
+if isempty(f)
+    error('CHEBFUN:BALLFUN:plot:isempty','Function is empty.');
+end
+
+% Add a warning of the function is not real
+if (f.isReal == 0)
+    warning('CHEBFUN:BALLFUN:plot:isReal','Function is not real, plotting the real part.');
+end
 
 if ( nargin == 1 )
     h = plotBall(f);
@@ -35,9 +52,6 @@ end
 
 function h = plotBall(f)
 % Plot a BALLFUN function on the ball
-
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
 
 % Define the size of F: 
 [m,n,p] = size(f);
@@ -104,10 +118,6 @@ camlight;
 lighting phong;
 material dull;
 
-% Add label
-xlabel('X')
-ylabel('Y')
-zlabel('Z')
 end
 
 function h = plotSlices(f)
@@ -195,10 +205,12 @@ if ~plotOnHold
     hold off;
 end
 
+camlight;
+lighting phong;
+material dull;
+
 axis([-1 1 -1 1 -1 1])
 daspect([1 1 1])
-
-
 end
 
 function h = plotWedgePol(f)
@@ -249,7 +261,6 @@ ff = permute(fevalm(f,1,lam,th),[3 2 1]);
 
 % Plot the result
 surf(sin(th)*cos(lam),sin(th)*sin(lam),cos(th)*ones(1,n),ff,defaultOpts{:})
-hold on
 
 % Construct the values of r and theta to plot from the origin to the outer
 % sphere (r=1).
@@ -282,9 +293,11 @@ if ~plotOnHold
     hold off;
 end
 
+camlight;
+lighting phong;
+material dull;
+
 axis([-1 1 -1 1 -1 1])
 daspect([1 1 1])
-
-
 end
 
