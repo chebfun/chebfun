@@ -1,8 +1,11 @@
 function C = coeffs3(f, m, n, p)
 % COEFFS3   Trivariate Cheybshev-Fourier-Fourier expansion coefficients of F. 
-%   C = COEFFS3(F) returns the tensor of trivariate coefficients.
+%   C = COEFFS3(F) returns the tensor of trivariate coefficients.  The
+%   coefficients are arranged so they correspond the spherical coordinates
+%   radial-azimuthal-polar.
 %
-%   X = COEFFS3(f, M, N, P) returns coefficients as an M x N x P tensor.
+%   X = COEFFS3(F, M, N, P) is the same as above but it returns
+%   coefficients as an M x N x P tensor.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
