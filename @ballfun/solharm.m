@@ -1,11 +1,11 @@
 function f = solharm(l, m, varargin)
 % SOLHARM Complex-valued, solid harmonic of degree L and order M.
 %
-%   F = SOLHARM(L, M) returns the degree L, order M complex-valued 
+%   F = SOLHARM(L, M) returns the degree L, order M real-valued 
 %   solid harmonic on the ball.  F is normalized so that its two-norm
 %   over the sphere is 1. 
 %
-%   F = SOLHARM(L, M, 'real') returns the degree L, order M real-valued 
+%   F = SOLHARM(L, M, 'complex') returns the degree L, order M complex-valued 
 %   solid harmonic on the ball.  F is normalized so that its two-norm
 %   over the sphere is 1. 
 %
@@ -15,16 +15,21 @@ function f = solharm(l, m, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if nargin == 2
-    f = complex_solharm(l,m);
-elseif nargin > 2 && strcmp(varargin{1},'real')
-    % Create real solid harmonics
-    if m < 0
-        f = 1i*(complex_solharm(l,m)-(-1)^m*complex_solharm(l,-m))/sqrt(2);
-    elseif m == 0
-    	f = complex_solharm(l,0);
+    % Complex solid harmonics
+    f = complex_solharm(l,abs(m)); 
+    % Determine if the cos or sin term should be added:
+    pos = abs(max(0, sign(m+1)));
+    % Compute the real spherical harmonic:
+    if pos == 1
+        f = real(f);
     else
-    	f = (complex_solharm(l,-m)+(-1)^m*complex_solharm(l,m))/sqrt(2);
-    end     
+        f = imag(f);
+    end
+    
+elseif nargin > 2 && strcmp(varargin{1},'complex')
+    % Complex solid harmonics
+    f = complex_solharm(l,m)/sqrt(1+(abs(m)>0));   
+    
 else
     % Don't know what to do.
     error('CHEBFUN:BALLFUN:solharm:input', ...
@@ -118,7 +123,7 @@ end
 
 % Normalize the polynomial and recover associated Legendre polynomials
 % Divide by sqrt(2) if m_max > 0
-Pold = (-1)^m_max*sin(th).^m_max.*Pold/sqrt(4*pi*(1+(m_max>0)));
+Pold = (-1)^m_max*sin(th).^m_max.*Pold/sqrt(4*pi);
 
 % FFT to recover the coefficients
 Pold = trigtech.vals2coeffs(Pold);
