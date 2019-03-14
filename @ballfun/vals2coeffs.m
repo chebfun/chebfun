@@ -1,13 +1,15 @@
 function X = vals2coeffs( X )
-%VALS2COEFFS   BALLFUN values to coefficients.
+%VALS2COEFFS Convert an array of values to an array of coefficients in a 
+%            Chebyshev--Fourier--Fourier expansion.
 %
-% C = VALS2COEFFS( V ) converts values in (r, lambda, theta)
-% in spherical coordinates at a chebpts x trigpts x trigpts grid to
-% Chebyshev x Fourier x Fourier coefficients.
-%
-% This command is mainly for internal use.
-%
-% See also CHEBFUN.VALS2COEFFS, COEFFS2VALS.
+%   C = VALS2COEFFS( F ) computes the Chebyshev-Fourier-Fourier expansion
+%   coefficients for the array of values F.  F is assumed to be sampled on
+%   a doubled-up spherical grid of m-n-p points, where m corresponds to the
+%   radial sampling at Chebyshev points from [-1,1], n corresponds to
+%   azimuthal sampling at equally spaced points from (-pi,pi], and p
+%   corresponds to polar sampling at equally spaced points from (-pi,pi].
+% 
+% See also CHEBFUN.COEFFS2VALS, COEFFS2VALS.
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

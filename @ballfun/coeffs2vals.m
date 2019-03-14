@@ -1,7 +1,10 @@
 function X = coeffs2vals( X )
-%COEFFS2VALS Convert an array of values to a Chebyshev--Fourier--Fourier array of coefficients.
-%   COEFFS2VALS( CFS ) computes the values of the function on a tensor-product grid given by
-%   a Chebyshev-Fourier-Fourier expansions with expansion coefficients CFS.
+%COEFFS2VALS Convert an array of Chebyshev--Fourier--Fourier of
+%            coefficients to an array of values.
+%
+%   COEFFS2VALS( CFS ) computes the values on a tensor-product doubled-up
+%   spherical grid of a function that is represented by a
+%   Chebyshev-Fourier-Fourier expansion with expansion coefficients CFS.
 %
 % See also CHEBFUN.COEFFS2VALS, VALS2COEFFS.
 
