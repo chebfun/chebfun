@@ -4,7 +4,7 @@ function g = sin(f)
 %
 % See also SINH, COS.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 g = compose( f, @sin ); 

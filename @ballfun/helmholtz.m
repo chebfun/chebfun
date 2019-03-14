@@ -53,6 +53,12 @@ function u = helmholtz(f, K, BC, m, varargin)
 %
 % SOLVE COMPLEXITY: O( n^4 )  N = n^3 = total degrees of freedom
 
+% Empty check:
+if ( isempty(f) )
+    u = f;
+    return
+end
+
 % Parse user input
 isNeumann = any(find(cellfun(@(p) strcmp(p, 'neumann'), varargin)));
 

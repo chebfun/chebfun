@@ -30,19 +30,15 @@ function display_ballfun(f)
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
 
 if isempty(f)
-    fprintf('    empty ballfun\n')
-    if ( loose )
-        fprintf('\n');
-    end
-    return
-end
-
+    fprintf('    empty ballfun\n')    
+else
 S = size(f);
 vscl = vscale(f);
 % Display the information:
 disp('   ballfun object:')
 fprintf('      domain           r    lambda    theta    vertical scale\n');
 fprintf('     unit ball    %6i  %6i   %6i           %3.2g\n', S(1), S(2), S(3),vscl);
+end
 
 if ( loose )
     fprintf('\n');

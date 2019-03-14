@@ -2,11 +2,23 @@ function h = plus(f, g)
 %+   Plus for BALLFUN.
 % F + G adds F and G. F and G can be scalars or BALLFUN.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 fIsBallfun = isa(f, 'ballfun');
 gIsBallfun = isa(g, 'ballfun');
+
+% Empty check
+if isempty( f )
+    h = ballfun(g);
+    return
+end
+
+% Empty check
+if isempty( g )
+    h = ballfun(f);
+    return
+end
 
 if (fIsBallfun && gIsBallfun)
     [mf,nf,pf] = size(f); 

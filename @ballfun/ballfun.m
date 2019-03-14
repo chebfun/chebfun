@@ -55,6 +55,7 @@ classdef ballfun
             % Return an empty BALLFUN:
             if ( (nargin == 0) || isempty(varargin{1}) )
                 f.coeffs = [];
+                f.isReal = [];
             else
                 % Call the constructor, all the work is done here:
                 f = constructor(f, varargin{:});

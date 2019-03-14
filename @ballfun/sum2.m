@@ -11,6 +11,13 @@ function ff = sum2(f, dims)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Empty check
+if ( isempty(f) )
+    ff = chebfun();
+    return
+end
+
+
 % Default to lambda and theta directions: 
 if ( nargin == 1 )
     dims = [2 3];

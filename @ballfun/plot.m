@@ -22,6 +22,11 @@ function varargout = plot(f, varargin)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Add an error of the function is empty
+if ( isempty(f) )
+    error('CHEBFUN:BALLFUN:plot:isempty','Function is empty.');
+end
+
 % Add a warning of the function is not real
 if (f.isReal == 0)
     warning('CHEBFUN:BALLFUN:plot:isReal','Function is not real, plotting the real part.');

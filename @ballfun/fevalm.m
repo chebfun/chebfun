@@ -14,6 +14,12 @@ function vals = fevalm( f, r, lam, th)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Empty check:
+if ( isempty(f) )
+    vals = [];
+    return
+end
+
 F = f.coeffs;
 [m, n, p] = size( f );
 

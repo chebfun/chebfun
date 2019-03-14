@@ -9,6 +9,23 @@ function g = sum(f, dim)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Default direction: 
+if ( nargin == 1 )
+    dim = 1;
+end
+
+if isempty( f )
+    if dim == 1
+        g = spherefun();
+    elseif (dim == 2) || (dim == 3)
+        g = diskfun();
+    % Return an error
+    else
+        error('BALLFUN:sum: Input arguments not supported'); 
+    end
+    return
+end
+
 % Increase the discretization by 2 in the r and theta direction
 [m,n,p] = size(f);
 m = m+2; p = p+2;

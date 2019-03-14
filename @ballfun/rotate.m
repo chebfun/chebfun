@@ -7,8 +7,12 @@ function f = rotate(f, phi, theta, psi)
 %
 % See also spherefun.rotate, diskfun.rotate.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if isempty( f )
+    return
+end
 
 if ( nargin == 1 )
     return

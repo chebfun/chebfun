@@ -5,8 +5,12 @@ function X = coeffs2vals( X )
 %
 % See also CHEBFUN.COEFFS2VALS, VALS2COEFFS.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if isempty( X )
+    return
+end
 
 [m, n, p] = size( X );
 
