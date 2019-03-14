@@ -19,17 +19,22 @@ function varargout = quiver(v, varargin)
 %
 % See also BALLFUN/PLOT.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% Check if one component is empty
+if isempty(v)
+    isVempty = 1;
+else
+    isVempty = cellfun(@isempty, v.comp, 'UniformOutput', false);
+    isVempty = any(cell2mat(isVempty));
+end
+if isVempty
+    error('CHEBFUN:BALLFUNV:quiver:isempty','ballfunv must not have an empty component.');
+end
 
 % Number of points
 numpts = 30;
-
-% Empty check:
-if ( isempty( v ) )
-    quiver([])
-    return
-end
 
 if ( isempty(varargin) )
     varargin = {};

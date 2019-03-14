@@ -5,7 +5,7 @@ function b=isequal(f, g)
 %
 %   See also ISZERO.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 b = iszero(f-g);

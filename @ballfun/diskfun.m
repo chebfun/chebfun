@@ -54,7 +54,7 @@ for i = 1:length(r)
 end
 
 % Return the diskfun
-f = diskfun(real(G));
+g = diskfun(real(G));
 end
 
 function [phi, theta, psi, c] = parseInputs(varargin)

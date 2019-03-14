@@ -6,7 +6,7 @@ function h = minus(f, g)
 % 
 % See also PLUS.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 h = f + (-g);

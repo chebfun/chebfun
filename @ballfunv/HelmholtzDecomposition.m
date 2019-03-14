@@ -22,7 +22,7 @@ else
 end
 if isVempty
     error('BALLFUNV:HelmholtzDecomposition:input', ...
-          'Ballfunv must not have an empty component');    
+          'ballfunv must not have an empty component');    
 end
 
 if nargout == 3

@@ -4,8 +4,13 @@ function w = real(v)
 %
 % See also IMAG.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if isempty( v )
+    w = ballfunv();
+    return
+end
 
 % Take real part of each component:
 w = ballfunv( real(v.comp{1}), real(v.comp{2}), real(v.comp{3}) );

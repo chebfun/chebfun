@@ -4,8 +4,13 @@ function w = imag(v)
 %
 % See also REAL.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if isempty( v )
+    w = ballfunv();
+    return
+end
 
 V = v.comp;
 w = [ imag(V{1}) ; imag(V{2}) ; imag(V{3})];

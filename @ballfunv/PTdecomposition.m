@@ -5,8 +5,20 @@ function varargout = PTdecomposition(v)
 % 
 %   Also see PT2BALLFUNV.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% Check if one component is empty
+if isempty(v)
+    isVempty = 1;
+else
+    isVempty = cellfun(@isempty, v.comp, 'UniformOutput', false);
+    isVempty = any(cell2mat(isVempty));
+end
+if isVempty
+    error('BALLFUNV:PTdecomposition:input', ...
+          'ballfunv must not have an empty component');    
+end
 
 % This slows down the code a lot
 if norm(div(v)) > 1e-8

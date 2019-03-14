@@ -30,8 +30,11 @@ end
 function v = rcurl(P)
 % Compute v = curl(rw)
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% Empty check
+if isempty( P )
+    v = ballfunv();
+    return
+end
 
 [m,n,p] = size(P);
 
