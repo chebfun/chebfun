@@ -100,7 +100,6 @@ pass(13) = abs(norm(f)-1) < tol;
 f = ballfun.solharm(5,0);
 pass(14) = abs(norm(f)-1) < tol;
 
-
 if (nargout > 0)
     pass = all(pass(:));
 end
