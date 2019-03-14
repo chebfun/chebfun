@@ -18,6 +18,7 @@ function varargout = galleryball(name,varargin)
 %   moire       Moire pattern from waves generated at two point sources.
 %   peaks       Peaks like function on the ball taken from the geopeaks
 %               function in the MATLAB mapping toolbox.
+%   roundpeg    Approx characteristic function of a ball
 %   solharm     Solid harmonics of degree 5 and order 3
 %   stripes     Alternating striped pattern.
 %
@@ -33,7 +34,7 @@ function varargout = galleryball(name,varargin)
 % If the user did not supply an input, return a function chosen at random
 % from the gallery.
 if ( nargin == 0 )
-    names = {'deathstar','gaussian','moire','peaks','solharm','stripes'};
+    names = {'deathstar','gaussian','moire','peaks','roundpeg','solharm','stripes'};
     name = names{randi(length(names))};
 end
 
@@ -44,7 +45,7 @@ switch lower(name)
     case 'deathstar'
         fa = @(x,y,z) -(exp(-30*((y+sqrt(3)/2).^2 + x.^2 + (z-1/2).^2)) + exp(-25*z.^2));
         f = ballfun(fa);
-        
+    
     % Gaussian function centered at (-0.5,0,0)
     case 'gaussian'
         fa = @(x,y,z,xc,yc,zc) exp(-20*((x+0.5).^2 + y.^2 + z.^2));
@@ -75,7 +76,11 @@ switch lower(name)
             (20*y - 8*z.^3) .* exp(-2*(x + 0.696).^2 - 3*(y + 0.123).^2 - 2*(z - 0.707).^2) + ...
             (7*y - 10*x + 10*z.^3) .* exp(-3*(x - 0.296).^2 - 3*(y + 0.814).^2 - 3*(z + 0.5).^2);
         f = ballfun(fa);
-        
+    
+    case 'roundpeg'  % a round peg of radius 0.5
+        fa = @(r,l,t) 1./(1+(2*r).^100);
+        f = ballfun(fa, 'spherical');
+
     % Solid harmonics function
     case 'solharm'
         fa = ballfun.solharm(5,3);
