@@ -13,8 +13,13 @@ function g = diff(f, varargin)
 %
 % See also LAPLACIAN
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if ( isempty(f) )
+    g = f;
+    return
+end
 
 % Parse user inputs:
 if ( nargin == 2 )

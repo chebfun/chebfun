@@ -30,7 +30,7 @@ function display_ballfun(f)
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
 
 if isempty(f)
-    fprintf('    empty spherefun\n')
+    fprintf('    empty ballfun\n')
     if ( loose )
         fprintf('\n');
     end
