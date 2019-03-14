@@ -1,8 +1,10 @@
 function u = poisson(varargin)
-%POISSON   Poisson solver with Dirichlet or Neumann boundary conditions.
-%   U = POISSON(F, BC, M, N, P) is the solution to the Poisson equation 
-%   with right-hand side F and Dirichlet boundary data U(1,lambda,theta) = 
-%   @(lambda,theta) BC(lambda, theta). It uses a discretization size of M x N x P. 
+%POISSON   Poisson solver in the unit ball with Dirichlet or Neumann
+%          boundary conditions.
+%   U = POISSON(F, BC, M, N, P) is the solution to the Poisson equation in
+%   the unit ball with right-hand side F and Dirichlet boundary data
+%   U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta). It uses a
+%   discretization size of M x N x P.
 %
 %   U = POISSON(F, BC, M) is the same as POISSON(F, BC, M, M, M).
 %
@@ -14,7 +16,7 @@ function u = poisson(varargin)
 %
 %   Also see HELMHOLTZ.
 
-% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call Helmholtz command with zero frequency: 
