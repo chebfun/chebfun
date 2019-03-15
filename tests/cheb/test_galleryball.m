@@ -1,7 +1,8 @@
 function pass = test_galleryball( ) 
  
-names = {'deathstar','gaussian','moire','peaks','solharm','stripes'}; 
- 
+names = {'deathstar','gaussian','helmholtz','moire','peaks',...
+             'roundpeg','solharm','stripes','wave'};
+
 N = length(names); 
 % Test construction of each gallery function. 
 for k = 1:N 
