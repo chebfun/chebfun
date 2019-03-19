@@ -72,7 +72,7 @@ switch index(1).type
                 out = feval(f, r, lam, th, 'spherical');
             elseif ( isnumeric(r) && strcmpi(lam, ':') && strcmpi(th, ':') )
                 % Evaluate at the boundary and return a spherefun
-                out = extract_spherefun( f, r );
+                out = spherefun( f, r );
             end
         else
             % Don't know what to do.
@@ -100,38 +100,4 @@ switch index(1).type
         
 end
 
-end
-
-function g = extract_spherefun(f, r)
-% EXTRACT_SPHEREFUN SPHEREFUN corresponding to the value of f at radius r
-%   EXTRACT_SPHEREFUN(f, r) is the SPHEREFUN function 
-%   g(lambda, theta) = f(r, :, :)
-
-if isempty( f )
-   g = spherefun();
-   return
-end
-
-F = f.coeffs;
-[m,n,p] = size(f);
-
-if m == 1
-    G = reshape(F(1,:,:),n,p);
-else
-    % Chebyshev functions evaluated at r
-    T = zeros(1,m);
-    T(1) = 1; T(2) = r;
-    for i = 3:m
-        T(i) = 2*r*T(i-1)-T(i-2);
-    end
-
-    % Build the array of coefficient of the spherefun function
-    G = zeros(n,p);
-    for i = 1:p
-        G(:,i) = T*F(:,:,i);
-    end
-end
-% Build the spherefun function; coeffs2spherefun takes the theta*lambda matrix
-% of coefficients
-g = spherefun.coeffs2spherefun(G.');
 end
