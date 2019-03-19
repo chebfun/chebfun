@@ -21,6 +21,10 @@ cosT = [1,0.5,-0.5,-1];
 Y = reshape(r*cosT,3,1,4);
 pass(2) = norm( X(:)-Y(:) ) < tol;
 
+% Example 3
+f = ballfun(@(x,y,z)z);
+pass(3) = norm(ballfun(sample(f,4,4,4))-f) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end
