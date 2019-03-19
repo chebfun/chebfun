@@ -37,7 +37,8 @@ end
 numpts = 30;
 
 if ( isempty(varargin) )
-    varargin = {};
+    % Default parameters
+    varargin = {'color', 2.5};
 end
 
 % Number of points to plot
