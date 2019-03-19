@@ -248,7 +248,7 @@ vals(1:floor(m/2), n/2+1:n, 1:floor((p+1)/2)) = flip1h(:,1:end-1,1:end-1);
 vals(1:floor(m/2), 1:n/2+1, 1:floor((p+1)/2)) = flip1g(:,:,1:end-1);
 
 % Check if the function is real
-if norm(imag(vals(:))) < eps
+if norm(imag(vals(:))) < 10^5*eps
    isReal = 1;
    vals = real(vals);
 else
