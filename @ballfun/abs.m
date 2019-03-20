@@ -10,5 +10,29 @@ if ( isempty(f) )
     return
 end 
 
+if ( f.isReal )
+    % Positive/negative test.
+    % Returns TRUE if there is no sign change.
+    
+    tol = chebfun2eps;
+    bool = false;                  % Assume false
+
+    % Evaluate on a grid:
+    X = sample(f);
+
+    X = X(:);
+
+    if ( all( X >= -tol * f.vscale ))   % If all values are nonnegative         
+        bool = true;  
+    elseif ( all( X <= tol * f.vscale))  % If all values are not positive
+        bool = true; 
+    end
+    if ( ~bool )
+        error('CHEBFUN:BALLFUN:abs:notSmooth', ...
+            'Sign change detected. Unable to represent the result.'); 
+    end
+end       
+
+% Still call the constructor in case we missed a change of sign. 
 f = compose( f, @abs ); 
 end
