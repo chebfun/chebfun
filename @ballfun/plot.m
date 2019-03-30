@@ -167,9 +167,9 @@ az_intvl = [-pi/2 pi];
 [m,n,p] = size(f);
 
 % m >= 25 and n, p >= 28
-m = 25*(m < 25) + m*(m >= 25);
-n = 28*(n < 28) + n*(n>=28);
-p = 28*(p < 28) + p*(p>=28);
+m = 5*(25*(m < 25) + m*(m >= 25));
+n = 5*(28*(n < 28) + n*(n>=28));
+p = 5*(28*(p < 28) + p*(p>=28));
 
 % Impose m = 1 [6] and n, p = 0 [4] to avoid errors in the plot
 m = m + mod(1-mod(m,6),6);
