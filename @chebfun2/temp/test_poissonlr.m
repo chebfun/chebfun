@@ -30,13 +30,14 @@ for j = 1:K
     j
 end
 %%
+t_lowrankcomp = zeros(K,length(ranks));
 for j = 1:length(ranks)
     f = chebfun2(f, ranks(j));
     for k = 1:K
     t2 = tic; 
     u = chebfun2.poisson_lr(f, 0, N(k), N(k)); % 0 = use fadi, not fiadi.
     tt = toc(t2); 
-    t_lowrank(k,j) = tt; 
+    t_lowrankcomp(k,j) = tt; 
     [k, j]
     end
 end
@@ -45,7 +46,7 @@ end
 % picture
 loglog(N.', t_fullrank, 'k--', 'Linewidth', 2.5)
 hold on
-loglog(N.', (t_lowrank(:,1:5)).', 'Linewidth', 2.5)
+loglog(N.', (t_lowrankcomp).', 'Linewidth', 2.5)
 legend('adi', 'rank = 1', 'rank = 10', 'rank = 50', 'rank = 100', 'rank =200', ...
     'Location', 'Northwest')
 title('Discretization size vs. timings')
