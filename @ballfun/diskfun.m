@@ -9,7 +9,7 @@ function g = diskfun(f, varargin)
 %   G = DISKFUN(F, 'y', C) is the slice of the BALLFUN F corresponding to 
 %   the plane Y = C.
 %
-%   G = DISKFUN(F, 'x', C) is the slice of the BALLFUN F corresponding to 
+%   G = DISKFUN(F, 'z', C) is the slice of the BALLFUN F corresponding to 
 %   the plane Z = C.
 %
 %   G = DISKFUN(F, PHI, THETA, PSI, C) rotates F using Euler angles phi, theta, 
@@ -41,7 +41,7 @@ n = n + mod(n,2);
 rho = chebpts(m);
 rho = rho(ceil(m/2):end);
 
-% Evaluation points in [-pi,pi[
+% Evaluation points in [-pi,pi)
 lambda = pi*trigpts(n);
 
 % Build the grid and evaluate at the plane Z = C
