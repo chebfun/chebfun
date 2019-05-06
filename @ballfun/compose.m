@@ -1,10 +1,8 @@
 function f = compose(f, op, g )
-%COMPOSE   Composition for BALLFUN.
-%   COMPOSE(F, OP) returns a BALLFUN representing OP(F) where F is also a
-%   BALLFUN object, and OP is a function handle.
+%COMPOSE   Compose command for BALLFUN objects.
+%   COMPOSE(F, OP) returns a BALLFUN that approximates OP(F).
 %
-%   COMPOSE(F, OP, G) returns a BALLFUN representing OP(F, G) where F and G
-%   are BALLFUN objects, and OP is a function handle.
+%   COMPOSE(F, OP, G) returns a BALLFUN approximates OP(F, G).
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

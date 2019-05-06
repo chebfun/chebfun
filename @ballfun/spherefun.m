@@ -1,6 +1,11 @@
 function g = spherefun(f, r)
 % SPHEREFUN returns the evaluation of F at the given radius 0<=R<=1
-%   SPHEREFUN(f, r) is the SPHEREFUN function g(lambda, theta) = f(r, :, :).
+% G = SPHEREFUN(f, r) is the SPHEREFUN function g(lambda, theta) = f(r, :, :).
+%
+% % See also BALLFUN/DISKFUN.
+
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if isempty( f )
    g = spherefun();

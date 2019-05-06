@@ -1,20 +1,21 @@
 function g = diskfun(f, varargin)
-% DISKFUN is the intersection between a BALLFUN function and a plane
-%   G = DISKFUN(F) is the slice of the BALLFUN F corresponding to 
-%   the plane X-Y.
+% DISKFUN returns a diskfun representing the BALLFUN F evaluated at a
+% planar slice.
 %
-%   G = DISKFUN(F, 'x', C) is the slice of the BALLFUN F corresponding to 
-%   the plane X = C.
+%   G = DISKFUN(F) is the slice of F in the XY plane. 
 %
-%   G = DISKFUN(F, 'y', C) is the slice of the BALLFUN F corresponding to 
-%   the plane Y = C.
+%   G = DISKFUN(F, 'x', C) is the slice of F in the plane X = C.
 %
-%   G = DISKFUN(F, 'z', C) is the slice of the BALLFUN F corresponding to 
-%   the plane Z = C.
+%   G = DISKFUN(F, 'y', C) is the slice of F in the plane Y = C.
+%
+%   G = DISKFUN(F, 'z', C) is the slice of F in the plane Z = C.
 %
 %   G = DISKFUN(F, PHI, THETA, PSI, C) rotates F using Euler angles phi, theta, 
-%   and psi with the ZXZ convention and then evaluates it at the plane Z = C
+%   and psi with the ZXZ convention and then evaluates it in the plane Z = C
 %   (C = 0 by default)
+%
+% % See also BALLFUN/SPHEREFUN.
+
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
