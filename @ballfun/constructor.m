@@ -211,7 +211,8 @@ vals = zeros(m,n,p);
 % f(0,:,:) = constant
 % Count lambda = pi only once
 % Compute the mean of f evaluated at r = 0
-m_zeroR = mean([mean2(g(1,:,:)), mean2(h(1,2:end,:))]);
+g0 = g(1,:,:); h0 = h(1,2:end,:);
+m_zeroR = mean([mean(g0(:)), mean(h0(:))]);
 g(1,:,:) = m_zeroR;
 h(1,:,:) = m_zeroR;
 
