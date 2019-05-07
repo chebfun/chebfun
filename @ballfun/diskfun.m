@@ -4,11 +4,14 @@ function g = diskfun(f, varargin)
 %
 %   G = DISKFUN(F) is the slice of F in the XY plane. 
 %
-%   G = DISKFUN(F, 'x', C) is the slice of F in the plane X = C.
+%   G = DISKFUN(F, 'x', C) is the slice of F in the plane X = C,
+%   scaled to the unit disk; G is a diskfun.
 %
-%   G = DISKFUN(F, 'y', C) is the slice of F in the plane Y = C.
+%   G = DISKFUN(F, 'y', C) is the slice of F in the plane Y = C,
+%   scaled to the unit disk; G is a diskfun.
 %
-%   G = DISKFUN(F, 'z', C) is the slice of F in the plane Z = C.
+%   G = DISKFUN(F, 'z', C) is the slice of F in the plane Z = C,
+%   scaled to the unit disk; G is a diskfun.
 %
 %   G = DISKFUN(F, PHI, THETA, PSI, C) rotates F using Euler angles phi, theta, 
 %   and psi with the ZXZ convention and then evaluates it in the plane Z = C
@@ -28,6 +31,12 @@ end
 % Parse user inputs to get the Euler angles
 [phi, theta, psi, c] = parseInputs(varargin{:});
 
+% Throw an error if c>1 or c<1
+if abs(c) > 1
+    error('CHEBFUN:BALLFUN:diskfun:sliceNotInBall',...
+        ['The specified slice does not lie in unit ball.']);
+end
+
 % Rotate f using Euler angles phi, theta and psi
 f = rotate(f, phi, theta, psi);
 
@@ -39,14 +48,14 @@ m = m + 1-mod(m,2);
 n = n + mod(n,2);
 
 % Evaluation points in [c, 1]
-rho = chebpts(m);
+rho = chebpts(m)*sqrt(1-c^2);
 rho = rho(ceil(m/2):end);
 
 % Evaluation points in [-pi,pi)
 lambda = pi*trigpts(n);
 
 % Build the grid and evaluate at the plane Z = C
-r  = sqrt(rho.^2-c^2);
+r  = sqrt(rho.^2+c^2);
 
 theta = atan2(rho,c);
 G = zeros(length(r),n);
