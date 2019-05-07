@@ -1,7 +1,7 @@
 function b = iszero( f )
 %ISZERO   Check if a BALLFUN is identically zero on its domain.
-%   OUT = ISZERO( F ) return 1 if the BALLFUN is exactly the zero function, and
-%   0 otherwise. 
+%   ISZERO( F ) returns 1 if the BALLFUN is exactly the zero function,
+%   and 0 otherwise. 
 %
 %   See also ISEQUAL.
 

@@ -41,6 +41,9 @@ classdef ballfun
         % real-valued function. This allows us to always return a real result
         % for things like evaluating a BALLFUN.
         isReal
+        
+        %domain for non-doubled ball
+        domain
                 
     end
     
@@ -56,6 +59,7 @@ classdef ballfun
             if ( (nargin == 0) || isempty(varargin{1}) )
                 f.coeffs = [];
                 f.isReal = [];
+                f.domain = []; 
             else
                 % Call the constructor, all the work is done here:
                 f = constructor(f, varargin{:});

@@ -97,6 +97,7 @@ end
 
 f.coeffs = cfs;
 f.isReal = isReal;
+f.domain = [0, 1, -pi, pi, 0, pi];
 end
 
 %%
@@ -116,6 +117,7 @@ end
 % Transform to coefficients
 f.coeffs = ballfun.vals2coeffs(vals);
 f.isReal = isReal;
+f.domain = [0, 1, -pi, pi, 0, pi]; 
 f = simplify(f);
 end
 
