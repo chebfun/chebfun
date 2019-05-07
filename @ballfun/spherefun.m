@@ -13,30 +13,40 @@ if isempty( f )
 end
 
 F = f.coeffs;
-[m,n,p] = size(f);
+[~,n,p] = size(f);
 
 % r = 1 by default
 if nargin == 1
     r = 1;
 end
 
-if m == 1
-    G = reshape(F(1,:,:),n,p);
-else
-    % Chebyshev functions evaluated at r
-    T = zeros(1,m);
-    T(1) = 1; T(2) = r;
-    for i = 3:m
-        T(i) = 2*r*T(i-1)-T(i-2);
-    end
-
-    % Build the array of coefficient of the spherefun function
-    G = zeros(n,p);
-    for i = 1:p
-        G(:,i) = T*F(:,:,i);
-    end
+G = zeros(1, n, p);
+% Evaluate f at the points r
+for i = 1:p
+    G(:, :, i) = clenshaw_vec( r, F(:, :, i) );
 end
+G = reshape(G, n, p);
+
 % Build the spherefun function; coeffs2spherefun takes the theta*lambda matrix
 % of coefficients
 g = spherefun.coeffs2spherefun(G.');
+end
+
+% Pulled from chebtech/clenshaw: 
+function y = clenshaw_vec(x, c)
+% Clenshaw scheme for array-valued functions.
+x = repmat(x(:), 1, size(c, 2));
+bk1 = zeros(size(x, 1), size(c, 2)); 
+bk2 = bk1;
+e = ones(size(x, 1), 1);
+x = 2*x;
+n = size(c, 1)-1;
+for k = (n+1):-2:3
+    bk2 = e*c(k,:) + x.*bk1 - bk2;
+    bk1 = e*c(k-1,:) + x.*bk2 - bk1;
+end
+if ( mod(n, 2) )
+    [bk1, bk2] = deal(e*c(2,:) + x.*bk1 - bk2, bk1);
+end
+y = e*c(1,:) + .5*x.*bk1 - bk2;
 end

@@ -21,7 +21,7 @@ if ( isempty(f) )
 end
 
 F = f.coeffs;
-[m, n, p] = size( f );
+[~, n, p] = size( f );
 
 % Get the size of the lists
 Nr = length( r );
