@@ -1,8 +1,6 @@
 function varargout = plot(f, varargin)
 %PLOT   Plot a BALLFUN on the ball
-%
-%   PLOT(f, 'slices') plot a BALLFUN and its slices on the planes X-Y, Y-Z
-%   and X-Z.
+%   PLOT(F) creates a plot showing F on the ball.
 %
 %   PLOT(f, 'WedgeAz') plot a BALLFUN with a wedge in the azimuthal
 %   (longitude) direction removed.
@@ -13,11 +11,10 @@ function varargout = plot(f, varargin)
 % EXAMPLES:
 %   f = cheb.galleryball;
 %   plot(f)
-%   plot(f, 'slices')   
 %   plot(f, 'WedgeAz')
 %   plot(f, 'WedgePol')
 %
-% See also BALLFUN/SURF
+% See also BALLFUN/SURF, BALLFUN/SLICE.
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -34,8 +31,6 @@ end
 
 if ( nargin == 1 )
     h = plotBall(f);
-elseif ( nargin == 2 ) && ( strcmpi(varargin{1},'slices') || strcmpi(varargin{1},'slice') )
-    h = plotSlices(f);
 elseif ( nargin == 2 ) && ( strcmpi(varargin{1},'wedgeaz') )
     h = plotWedgeAz(f);
 elseif ( nargin == 2 ) && ( strcmpi(varargin{1},'wedgepol') )
@@ -47,11 +42,15 @@ end
 if ( nargout > 0 )
     varargout = { h }; 
 end
-
 end
 
 function h = plotBall(f)
 % Plot a BALLFUN function on the ball
+
+% Is the plot currently being held?
+plotOnHold = ishold;
+% Default plotting options
+defaultOpts = {'facecolor', 'interp','edgecolor', 'none'};
 
 % Define the size of F: 
 [m,n,p] = size(f);
@@ -106,10 +105,13 @@ hold on
 for j = 1:numel(hslicer)
     h = hslicer(j);
     [xs,ys,zs] = sph2cart(h.ZData,h.XData,h.YData);
-    h = surf(xs,ys,zs,h.CData,'EdgeColor','none','FaceColor','Interp');
+    h = surf(xs,ys,zs,h.CData,defaultOpts{:});
 end
 delete(hslicer);
-hold off
+
+if ~plotOnHold
+    hold off;
+end
 
 axis([-1 1 -1 1 -1 1])
 daspect([1 1 1])
@@ -117,39 +119,6 @@ daspect([1 1 1])
 camlight;
 lighting phong;
 material dull;
-
-end
-
-function h = plotSlices(f)
-% Plot a BALLFUN function on the ballfun and its slices
-
-% Plot f on the plane X-Y
-subplot(2,2,2);
-h1 = plot(diskfun(f,'z'));
-colorbar
-xlabel('X')
-ylabel('Y')
-
-% Plot f on the plane X-Z
-subplot(2,2,3);
-h2 = plot(diskfun(f,'y'));
-colorbar
-xlabel('X')
-ylabel('Z')
-
-% Plot f on the plane Y-Z
-subplot(2,2,4);
-h3 = plot(diskfun(f,'x'));
-colorbar
-xlabel('Y')
-ylabel('Z')
-
-% Plot f
-subplot(2,2,1);
-h4 = plotBall(f);
-colorbar
-
-h = {h1, h2, h3, h4};
 end
 
 function h = plotWedgeAz(f)
@@ -167,9 +136,9 @@ az_intvl = [-pi/2 pi];
 [m,n,p] = size(f);
 
 % m >= 25 and n, p >= 28
-m = 5*(25*(m < 25) + m*(m >= 25));
-n = 5*(28*(n < 28) + n*(n>=28));
-p = 5*(28*(p < 28) + p*(p>=28));
+m = 25*(m < 25) + m*(m >= 25);
+n = 28*(n < 28) + n*(n>=28);
+p = 28*(p < 28) + p*(p>=28);
 
 % Impose m = 1 [6] and n, p = 0 [4] to avoid errors in the plot
 m = m + mod(1-mod(m,6),6);
@@ -300,4 +269,3 @@ material dull;
 axis([-1 1 -1 1 -1 1])
 daspect([1 1 1])
 end
-
