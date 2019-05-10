@@ -1,5 +1,5 @@
 function g = mrdivide(f,c)
-%/   Right matrix divide for BALLFUN objects.
+%/   Right scalar divide for BALLFUN objects.
 %   X = B/A or X = mrdivide(B, A) is equivalent to X = B./A.
 %
 % See also MTIMES.

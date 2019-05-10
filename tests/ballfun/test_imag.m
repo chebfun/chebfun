@@ -1,5 +1,5 @@
 function pass = test_imag( pref ) 
-% Test the Helmholtz solver with Dirichlet BC
+% Test imag
 
 % Grab some preferences
 if ( nargin == 0 )
