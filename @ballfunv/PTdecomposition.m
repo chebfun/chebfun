@@ -22,7 +22,7 @@ end
 
 % This slows down the code a lot
 if norm(div(v)) > 1e-8
-    warning('CHEBFUN:BALLFUN:PTdecomposition: the vector is not divergence-free');
+    warning('CHEBFUN:BALLFUN:PTdecomposition: the vector field is not divergence-free');
 end
 
 % Get the discretization : take the maximum over the components of v

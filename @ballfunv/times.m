@@ -1,18 +1,15 @@
 function h = times(f, g)
-%.*   Componentwise multiplication for BALLFUNV. 
+%.*   Times of two BALLFUNV objects. 
 %   F.*G if F is a BALLFUNV and G is double returns the BALLFUNV after
 %   componentwise multiplication.
 %
-%   F.*G if F is a double and G is a BALLFUNV returns the BALLFUNV after
-%   componentwise multiplication.
+%   F.*G if F is a BALLFUNV and G is a BALLFUNV returns the BALLFUNV
+%   after multiplication of F by each component of G.
 % 
 % See also MTIMES.
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-%   F.*G if F is a ballfunv and G is double returns the ballfunv after
-%   componentwise multiplication.
 
 if isempty( f ) || isempty(g)
     h = ballfunv();
