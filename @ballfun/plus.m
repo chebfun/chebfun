@@ -1,6 +1,6 @@
 function h = plus(f, g)
 %+   Plus for BALLFUN.
-% F + G adds F and G. F and G can be scalars or BALLFUN.
+% F + G adds F and G. F and G can be scalars or BALLFUNs.
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
