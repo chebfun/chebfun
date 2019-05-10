@@ -8,7 +8,7 @@ function u = helmholtz(f, K, BC, m, varargin)
 %   U = HELMHOLTZ(F, K, BC, M) is the same as HELMHOLTZ(F, K, BC, M, M, M).
 %
 %   U = HELMHOLTZ(F, K, BC, M, N, P, 'neumann') is the solution to the Helmholtz
-%   equation with right-hand side F, frequency K, and Dirichlet boundary
+%   equation with right-hand side F, frequency K, and Neumann boundary
 %   data U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta). It uses a 
 %   discretization size of M x N x P. 
 %
