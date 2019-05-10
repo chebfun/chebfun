@@ -2,6 +2,8 @@ function varargout = PTdecomposition(v)
 % PTDECOMPOSITION Poloidal-toroidal decomposition of a BALLFUNV
 %   [P,T] = PTDECOMPOSITION(V) returns the poloidal and toroidal BALLFUN of 
 %   the BALLFUNV V, where V = curl(curl(rP)) + curl(rT).
+%   r denotes the vector of length sqrt(x^2+y^2+z^2) in the radial
+%   direction.
 % 
 %   Also see PT2BALLFUNV.
 

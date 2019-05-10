@@ -3,6 +3,8 @@ function varargout = HelmholtzDecomposition(v)
 %   [F,P,T] = HELMHOLTZDECOMPOSITION(V) returns the two-component form of
 %   the Helmholtz decomposition, where 
 %   V = grad(F) + curl(curl(rP)) + curl(rT).
+%   r denotes the vector of length sqrt(x^2+y^2+z^2) in the radial
+%   direction.
 %
 %   [F,P,T,Phi] = HELMHOLTZDECOMPOSITION(V) returns the three-component form of
 %   the Helmholtz decomposition, where

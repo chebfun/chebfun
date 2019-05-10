@@ -2,6 +2,8 @@ function varargout = PT2ballfunv(P,T)
 %PT2BALLFUNV inverse of the poloidal-toroidal decomposition.
 %   V = PT2BALLFUNV(P, T) returns the BALLFUNV V = curl(curl(rP)) +
 %   curl(rT), where P and T are poloidal and toroidal BALLFUN.
+%   r denotes the vector of length sqrt(x^2+y^2+z^2) in the radial
+%   direction.
 %
 %   [Pv, Tv] = PT2BALLFUNV(P, T) returns the poloidal and toroidal BALLFUNV
 %   defined by Pv = curl(curl(rP)) and Tv = curl(rT).
@@ -49,11 +51,7 @@ n_tilde = n_tilde + 2;
 p_tilde = p_tilde + 2;
 
 % Get the tensor of coefficients
-P = P.coeffs;
-
-% Expand P
-Pexp = zeros(m,n_tilde,p_tilde);
-Pexp(1:m,2:n_tilde-1,2+mod(p,2):p_tilde-1) = P;
+Pexp = coeffs3(P,m,n_tilde,p_tilde);
 
 % Useful spectral matrices
 MsinL = trigspec.multmat(n_tilde, [0.5i;0;-0.5i] ); 
