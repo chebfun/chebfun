@@ -1,6 +1,6 @@
 function v = norm(F)
-%NORM  Norm of a BALLFUN.
-%   For BALLFUN objects:
+%NORM  Norm of a BALLFUNV.
+%   For BALLFUNV objects:
 %    NORM(F) = sqrt(norm(F1).^2 + norm(F2).^2 + norm(F3).^2)
 %   If F is near zero, this function might be inaccurate.
 %

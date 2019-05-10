@@ -1,7 +1,7 @@
 function h = mtimes(f, g)
 %*  mtimes for BALLFUNV.
 %
-%  c*F or F*c multiplies each component of the DISKFUNV F by the scalar c.
+%  c*F or F*c multiplies each component of the BALLFUNV F by the scalar c.
 %
 %   See also TIMES.
 

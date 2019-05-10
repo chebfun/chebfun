@@ -1,6 +1,6 @@
 function G = curl(F)
 %CURL Curl of a BALLFUNV.
-%   G = CURL(F) returns the DISKFUN of the curl of F.
+%   G = CURL(F) returns the BALLFUNV of the curl of F.
 %
 % See also DIV. 
 

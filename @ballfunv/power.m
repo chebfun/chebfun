@@ -1,7 +1,7 @@
 function w = power(v,n)
 %.^ Componentwise power for BALLFUNV.
-%   F.^G where F is a BALLFUNV and G is a double returns the result from
-%   componentwise powers.
+%   F.^G where F is a BALLFUNV and G is a double returns the componentwise 
+%   power of F.
 %
 %   See also BALLFUN/POWER.
 
