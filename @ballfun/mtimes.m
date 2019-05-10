@@ -1,6 +1,6 @@
 function h = mtimes(f, g)
 %*   BALLFUN multiplication.
-%   A*F and F*A multiplies the BALLFUN F by the scalar A.
+%   a*F and F*a multiplies the BALLFUN F by the scalar a.
 %
 % See also TIMES.
 
