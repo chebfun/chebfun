@@ -69,6 +69,22 @@ f = ballfun(@(x,y,z)x*z*y,'vectorize');
 exact = ballfun(@(x,y,z)x.*z.*y);
 pass(12) = norm( f - exact ) < tol;
 
+% Example 13
+f = ballfun(@(x,y,z)cos(x.*y),[50,51,52]);
+exact = ballfun(@(x,y,z)cos(x.*y));
+pass(13) = norm( f - exact ) < tol;
+
+% Example 14
+exact = ballfun(@(x,y,z)cos(x.*y));
+f = ballfun(exact, [51,50,49], 'vectorize');
+pass(14) = norm( f - exact ) < tol;
+
+% Example 15
+exact = ballfun(@(x,y,z)sin(x.*y));
+E = coeffs3(exact,49,50,51);
+f = ballfun(E, 'coeffs', [51,53,51]);
+pass(15) = norm( f - exact ) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end

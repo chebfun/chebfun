@@ -19,34 +19,23 @@ classdef ballfun
 %       [0,1]x[-pi,pi]x[0,pi].
 %    4. ballfun(F, 'coeffs'), where F = (f_ijk) is a tensor of Chebyshev-
 %       Fourier-Fourier coefficients.
+%    5. ballfun(F, [m,n,p]) returns a representation of F using a degree m
+%       Chebyshev approximation of F in the r (radial) direction, a degree n
+%       trigonometric approximation in the lambda (azimuthal) direction and
+%       a degree p trigonometric approximation in the theta (polar) direction.
 %
 % If F is a function handle then it should allow for vectorized evaluations.
 % 
 % The BALLFUN software system is based on: 
 %
-% N. Boulle, and A. Townsend, Computing with functions in the ball, in
+% N. Boulle, and A. Townsend, Computing with functions on the ball, in
 % preparation.
 %
 % See also CHEBFUN2, CHEBFUN3, DISKFUN, SPHEREFUN, BALLFUNV
 
 % Copyright 2019 by The University of Oxford and The CHEBFUN Developers.
 % See http://www.chebfun.org/ for CHEBFUN information.
-    
-    properties
-        
-        % Chebyshev-Fourier-Fourier coefficients array of a BALLFUN.
-        coeffs   
-        
-        % Boolean value designating whether the BALLFUN represents a
-        % real-valued function. This allows us to always return a real result
-        % for things like evaluating a BALLFUN.
-        isReal
-        
-        %domain for non-doubled ball
-        domain
-                
-    end
-    
+       
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,8 +57,26 @@ classdef ballfun
         end
     end
     
-    methods ( Access = public, Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties
+        % Chebyshev-Fourier-Fourier coefficients array of a BALLFUN.
+        coeffs   
         
+        % Boolean value designating whether the BALLFUN represents a
+        % real-valued function. This allows us to always return a real result
+        % for things like evaluating a BALLFUN.
+        isReal
+        
+        %domain for non-doubled ball
+        domain
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
         % Convert to Chebyshev--Fourier--Fourier values
         VALS = coeffs2vals(CFS);
         
@@ -78,9 +85,11 @@ classdef ballfun
         
         % Compute the solid harmonics
         f = solharm(l,m,varargin);
-                
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
         
     end
@@ -88,5 +97,4 @@ classdef ballfun
     methods ( Access = private, Static = false )
         
     end
-    
 end

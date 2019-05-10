@@ -15,7 +15,7 @@ if ( nargin == 0 )          % BALLFUN( )
     return
 end
 
-[op, pref, isVectorized] = parseInputs(op, varargin{:});
+[op, pref, isVectorized, fixedSize] = parseInputs(op, varargin{:});
 
 % Set preferences:
 tech            = pref.tech();
@@ -32,10 +32,12 @@ maxSample = tpref.maxLength; % maxSample = max grid dimensions.
 
 if ( isa(op, 'ballfun') )     % BALLFUN( BALLFUN )
     f = simplify(op);
+    f = fixTheSize(f, fixedSize);
     return
     
 elseif ( isa(op, 'double') )   % BALLFUN( DOUBLE )
     f = constructFromDouble(f, op);
+    f = fixTheSize(f, fixedSize);
     return
 end
 
@@ -98,6 +100,7 @@ end
 f.coeffs = cfs;
 f.isReal = isReal;
 f.domain = [0, 1, -pi, pi, 0, pi];
+f = fixTheSize(f, fixedSize);
 end
 
 %%
@@ -260,11 +263,20 @@ end
 end
 
 %%
-function [op, pref, isVectorized] = parseInputs(op, varargin)
+function f = fixTheSize(f, fixedSize)
+% Fix the size of f to the one provided by fixedSize
+if ~isempty(fixedSize)
+   f.coeffs = coeffs3(f, fixedSize(1), fixedSize(2), fixedSize(3));
+end
+end
+
+%%
+function [op, pref, isVectorized, fixedSize] = parseInputs(op, varargin)
 % Parse user inputs to BALLFUN.
 
 isVectorized = 0;
 isCoeffs = 0;
+fixedSize = [];
 pref = chebfunpref();
 
 % Preferences structure given?
@@ -274,7 +286,7 @@ if ( any(isPref) )
     varargin(isPref) = [];
 end
 
-if ( isa(op, 'char') )     % CHEBFUN3( CHAR )
+if ( isa(op, 'char') )     % BALLFUN( CHAR )
     op = str2op(op);
 end
 
@@ -296,6 +308,8 @@ for k = 1:length(varargin)
         isVectorized = true;
     elseif strcmpi(varargin{k}, 'coeffs')
         isCoeffs = 1;
+    elseif isa(varargin{k}, 'double') && length(varargin{k}) == 3
+        fixedSize = varargin{k};
     end
 end
 
