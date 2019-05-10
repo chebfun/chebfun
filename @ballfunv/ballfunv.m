@@ -5,7 +5,7 @@ classdef ballfunv
 %
 % BALLFUNV(F, G, H) constructs a BALLFUNV object representing the vector-valued
 % function [F;G;H] on the unit ball. F, G, and H may be BALLFUN objects, function
-% handles or scalars. If they are function handles, then they those function handles
+% handles or scalars. If they are function handles, then those function handles
 % should be vectorized.
 %
 % See also BALLFUN.
