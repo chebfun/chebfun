@@ -41,6 +41,7 @@ if ( nargin == 0 )
     name = names{randi(length(names))};
 end
 
+type = 0;
 % The main switch statement.
 switch lower(name)
     
@@ -48,11 +49,13 @@ switch lower(name)
     case 'deathstar'
         fa = @(x,y,z) -(exp(-30*((y+sqrt(3)/2).^2 + x.^2 + (z-1/2).^2)) + exp(-25*z.^2));
         f = ballfun(fa);
+        type = 1; % WedgeAz plot
     
     % Gaussian function centered at (-0.5,0,0)
     case 'gaussian'
         fa = @(x,y,z,xc,yc,zc) exp(-20*((x+0.5).^2 + y.^2 + z.^2));
         f = ballfun(@(x,y,z) fa(x,y,z));
+        type = 2; % WedgePol plot
 
     % Solution to a Helmholtz problem
     case 'helmholtz'
@@ -90,16 +93,19 @@ switch lower(name)
     case 'roundpeg'  % a round peg of radius 0.5
         fa = @(r,l,t) 1./(1+(2*r).^100);
         f = ballfun(fa, 'spherical');
+        type = 2; % WedgeAz plot
 
     % Solid harmonics function
     case 'solharm'
         fa = ballfun.solharm(5,3);
         f = fa;
+        type = 2; % WedgePol plot
         
     % A zipper-like stripe pattern for the sphere    
     case 'stripes'
         fa = @(x,y,z) sin(50*z) - x.^2;
         f = ballfun(fa);
+        type = 1; % WedgeAz plot
 
     case 'wave'
         fa = @(x,y,z) cos(10*x+5*y).^2.*(1-(x.^2+y.^2+z.^2));
@@ -114,6 +120,12 @@ end
 % Only return something if there is an output argument.
 if ( nargout > 0 )
     varargout = {f, fa};
+elseif type==1
+    plot(f, "WedgeAz"), axis off
+    title(name)
+elseif type==2
+    plot(f, "WedgePol"), axis off
+    title(name)
 else
     % Otherwise, plot the function.
     plot(f), axis off
