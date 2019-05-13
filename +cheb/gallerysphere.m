@@ -1,6 +1,6 @@
 function varargout = gallerysphere(name)
 %CHEB.GALLERYSPHERE   Spherefun example functions.
-%   F = CHEB.GALLERYSPHERE(NAME) returns a soherefun corresponding to NAME.
+%   F = CHEB.GALLERYSPHERE(NAME) returns a spherefun corresponding to NAME.
 %   See the listing below for available names.
 %
 %   For example,  plot(cheb.gallerysphere('football')) plots the classic
@@ -18,6 +18,8 @@ function varargout = gallerysphere(name)
 %
 %   CHEB.GALLERYSPHERE with no output argument creates a plot of the selected
 %   function.
+%
+%   Available names:
 %
 %   deathstar   A function resembling the surface of the Death Star.
 %   gaussian    Gaussian function on the sphere centered at Gauss's birth place.

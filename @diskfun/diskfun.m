@@ -28,8 +28,9 @@ classdef diskfun < separableApprox
 % 
 % The DISKFUN software system is based on: 
 %
-% A. Townsend, H. Wilber, and G. Wright, Computing with functions in
-% spherical and polar geometries II: The disk, submitted, 2016. 
+% H. Wilber, A. Townsend, and G. Wright, Computing with functions in
+% spherical and polar geometries II: The disk, SIAM. J. Sci. Comput., 39-4
+% (2017), C238-C262.
 %
 % See also CHEBFUN2, SPHEREFUN, DISKFUNV.
 
