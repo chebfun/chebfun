@@ -9,13 +9,10 @@ function varargout = quiver(v, varargin)
 %
 %   QUIVER(...,LINESPEC) uses the plot linestyle specified for the velocity
 %   vectors.  Any marker in LINESPEC is drawn at the base instead of an arrow on
-%   the tip.  Use a marker of '.' to specify no marker at all.  See PLOT for
-%   other possibilities.
+%   the tip.  Use a marker of '.' to specify no marker at all.  Use color 
+%   specifiers to specify the color of the arrows.  See PLOT for other possibilities.
 %
 %   QUIVER(...,'numpts',N) plots arrows on a N by N by N uniform grid.
-%
-%   QUIVER(...,'color') colors the arrows according to the magnitude of the
-%   vector field.
 %
 % See also BALLFUN/PLOT.
 
@@ -33,25 +30,32 @@ if isVempty
     error('CHEBFUN:BALLFUNV:quiver:isempty','ballfunv must not have an empty component.');
 end
 
-% Number of points
-numpts = 30;
-
-if ( isempty(varargin) )
-    % Default parameters
-    varargin = {'color', 2.5};
-end
+% Default parameters
+numpts = 25;
+scale = 2.5;
 
 % Number of points to plot
 j = 1;
 argin = {};
-color = false;
+color = true;
 
 while ( ~isempty( varargin ) )
     if strcmpi( varargin{1}, 'numpts' )
         numpts = varargin{2};
         varargin(1:2) = [];
     elseif strcmpi( varargin{1}, 'color' )
-        color = true;
+        color = false;
+        argin{j} = varargin{1};
+        argin{j+1} = varargin{2};
+        varargin(1:2) = [];
+        j = j+2;
+    elseif ismember( varargin{1}, ['r','g','b','c','m','y','k','w'])
+        color = false;
+        argin{j} = varargin{1};
+        varargin(1) = [];
+        j = j+1;
+    elseif isnumeric( varargin{1} )
+        scale = varargin{1};
         varargin(1) = [];
     else
         argin{j} = varargin{1};
@@ -59,7 +63,7 @@ while ( ~isempty( varargin ) )
         j = j+1;
     end
 end
-varargin = argin;
+varargin = {scale, argin{:}};
 
 % Create the grid
 m = numpts; n = numpts; p = numpts;
