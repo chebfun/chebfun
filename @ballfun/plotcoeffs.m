@@ -27,11 +27,11 @@ rr = chebfun(r_cfs, 'coeffs');
 % Maximum Fourier coefficients along the azimuthal direction
 l_cfs = max(max( abs(cfs), [], 1), [], 3);
 l_cfs = l_cfs(:);
-ll = chebfun(l_cfs, 'coeffs', 'trig');
+ll = chebfun(l_cfs, [-pi,pi], 'coeffs', 'trig');
 % Maximum Fourier coefficients along the polar direction
 t_cfs = max(max( abs(cfs), [], 1), [], 2);
 t_cfs = t_cfs(:);
-tt = chebfun(t_cfs, 'coeffs', 'trig');
+tt = chebfun(t_cfs, [-pi,pi], 'coeffs', 'trig');
 
 % PLOTCOEFFS of cols:
 ax1 = subplot(1, 3, 1);
