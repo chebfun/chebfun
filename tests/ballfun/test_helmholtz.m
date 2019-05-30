@@ -323,6 +323,41 @@ pass(34) = norm(diff(u,1) - diff(exact,1)) < tol ...
         && norm(diff(u,2) - diff(exact,2)) < tol ...
         && norm(diff(u,3) - diff(exact,3)) < tol;
 
+%% Spherefun boundary conditions
+
+% Example 35:
+exact = ballfun(@(x,y,z)(x.^2+y.^2+z.^2).*(x.^2+y.^2));
+f = laplacian(exact) + 4*exact;
+bc = spherefun(@(x,y,z)4*(x.^2+y.^2));  % Neumann condition
+u = helmholtz(f, 2, bc, 40, 'neumann');
+pass(35) = norm(u - exact) < tol;
+
+% Example 36:
+exact = ballfun(@(x,y,z)y.^2);
+f = laplacian(exact);
+bc = spherefun(@(lam, th) 2*(sin(th).*sin(lam)).^2);  % Neumann condition
+u = helmholtz(f,0,bc,43,54,44,'neumann');
+pass(36) = norm(diff(u,1) - diff(exact,1)) < tol ...
+        && norm(diff(u,2) - diff(exact,2)) < tol ...
+        && norm(diff(u,3) - diff(exact,3)) < tol;
+
+% Example 37:
+f = ballfun(@(r, lam, th) -2*(2*r.^2.*cos(lam).^2.*cos(r.^2.*cos(lam).^2.*sin(th).^2).*sin(th).^2 + ...
+    sin(r.^2.*cos(lam).^2.*sin(th).^2)),'spherical');
+exact = @(r, lam, th) cos( r.^2.*sin(th).^2.*cos(lam).^2 );
+bc = spherefun(@(lam,th)cos(sin(th).^2.*cos(lam).^2 ));   % Dirichlet condition
+u = helmholtz(f, 0, bc, 39, 40, 41);
+exact = ballfun(exact,'spherical');
+pass(37) = norm(u - exact) < tol;
+
+% Example 38:
+f = ballfun(@(r, lam, th) 4);
+exact = @(r, lam, th) r.^2.*sin(th).^2;
+bc = spherefun(@(lam, th) sin(th).^2);   % Dirichlet condition
+u = helmholtz(f, 0, bc, 39, 40, 41);
+exact = ballfun(exact,'spherical');
+pass(38) = norm(u - exact) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end

@@ -23,9 +23,9 @@ function u = helmholtz(f, K, BC, m, varargin)
 %   exact = ballfun(exact,'spherical');
 %   norm(u - exact)
 %
-%   exact = ballfun(@(r, lam, th)r.^4.*sin(th).^2,'spherical');
+%   exact = ballfun(@(x,y,z)(x.^2+y.^2+z.^2).*(x.^2+y.^2));
 %   f = laplacian(exact) + 4*exact;
-%   bc = @(lam, th) 4*sin(th).^2;  % Neumann condition
+%   bc = spherefun(@(x,y,z)4*(x.^2+y.^2));  % Neumann condition
 %   u = helmholtz(f, 2, bc, 40, 'neumann');
 %   norm(u - exact)
 %
@@ -249,7 +249,10 @@ if isa(BC, 'function_handle')
     end
     % Convert boundary conditions to coeffs:
     BC1 = trigtech.vals2coeffs( trigtech.vals2coeffs( BC1 ).' ).';
-    
+% if g is a spherefun
+elseif isa(BC, 'spherefun')
+    % Get the Fourier x Fourier coefficients of the spherefun
+    BC1 = coeffs2(BC, n, p).';
 % if g is an array of fourier coefficients lambda x theta
 else
     % BC1 is an array of coefficients theta x lambda of size [m,n,p]
@@ -278,5 +281,4 @@ end
 
 % Build boundary conditions matrix
 bc = [bc1 ; bc2];
-
 end
