@@ -252,7 +252,7 @@ if isa(BC, 'function_handle')
 % if g is a spherefun
 elseif isa(BC, 'spherefun')
     % Get the Fourier x Fourier coefficients of the spherefun
-    BC1 = coeffs2(BC, n, p)';
+    BC1 = coeffs2(BC, n, p).';
 % if g is an array of fourier coefficients lambda x theta
 else
     % BC1 is an array of coefficients theta x lambda of size [m,n,p]
@@ -281,5 +281,4 @@ end
 
 % Build boundary conditions matrix
 bc = [bc1 ; bc2];
-
 end
