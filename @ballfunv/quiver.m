@@ -1,5 +1,5 @@
 function varargout = quiver(v, varargin)
-%QUIVER   Quiver plot of CHEBFUN2V.
+%QUIVER   Quiver plot of BALLFUNV.
 %   QUIVER(F) plots the vector velocity field of F. QUIVER automatically
 %   attempts to scale the arrows to fit within the grid.
 %
