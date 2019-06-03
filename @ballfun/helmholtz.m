@@ -2,18 +2,20 @@ function u = helmholtz(f, K, BC, m, varargin)
 %HELMHOLTZ   Helmholtz solver with Dirichlet or Neumann boundary conditions.
 %   U = HELMHOLTZ(F, K, BC, M, N, P) is the solution to the Helmholtz
 %   equation with right-hand side F, frequency K, and Dirichlet boundary
-%   data U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta). It uses a 
-%   discretization size of M x N x P. 
+%   data BC. It uses a discretization size of M x N x P. 
 %
 %   U = HELMHOLTZ(F, K, BC, M) is the same as HELMHOLTZ(F, K, BC, M, M, M).
 %
 %   U = HELMHOLTZ(F, K, BC, M, N, P, 'neumann') is the solution to the Helmholtz
-%   equation with right-hand side F, frequency K, and Neumann boundary
-%   data U(1,lambda,theta) = @(lambda,theta) BC(lambda, theta). It uses a 
-%   discretization size of M x N x P. 
+%   equation with right-hand side F, frequency K, and Neumann boundary data
+%   BC. It uses a discretization size of M x N x P. 
 %
 %   U = HELMHOLTZ(F, K, BC, M, 'neumann') is the same as 
 %   HELMHOLTZ(F, K, BC, M, M, M, 'neumann').
+%
+%   BC may be a function handle in polar coordinates (lambda, theta), cartesian
+%   coordinates (x,y,z), a spherefun, or a matrix of Fourier-Fourier
+%   coefficients.
 %
 % EXAMPLES:
 %   f = ballfun(@(r, lam, th) 4 + 4*r.^2.*sin(th).^2,'spherical');
@@ -173,7 +175,7 @@ for k = ListFourierMode
             c3 = c2 - j*(j-1)*c1;
             
             % Eliminating boundary conditions, changes rhs:
-            ff(j,:) = ff(j,:) - BCLeg(j,:)*c3';
+            ff(j,:) = ff(j,:) - BCLeg(j,:)*c3.';
             
             % Solve for nonzero degree
             if j > 1
@@ -235,8 +237,14 @@ end
 % Compute boundary rows and Dirichlet and Neumann boundary conditions at
 % r = -1
 function [BC1, BC2, bc] = ComputeBoundary(BC, m, n, p, isNeumann)
-% if g = function_handle of lambda, th
+% if BC = function_handle
 if isa(BC, 'function_handle')
+    % BC = function_handle of x, y and z
+    if nargin(BC) == 3
+        BC_polar = @(lam,th)BC(cos(lam).*sin(th),sin(lam).*sin(th),cos(th));
+        BC = BC_polar;
+    end
+    % BC is a function handle of lam and theta
     % Grid
     th = pi*trigpts(p);
     lam = pi*trigpts(n);
@@ -273,7 +281,6 @@ else
     % BC1 is the derivative of a smooth function on the ball, which contains
     % element of the form r^k exp(i*n*theta) where mod(k,2) = mod(n,2)
     BC2 = (-1).^((1:p)-floor(p/2)).*BC1;
-    
     % Neumann boundary rows
     bc1 = (0:m-1).^2;
     bc2 = (-1).^(1:m).*bc1;
