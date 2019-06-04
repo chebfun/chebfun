@@ -3,28 +3,28 @@ function varargout = pde15s(varargin)
 %
 %   UU = PDE15s(PDEFUN, T, U0, BC) where PDEFUN is a handle to a function with
 %   arguments u, t, x, and D, T is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
-%   and BC is a CHEBOP boundary condition structure will solve the PDE dUdt =
-%   PDEFUN(UU, t, x) with the initial condition U0 and boundary conditions BC
+%   and BC is a CHEBOP boundary condition structure will solve the PDE dU/dt =
+%   PDEFUN(U, t, x) with the initial condition U0 and boundary conditions BC
 %   over the time interval T.
 %
-%   [TT, UU] = PDE15s(PDEFUN, T, U0, BC) returns also the time chunks TT. If T
-%   is a two-vector these will be given by linspace(T(1), T(2), 51).
+%   [TT, UU] = PDE15s(PDEFUN, T, U0, BC) returns also the time chunks TT.
+%   If T is a 2-vector these will be given by linspace(T(1), T(2), 51).
 %
-%   [TT, UU, VV, ...] = PDE15s(...), in the case of a coupled systems, will
-%   return the quasimatrices UU, VV, ..., whose columns corresponds to the each
+%   [TT, UU, VV, ...] = PDE15s(...), in the case of a coupled system, will
+%   return the quasimatrices UU, VV,... whose columns correspond to each
 %   function at the times in the vector TT.
 %
-%   [TT, UU] = PDE15s(...), in case of a coupled systems, will return the
-%   CHEBMATRIX UU, where each row corresponds a variable at the times TT.
+%   [TT, UU] = PDE15s(...), in the case of a coupled system, will return the
+%   CHEBMATRIX UU, where each row corresponds to a variable at the times TT.
 %
 %   PDEFUN should take the form @(T, X, U1, U2, ..., UN), where U1, ..., UN are
 %   the unknown dependent variables to be solved for, T is time, and X is space.
 %
-%   For backwards compatibility, the syntax @(U1, U2, ..., UN, T, X, D, S, C)
+%   For backwards compatibility, the syntax @(U1, U2,..., UN, T, X, D, S, C)
 %   for PDEFUN, where U1, ..., UN are the unknown dependent variables to be
 %   solved for, T is time, X is space, D is the differential operator, S is the
 %   definite integral operator (i.e., 'sum'), and C the indefinite integral
-%   operator (i.e., 'cumsum') is also supported.
+%   operator (i.e., 'cumsum'), is also supported.
 %
 %   By default, the solutions at intermediate time steps are not plotted when
 %   PDE15s is called with output arguments. See documentation below on how
