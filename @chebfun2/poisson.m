@@ -58,7 +58,7 @@ if ( nargin == 1 )
     % Call is POISSON(F) so set G = 0 and use chebop2 to determine the
     % discretization size:
     g = 0;
-    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2), f.domain);
+    N = setupLaplace( f.domain );
     N.bc = g;
     u = N \ f;
 elseif ( nargin == 2 )
@@ -68,7 +68,7 @@ elseif ( nargin == 2 )
     if ( ~isa(g, 'chebfun2') )
         g = chebfun2(g, f.domain);
     end
-    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2), f.domain);
+    N = setupLaplace( f.domain );
     % Note: chebfun2/subsref (e.g. g(-1,:)) does not work here, so we use
     %       feval instead. Is this a bug?
     N.lbc = feval(g, f.domain(1), ':');
@@ -80,7 +80,7 @@ else
     % We are given a discretization size, so no need to use chebop2
     g = varargin{1};
     m = varargin{2};
-
+    
     if ( nargin == 3 )
         % Call is POISSON(F, G, N) so employ an NxN discretization:
         n = m;
@@ -88,13 +88,13 @@ else
         % Call is POISSON(F, G, M, N):
         n = varargin{3};
     end
-
+    
     % Set the error tolerance for ADI
     tol = chebfun2eps();
-
+    
     % Compute the Chebyshev coefficients of f(x,y):
     F = coeffs2( f, m, n );
-
+    
     % Solver only deals with zero homogeneous Dirichlet conditions. Therefore,
     % if nonzero Dirichlet conditions are given, we solve lap(u) = f with u|bc = g
     % as u = v + w, where v|bc = g, and lap(w) = f - lap(v), w|bc = 0:
@@ -119,10 +119,10 @@ else
         error('CHEBFUN2:POISSON',...
             'Dirichlet data needs to be given as a scalar or function')
     end
-
+    
     % Convert rhs to C^{(3/2)} coefficients:
     F = cheb2ultra( cheb2ultra( F ).' ).';
-
+    
     % Construct M, the multiplication matrix for (1-x^2) in the C^(3/2) basis
     jj = (0:n-1)';
     dsub = -1./(2*(jj+3/2)).*(jj+1).*(jj+2)*1/2./(1/2+jj+2);
@@ -132,31 +132,31 @@ else
     % Construct D^{-1}, which undoes the scaling from the Laplacian identity
     invDn = spdiags(-1./(jj.*(jj+3)+2), 0, n, n);
     Tn = scl_y * invDn * Mn;
-
+    
     jj = (0:m-1)';
     dsub = -1./(2*(jj+3/2)).*(jj+1).*(jj+2)*1/2./(1/2+jj+2);
     dsup = -1./(2*(jj+3/2)).*(jj+1).*(jj+2)*1/2./(1/2+jj);
     d = -dsub - dsup;
     Mm = spdiags([dsub d dsup], [-2 0 2], m, m);
     invDm = spdiags(-1./(jj.*(jj+3)+2), 0, m, m);
-
+    
     % Construct T = D^{-1} * M:
     Tm = scl_x * invDm * Mm;
     F = invDm * F * invDn;
-
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%  Alternating Direction Implicit method %%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Solve TmX + XTn' = F using ADI, which requires O(n^2log(n)log(1/eps))
     % operations:
-
+    
     % Calculate ADI shifts based on bounds on the eigenvalues of Tn and Tm:
     a = -4/pi^2 * scl_y;
     b = -39*n^-4 * scl_y;
     c = 39*m^-4 * scl_x;
     d = 4/pi^2 * scl_x;
     [p, q] = ADIshifts(a, b, c, d, tol);
-
+    
     % Run the ADI method:
     X = zeros(m, n);
     A = Tm; B = -Tn';
@@ -166,7 +166,7 @@ else
         X = (F-(A+q(j)*Im)*X) / (B+q(j)*In);
         X = (A+p(j)*Im) \ ( F - X*(B+p(j)*In) );
     end
-
+    
     % Convert back to Chebyshev
     X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
     X = X + BC;
@@ -341,4 +341,19 @@ for j = 0:N-1
 end
 M(1,:) = .5*M(1,:);
 
+end
+
+function N = setupLaplace(dom)
+%SETUPPOISSON()  Construct a chebop2 for Laplace operator. 
+% A little piece of code that is faster than calling
+% automatic differentiation to setup the Laplace operator. 
+
+    N = chebop2();
+    N.domain = dom;
+    N.op = @(u) lap(u);
+    N.coeffs = [ 0 0 1 ; 0 0 0 ; 1 0 0 ];
+    N.xorder = 2;
+    N.yorder = 2;
+    N.rhs = 0;
+    
 end
