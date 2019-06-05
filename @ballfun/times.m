@@ -8,5 +8,9 @@ function h = times(f, g)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-h = compose(f, @times, g); 
+if isa(g, 'ballfunv')
+    h = times(g,f);
+else
+    h = compose(f, @times, g);
+end
 end

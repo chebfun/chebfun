@@ -30,6 +30,14 @@ H = times(F,G);
 Hexact = ballfunv(-2*power(f,2),2*power(f,2),-3*power(f,2));
 pass(3) = norm(H - Hexact) < tol;
 
+% Example 4:
+% Multiply ballfunv by ballfun
+V = ballfunv(@(x,y,z)x,@(x,y,z)y,@(x,y,z)z);
+f = ballfun(@(x,y,z)cos(y));
+exact = ballfunv(@(x,y,z)x.*cos(y),@(x,y,z)y.*cos(y),@(x,y,z)z.*cos(y));
+pass(3) = norm(V*f-exact) < tol;
+pass(4) = norm(f*V-exact) < tol;
+
 if (nargout > 0)
     pass = all(pass(:));
 end
