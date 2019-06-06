@@ -15,7 +15,9 @@ n = 30;
 vFun = feval(f, xeval, yeval, zeval);   
 
 % Evaluate the op:
-vOp = feval(sampleOP, xeval,yeval,zeval);
+%vOp = feval(sampleOP, xeval,yeval,zeval);
+vOp = evaluate(sampleOP, xeval, yeval, zeval, 1);
+
 
 if ( any(max(abs(vOp - vFun)) > 100*tol) )    
     pass = false; % :(
@@ -55,4 +57,42 @@ y = H(:,2);
 y = (domain(4) - domain(3))*y + domain(3); 
 z = H(:,3); 
 z = (domain(6) - domain(5))*z + domain(5); 
+end
+
+function vals = evaluate(oper, xx, yy, zz, flag)
+% EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
+% turned on.
+if ( flag ==1 )
+    if ( isvector(xx) && isvector(yy) && isvector(zz) )
+        vals = zeros(size(xx));
+        if ( size(xx, 1) == 1 && size(xx, 2) > 1 )
+            % Turn rows into columns so that the next for loop works
+            % properly.
+            xx = xx.';
+            yy = yy.';
+            zz = zz.';
+        end
+    for ii = 1: size(xx, 1)
+        vals(ii) = oper(xx(ii, 1) , yy(ii, 1), zz(ii, 1));
+    end
+    else
+        vals = zeros(size(xx, 1), size(yy, 2), size(zz, 3));
+        for ii = 1:size(xx, 1)
+            for jj = 1:size(yy, 2)
+                for kk = 1:size(zz, 3)
+                    vals(ii, jj, kk) = feval(oper, xx( ii, 1, 1), ...
+                        yy(1, jj, 1 ), zz(1, 1, kk));                    
+                end
+            end
+        end
+    end
+else % i.e., if (flag == 0)
+    vals = feval(oper, xx, yy, zz);  % Tensor or vector of values at cheb3 pts.
+    if ( size(vals) ~= size(xx) )
+        % Necessary especially when a CHEBFUN2 is made out of a CHEBFUN3,
+        % e.g. in CHEBFUN3/STD.
+        vals = vals.';
+    end
+end
+
 end

@@ -26,15 +26,7 @@ passSampleTest = prefStruct.sampleTest;
 
 [xx, yy, zz] = ndgrid(dom(1:2), dom(3:4), dom(5:6));
 %A = op(xx, yy, zz);
-A = zeros(size(xx, 1), size(yy, 2), size(zz, 3));
-for ii = 1:size(xx, 1)
-    for jj = 1:size(yy, 2)
-        for kk = 1:size(zz, 3)
-            A(ii, jj, kk) = feval(op, xx( ii, 1, 1), ...
-                yy(1, jj, 1 ), zz(1, 1, kk));            
-        end
-    end
-end
+A = evaluate(op, xx, yy, zz, 1);
 
 if ( isscalar(A) )
     op = @(x,y,z) op(x,y,z) + 0*x + 0*y + 0*z;
@@ -49,7 +41,8 @@ for i=1:10
     xx = out{1};
     yy = out{2};
     zz = out{3};
-    F = op(xx,yy,zz);
+    %F = op(xx,yy,zz);
+    F = evaluate(op, xx, yy, zz, 1);
     
     % Does the function blow up or evaluate to NaN?:
     vscale = max(abs(F(:)));
@@ -63,6 +56,11 @@ for i=1:10
     
     %% Call 3D vals2coeffs
     coeffs3D = chebfun3t.vals2coeffs(F);
+    
+    grid = max(size(coeffs3D));
+    relTol = 2*grid^(4/5) * pseudoLevel;
+    pref.chebfuneps = relTol; % tolerance to be used in happinessCheck.
+
     % happinessCheck
     [isHappyX, isHappyY, isHappyZ, cutoffX2, cutoffY2, cutoffZ2] = ...
         happinessCheck3D(coeffs3D, pref);
@@ -100,8 +98,15 @@ for i=1:10
         xx = out{1};
         yy = out{2};
         zz = out{3};
-        F = op(xx,yy,zz);
+        %F = op(xx,yy,zz);
+        F = evaluate(op, xx, yy, zz, 1);
         coeffs3D = chebfun3t.vals2coeffs(F);
+        
+        grid = max(size(coeffs3D));
+        relTol = 2*grid^(4/5) * pseudoLevel;
+        pref.chebfuneps = relTol; % tolerance to be used in happinessCheck.
+
+        
         [isHappyX, isHappyY, isHappyZ, cutoffX2, cutoffY2, cutoffZ2] = ...
             happinessCheck3D(coeffs3D,pref);
         isHappy = isHappyX & isHappyY & isHappyZ;
@@ -251,7 +256,8 @@ elseif ( (nargin == 4) && strcmpi(varargin{2}, 'eps') && ...
 elseif ( (nargin == 4) && strcmpi(varargin{2}, 'eps') && ...
         ~any(strcmpi(varargin{1}, {'trig', 'periodic'})) )
     % DOMAIN and EPS are specified
-    pref.chebfuneps = varargin{3};
+    %pref.chebfuneps = varargin{3};
+    pref.cheb3Prefs.chebfun3eps = varargin{3};
     dom = varargin{1};    
 elseif ( (nargin == 4) && strcmpi(varargin{1}, 'eps') && ...
         ~any(strcmpi(varargin{3}, {'trig', 'periodic'})) )
@@ -310,6 +316,44 @@ if ( numel(vars) > 3)
         'Too many independent variables in string input.');
 else
     op = eval(['@(' vars{1} ',' vars{2} ',' vars{3} ')' op]);
+end
+
+end
+
+function vals = evaluate(oper, xx, yy, zz, flag)
+% EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
+% turned on.
+if ( flag ==1 )
+    if ( isvector(xx) && isvector(yy) && isvector(zz) )
+        vals = zeros(size(xx));
+        if ( size(xx, 1) == 1 && size(xx, 2) > 1 )
+            % Turn rows into columns so that the next for loop works
+            % properly.
+            xx = xx.';
+            yy = yy.';
+            zz = zz.';
+        end
+    for ii = 1: size(xx, 1)
+        vals(ii) = oper(xx(ii, 1) , yy(ii, 1), zz(ii, 1));
+    end
+    else
+        vals = zeros(size(xx, 1), size(yy, 2), size(zz, 3));
+        for ii = 1:size(xx, 1)
+            for jj = 1:size(yy, 2)
+                for kk = 1:size(zz, 3)
+                    vals(ii, jj, kk) = feval(oper, xx( ii, 1, 1), ...
+                        yy(1, jj, 1 ), zz(1, 1, kk));                    
+                end
+            end
+        end
+    end
+else % i.e., if (flag == 0)
+    vals = feval(oper, xx, yy, zz);  % Tensor or vector of values at cheb3 pts.
+    if ( size(vals) ~= size(xx) )
+        % Necessary especially when a CHEBFUN2 is made out of a CHEBFUN3,
+        % e.g. in CHEBFUN3/STD.
+        vals = vals.';
+    end
 end
 
 end
