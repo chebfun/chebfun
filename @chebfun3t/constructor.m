@@ -25,7 +25,17 @@ prefStruct = pref.cheb2Prefs;
 passSampleTest = prefStruct.sampleTest;
 
 [xx, yy, zz] = ndgrid(dom(1:2), dom(3:4), dom(5:6));
-A = op(xx, yy, zz);
+%A = op(xx, yy, zz);
+A = zeros(size(xx, 1), size(yy, 2), size(zz, 3));
+for ii = 1:size(xx, 1)
+    for jj = 1:size(yy, 2)
+        for kk = 1:size(zz, 3)
+            A(ii, jj, kk) = feval(op, xx( ii, 1, 1), ...
+                yy(1, jj, 1 ), zz(1, 1, kk));            
+        end
+    end
+end
+
 if ( isscalar(A) )
     op = @(x,y,z) op(x,y,z) + 0*x + 0*y + 0*z;
 end
