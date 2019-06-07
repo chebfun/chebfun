@@ -42,6 +42,7 @@ th = linspace(0,pi,p);
 
 % Evaluate the function at x = 0, y < 0
 ff = permute(fevalm(f,r,-pi/2,th),[1 3 2]);
+ff = real(ff);
 % Plot the result
 h = surf(zeros(length(r),length(th)),-r*sin(th),r*cos(th),ff,defaultOpts{:});
 
@@ -54,15 +55,18 @@ surf(zeros(length(r),length(th)),r*sin(th),r*cos(th),ff,defaultOpts{:})
 
 % Evaluate the function at y = 0, x < 0
 ff = permute(fevalm(f,r,pi,th),[1 3 2]);
+ff = real(ff);
 % Plot the result
 surf(-r*sin(th),zeros(length(r),length(th)),r*cos(th),ff,defaultOpts{:})
 % Evaluate the function at y = 0, x > 0
 ff = permute(fevalm(f,r,0,th),[1 3 2]);
+ff = real(ff);
 % Plot the result
 surf(r*sin(th),zeros(length(r),length(th)),r*cos(th),ff,defaultOpts{:})
 
 % Evaluate the function at z = 0
 ff = fevalm(f,r,lam,pi/2);
+ff = real(ff);
 % Plot the result
 surf(r*cos(lam),r*sin(lam),zeros(length(r),length(lam)),ff,defaultOpts{:})
 
