@@ -15,11 +15,13 @@ end
 
 fIsBallfunv = isa(f, 'ballfunv');
 gIsBallfunv = isa(g, 'ballfunv');
+fIsBallfun = isa(f, 'ballfun');
+gIsBallfun = isa(g, 'ballfun');
 
-if (fIsBallfunv && isnumeric(g))
+if ((isnumeric(g) || gIsBallfun) && fIsBallfunv)
     F = f.comp;
     h = ballfunv(g*F{1},g*F{2},g*F{3});
-elseif (isnumeric(f) && gIsBallfunv)
+elseif ((isnumeric(f) || fIsBallfun) && gIsBallfunv)
     G = g.comp;
     h = ballfunv(f*G{1},f*G{2},f*G{3});
 elseif fIsBallfunv && gIsBallfunv

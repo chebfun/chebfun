@@ -16,7 +16,18 @@ if isempty( f ) || isempty(g)
     return
 end
 
-F = f.comp;
-G = g.comp;
-h = [F{1}.*G{1} ; F{2}.*G{2} ; F{3}.*G{3}];
+fIsBallfun = isa(f, 'ballfun');
+gIsBallfun = isa(g, 'ballfun');
+
+if fIsBallfun
+    G = g.comp;
+    h = [f.*G{1} ; f.*G{2} ; f.*G{3}];
+elseif gIsBallfun
+    F = f.comp;
+    h = [F{1}.*g ; F{2}.*g ; F{3}.*g];
+else
+    F = f.comp;
+    G = g.comp;
+    h = [F{1}.*G{1} ; F{2}.*G{2} ; F{3}.*G{3}];
+end
 end
