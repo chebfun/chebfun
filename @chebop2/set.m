@@ -66,12 +66,16 @@ while ( length(propertyArgIn) >= 2 )
             N.xorder = val; 
         case 'yorder'
             N.yorder = val; 
+        case 'coeffs'
+            N.coeffs = val;
         case 'U'
             N.U = val;
         case 'S'
             N.S = val;
         case 'V'
             N.V = val;
+        case 'rhs'
+            N.rhs = val;
         otherwise
             error('CHEBFUN:CHEBOP2:set:unknownProp', ...
                 'Unknown CHEBOP2 property.')

@@ -13,37 +13,11 @@ vin = varargin{:};
 switch index(1).type
     
     case '.' 
-        if strcmp(idx, 'bc')
-            varargout = {set(f, 'bc', vin)};
-        elseif strcmp(idx, 'lbc')
-            varargout = {set(f, 'lbc', vin)};
-        elseif strcmp(idx, 'rbc')
-            varargout = {set(f, 'rbc', vin)};
-        elseif strcmp(idx, 'ubc')
-            varargout = {set(f, 'ubc', vin)};
-        elseif strcmp(idx, 'dbc')
-            varargout = {set(f, 'dbc', vin)};
-        elseif strcmp(idx, 'op')
-            varargout = {set(f, 'op', vin)};
-        elseif strcmp(idx, 'domain')
-            varargout = {set(f, 'domain', vin)};
-        elseif strcmp(idx, 'coeffs')
-            varargout = {set(f, 'coeffs', vin)};
-        elseif strcmp(idx, 'xorder')
-            varargout = {set(f, 'xorder', vin)};   
-        elseif strcmp(idx, 'yorder')
-            varargout = {set(f, 'yorder', vin)};
-        elseif strcmp(idx, 'U')
-            varargout = {set(f, 'U', vin)};
-        elseif strcmp(idx, 'S')
-            varargout = {set(f, 'S', vin)};
-        elseif strcmp(idx, 'V')
-            varargout = {set(f, 'V', vin)};
+        if ischar(idx)
+            varargout = {set(f, idx, vin)};
         else
             error('CHEBFUN:CHEBOP2:subsasgn:UnexpectedType', ...
-                'Unrecognized chebop2 property.')
-        end
-        
+                  'Chebop2 properties are string arrays.')
+        end   
 end
-
 end
