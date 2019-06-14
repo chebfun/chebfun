@@ -54,14 +54,15 @@ else
    
     % Convert ChebT of a to ChebC^{lam}
     a = ultraS.convertmat(n, 0, lambda - 1) * a;
-
-    M0 = speye(n);
     
-    d1 = [1 (2*lambda : 2*lambda + n - 2)]./ ...
-        [1 (2*((lambda+1) : lambda + n - 1))];
-    d2 = (1:n)./(2*(lambda:lambda + n - 1));
-    B = [d2' zeros(n, 1) d1'];
-    Mx = spdiags(B,[-1 0 1], n, n);
+    m = 2*n; 
+    M0 = speye(m);
+    
+    d1 = [1 (2*lambda : 2*lambda + m - 2)]./ ...
+        [1 (2*((lambda+1) : lambda + m - 1))];
+    d2 = (1:m)./(2*(lambda:lambda + m - 1));
+    B = [d2' zeros(m, 1) d1'];
+    Mx = spdiags(B,[-1 0 1], m, m);
     M1 = 2*lambda*Mx;
     
     % Construct the multiplication operator by a three-term recurrence: 
@@ -74,7 +75,7 @@ else
         M1 = M2;
         if ( abs(a(nn + 3:end)) < eps ), break, end
     end
-    
+    M = M(1:n, 1:n); 
 end
 
 end
