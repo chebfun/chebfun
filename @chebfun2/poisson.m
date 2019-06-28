@@ -58,7 +58,7 @@ if ( nargin == 1 )
     % Call is POISSON(F) so set G = 0 and use chebop2 to determine the
     % discretization size:
     g = 0;
-    N = chebop2.setuplaplace( f.domain ); 
+    N = chebop2.setuplaplace( f.domain );
     N.bc = g;
     u = N \ f;
 elseif ( nargin == 2 )
@@ -80,7 +80,7 @@ else
     % We are given a discretization size, so no need to use chebop2
     g = varargin{1};
     m = varargin{2};
-
+    
     if ( nargin == 3 )
         % Call is POISSON(F, G, N) so employ an NxN discretization:
         n = m;
@@ -88,13 +88,13 @@ else
         % Call is POISSON(F, G, M, N):
         n = varargin{3};
     end
-
+    
     % Set the error tolerance for ADI
     tol = chebfun2eps();
-
+    
     % Compute the Chebyshev coefficients of f(x,y):
     F = coeffs2( f, m, n );
-
+    
     % Solver only deals with zero homogeneous Dirichlet conditions. Therefore,
     % if nonzero Dirichlet conditions are given, we solve lap(u) = f with u|bc = g
     % as u = v + w, where v|bc = g, and lap(w) = f - lap(v), w|bc = 0:
@@ -119,10 +119,10 @@ else
         error('CHEBFUN2:POISSON',...
             'Dirichlet data needs to be given as a scalar or function')
     end
-
+    
     % Convert rhs to C^{(3/2)} coefficients:
     F = cheb2ultra( cheb2ultra( F ).' ).';
-
+    
     % Construct M, the multiplication matrix for (1-x^2) in the C^(3/2) basis
     jj = (0:n-1)';
     dsub = -1./(2*(jj+3/2)).*(jj+1).*(jj+2)*1/2./(1/2+jj+2);
@@ -132,47 +132,58 @@ else
     % Construct D^{-1}, which undoes the scaling from the Laplacian identity
     invDn = spdiags(-1./(jj.*(jj+3)+2), 0, n, n);
     Tn = scl_y * invDn * Mn;
-
+    
     jj = (0:m-1)';
     dsub = -1./(2*(jj+3/2)).*(jj+1).*(jj+2)*1/2./(1/2+jj+2);
     dsup = -1./(2*(jj+3/2)).*(jj+1).*(jj+2)*1/2./(1/2+jj);
     d = -dsub - dsup;
     Mm = spdiags([dsub d dsup], [-2 0 2], m, m);
     invDm = spdiags(-1./(jj.*(jj+3)+2), 0, m, m);
-
+    
     % Construct T = D^{-1} * M:
     Tm = scl_x * invDm * Mm;
     F = invDm * F * invDn;
-
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%  Alternating Direction Implicit method %%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Solve TmX + XTn' = F using ADI, which requires O(n^2log(n)log(1/eps))
     % operations:
-
+    
     % Calculate ADI shifts based on bounds on the eigenvalues of Tn and Tm:
     a = -4/pi^2 * scl_y;
     b = -39*n^-4 * scl_y;
     c = 39*m^-4 * scl_x;
     d = 4/pi^2 * scl_x;
     [p, q] = ADIshifts(a, b, c, d, tol);
-
+    
     % Run the ADI method:
-    X = zeros(m, n);
-    A = Tm; B = -Tn';
-    Im = speye(m);
-    In = speye(n);
-    for j = 1:numel(p)
-        X = (F-(A+q(j)*Im)*X) / (B+q(j)*In);
-        X = (A+p(j)*Im) \ ( F - X*(B+p(j)*In) );
-    end
-
+    X = ADI(Tm, -Tn, F, p, q );
+    
     % Convert back to Chebyshev
     X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
     X = X + BC;
     u = chebfun2( X, f.domain, 'coeffs' );
 end
 
+end
+
+function X = ADI( A, B, F, p, q)
+%ADI    Alternating direction implicit method for solving AX-XB=F.
+%X = ADI( A, B, F, p, q)  solve the Sylvester equation
+%
+%            A*X - X*B = F
+% using the ADI method with shift parameters p and q.
+m = size(A, 1);
+n = size(B, 1);
+X = zeros(m, n);
+A = Tm; B = -Tn';
+Im = speye(m);
+In = speye(n);
+for j = 1:numel(p)
+    X = (F-(A+q(j)*Im)*X) / (B+q(j)*In);
+    X = (A+p(j)*Im) \ ( F - X*(B+p(j)*In) );
+end
 end
 
 function [p, q] = ADIshifts(a, b, c, d, tol)
@@ -260,7 +271,6 @@ function S = leg2ultra_mat( n )
 %     c = rand(10, 1);    % Legendre coefficients
 %     S = leg2ultra_mat( length(c) ); % conversion matrix
 %     d = S * c;           % C^(3/2) coefficients
-%
 
 % Alex Townsend, 5th May 2016
 
