@@ -286,6 +286,9 @@ classdef chebop2
         % Compute the separable representation of a PDO: 
         [cellU, S, cellV] = separableFormat(A, xorder, yorder, dom);
         
+        % Setup Laplace operator on domain DOM: 
+        N = setuplaplace( dom ) 
+        
         % Remove trailing coefficients.
         a = truncate(a, tol);
         
