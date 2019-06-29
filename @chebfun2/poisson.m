@@ -93,7 +93,8 @@ else
     tol = chebfun2eps();
     
     % Compute the Chebyshev coefficients of f(x,y):
-    F = coeffs2( f, m, n );
+    [Cf, Df, Rf] = coeffs2(f, m, n);
+    Cf = Cf*Df;
     
     % Solver only deals with zero homogeneous Dirichlet conditions. Therefore,
     % if nonzero Dirichlet conditions are given, we solve lap(u) = f with u|bc = g
@@ -108,20 +109,27 @@ else
         else
             BC = coeffs2(g, m, n);
             % Adjust the rhs:
-            F = F - coeffs2(lap(g), m, n);
+            [Cg, Dg, Rg] = coeffs2(lap(g), m, n);
+            Cg = Cg*Dg;
+            Cf = [Cf -Cg];
+            Rf = [Rf Rg];
         end
     elseif ( isa(g, 'function_handle') )
         g = chebfun2(g, f.domain);
         BC = coeffs2(g, m, n);
         % Adjust the rhs:
-        F = F - coeffs2(lap(g), m, n);
+        [Cg, Dg, Rg] = coeffs2(lap(g), m, n);
+        Cg = Cg*Dg;
+        Cf = [Cf -Cg];
+        Rf = [Rf Rg];
     else
         error('CHEBFUN2:POISSON',...
             'Dirichlet data needs to be given as a scalar or function')
     end
     
     % Convert rhs to C^{(3/2)} coefficients:
-    F = cheb2ultra( cheb2ultra( F ).' ).';
+    Cf = cheb2ultra( Cf );
+    Rf = cheb2ultra( Rf );
     
     % Construct M, the multiplication matrix for (1-x^2) in the C^(3/2) basis
     jj = (0:n-1)';
@@ -142,7 +150,9 @@ else
     
     % Construct T = D^{-1} * M:
     Tm = scl_x * invDm * Mm;
-    F = invDm * F * invDn;
+    Cf = invDm*Cf;
+    Rf = (invDn*Rf.').';
+    %     F = invDm * F * invDn;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%  Alternating Direction Implicit method %%%%%%%
@@ -156,19 +166,42 @@ else
     c = 39*m^-4 * scl_x;
     d = 4/pi^2 * scl_x;
     [p, q] = ADIshifts(a, b, c, d, tol);
+    rho = size(Cf,2);
     
-    % Run the ADI method:
-    X = ADI(Tm, -Tn, F, p, q );
+    % Test if we should use ADI or FADI:
+    adi_test = ( n > numel(p)*rho/2 ); % Worth doing FADI?
     
-    % Convert back to Chebyshev
-    X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
-    X = X + BC;
-    u = chebfun2( X, f.domain, 'coeffs' );
+    % Solve matrix equation:
+    if ( adi_test )
+        % Run the ADI method:
+        X = adi(Tm, -Tn, Cf*Rf.', p, q );
+        
+        % Convert back to Chebyshev
+        X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
+        X = X + BC;
+        u = chebfun2( X, f.domain, 'coeffs' );
+    else
+        % Run the FADI method:
+        [UX, DX, VX] = fadi(Tm, -Tn, Cf, Rf, p, q);
+        
+        % Convert back to Chebyshev: 
+        UX = ultra1mx2cheb(UX);
+        VX = ultra1mx2cheb(VX);
+
+        scl = diag(DX);
+        UX = chebfun(UX, dom(3:4), 'coeffs');
+        VX = chebfun(VX, dom(1:2), 'coeffs');
+        u = chebfun2(); 
+        u.cols = UX*DX; 
+        u.rows = VX; 
+        u.pivotValues = ones(numel(scl),1); 
+        u.domain = dom;
+        u = u + g;
+    end
+end
 end
 
-end
-
-function X = ADI( A, B, F, p, q)
+function X = adi( A, B, F, p, q)
 %ADI    Alternating direction implicit method for solving AX-XB=F.
 %X = ADI( A, B, F, p, q)  solve the Sylvester equation
 %
@@ -183,6 +216,28 @@ In = speye(n);
 for j = 1:numel(p)
     X = (F-(A+q(j)*Im)*X) / (B+q(j)*In);
     X = (A+p(j)*Im) \ ( F - X*(B+p(j)*In) );
+end
+end
+
+function [UX, DX, VX] = fadi( A, B, M, N, p, q)
+%FADI    Factored Alternating direction implicit method.
+%X = FADI( A, B, M, N, p, q)  solves the Sylvester equation
+%
+%            A*X - X*B = M*N.'
+%
+% using the FADI method with shift parameters p and q.
+
+RankOfSolution = rho * numel(p);
+UX = zeros(m, RankOfSolution);
+VX = zeros(n, RankOfSolution);
+DX = diag( kron(q-p, ones(1,rho)) );
+Im = speye(m);
+In = speye(n);
+UX(:, 1:rho) = (A-q(1)*Im)\M;
+VX(:, 1:rho) = (B-p(1)*In)\N;
+for j = 1:numel(p)-1
+    UX(:, j*rho+(1:rho)) = (A-p(j)*Im)*((A-q(j+1)*Im)\UX(:,(j-1)*rho+(1:rho)));
+    VX(:, j*rho+(1:rho)) = (B-q(j)*In)*((B-p(j+1)*In)\VX(:,(j-1)*rho+(1:rho)));
 end
 end
 
