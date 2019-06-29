@@ -15,6 +15,7 @@ if ( isempty(f) )
     return
 end
 
+% If f is the zero function: 
 if ( iszero(f) )
     if ( nargin == 2 ) 
         n = m; 
@@ -23,7 +24,15 @@ if ( iszero(f) )
         % the coefficient matrix being returned in meshgrid form. 
         [n, m] = length( f );   % This line should not be [m,n]=length(f)!
     end
-    varargout = { zeros(m, n) } ; 
+    if ( nargout <=1 )
+        varargout = { zeros(m, n) }; 
+    elseif ( nargout <= 3 )
+        varargout = { zeros(m,1), diag(1), zeros(n,1) };
+    else
+    % Two output variables are not allowed.
+    error('CHEBFUN:CHEBFUN2:coeffs2:outputs', ...
+        'Incorrect number of outputs.');
+    end
     return
 end
 
