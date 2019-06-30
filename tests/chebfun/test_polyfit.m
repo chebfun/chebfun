@@ -80,4 +80,5 @@ pass(13) = norm(f+g-y, inf) < 1e-12;
 % Test best constant fit: 
 y = chebfun(@(x) sqrt(x+1), 'splitting', 'on'); 
 f = polyfit(y, 0); 
+pass(14) = norm( f - 0.942809041582063, inf) < 10*eps; 
 end
