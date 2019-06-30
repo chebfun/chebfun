@@ -76,4 +76,8 @@ pass(12) = length(f) == length(y) && norm(f-y, inf) < 1e-12;
 f = polyfit(y, 19);
 g = chebfun(@(x) cos(20*x), [0 2*pi], 'trig');
 pass(13) = norm(f+g-y, inf) < 1e-12;
+
+% Test best constant fit: 
+y = chebfun(@(x) sqrt(x+1), 'splitting', 'on'); 
+f = polyfit(y, 0); 
 end
