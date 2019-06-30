@@ -94,33 +94,34 @@ else
     
     % Compute the Chebyshev coefficients of f(x,y):
     [Cf, Df, Rf] = coeffs2(f, m, n);
-    Cf = Cf*Df;
     
     % Solver only deals with zero homogeneous Dirichlet conditions. Therefore,
     % if nonzero Dirichlet conditions are given, we solve lap(u) = f with u|bc = g
     % as u = v + w, where v|bc = g, and lap(w) = f - lap(v), w|bc = 0:
     if ( isa(g, 'double') )
-        BC = zeros(m, n);
-        BC(1,1) = g;
+        g = chebfun2( g, f.domain); 
+%         BC = zeros(m, n);
+%         BC(1,1) = g;
     elseif ( isa(g, 'chebfun2') )
         if ( g.domain ~= f.domain )
             error('CHEBFUN2:POISSON:BC', ...
                 'Dirichlet data should be on the same domain as F.');
         else
-            BC = coeffs2(g, m, n);
+%             BC = coeffs2(g, m, n);
             % Adjust the rhs:
             [Cg, Dg, Rg] = coeffs2(lap(g), m, n);
-            Cg = Cg*Dg;
             Cf = [Cf -Cg];
+            Z = zeros(size(Df,1),size(Dg,1)); 
+            Df = [Df Z ; Z' Dg];
             Rf = [Rf Rg];
         end
     elseif ( isa(g, 'function_handle') )
         g = chebfun2(g, f.domain);
-        BC = coeffs2(g, m, n);
         % Adjust the rhs:
         [Cg, Dg, Rg] = coeffs2(lap(g), m, n);
-        Cg = Cg*Dg;
-        Cf = [Cf -Cg];
+        Cf = [Cf Cg];
+        Z = zeros(size(Df,1),size(Dg,1)); 
+        Df = [Df Z ; Z' -Dg];
         Rf = [Rf Rg];
     else
         error('CHEBFUN2:POISSON',...
@@ -151,8 +152,7 @@ else
     % Construct T = D^{-1} * M:
     Tm = scl_x * invDm * Mm;
     Cf = invDm*Cf;
-    Rf = (invDn*Rf.').';
-    %     F = invDm * F * invDn;
+    Rf = invDn*Rf;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%  Alternating Direction Implicit method %%%%%%%
@@ -166,35 +166,33 @@ else
     c = 39*m^-4 * scl_x;
     d = 4/pi^2 * scl_x;
     [p, q] = ADIshifts(a, b, c, d, tol);
-    rho = size(Cf,2);
     
     % Test if we should use ADI or FADI:
-    adi_test = ( n > numel(p)*rho/2 ); % Worth doing FADI?
+    adi_test = ( min(m,n) > inf ); % Worth doing FADI?
     
     % Solve matrix equation:
     if ( adi_test )
         % Run the ADI method:
-        X = adi(Tm, -Tn, Cf*Rf.', p, q );
+        X = adi(Tm, -Tn', Cf*Df*Rf.', p, q );
         
         % Convert back to Chebyshev
         X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
-        X = X + BC;
         u = chebfun2( X, f.domain, 'coeffs' );
+        u = u + g; 
     else
         % Run the FADI method:
-        [UX, DX, VX] = fadi(Tm, -Tn, Cf, Rf, p, q);
+        [UX, DX, VX] = fadi(Tm, -Tn, Cf*Df, Rf, p, q);
         
         % Convert back to Chebyshev: 
         UX = ultra1mx2cheb(UX);
         VX = ultra1mx2cheb(VX);
 
-        scl = diag(DX);
         UX = chebfun(UX, dom(3:4), 'coeffs');
         VX = chebfun(VX, dom(1:2), 'coeffs');
         u = chebfun2(); 
-        u.cols = UX*DX; 
+        u.cols = UX; 
         u.rows = VX; 
-        u.pivotValues = ones(numel(scl),1); 
+        u.pivotValues = 1./diag(DX); 
         u.domain = dom;
         u = u + g;
     end
@@ -210,7 +208,6 @@ function X = adi( A, B, F, p, q)
 m = size(A, 1);
 n = size(B, 1);
 X = zeros(m, n);
-A = Tm; B = -Tn';
 Im = speye(m);
 In = speye(n);
 for j = 1:numel(p)
@@ -227,6 +224,8 @@ function [UX, DX, VX] = fadi( A, B, M, N, p, q)
 %
 % using the FADI method with shift parameters p and q.
 
+[m, rho] = size( M ); 
+n = size(N, 1); 
 RankOfSolution = rho * numel(p);
 UX = zeros(m, RankOfSolution);
 VX = zeros(n, RankOfSolution);
