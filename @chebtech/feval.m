@@ -38,7 +38,7 @@ if ( (m > 1) && (ndimsx > 2) )
          'with more than two dimensions is not supported.']);
 end
 
-if ( n <= 6000 )
+if ( n <= 4000 || sizex <= 4000 )
     % Evaluate using Clenshaw's algorithm:
     y = f.clenshaw(x, f.coeffs);
 else
