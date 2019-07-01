@@ -11,7 +11,15 @@ function varargout = coeffs2( f, m, n )
 % See also PLOTCOEFFS2, CHEBCOEFFS2, CHEBCOEFFS.
 
 if ( isempty(f) )
-    varargout = { [ ] }; 
+    if ( nargout <= 1 )
+        varargout = { [ ] }; 
+    elseif ( nargout == 3 )
+        varargout = {[], [], []};
+    else
+        % Two or four+ output variables are not allowed.
+        error('CHEBFUN:CHEBFUN2:coeffs2:outputs', ...
+        'Incorrect number of outputs.');
+    end
     return
 end
 
@@ -26,11 +34,11 @@ if ( iszero(f) )
     end
     if ( nargout <=1 )
         varargout = { zeros(m, n) }; 
-    elseif ( nargout <= 3 )
+    elseif ( nargout == 3 )
         varargout = { zeros(m,1), diag(1), zeros(n,1) };
     else
-    % Two output variables are not allowed.
-    error('CHEBFUN:CHEBFUN2:coeffs2:outputs', ...
+        % Two or four+ output variables are not allowed.
+        error('CHEBFUN:CHEBFUN2:coeffs2:outputs', ...
         'Incorrect number of outputs.');
     end
     return
@@ -60,10 +68,10 @@ end
 if ( nargout <= 1 )
     % Return the matrix of coefficients
     varargout = { cols_coeffs * d * rows_coeffs.' }; 
-elseif ( nargout <= 3 )
+elseif ( nargout == 3 )
     varargout = { cols_coeffs, d, rows_coeffs };
 else
-    % Two output variables are not allowed.
+    % Two or four+ output variables are not allowed.
     error('CHEBFUN:CHEBFUN2:coeffs2:outputs', ...
         'Incorrect number of outputs.');
 end
