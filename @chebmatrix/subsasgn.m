@@ -8,16 +8,20 @@ function A = subsasgn(A, sa, B)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-switch(sa(1).type)
-    
+
+switch( sa(1).type )
+         
     case {'()', '{}'}
-        if isa(B, 'chebmatrix')
+        
+        if ( isa(B, 'chebmatrix') )
             data = B.blocks;
+        elseif ( strcmp(sa(1).type, '{}') )
+            data = B;
         else
-            data = { B };
+            data = {B};
         end
 
-        A.blocks = subsasgn(A.blocks, sa, data);
+        A.blocks = subsasgn(A.blocks, sa, data);        
     
     otherwise  % Dot reference (property).
         

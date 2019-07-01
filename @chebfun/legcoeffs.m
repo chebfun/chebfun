@@ -73,7 +73,9 @@ if ( isSimple )
         
         % Compute the first two inner-products by hand:
         out(1,:) = out(1,:) + sum(diag(w)*vals);
-        out(2,:) = out(2,:) + sum(diag(w.*z.')*vals);
+        if ( n > 1 )
+            out(2,:) = out(2,:) + sum(diag(w.*z.')*vals);
+        end
         % Evaluate Legendre-Vandermonde matrix by recurrence relation:
         Pm2 = 1; Pm1 = z;
         for kk = 1:n-2
