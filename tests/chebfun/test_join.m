@@ -47,7 +47,7 @@ f = chebfun(@sin, [-1 -0.5 0]);
 g = chebfun(@cos, [1 1.5 2]);
 h = join(f, g);
 pass(6) = isequal(h.domain, [-1 -0.5 0 0.5 1]) && ...
-    norm(feval(h, xr) - h_exact(xr), inf) < 10*vscale(h)*eps;
+    norm(feval(h, xr) - h_exact_fun(xr), inf) < 10*vscale(h)*eps;
 
 % Check error conditions.
 try
@@ -104,7 +104,7 @@ pass(9) = isequal(h.domain, [-Inf -3 Inf]) && ...
 
 end
 
-function y = h_exact(x)
+function y = h_exact_fun(x)
     y = zeros(size(x));
 
     xl_ind = x <= 0;
