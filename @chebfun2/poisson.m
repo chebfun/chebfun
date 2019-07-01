@@ -19,6 +19,17 @@ function u = poisson( f, varargin )
 %   tensor product discretization, where N is the number of coeffcieints in
 %   the x-direction and M is the number in the y-direction.
 %
+%   POISSON(F, G, METHOD), POISSON(F, G, N, METHOD), or 
+%   POISSON(F, G, M, N, METHOD) is the same as POISSON(F, G), 
+%   POISSON(F, G, N), or POISSON(F, G, M, N), respectively, except the
+%   underlying matrix equation is solved with METHOD. Available methods
+%   are: 
+%   'adi'   - alternating direction implicit method 
+%   'fadi'  - factored alternating direction implicit method 
+%   'bartelstewart' - Bartel-Stewart's algorithm
+%   If METHOD is no supplied, then this commands selects one (based on the 
+%   discretization size and the rank of the righthand side).
+% 
 % EXAMPLE:
 %   f = chebfun2( @(x,y) 1 + 0*x, [-1 2 0 1]);
 %   u = chebfun2.poisson(f);
@@ -76,6 +87,10 @@ elseif ( nargin == 2 )
     N.dbc = feval(g, ':', f.domain(3));
     N.ubc = feval(g, ':', f.domain(4));
     u = N \ f;
+elseif ( nargin == 3 && ischar(varargin{2}) )
+    % Call is POISSON(F, G, METHOD). 
+    g = varargin{1}; 
+    method = varargin{2}; 
 else
     % We are given a discretization size, so no need to use chebop2
     g = varargin{1};
@@ -107,13 +122,14 @@ else
             error('CHEBFUN2:POISSON:BC', ...
                 'Dirichlet data should be on the same domain as F.');
         else
-%             BC = coeffs2(g, m, n);
             % Adjust the rhs:
-            [Cg, Dg, Rg] = coeffs2(lap(g), m, n);
-            Cf = [Cf -Cg];
-            Z = zeros(size(Df,1),size(Dg,1)); 
-            Df = [Df Z ; Z' Dg];
-            Rf = [Rf Rg];
+            if ( ~iszero( g ))
+                [Cg, Dg, Rg] = coeffs2(lap(g), m, n);
+                Cf = [Cf -Cg];
+                Z = zeros(size(Df,1),size(Dg,1)); 
+                Df = [Df Z ; Z' Dg];
+                Rf = [Rf Rg];
+            end
         end
     elseif ( isa(g, 'function_handle') )
         g = chebfun2(g, f.domain);
@@ -165,16 +181,16 @@ else
     b = -39*n^-4 * scl_y;
     c = 39*m^-4 * scl_x;
     d = 4/pi^2 * scl_x;
-    [p, q] = ADIshifts(a, b, c, d, tol);
+    [p, q] = chebop2.ADIshifts(a, b, c, d, tol);
     rho = size(Cf,2); 
     
     % Test if we should use ADI or FADI:
-    adi_test = ( min(m,n) < rho*numel(p) ); % Worth doing FADI?
+    adi_test = ( min(m,n) < rho*numel(p)/2 ); % Worth doing FADI?
     
     % Solve matrix equation:
     if ( adi_test )
         % Run the ADI method:
-        X = adi(Tm, -Tn', Cf*Df*Rf.', p, q );
+        X = chebop2.adi(Tm, -Tn', Cf*Df*Rf.', p, q );
         
         % Convert back to Chebyshev
         X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
@@ -182,7 +198,7 @@ else
         u = u + g; 
     else
         % Run the FADI method:
-        [UX, DX, VX] = fadi(Tm, -Tn, Cf*Df, Rf, p, q);
+        [UX, DX, VX] = chebop2.fadi(Tm, -Tn, Cf*Df, Rf, p, q);
         
         % Convert back to Chebyshev: 
         UX = ultra1mx2cheb(UX);
@@ -198,71 +214,6 @@ else
         u = u + g;
     end
 end
-end
-
-function X = adi( A, B, F, p, q)
-%ADI    Alternating direction implicit method for solving AX-XB=F.
-%X = ADI( A, B, F, p, q)  solve the Sylvester equation
-%
-%            A*X - X*B = F
-% using the ADI method with shift parameters p and q.
-m = size(A, 1);
-n = size(B, 1);
-X = zeros(m, n);
-Im = speye(m);
-In = speye(n);
-for j = 1:numel(p)
-    X = (F-(A+q(j)*Im)*X) / (B+q(j)*In);
-    X = (A+p(j)*Im) \ ( F - X*(B+p(j)*In) );
-end
-end
-
-function [UX, DX, VX] = fadi( A, B, M, N, p, q)
-%FADI    Factored Alternating direction implicit method.
-%X = FADI( A, B, M, N, p, q)  solves the Sylvester equation
-%
-%            A*X - X*B = M*N.'
-%
-% using the FADI method with shift parameters p and q.
-
-[m, rho] = size( M ); 
-n = size(N, 1); 
-RankOfSolution = rho * numel(p);
-UX = zeros(m, RankOfSolution);
-VX = zeros(n, RankOfSolution);
-DX = diag( kron(q-p, ones(1,rho)) );
-Im = speye(m);
-In = speye(n);
-UX(:, 1:rho) = (A-q(1)*Im)\M;
-VX(:, 1:rho) = (B-p(1)*In)\N;
-for j = 1:numel(p)-1
-    UX(:, j*rho+(1:rho)) = (A-p(j)*Im)*((A-q(j+1)*Im)\UX(:,(j-1)*rho+(1:rho)));
-    VX(:, j*rho+(1:rho)) = (B-q(j)*In)*((B-p(j+1)*In)\VX(:,(j-1)*rho+(1:rho)));
-end
-end
-
-function [p, q] = ADIshifts(a, b, c, d, tol)
-% ADISHIFTS  ADI shifts for AX-XB=F when the eigenvalues of A (B) are in [a,b] and
-% the eigenvalues of B (A) are in [c,d]. WLOG, we require that a<b<c<d and 0<tol<1.
-gam = (c-a)*(d-b)/(c-b)/(d-a);                 % Cross-ratio of a,b,c,d
-% Calculate Mobius transform T:{-alp,-1,1,alp}->{a,b,c,d} for some alp:
-alp = -1 + 2*gam + 2*sqrt(gam^2-gam);          % Mobius exists with this t
-A = det([-a*alp a 1; -b b 1 ; c c 1]);         % Determinant formulae for Mobius
-B = det([-a*alp -alp a; -b -1 b ; c 1 c]);
-C = det([-alp a 1; -1 b 1 ; 1 c 1]);
-D = det([-a*alp -alp 1; -b -1 1; c 1 1]);
-T = @(z) (A*z+B)./(C*z+D);                     % Mobius transfom
-J = ceil( log(16*gam)*log(4/tol)/pi^2 );       % Number of ADI iterations
-if ( alp > 1e7 )
-    K = (2*log(2)+log(alp)) + (-1+2*log(2)+log(alp))/alp^2/4;
-    m1 = 1/alp^2;
-    u = (1/2:J-1/2)*K/J;
-    dn = sech(u) + .25*m1*(sinh(u).*cosh(u)+u).*tanh(u).*sech(u);
-else
-    K = ellipke( 1-1/alp^2 );
-    [~, ~, dn] = ellipj((1/2:J-1/2)*K/J,1-1/alp^2); % ADI shifts for [-1,-1/t]&[1/t,1]
-end
-p = T( -alp*dn ); q = T( alp*dn );                  % ADI shifts for [a,b]&[c,d]
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
