@@ -67,4 +67,17 @@ f = lap(v);
 u = chebfun2.poisson(f, v, m, n);
 pass(8) = ( norm(u-v) < tol );
 
+% Check the syntax to chebfun2.poisson works: 
+u1 = chebfun2.poisson(f, v);
+u2 = chebfun2.poisson(f, v, n);
+u3 = chebfun2.poisson(f, v, m, n);
+u4 = chebfun2.poisson(f, v, n, 'adi');
+u5 = chebfun2.poisson(f, v, n, 'fadi');
+u6 = chebfun2.poisson(f, v, m, n, 'adi');
+u7 = chebfun2.poisson(f, v, m, n, 'fadi');
+pass(9) = ( norm(u1-u2) < tol & ...
+          norm(u2-u3) < tol & ...
+          norm(u3-u4) < tol & ...
+          norm(u4-u5) < tol & ...
+          norm(u6-u7) < tol );
 end
