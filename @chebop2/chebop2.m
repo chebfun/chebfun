@@ -258,6 +258,9 @@ classdef chebop2
         % Matrix equation solver for AX - XB = F (p and q are ADI shifts): 
         X = adi( A, B, F, p, q); 
         
+        % ADI shift parameters for ADI method: 
+        [p, q] = ADIshifts(a, b, c, d, tol);
+        
         % Matrix equation solver for AXB^T + CXD^T = E. xsplit, ysplit = 1 if
         % the even and odd modes (coefficients) decouple.
         X = bartelsStewart(A, B, C, D, E, xsplit, ysplit);
