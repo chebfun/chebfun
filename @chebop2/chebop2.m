@@ -255,7 +255,10 @@ classdef chebop2
     %% STATIC HIDDEN METHODS.
     methods ( Static = true, Hidden = true )
         
-        % Matrix equation solver: AXB^T + CXD^T = E. xsplit, ysplit = 1 if
+        % Matrix equation solver for AX - XB = F (p and q are ADI shifts): 
+        X = adi( A, B, F, p, q); 
+        
+        % Matrix equation solver for AXB^T + CXD^T = E. xsplit, ysplit = 1 if
         % the even and odd modes (coefficients) decouple.
         X = bartelsStewart(A, B, C, D, E, xsplit, ysplit);
         
@@ -266,6 +269,9 @@ classdef chebop2
         % This is used to discretize the linear constrains:
         [bcrow, bcvalue] = constructBC(bcArg, bcpos,...
             een, bcn, dom, scl, order);
+        
+        % Matrix equation solver for A*X-X*B = M*N.' (p and q are ADI shifts):
+        [UX, DX, VX] = fadi( A, B, M, N, p, q);
         
         % Recover coefficient functions of a linear operator:
         p = recoverCoeffs(L);
