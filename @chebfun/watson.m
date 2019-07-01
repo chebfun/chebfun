@@ -5,10 +5,6 @@ function p = watson(f, n)
 % function F in the L1-sense, using Watson's algorithm. F and P are both 
 % CHEBFUN objects. 
 % 
-%   This code is highly reliable for polynomial approximation but may
-%   sometimes have difficulties in the rational case, though we believe
-%   it is the most powerful rational minimax code available.
-% 
 % Examples:
 %   x = chebfun('x'); f = abs(x);
 %   p = watson(f, 20); plot(f-p)
@@ -23,6 +19,11 @@ function p = watson(f, n)
 %       L1 polynomial approximants." arXiv preprint arXiv:1902.02664 (2019).
 %
 % See also MINIMAX, CHEBFUN.POLYFIT.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER'S NOTE: Watson's algorithm is a damped Newton iteration that 
+% (hopefully) converges to the best L1 polynomial approximation to f. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % If f is a polynomial and n > deg(f), then p = f: 
 if ( length( f ) <= n+1 &&  numel( domain(f) ) == 2 ) 
@@ -52,9 +53,9 @@ else
     % This is the difficult case. We proceed with an iterative procedure: 
 
     % Maximum number of iterations in Watson's algorithm: 
-    iter = 30; 
+    iter = 100; 
     p_guess = p_interp;
-    T = chebpoly( 0:n );
+    T = chebpoly( 0:n, [a, b]);
     for ii = 1:iter
         int = intpsign(n, f, p_guess)';
         A = feval(T, r);
@@ -62,7 +63,7 @@ else
         D = feval( dedx, r );
         D = diag(2./abs(D)); 
         H = A'*D*A;
-        dp = chebfun(H\int, 'coeffs'); % \delta p, correction in Newton.
+        dp = chebfun(H\int, [a, b], 'coeffs'); % \delta p, correction in Newton.
         
         % Inner iteration: 
         gam = 1; 
@@ -70,11 +71,13 @@ else
         while gam > 1e-5
             p_guess = p_fix + gam*dp;
             r = roots( f - p_guess );
-            int = intpsign(n, f, p_guess);
-            gam = .8*gam;
-            int
+            cint = intpsign(n, f, p_guess);
+            if ( sum(cint) < sum( int ) )
+                break
+            end
+            gam = .5*gam;
         end
-        if ( norm(int) < 1e-10 ) 
+        if ( norm(int) < 100*eps ) 
             break 
         end
     end
