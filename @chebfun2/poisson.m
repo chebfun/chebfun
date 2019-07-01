@@ -166,9 +166,10 @@ else
     c = 39*m^-4 * scl_x;
     d = 4/pi^2 * scl_x;
     [p, q] = ADIshifts(a, b, c, d, tol);
+    rho = size(Cf,2); 
     
     % Test if we should use ADI or FADI:
-    adi_test = ( min(m,n) > inf ); % Worth doing FADI?
+    adi_test = ( min(m,n) < rho*numel(p) ); % Worth doing FADI?
     
     % Solve matrix equation:
     if ( adi_test )
