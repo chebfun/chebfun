@@ -287,7 +287,7 @@ classdef chebop2
         [cellU, S, cellV] = separableFormat(A, xorder, yorder, dom);
         
         % Setup Laplace operator on domain DOM: 
-        N = setuplaplace( dom ) 
+        N = laplace( dom ) 
         
         % Remove trailing coefficients.
         a = truncate(a, tol);
