@@ -248,7 +248,7 @@ elseif ( strcmpi(method, 'fadi') )
     u.domain = dom;
     u = u + g;
 elseif ( strcmpi(method, 'bartelsStewart') )
-    X = chebop2.bartelsStewart(Tm, eye(n), eye(m), -Tn, Cf*Df*Rf.', 0, 0);
+    X = chebop2.bartelsStewart(Tm, eye(n), eye(m), Tn, Cf*Df*Rf.', 0, 0);
     
     % Convert back to Chebyshev
     X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
