@@ -58,7 +58,7 @@ if ( nargin == 1 )
     % Call is POISSON(F) so set G = 0 and use chebop2 to determine the
     % discretization size:
     g = 0;
-    N = chebop2.setuplaplace( f.domain ); 
+    N = chebop2.laplace( f.domain ); 
     N.bc = g;
     u = N \ f;
 elseif ( nargin == 2 )
@@ -68,7 +68,7 @@ elseif ( nargin == 2 )
     if ( ~isa(g, 'chebfun2') )
         g = chebfun2(g, f.domain);
     end
-    N = chebop2.setuplaplace( f.domain );
+    N = chebop2.laplace( f.domain );
     % Note: chebfun2/subsref (e.g. g(-1,:)) does not work here, so we use
     %       feval instead. Is this a bug?
     N.lbc = feval(g, f.domain(1), ':');

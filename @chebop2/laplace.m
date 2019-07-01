@@ -1,4 +1,4 @@
-function N = setuplaplace( dom )
+function N = laplace( dom )
 %SETUPLAPLACE( DOM )  Construct a chebop2 object for Laplace operator. 
 % A small piece of code that is faster than calling the chebop2
 % constructor for forming the Laplace operator on DOM. 
