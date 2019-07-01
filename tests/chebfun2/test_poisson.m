@@ -59,7 +59,7 @@ u = chebfun2.poisson(f, p, m, n);
 pass(7) = ( norm(u-v) < tol );
 
 % General Dirichlet data, given as chebfun2:
-m = 201; n = 201;
+m = 201; n = 202;
 a = -3; b = 1; c = 4; d = 4.2;
 p = @(x,y) x.*y + cos(3*x.^2.*(y-.2));
 v = chebfun2( p, [a b c d]);
@@ -75,9 +75,11 @@ u4 = chebfun2.poisson(f, v, n, 'adi');
 u5 = chebfun2.poisson(f, v, n, 'fadi');
 u6 = chebfun2.poisson(f, v, m, n, 'adi');
 u7 = chebfun2.poisson(f, v, m, n, 'fadi');
+u8 = chebfun2.poisson(f, v, m, n, 'bartelsStewart');
 pass(9) = ( norm(u1-u2) < tol & ...
           norm(u2-u3) < tol & ...
           norm(u3-u4) < tol & ...
           norm(u4-u5) < tol & ...
-          norm(u6-u7) < tol );
+          norm(u6-u7) < tol & ... 
+          norm(u7-u8)< tol);
 end

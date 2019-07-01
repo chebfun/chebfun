@@ -247,6 +247,13 @@ elseif ( strcmpi(method, 'fadi') )
     u.pivotValues = 1./diag(DX);
     u.domain = dom;
     u = u + g;
+elseif ( strcmpi(method, 'bartelsStewart') )
+    X = chebop2.bartelsStewart(Tm, eye(n), eye(m), -Tn, Cf*Df*Rf.', 0, 0);
+    
+    % Convert back to Chebyshev
+    X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
+    u = chebfun2( X, f.domain, 'coeffs' );
+    u = u + g;
 else 
     error('CHEBFUN2:POISSON:SOLVER', ...
         'Method supplied to chebfun2.poisson() is not recognized.');
