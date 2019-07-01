@@ -53,7 +53,7 @@ pass(6) = all(g.domain == [2, 3]);
 pass(7) = test_spotcheck_restrict(@(x) exp(x) - 1, dom, [-2 4], [], pref);
 pass(8) = test_spotcheck_restrict(@(x) 1./(1 + x.^2), dom, [-0.7 0.9], [], ...
     pref);
-pass(9) = test_spotcheck_restrict(@(x) cos(1e3*x), dom, [0.1 0.5], [], pref);
+pass(9) = test_spotcheck_restrict(@(x) cos(1e4*x), dom, [0.1 0.5], [], pref);
 pass(10) = test_spotcheck_restrict(@(t) sinh(t*exp(2*pi*1i/6)), dom, ...
     [-0.4 1], [], pref);
 
@@ -115,7 +115,7 @@ x = linspace(a, b, 100).';
 y_exact = fun_op(x);
 y_approx = feval(g, x);
 
-result = norm(y_exact - y_approx, Inf) < ...
-    1e4*max(get(f, 'vscale')*eps);
+result = norm(y_exact - y_approx, Inf) <...
+         2e4*max(get(f, 'vscale')*eps);
     
 end
