@@ -25,7 +25,7 @@ th1 = 0.2;
 slice1 = chebfun(@(lam) feval(ff,lam,th1),[-pi pi], 'trig');
 th2 = 0.7;
 slice2 = chebfun(@(lam) feval(ff,lam,th2),[-pi pi], 'trig');
-pass(3) = ( norm( f(:,[th1 th2]) - [slice1 slice2] ) < tol );
+pass(3) = ( norm( f(:,[th1 th2]).' - [slice1 slice2] ) < tol );
 
 % Slices in lambda
 ff = @(lam,th) exp(cos(lam).*sin(th).*cos(th));
@@ -34,7 +34,7 @@ lam1 = 0.2;
 slice1 = chebfun(@(th) feval(ff,lam1,th),[-pi pi], 'trig');
 lam2 = 0.7;
 slice2 = chebfun(@(th) feval(ff,lam2,th),[-pi pi], 'trig');
-pass(4) = ( norm( f([th1 th2],:) - [slice1 slice2]' ) < tol );
+pass(4) = ( norm( f([th1 th2],:) - [slice1 slice2] ) < tol );
 
 % Slice in z
 ff = @(x,y,z) z.*sin(x.*(y-.1));

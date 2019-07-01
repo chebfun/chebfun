@@ -21,6 +21,10 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
+%   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
+%       Poles with residues less than this number times the maximium absolute
+%       component of F are deemed spurious by the cleanup procedure. If TOL = 0,
+%       then CLEANUPTOL defaults to 1e-13.
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
 %   This is equivalent to defining Z = LINSPACE(DOM(1), DOM(2), LENGTH(F)) if F
@@ -37,7 +41,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %
 %   Reference:
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
-%   for rational approximation", arXiv:1612.00337.
+%   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
 %
 % See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
@@ -46,14 +50,26 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 
 
 % Parse inputs:
-[F, Z, M, dom, tol, mmax, cleanup_flag, needZ, mmax_flag] = parseInputs(F, varargin{:});
+[F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, nlawson] ...
+    = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
     [r, pol, res, zer, zj, fj, wj, errvec] = ...
-        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, mmax_flag);
+        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag);
     return
 end
+
+% Remove any infinite or NaN function values (avoid SVD failures):
+toKeep = ~isinf(F);
+F = F(toKeep); Z = Z(toKeep);
+toKeep = ~isnan(F);
+F = F(toKeep); Z = Z(toKeep);
+
+% Remove repeated elements of Z and corresponding elements of F:
+[Z, uni] = unique(Z); F = F(uni);
+
+M = length(Z);
 
 % Relative tolerance:
 reltol = tol * norm(F, inf);
@@ -110,6 +126,59 @@ if ( M == 2 )
     errvec(2) = 0;
 end
 
+% The following Lawson iteration option is, as of mid-2018,
+% an undocumented feature.  The reason for introducing this is
+% that we are in the midst of extensive experiments with 
+% the AAA-Lawson idea, for which we want it to be conveniently
+% available as an option in the aaa code.  However, until the
+% experiments reach their conclusion, we don't regard the Lawson
+% idea as settled and reliable enough to be publicized to users
+% in the help text.  The default operation of aaa invokes no
+% Lawson steps, so users will not notice the existence of this
+% feature.
+%
+% Note that Lawson steps are generally useless for approximations
+% down near machine precision.  They should be used in the
+% context of a looser aaa 'tol' or a restricted aaa 'mmax'.
+% 
+% Examples:
+%
+% X = linspace(-1,1,1000); F = tanh(20*X);
+% subplot(1,2,1)
+% r = aaa(F,X,'mmax',16); plot(X,F-r(X)), hold on
+% r = aaa(F,X,'mmax',16,'lawson',50); plot(X,F-r(X)), hold off
+% 
+% Z = exp(1i*pi*linspace(-1,1,1000)); G = exp(Z);
+% subplot(1,2,2)
+% r = aaa(G,Z,'tol',1e-6); plot(G-r(Z)), axis equal, hold on
+% r = aaa(G,Z,'tol',1e-6,'lawson',10); plot(G-r(Z)), axis equal, hold off
+% 
+%         - Nick Trefethen and Abi Gopal, 29 June 2018.
+
+if ( nlawson > 0 )      % nlawson steps of Lawson iteration
+
+  nj = length(zj); Z2 = Z; F2 = F; np2 = M - nj;
+  for j = 1:nj
+    [i,~] = find(Z2==zj(j));
+    Z2(i) = []; F2(i) = [];
+  end
+  A = []; for j = 1:nj, A = [A 1./(Z2-zj(j)) F2./(Z2-zj(j))]; end
+  wt = ones(np2,1);
+  for n = 0:nlawson
+    W = spdiags(sqrt(wt),0,np2,np2); [U,S,V] = svd(W*A,0); c = V(:,end);
+    denom = zeros(np2,1); num = zeros(np2,1);
+    for j = 1:nj
+      denom = denom + c(2*j)./(Z2-zj(j));
+      num = num - c(2*j-1)./(Z2-zj(j));
+    end
+    err = F2 - num./denom; abserr = abs(err);
+    wt = wt.*abserr; wt = wt/norm(wt,inf);
+  end
+  wj = c(2:2:end);
+  fj = -c(1:2:end)./wj;
+
+end
+
 % Remove support points with zero weight:
 I = find(wj == 0);
 zj(I) = [];
@@ -124,17 +193,17 @@ r = @(zz) reval(zz, zj, fj, wj);
 
 if ( cleanup_flag )
     % Remove Froissart doublets:
-    [r, pol, res, zer, zj, fj, wj] = cleanup(r, pol, res, zer, zj, fj, wj, Z, F);
+    [r, pol, res, zer, zj, fj, wj] = ...
+        cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
 end
 
 end % of AAA()
 
 
-
 %% parse Inputs:
 
-function [F, Z, M, dom, tol, mmax, cleanup_flag, needZ, mmax_flag] = ...
-    parseInputs(F, varargin)
+function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
+    needZ, mmax_flag, nlawson] = parseInputs(F, varargin)
 % Input parsing for AAA.
 
 % Check if F is empty:
@@ -158,8 +227,10 @@ if ( ~isempty(varargin) && isfloat(varargin{1}) )
 end
 
 % Set defaults for other parameters:
-tol = 1e-13;        % Relative tolerance.
-mmax = 100;         % Maximum number of terms.
+tol = 1e-13;         % Relative tolerance.
+mmax = 100;          % Maximum number of terms.
+cleanup_tol = 1e-13; % Cleanup tolerance.
+nlawson = 0;         % number of Lawson steps
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -168,12 +239,15 @@ else
 end
 cleanup_flag = 1;   % Cleanup on.
 mmax_flag = 0;
-
+cleanup_set = 0;    % Checks if cleanup_tol manually specified.
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
     if ( strncmpi(varargin{1}, 'tol', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             tol = varargin{2};
+            if ~cleanup_set & tol > 0 % If not manually set, set cleanup_tol to tol.
+              cleanup_tol = tol;
+            end
         end
         varargin([1, 2]) = [];
         
@@ -181,6 +255,12 @@ while ( ~isempty(varargin) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             mmax = varargin{2};
             mmax_flag = 1;
+        end
+        varargin([1, 2]) = [];
+        
+    elseif ( strncmpi(varargin{1}, 'lawson', 6) )
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+            nlawson = varargin{2};
         end
         varargin([1, 2]) = [];
         
@@ -197,6 +277,13 @@ while ( ~isempty(varargin) )
             end
         end
         
+    elseif ( strncmpi(varargin{1}, 'cleanuptol', 10) )
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+          cleanup_tol = varargin{2};
+          cleanup_set = 1;
+        end
+        varargin([1, 2]) = [];
+
     elseif ( strncmpi(varargin{1}, 'cleanup', 7) )
         if ( strncmpi(varargin{2}, 'off', 3) || ( varargin{2} == 0 ) )
             cleanup_flag = 0;
@@ -253,78 +340,22 @@ end
 end % End of PARSEINPUT().
 
 
-%% Evaluate rational function in barycentric form.
-
-function r = reval(zz, zj, fj, wj)
-% Evaluate rational function in barycentric form.
-zv = zz(:);                             % vectorize zz if necessary
-CC = 1./bsxfun(@minus, zv, zj.');       % Cauchy matrix
-r = (CC*(wj.*fj))./(CC*wj);             % vector of values
-
-% Deal with input inf: r(inf) = lim r(zz) = sum(w.*f) / sum(w):
-r(isinf(zv)) = sum(wj.*fj)./sum(wj);
-
-% Deal with NaN:
-ii = find(isnan(r));
-for jj = 1:length(ii)
-    if ( isnan(zv(ii(jj))) || ~any(zv(ii(jj)) == zj) )
-        % r(NaN) = NaN is fine.
-        % The second case may happen if r(zv(ii)) = 0/0 at some point.
-    else
-        % Clean up values NaN = inf/inf at support points.
-        % Find the corresponding node and set entry to correct value:
-        r(ii(jj)) = fj(zv(ii(jj)) == zj);
-    end
-end
-
-% Reshape to input format:
-r = reshape(r, size(zz));
-
-end % End of REVAL().
-
-
-%% Compute poles, residues and zeros.
-
-function [pol, res, zer] = prz(r, zj, fj, wj)
-% Compute poles, residues, and zeros of rational function in barycentric form.
-m = length(wj);
-
-% Compute poles via generalized eigenvalue problem:
-B = eye(m+1);
-B(1,1) = 0;
-E = [0 wj.'; ones(m, 1) diag(zj)];
-pol = eig(E, B);
-% Remove zeros of denominator at infinity:
-pol = pol(~isinf(pol));
-
-% Compute residues via discretized Cauchy integral:
-dz = 1e-5*exp(2i*pi*(1:4)/4);
-res = r(bsxfun(@plus, pol, dz))*dz.'/4;
-
-% Compute zeros via generalized eigenvalue problem:
-E = [0 (wj.*fj).'; ones(m, 1) diag(zj)];
-zer = eig(E, B);
-% Remove zeros of numerator at infinity:
-zer = zer(~isinf(zer));
-
-end % End of PRZ().
-
-
 %% Cleanup
 
-function [r, pol, res, zer, z, f, w] = cleanup(r, pol, res, zer, z, f, w, Z, F)
+function [r, pol, res, zer, z, f, w] = ...
+    cleanup(r, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
 % Remove spurious pole-zero pairs.
 
 % Find negligible residues:
-ii = find(abs(res) < 1e-13 * norm(F, inf));
+ii = find(abs(res) < cleanup_tol * norm(F, inf));
 ni = length(ii);
 if ( ni == 0 )
     % Nothing to do.
     return
 elseif ( ni == 1 )
-    fprintf('1 Froissart doublet.\n')
+    warning('CHEBFUN:aaa:Froissart','1 Froissart doublet');
 else
-    fprintf('%d Froissart doublets.\n', ni)
+    warning('CHEBFUN:aaa:Froissart',[int2str(ni) ' Froissart doublets']);
 end
 
 % For each spurious pole find and remove closest support point:
@@ -365,7 +396,7 @@ end % End of CLEANUP().
 %% Automated choice of sample set
 
 function [r, pol, res, zer, zj, fj, wj, errvec] = ...
-    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, mmax_flag)
+    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag)
 %
 
 % Flag if function has been resolved:
@@ -377,7 +408,7 @@ for n = 5:14
     % Next line enables us to do pretty well near poles
     Z = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), 1 + 2^n).';
     [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
-        'mmax', mmax, 'cleanup', cleanup_flag);
+        'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol);
     
     % Test if rational approximant is accurate:
     reltol = tol * norm(F(Z), inf);

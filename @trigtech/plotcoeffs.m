@@ -137,11 +137,6 @@ else
     xlabelStr = '|Normalized wave number|+1';
 end
 
-% For constant functions, plot a dot:
-if ( n == 1 )
-    set(h, 'marker', 'o');
-end
-
 % Add title and labels
 title(gca, 'Fourier coefficients')
 xlabel(gca, xlabelStr)

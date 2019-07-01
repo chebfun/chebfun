@@ -1,5 +1,5 @@
 function c_cheb = jac2cheb( c_jac, alpha, beta ) 
-%JAC2CHEB convert Legendre coefficients to Chebyshev coefficients. 
+%JAC2CHEB convert Jacobi coefficients to Chebyshev coefficients. 
 %   C_CHEB = JAC2CHEB(C_JAC, A, B) converts the vector C_JAC of Jacobi
 %   coefficients to a vector C_CHEB of Chebyshev coefficients such that
 %       C_CHEB(1)*T_0(x) + ... + C_CHEB(N)*T{N-1}(x) = ...

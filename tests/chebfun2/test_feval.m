@@ -69,10 +69,10 @@ f = chebfun2(@(x,y) cos(x.*y));
 x = ones(1,n);
 [xx, yy] = meshgrid(x);
 pass(19) = ( all( size( feval(f, 1, 1) ) == [1 1] ) );
-pass(20) = ( all( size( feval(f, [1 1], [1 1]) ) == [2 1] ) );
+pass(20) = ( all( size( feval(f, [1 1], [1 1]) ) == [1 2] ) );
 pass(21) = ( all( size( feval(f, [1;1], [1;1]) ) == [2 1] ) );
 pass(22) = ( all( size( feval(f, [1 1;1 1], [1 1; 1 1]) ) == [2 2] ) );
-pass(23) = ( all( size( feval(f, x, x) ) == [n 1] ) );
+pass(23) = ( all( size( feval(f, x, x) ) == size(x) ) );
 pass(24) = ( all( size( feval(f, xx, yy)  ) == [n n] ) );
 
 end

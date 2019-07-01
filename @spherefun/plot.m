@@ -30,13 +30,7 @@ function varargout = plot(f, varargin)
 %                               p     pentagram
 %                               h     hexagram
 %
-%   For phase portraits see: E. Wegert, Visual Complex Functions: An
-%   Introduction with Phase Portraits, Springer Basel, 2012, or for MATLAB 
-%   code to produce many different styles of phase portraits go to:
-%   http://www.visual.wegert.com
-%
-%   Note: for lat/long lines and/or other projections,
-%   use e.g. SURF(..., 'grid').
+%   Note: for latitude/longitude lines and/or other projections use SURF.
 %
 % Example:
 %

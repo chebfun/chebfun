@@ -13,7 +13,7 @@ function legvals = chebvals2legvals(chebvals, kind)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default to second-kind points:
-if ( nargin == 0 )
+if ( nargin == 1 )
     kind = 2;
 end
 if ( kind == 1 )

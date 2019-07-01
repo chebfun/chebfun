@@ -12,8 +12,8 @@ pass(2) = (abs(mean2(f)) < .1);
 f = randnfunsphere(1e6);
 pass(3) = norm(diff(f),'fro') < 1e-4;
 
-f = randnfunsphere(1.6);
+f = randnfunsphere(3.1);
 pass(4) = ( rank(f) == 4 );
 
-f = randnfunsphere(1.6,'mono');
+f = randnfunsphere(3.1,'mono');
 pass(5) = ( rank(f) == 3 );

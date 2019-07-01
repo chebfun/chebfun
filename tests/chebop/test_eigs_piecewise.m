@@ -29,7 +29,7 @@ refSoln =    1.0e+02 * ...
   -0.247291299790162
   -0.023950791540263];
 
-tol = 1e-8;
+tol = 1e4*pref.bvpTol;
 err(1) = norm(ec2 - refSoln, inf);
 err(2) = norm(ec1 - refSoln, inf);
 err(3) = norm(eus - refSoln, inf);

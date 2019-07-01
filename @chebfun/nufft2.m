@@ -9,8 +9,8 @@ function f = nufft2(c, x, y, tol)
 %           C(j,k)*exp(-2*pi*1i*X(s,t)*k/N)*exp(-2*pi*1i*Y(s,t)*j/N).
 %
 %   The algorithm in this MATLAB script is based on the paper:
-%       [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier
-%       transform based on low rank approximation", submitted, 2017.
+%    [1] D. Ruiz-Antoln and A. Townsend, "A nonuniform fast Fourier
+%    transform based on low rank approximation", SISC, 40 (2018), A529-A547.
 %   This paper relates the NUFFT to a FFT by low rank approximation.
 % 
 % See also chebfun.nufft and chebfun.inufft. 

@@ -56,7 +56,13 @@ elseif ( length(n) ~= length(dom) - 1 )
 end
 
 % Create a dummy CHEBTECH of appropriate type to access static methods.
-f = feval(['chebtech', num2str(type)]);
+if ( type == 1 )
+    f = chebtech1();
+elseif ( type == 2 )
+    f = chebtech2();
+else
+    error('CHEBFUN:chebpts:type', 'Unknown point type.')
+end    
 
 if ( length(n) == 1 ) % Single grid.
     

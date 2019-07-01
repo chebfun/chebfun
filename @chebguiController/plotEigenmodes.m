@@ -40,7 +40,15 @@ end
 C = get(0, 'DefaultAxesColorOrder');
 C = repmat(C, ceil(length(D)/size(C, 1)), 1);
 
-% Number of unknown variables in the problem
+% Usually, we end up solving for more than 1 eigenfunctions/values, which means
+% that the solution V is a CHEBMATRIX, rather than a simple CHEBFUN. The
+% plotting below assumes we're working with a CHEBMATRIX for various
+% functionality, so cast a single CHEBFUN to a CHEBMATRIX:
+if ( ~isa(V, 'chebmatrix') )
+    V = chebmatrix(V);
+end
+
+% Number of unknown variables in the problem:
 numVar = size(V, 1);
 
 % Need to trim the data we are plotting if user has made a selection

@@ -16,10 +16,6 @@ if ( nargin == 3 )      % Spherical coordinates used.
     lambda = x;
     theta = y;
     y = feval@separableApprox(f, lambda, theta);
-
-    if ( (size(lambda, 1) == 1) && (size(theta, 1) == 1) )
-        y = y.';
-    end
     
 elseif ( nargin == 4 ) % Cartesian coordinates used.
     if ( isnumeric(x) && isnumeric(y) && isnumeric(z) )
@@ -38,10 +34,6 @@ elseif ( nargin == 4 ) % Cartesian coordinates used.
             theta = pi/2 - theta;
         end
         y = feval@separableApprox(f, lambda, theta);
-
-        if ( (size(lambda, 1) == 1) && (size(theta,1) == 1) )
-            y = y.';
-        end
         
     elseif ( strcmp(x, ':') && strcmp(y, ':') && strcmp(z, ':') )
         y = f;

@@ -21,10 +21,11 @@ pass(1) = max(max(abs(u(xx,yy) - v(xx,yy))))/scale < tol;
 %% GL:
 
 % Solve with DT and DT/2:
-S = spinopsphere('GL'); S.tspan = S.tspan/10;
+S = spinopsphere('GL'); S.tspan = S.tspan/10; 
+S.init =  spherefun(@(x,y,z) cos(cosh(x.*z)-y));
 N = 128; dt = 1e-1;
-s = rng; u = spinsphere(S, N, dt, 'plot', 'off');
-rng(s); v = spinsphere(S, N, dt/2, 'plot', 'off');
+u = spinsphere(S, N, dt, 'plot', 'off');
+v = spinsphere(S, N, dt/2, 'plot', 'off');
 
 % Compare:
 dom = S.domain;

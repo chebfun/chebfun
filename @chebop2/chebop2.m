@@ -16,7 +16,7 @@ classdef chebop2
 %
 % Boundary conditions are imposed via the syntax N.lbc, N.rbc, N.ubc, and N.dbc.
 %
-% Example 1: (Poisson with Dirichlet conditions):
+% Example 1: (Poisson with zero Dirichlet conditions):
 %    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
 %    N.bc = 0;
 %    u = N \ 1;
@@ -31,11 +31,20 @@ classdef chebop2
 %    N.lbc = 0; N.rbc = 0; 
 %    N.dbc = @(x,u) [u - exp(-30*x.^2) ; diff(u)];
 %    u = N \ 0; 
+%
+% Example 4: (Poisson equation with general Dirichlet conditions and rhs)
+%    N = chebop2( @(u) lap(u));
+%    N.lbc = @(y) -y.^2;
+%    N.rbc = @(y) y.^2; 
+%    N.ubc = @(x) x;
+%    N.dbc = @(x) x;
+%    u = N \ chebfun2(@(x,y) cos(x.*y));
 % 
 % For further details about the PDE solver, see:
 %
-% A. Townsend and S. Olver, The automatic solution of partial differential
-% equations using a global spectral method, in preparation, 2014.
+% A. Townsend and S. Olver, The automatic solution of partial differential 
+% equations using a global spectral method, J. Comput. Phys., 299 (2015),
+% pp. 106-123.
 %
 % Warning: This PDE solver is an experimental new feature. It has not been
 % publicly advertised.  Chebop2 cannot do nonlinear problems as more 
@@ -258,6 +267,12 @@ classdef chebop2
         [bcrow, bcvalue] = constructBC(bcArg, bcpos,...
             een, bcn, dom, scl, order);
         
+        % Recover coefficient functions of a linear operator:
+        p = recoverCoeffs(L);
+        
+        % Checks the type of the boundary conditions:
+        [bctype, g] = checkBC(N, m, n);
+        
         % This is used to discretize the PDE:
         [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] =...
             discretize(N, f, m, n, flag);
@@ -270,6 +285,9 @@ classdef chebop2
         
         % Compute the separable representation of a PDO: 
         [cellU, S, cellV] = separableFormat(A, xorder, yorder, dom);
+        
+        % Setup Laplace operator on domain DOM: 
+        N = laplace( dom ) 
         
         % Remove trailing coefficients.
         a = truncate(a, tol);

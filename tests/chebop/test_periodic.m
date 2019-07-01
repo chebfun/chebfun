@@ -4,7 +4,7 @@ function pass = test_periodic(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 1e-8;
+tol = 1e4*pref.bvpTol;
 
 %% A simple ODE:
 
@@ -72,7 +72,6 @@ e = [e12; e35];
 pass(3) = norm(real(e) - [0 0 1 1 1].', inf) + ...
     norm(imag(e) - [-1 1 -1 0 1].', inf) < tol;
 pass(4) = norm(V{1}(pi) - V{1}(pi), inf) + norm(V{2}(pi) - V{2}(pi), inf) < tol;
-
 
 %% Test the TRIGCOLLOC class. FIRST ORDER AND CONSTANT COEFFICIENTS: 
 %  u' + u = cos(x), on [0 2*pi].
