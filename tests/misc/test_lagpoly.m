@@ -30,3 +30,19 @@ pass(6) = norm( feval(h5,x) -...
 h6 = lagpoly(6); 
 pass(7) = norm( feval(h6,x) -...
        (x.^6-36*x.^5+450*x.^4-2400*x.^3+5400*x.^2-4320*x+720)/720 ) < 100*tol;
+   
+a = .5;
+h3a = lagpoly(3, a); 
+pass(8) = norm( feval(h3a,x) -...
+       (-x.^3/6 + (a+3)*x.^2/2 - (a+2)*(a+3)*x/2 + (a+1)*(a+2)*(a+3)/6) ) ...
+       < tol;
+   
+binom = @(n,k) gamma(n+1)./(gamma(n-k+1).*gamma(k+1));
+a = 1/sqrt(2);
+n = 7;   
+L = 0;
+for i = 0:n
+   L = L + (-1)^i*binom(n+a,n-i)*x.^i/factorial(i);
+end
+h7a = lagpoly(n, a); 
+pass(9) = norm(feval(h7a,x) - L) < 10*tol;
