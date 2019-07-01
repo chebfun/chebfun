@@ -4,7 +4,11 @@ function N = laplace( dom )
 % constructor for forming the Laplace operator on DOM. 
 
     N = chebop2();
-    N.domain = dom;
+    if ( nargin > 0 )
+        N.domain = dom;
+    else
+        N.domain = [-1 1 -1 1];
+    end
     N.op = @(u) lap(u);
     N.coeffs = [ 0 0 1 ; 0 0 0 ; 1 0 0 ];
     N.xorder = 2;
