@@ -51,7 +51,7 @@ if ( numel( r ) == numel( x ) )
 else
     
     sums = sign(feval(f-p_interp, a)) * intpsign(n, r);
-    sumshistory = norm( sums );
+    sumshistory = norm( sums, inf);
     
     itwatson = 100;
     for ii = 1:itwatson % Watson update
@@ -77,19 +77,18 @@ else
             p_interp = pnow + gam*dp;
             r = roots(f-p_interp);
             sums = sign(feval(f-p_interp, a))*intpsign(n,r);
-            if ( norm(sums,inf)<sumshistory(end) && length(r)>=n+1 )
+            if ( norm(sums,inf)<sumshistory && length(r)>=n+1 )
                 break
             end
             gam = gam*.8;
         end
-        sumshistory = [sumshistory norm(sums)];
+        sumshistory = norm(sums, inf);
         
         if ( sumshistory(end) < 1e-10 )
             break
         end
     end
     p = p_interp;
-    return
 end
 end
 

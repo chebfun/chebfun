@@ -173,6 +173,7 @@ if ( nlawson > 0 )      % nlawson steps of Lawson iteration
     end
     err = F2 - num./denom; abserr = abs(err);
     wt = wt.*abserr; wt = wt/norm(wt,inf);
+    disp(min(diag(S)))
   end
   wj = c(2:2:end);
   fj = -c(1:2:end)./wj;
