@@ -85,7 +85,7 @@ else
             end
             gam = 0.8*gam;
         end
-        sumshistory = norm(sums, inf)
+        sumshistory = norm(sums, inf);
         
         if ( sumshistory < tol / (b-a) )
             break
