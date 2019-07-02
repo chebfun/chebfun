@@ -2,8 +2,8 @@ function p = watson(f, n)
 %WATSON Best polynomial approximation in the L1-norm for real functions.
 % 
 % P = WATSON(F, N) computes the best polynomial approximation to the real
-% function F in the L1-sense, using Watson's algorithm. F and P are both 
-% CHEBFUN objects. 
+% continuous function F in the L1-sense, using Watson's algorithm. F and P 
+% are both CHEBFUN objects. 
 % 
 % Examples:
 %   x = chebfun('x'); f = abs(x);
@@ -38,7 +38,7 @@ end
 % f-pn has roots only at the Chebyshev points, then Theorem 14.4 and 14.5 
 % of Powell's Approximation Theory book shows that pn is the best 
 % polynomial approximation to f in the L1-norm. 
-x = chebpts(n+3, [a, b]); x = x( 2:end-1 );
+x = chebpts(n+1, [a, b], 1); %x = x( 2:end-1 );
 % [TODO] Compute the Chebyshev interpolant using a DCT for speed:
 p_interp = chebfun.interp1(x, feval(f, x), [a b]);  
 r = roots( f - p_interp );
@@ -68,7 +68,7 @@ else
         % Inner iteration: 
         gam = 1; 
         p_fix = p_guess;
-        while gam > 1e-5
+        while ( gam > 1e-5 )
             p_guess = p_fix + gam*dp;
             r = roots( f - p_guess );
             cint = intpsign(n, f, p_guess);
@@ -88,7 +88,7 @@ end
 function sums = intpsign(n, f, p)
 % INTPSIGN  Compute the integral of sign(f-p)*T_i. 
 
-r = sort(roots(f-p));
+r = sort( roots( f - p ) );
 
 if ( length(n)>1 )
     N = n(2); 
