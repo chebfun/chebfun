@@ -1,4 +1,4 @@
-function p = watson(f, n)
+function [p,xi,sumnorms,sumshistory] = watson2(f,n)
 %WATSON Best polynomial approximation in the L1-norm for real functions.
 % 
 % P = WATSON(F, N) computes the best polynomial approximation to the real
@@ -38,7 +38,7 @@ end
 % f-pn has roots only at the Chebyshev points, then Theorem 14.4 and 14.5 
 % of Powell's Approximation Theory book shows that pn is the best 
 % polynomial approximation to f in the L1-norm. 
-x = chebpts(n+1, [a, b], 1); %x = x( 2:end-1 );
+x = chebpts(n+1, [a, b], 1); 
 % [TODO] Compute the Chebyshev interpolant using a DCT for speed:
 p_interp = chebfun.interp1(x, feval(f, x), [a b]);  
 r = roots( f - p_interp );
@@ -49,84 +49,80 @@ if ( numel( r ) == numel( x ) )
     p = p_interp;
    
 else
-    
-    % This is the difficult case. We proceed with an iterative procedure: 
 
-    % Maximum number of iterations in Watson's algorithm: 
-    iter = 100; 
-    p_guess = p_interp;
-    T = chebpoly( 0:n, [a, b]);
-    for ii = 1:iter
-%        keyboard
-        int = sign(feval(f,a)-feval(p_guess,a))*intpsign(n, f, p_guess)'; 
-        A = feval(T, r);
-        dedx = diff( f - p_guess );
-        D = feval( dedx, r );
-        D = diag(2./abs(D)); 
-        H = A'*D*A;
-        dp = chebfun(H\int, [a, b], 'coeffs'); % \delta p, correction in Newton.
+sums = sign(f(a)-p_interp(a))*intpsign(n,r);
+sumshistory = norm(sums);
 
-        p_guess = p_guess - dp;
-        r = roots( f - p_guess );        
-        %{        
-        % Inner iteration: 
-        gam = 1; 
-        p_fix = p_guess;
-        while ( gam > 1e-5 )
-            p_guess = p_fix + gam*dp;
-            r = roots( f - p_guess );
-            cint = intpsign(n, f, p_guess);
-            if ( sum(cint) < sum( int ) )
-                break
-            end
-            gam = .5*gam;
-        end
-        if ( norm(int) < 100*eps ) 
-            break 
-        end
-        %}
-        %disp(int)
-        %keyboard            
-    end
-    p = p_interp; 
+itwatson = 100; 
+for ii = 1:itwatson % Watson update
+g = sign(f(a)-p_interp(a))*intpsign(n,r);
+
+T = chebpoly(0:n);
+A = T(r,:);
+dfp = diff(f-p_interp);
+D = zeros(1,length(r));
+for jj = 1:length(r)
+    D(jj) = dfp(r(jj));
+end
+D = diag(2./abs(D)); H = A'*D*A;
+% if cond(H)>1e10, keyboard, H = H+norm(H)*eye(size(H))*1e-8; end
+dc = H\(g');
+
+dp = chebfun(dc,'coeffs'); % Newton update poly
+
+gam = 1; 
+pnow = p_interp; 
+while gam>1e-5
+p_interp = pnow + gam*dp;
+r = roots(f-p_interp);
+sums = sign(f(a)-p_interp(a))*intpsign(n,r);
+if norm(sums)<sumshistory(end) & length(r)>=n+1, break, end
+    gam = gam*.8; 
+    % [gam norm(sums)]
+end
+sumshistory = [sumshistory norm(sums)]; 
+
+if sumshistory(end)<1e-10, 'L1min converged', break; end
+end
+p = p_interp;
+return
 end
 end
 
-function sums = intpsign(n, f, p)
-% INTPSIGN  Compute the integral of sign(f-p)*T_i. 
+function sums = intpsign(n,f,p)
+% find integral of sign(f-p)*T_i
+% intpsign(n,f,p) or 
+% intpsign(n,r): r are the roots of f-p
 
-r = sort( roots( f - p ) );
-
-if ( length(n)>1 )
-    N = n(2); 
-    n = n(1);
+if nargin==2,
+r = sort(f,'ascend');
 else
-    N = 2*n;
+r = sort(roots(f-p));
 end
 
-[xx, ww] = legpts( N );
-sums = ones(1, n);
+if length(n)>1,
+N = n(2); n = n(1);
+else
+N = 2*n;
+end
+[xx,ww] = legpts(N);
+sums = ones(1,n);
 for ii = 1:n+1
-    a = -1; 
-    b = r(1); 
+    a = -1; b = r(1); % first interval
     xnow = xx*(b-a)/2+(a+b)/2;
     sums(ii) = ww*cos((ii-1)*acos(xnow))*(b-a);
 for jj = 1:length(r)-1
-    a = r(jj); 
-    b = r(jj+1);
+    a = r(jj); b = r(jj+1);
     xnow = xx*(b-a)/2+(a+b)/2;
     sums(ii) = sums(ii) + ((-1)^jj)*ww*cos((ii-1)*acos(xnow))*(b-a);
 end
-    if ( length(r)>1 ) 
-        jj= jj+1;
-        a = r(jj); 
-        b = 1;
-        xnow = xx*(b-a)/2+(a+b)/2;
-        sums(ii) = sums(ii) + ((-1)^jj)*ww*cos((ii-1)*acos(xnow))*(b-a);    
+    if length(r)>1
+    jj= jj+1;
+    a = r(jj); b = 1;
+    xnow = xx*(b-a)/2+(a+b)/2;
+    sums(ii) = sums(ii) + ((-1)^jj)*ww*cos((ii-1)*acos(xnow))*(b-a);    
     end
 end
-sums = sums/2; % Correcting for the (b-a)/2 term. 
-
-err = f - p;
-sums = sign(feval(err, -1))*sums;
+sums = sums/2; % for correcting the (b-a)/2 term
 end
+
