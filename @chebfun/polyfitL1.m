@@ -85,7 +85,7 @@ else
             end
             gam = 0.8*gam;
         end
-        sumshistory = norm(sums, inf);
+        sumshistory = norm(sums, inf)
         
         if ( sumshistory < tol / (b-a) )
             break
@@ -113,24 +113,25 @@ if ( length(n) > 1 )
 else
     N = 2*n;
 end
-[xx, ww] = legpts( N, [a, b] );
+[xx, ww] = legpts( N );
 sums = ones(1, n);
+T = chebpoly(0:n,[a b]);
 for ii = 1:n+1
     % First interval:
     b_temp = r(1); 
     xnow = xx*(b_temp-a)/2+(a+b_temp)/2;
-    sums(ii) = ww*cos((ii-1)*acos(xnow))*(b_temp-a);
+    sums(ii) = ww*feval(extractColumns(T,ii),xnow)*(b_temp-a);
     for jj = 1:length(r)-1
         a_temp = r(jj); 
         b_temp = r(jj+1);
         xnow = xx*(b_temp-a_temp)/2+(a_temp+b_temp)/2;
-        sums(ii) = sums(ii) + ((-1)^jj)*ww*cos((ii-1)*acos(xnow))*(b_temp-a_temp);
+        sums(ii) = sums(ii) + ((-1)^jj)*ww*(feval(extractColumns(T,ii),xnow))*(b_temp-a_temp);
     end
     if ( length(r)>1 )
         jj= jj+1;
         a_temp = r(jj); 
         xnow = xx*(b-a_temp)/2+(a_temp+b)/2;
-        sums(ii) = sums(ii) + ((-1)^jj)*ww*cos((ii-1)*acos(xnow))*(b-a_temp);
+        sums(ii) = sums(ii) + ((-1)^jj)*ww*(feval(extractColumns(T,ii),xnow))*(b-a_temp);
     end
 end
 sums = sums / 2; % for correcting the (b-a)/2 term
