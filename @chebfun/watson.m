@@ -49,9 +49,49 @@ if ( numel( r ) == numel( x ) )
     p = p_interp;
    
 else
-    
+    sumshistory = inf;
     % This is the difficult case. We proceed with an iterative procedure: 
+    ptmp = p_interp; 
+xi = 0:n;
+itwatson = 30; 
+for ii = 1:itwatson % Watson update
+g = sign(feval(f,a)-feval(ptmp,a))*intpsign(n,f,ptmp);
 
+T = chebpoly(0:n);
+A = feval(T,r);
+dfp = diff(f-ptmp);
+D = zeros(1,length(r));
+for jj = 1:length(r)
+    D(jj) = feval(dfp,r(jj));
+end
+%D = diag(abs(D))/2; H = A'*inv(D)*A;
+D = diag(2./abs(D)); H = A'*D*A;
+if cond(H)>1e10, keyboard, H = H+norm(H)*eye(size(H))*1e-8; end
+dc = H\(g');
+
+dp = chebfun(dc,'coeffs'); % update poly
+
+gam = 1; 
+pnow = ptmp; 
+while gam>1e-5
+r = roots(f-ptmp);    
+ptmp = pnow + gam*dp;
+sums = sign(feval(f,a)-feval(ptmp,a))*intpsign(length(xi)-1,f,ptmp);
+if norm(sums)<sumshistory(end) & length(r)>=n+1, break, end
+    gam = gam*.8; 
+    [gam norm(sums)]
+end
+sumshistory = [sumshistory norm(sums)]
+
+if sumshistory(end)<1e-10, 'L1min converged', break; end
+end
+
+p = p_interp;
+end
+
+
+%{ 
+% AT's mess
     % Maximum number of iterations in Watson's algorithm: 
     iter = 100; 
     p_guess = p_interp;
@@ -90,6 +130,7 @@ else
     end
     p = p_interp; 
 end
+%}
 end
 
 function sums = intpsign(n, f, p)
