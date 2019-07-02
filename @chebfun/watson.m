@@ -77,7 +77,7 @@ else
             p_interp = pnow + gam*dp;
             r = roots(f-p_interp);
             sums = sign(feval(f-p_interp, a))*intpsign(n,r);
-            if ( norm(sums)<sumshistory(end) && length(r)>=n+1 )
+            if ( norm(sums,inf)<sumshistory(end) && length(r)>=n+1 )
                 break
             end
             gam = gam*.8;
