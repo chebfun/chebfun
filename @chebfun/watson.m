@@ -85,8 +85,8 @@ else
             break 
         end
         %}
-        disp(int)
-        keyboard            
+        %disp(int)
+        %keyboard            
     end
     p = p_interp; 
 end
