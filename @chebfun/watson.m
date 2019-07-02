@@ -27,7 +27,7 @@ function p = watson(f, n)
 
 % If f is a polynomial and n > deg(f), then p = f: 
 if ( length( f ) <= n+1 &&  numel( domain(f) ) == 2 ) 
-    p = f;
+    p = f; 
     return
 end
 
@@ -47,7 +47,7 @@ if ( numel( r ) == numel( x ) )
     
     % Very easy case, we already have the best L1 polynomial approximant: 
     p = p_interp;
-    
+   
 else
     
     % This is the difficult case. We proceed with an iterative procedure: 
@@ -57,14 +57,18 @@ else
     p_guess = p_interp;
     T = chebpoly( 0:n, [a, b]);
     for ii = 1:iter
-        int = intpsign(n, f, p_guess)';
+%        keyboard
+        int = sign(feval(f,a)-feval(p_guess,a))*intpsign(n, f, p_guess)'; 
         A = feval(T, r);
         dedx = diff( f - p_guess );
         D = feval( dedx, r );
         D = diag(2./abs(D)); 
         H = A'*D*A;
         dp = chebfun(H\int, [a, b], 'coeffs'); % \delta p, correction in Newton.
-        
+
+        p_guess = p_guess - dp;
+        r = roots( f - p_guess );        
+        %{        
         % Inner iteration: 
         gam = 1; 
         p_fix = p_guess;
@@ -80,6 +84,9 @@ else
         if ( norm(int) < 100*eps ) 
             break 
         end
+        %}
+        disp(int)
+        keyboard            
     end
     p = p_interp; 
 end
