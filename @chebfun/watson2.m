@@ -50,19 +50,19 @@ if ( numel( r ) == numel( x ) )
    
 else
 
-sums = sign(f(a)-p_interp(a))*intpsign(n,r);
+sums = sign(feval(f,a)-feval(p_interp,a))*intpsign(n,r);
 sumshistory = norm(sums);
 
 itwatson = 100; 
 for ii = 1:itwatson % Watson update
-g = sign(f(a)-p_interp(a))*intpsign(n,r);
+g = sign(feval(f,a)-feval(p_interp,a))*intpsign(n,r);
 
 T = chebpoly(0:n);
-A = T(r,:);
+A = feval(T,r);
 dfp = diff(f-p_interp);
 D = zeros(1,length(r));
 for jj = 1:length(r)
-    D(jj) = dfp(r(jj));
+    D(jj) = feval(dfp,r(jj));
 end
 D = diag(2./abs(D)); H = A'*D*A;
 % if cond(H)>1e10, keyboard, H = H+norm(H)*eye(size(H))*1e-8; end
@@ -75,14 +75,17 @@ pnow = p_interp;
 while gam>1e-5
 p_interp = pnow + gam*dp;
 r = roots(f-p_interp);
-sums = sign(f(a)-p_interp(a))*intpsign(n,r);
+sums = sign(feval(f,a)-feval(p_interp,a))*intpsign(n,r);
 if norm(sums)<sumshistory(end) & length(r)>=n+1, break, end
     gam = gam*.8; 
     % [gam norm(sums)]
 end
 sumshistory = [sumshistory norm(sums)]; 
 
-if sumshistory(end)<1e-10, 'L1min converged', break; end
+if sumshistory(end)<1e-10
+    % 'L1min converged'
+    break; 
+end
 end
 p = p_interp;
 return
