@@ -41,7 +41,7 @@ tol = 1e-10;
 % f-pn has roots only at the Chebyshev points, then Theorem 14.4 and 14.5
 % of Powell's Approximation Theory book shows that pn is the best
 % polynomial approximation to f in the L1-norm.
-x = chebpts(n+1, [a, b], 1);
+x = chebpts(n+3, [a, b]); x = x(2:end-1);
 %[TODO] Compute the Chebyshev interpolant using a DCT for speed:
 p_interp = chebfun.interp1(x, feval(f, x), [a b]);
 r = roots( f - p_interp );
@@ -88,7 +88,7 @@ else
             end
             gam = 0.8*gam;
         end
-        sumshistory = norm(sums, inf);
+        sumshistory = norm(sums, inf)
         
         if ( sumshistory < tol / (b-a) )
             break
