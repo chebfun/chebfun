@@ -89,6 +89,10 @@ else
             break
         end
     end
+    if ( ii == itwatson) 
+        warning('CHEBFUN:POLYFIT:MAXITER', ... 
+                'The maximum number of iterations was reach. Answer may not be accurate.');
+    end
     p = p_interp;
 end
 end

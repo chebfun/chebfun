@@ -60,4 +60,13 @@ p1best = polyfitL1(f, n);
 err = f-p1best;
 pass(7) = norm(sum( T.*sign(err) ))<tol;
 
+% Large degree n: 
+dom = [0 100];
+f = chebfun(@(x) sin(x-.1)+cos(3*x), dom); 
+n = 101;  
+T = chebpoly(0:n, dom); 
+p1best = polyfitL1(f, n);
+err = f-p1best;
+pass(8) = norm(sum( T.*sign(err) ))<tol;
+
 end
