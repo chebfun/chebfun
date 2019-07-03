@@ -14,7 +14,8 @@ T = chebpoly(0:n);
 err = f-p1best; 
 pass(1) = norm(sum( T.*sign(err) ))<tol;
 
-p1best = polyfitL1(f,n); 
+n = 10; 
+p1best = polyfitL1(f, n); 
 err = f-p1best; 
 pass(2) = norm(sum( T.*sign(err) ))<tol;
 
