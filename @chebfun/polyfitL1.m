@@ -62,21 +62,16 @@ else
         r = roots(f-p_interp);
         g = sign(feval(f-p_interp, a)) * intpsign(n, r, [a,b]);
         
-        T = chebpoly( 0:n, [a,b], 2 );
-        A = feval(T, r);
+        A = clenshaw_vec_chebU( 2*(r-a)/(b-a) - 1, eye(n+1)); 
         dfp = diff( f-p_interp );
-        D = zeros(1, length(r));
-        for jj = 1:length(r)
-            D(jj) = feval(dfp, r(jj));
-        end
-        D = diag( 2./abs(D) );
+        D = diag( 2./abs(feval(dfp, r)) );
         H = A'*D*A;
         dc = H \ (g');
         
         % Newton update poly:
-        dc = ultra2ultra( dc, 1, 0);
-        dp = chebfun(dc, [a, b], 'coeffs');
+        dp = chebfun(ultra2ultra( dc, 1, 0), [a, b], 'coeffs');
         
+        % Damped Newton: 
         gam = 1;
         pnow = p_interp;
         while ( gam > 1e-5 )
@@ -86,9 +81,9 @@ else
             if ( norm(sums,inf) < sumshistory && length(r) >= n+1 )
                 break
             end
-            gam = 0.8*gam;
+            gam = gam/2;
         end
-        sumshistory = norm(sums, inf)
+        sumshistory = norm(sums, inf);
         
         if ( sumshistory < tol / (b-a) )
             break
@@ -104,19 +99,38 @@ function sums = intpsign(n, r, dom)
 % Grab domain of function:
 a = dom(1); b = dom(2); 
 
-T = chebpoly(0:n, [a b], 2);
-
 % First interval:
 [x, w] = legpts( n, [a r(1)] );
-sums = w*feval(T, x);
+xnew = 2*(x-a)/(b-a) - 1;
+sums = w*clenshaw_vec_chebU(xnew, eye(n+1));
 
 for jj = 1:length(r)-1
     [x, w] = legpts( n, [r(jj) r(jj+1)] );
-    sums = sums + ((-1)^jj)*(w*feval(T, x));
+    xnew = 2*(x-a)/(b-a) - 1;
+    sums = sums + ((-1)^jj)*(w*clenshaw_vec_chebU(xnew, eye(n+1)));
 end
 if ( length(r) > 1 )
     jj = jj + 1;
     [x, w] = legpts( n, [r(jj) b] );
-    sums = sums + ((-1)^jj)*(w*feval(T, x));
+    xnew = 2*(x-a)/(b-a) - 1;
+    sums = sums + ((-1)^jj)*(w*clenshaw_vec_chebU(xnew, eye(n+1)));
 end
+end
+
+function y = clenshaw_vec_chebU(x, c)
+% Clenshaw scheme for evaluating ChebU polynomials: 
+x = repmat(x(:), 1, size(c, 2));
+bk1 = zeros(size(x, 1), size(c, 2)); 
+bk2 = bk1;
+e = ones(size(x, 1), 1);
+x = 2*x;
+n = size(c, 1)-1;
+for k = (n+1):-2:3
+    bk2 = e*c(k,:) + x.*bk1 - bk2;
+    bk1 = e*c(k-1,:) + x.*bk2 - bk1;
+end
+if ( mod(n, 2) )
+    [bk1, bk2] = deal(e*c(2,:) + x.*bk1 - bk2, bk1);
+end
+y = e*c(1,:) + x.*bk1 - bk2;
 end
