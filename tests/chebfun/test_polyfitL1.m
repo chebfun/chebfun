@@ -1,4 +1,5 @@
 function pass = test_polyfitL1( pref )
+% Test chebfun/polyfitL1: 
 
 if ( nargin == 0 )
     pref = chebfunpref();

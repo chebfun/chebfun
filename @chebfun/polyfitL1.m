@@ -60,7 +60,7 @@ else
     for ii = 1:itwatson % Watson update
         g = sign(feval(f-p_interp, a)) * intpsign(n, f, p_interp);
         
-        T = chebpoly( 0:n, [a,b] );
+        T = chebpoly( 0:n, [a,b], 2 );
         A = feval(T, r);
         dfp = diff( f-p_interp );
         D = zeros(1, length(r));
@@ -72,6 +72,7 @@ else
         dc = H \ (g');
         
         % Newton update poly:
+        dc = ultra2ultra( dc, 1, 0);
         dp = chebfun(dc, [a, b], 'coeffs'); 
         
         gam = 1;
@@ -85,7 +86,7 @@ else
             end
             gam = 0.8*gam;
         end
-        sumshistory = norm(sums, inf);
+        sumshistory = norm(sums, inf)
         
         if ( sumshistory < tol / (b-a) )
             break
@@ -115,7 +116,7 @@ else
 end
 [xx, ww] = legpts( N );
 sums = ones(1, n);
-T = chebpoly(0:n,[a b]);
+T = chebpoly(0:n, [a b], 2);
 for ii = 1:n+1
     % First interval:
     b_temp = r(1); 
@@ -136,3 +137,5 @@ for ii = 1:n+1
 end
 sums = sums / 2; % for correcting the (b-a)/2 term
 end
+
+% function mapquadrature(x, w, a, b)
