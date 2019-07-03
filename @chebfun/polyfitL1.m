@@ -31,8 +31,8 @@ if ( length( f ) <= n+1 &&  numel( domain(f) ) == 2 )
     return
 end
 
-% Fix a tolerance to converge to. Don't be too ambiguous: 
-tol = 1e-10; 
+% Fix a tolerance to converge to. Don't be too ambiguous:
+tol = 1e-10;
 
 % Grab domain of function:
 [a, b] = domain( f );
@@ -53,12 +53,14 @@ if ( numel( r ) == numel( x ) )
     
 else
     
-    sums = sign(feval(f-p_interp, a)) * intpsign(n, f, p_interp);
+    r = roots(f-p_interp); 
+    sums = sign(feval(f-p_interp, a)) * intpsign(n, r, [a,b]);
     sumshistory = norm( sums, inf);
     
     itwatson = 100;
     for ii = 1:itwatson % Watson update
-        g = sign(feval(f-p_interp, a)) * intpsign(n, f, p_interp);
+        r = roots(f-p_interp);
+        g = sign(feval(f-p_interp, a)) * intpsign(n, r, [a,b]);
         
         T = chebpoly( 0:n, [a,b], 2 );
         A = feval(T, r);
@@ -67,26 +69,26 @@ else
         for jj = 1:length(r)
             D(jj) = feval(dfp, r(jj));
         end
-        D = diag( 2./abs(D) ); 
+        D = diag( 2./abs(D) );
         H = A'*D*A;
         dc = H \ (g');
         
         % Newton update poly:
         dc = ultra2ultra( dc, 1, 0);
-        dp = chebfun(dc, [a, b], 'coeffs'); 
+        dp = chebfun(dc, [a, b], 'coeffs');
         
         gam = 1;
         pnow = p_interp;
         while ( gam > 1e-5 )
             p_interp = pnow + gam*dp;
             r = roots( f-p_interp );
-            sums = sign( feval(f-p_interp, a) )*intpsign(n, f, p_interp);
+            sums = intpsign(n, r, [a,b]);
             if ( norm(sums,inf) < sumshistory && length(r) >= n+1 )
                 break
             end
             gam = 0.8*gam;
         end
-        sumshistory = norm(sums, inf)
+        sumshistory = norm(sums, inf);
         
         if ( sumshistory < tol / (b-a) )
             break
@@ -96,46 +98,25 @@ else
 end
 end
 
-function sums = intpsign(n, f, p)
+function sums = intpsign(n, r, dom)
 %INTPSIGN(N, F, P)
 
 % Grab domain of function:
-[a, b] = domain( f );
+a = dom(1); b = dom(2); 
 
-if ( nargin == 2 )
-    r = sort(f, 'ascend');
-else
-    r = sort( roots( f - p ) );
-end
-
-if ( length(n) > 1 )
-    N = n(2); 
-    n = n(1);
-else
-    N = 2*n;
-end
-[xx, ww] = legpts( N );
-sums = ones(1, n);
 T = chebpoly(0:n, [a b], 2);
-for ii = 1:n+1
-    % First interval:
-    b_temp = r(1); 
-    xnow = xx*(b_temp-a)/2+(a+b_temp)/2;
-    sums(ii) = ww*feval(extractColumns(T,ii),xnow)*(b_temp-a);
-    for jj = 1:length(r)-1
-        a_temp = r(jj); 
-        b_temp = r(jj+1);
-        xnow = xx*(b_temp-a_temp)/2+(a_temp+b_temp)/2;
-        sums(ii) = sums(ii) + ((-1)^jj)*ww*(feval(extractColumns(T,ii),xnow))*(b_temp-a_temp);
-    end
-    if ( length(r)>1 )
-        jj= jj+1;
-        a_temp = r(jj); 
-        xnow = xx*(b-a_temp)/2+(a_temp+b)/2;
-        sums(ii) = sums(ii) + ((-1)^jj)*ww*(feval(extractColumns(T,ii),xnow))*(b-a_temp);
-    end
-end
-sums = sums / 2; % for correcting the (b-a)/2 term
-end
 
-% function mapquadrature(x, w, a, b)
+% First interval:
+[x, w] = legpts( n, [a r(1)] );
+sums = w*feval(T, x);
+
+for jj = 1:length(r)-1
+    [x, w] = legpts( n, [r(jj) r(jj+1)] );
+    sums = sums + ((-1)^jj)*(w*feval(T, x));
+end
+if ( length(r) > 1 )
+    jj = jj + 1;
+    [x, w] = legpts( n, [r(jj) b] );
+    sums = sums + ((-1)^jj)*(w*feval(T, x));
+end
+end
