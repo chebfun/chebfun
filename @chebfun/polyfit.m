@@ -17,7 +17,7 @@ function f = polyfit(y, n)
 %   Note CHEBFUN/POLYFIT does not not support more than one output argument in
 %   the way that MATLAB/POLYFIT does.
 %
-% See also INTERP1.
+% See also POLYFITL1, INTERP1.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
