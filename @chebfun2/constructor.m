@@ -543,9 +543,19 @@ function [relTol, absTol] = getTol(xx, yy, vals, dom, pseudoLevel)
 
 [m, n] = size( vals );
 grid = max( m, n );
-% Remove some edge values so that df_dx and df_dy have the same size.
-dfdx = diff(vals(1:m-1,:),1,2) ./ diff(xx(1:m-1,:),1,2); % xx diffs column-wise.
-dfdy = diff(vals(:,1:n-1),1,1) ./ diff(yy(:,1:n-1),1,1); % yy diffs row-wise.
+dfdx = 0;
+dfdy = 0;
+if ( m > 1 && n > 1 )
+    % Remove some edge values so that df_dx and df_dy have the same size.
+    dfdx = diff(vals(1:m-1,:),1,2) ./ diff(xx(1:m-1,:),1,2); % xx diffs column-wise.
+    dfdy = diff(vals(:,1:n-1),1,1) ./ diff(yy(:,1:n-1),1,1); % yy diffs row-wise.
+elseif ( m > 1 && n == 1 )
+    % Constant in x-direction
+    dfdy = diff(vals,1,1) ./ diff(yy,1,1);
+elseif ( m == 1 && n > 1 )
+    % Constant in y-direction
+    dfdx = diff(vals,1,2) ./ diff(xx,1,2);
+end
 % An approximation for the norm of the gradient over the whole domain.
 Jac_norm = max( max( abs(dfdx(:)), abs(dfdy(:)) ) );
 vscale = max( abs( vals(:) ) );

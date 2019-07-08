@@ -123,4 +123,10 @@ catch ME
     pass(24) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN2:constructor:equi');
 end
 
+% Test building a chebfun2 from univariate data:
+r = rand(2,1); % Constant in x
+pass(25) = norm( r - chebpolyval2(chebfun2(r)) ) < 10*tol;
+r = rand(1,2); % Constant in y
+pass(26) = norm( r - chebpolyval2(chebfun2(r)) ) < 10*tol;
+
 end
