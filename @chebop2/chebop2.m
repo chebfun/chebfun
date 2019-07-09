@@ -254,13 +254,16 @@ classdef chebop2
     
     %% STATIC HIDDEN METHODS.
     methods ( Static = true, Hidden = true )
-        
+
         % Matrix equation solver for AX - XB = F (p and q are ADI shifts): 
-        X = adi( A, B, F, p, q); 
-        
+        X = adi( A, B, F, p, q );
+
+        % Matrix equation solver for A*X-X*B = M*N.' (p and q are ADI shifts):
+        [UX, DX, VX] = fadi( A, B, M, N, p, q );
+
         % ADI shift parameters for ADI method: 
-        [p, q] = ADIshifts(a, b, c, d, tol);
-        
+        [p, q] = adiShifts(a, b, c, d, tol);
+
         % Matrix equation solver for AXB^T + CXD^T = E. xsplit, ysplit = 1 if
         % the even and odd modes (coefficients) decouple.
         X = bartelsStewart(A, B, C, D, E, xsplit, ysplit);
@@ -272,9 +275,6 @@ classdef chebop2
         % This is used to discretize the linear constrains:
         [bcrow, bcvalue] = constructBC(bcArg, bcpos,...
             een, bcn, dom, scl, order);
-        
-        % Matrix equation solver for A*X-X*B = M*N.' (p and q are ADI shifts):
-        [UX, DX, VX] = fadi( A, B, M, N, p, q);
         
         % Recover coefficient functions of a linear operator:
         p = recoverCoeffs(L);
@@ -295,8 +295,8 @@ classdef chebop2
         % Compute the separable representation of a PDO: 
         [cellU, S, cellV] = separableFormat(A, xorder, yorder, dom);
         
-        % Setup Laplace operator on domain DOM: 
-        N = setuplaplace( dom ) 
+        % Setup Laplace operator on domain DOM:
+        N = setupLaplace( dom );
         
         % Remove trailing coefficients.
         a = truncate(a, tol);

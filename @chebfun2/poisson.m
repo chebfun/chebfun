@@ -23,9 +23,11 @@ function u = poisson( f, varargin )
 %   POISSON(F, G, N) or POISSON(F, G, M, N), respectively, except the
 %   underlying matrix equation is solved with METHOD. Available methods
 %   are:
-%   'adi'   - alternating direction implicit method
-%   'fadi'  - factored alternating direction implicit method
-%   'bartelsStewart' - Bartels-Stewart's algorithm
+%
+%     'adi'            - alternating direction implicit method
+%     'fadi'           - factored alternating direction implicit method
+%     'bartelsStewart' - Bartels-Stewart algorithm
+%
 %   If METHOD is not supplied, then this command selects one (based on the
 %   discretization size and the rank of the righthand side).
 %
@@ -65,26 +67,26 @@ scl_x = (2/(dom(2)-dom(1)))^2;
 scl_y = (2/(dom(4)-dom(3)))^2;
 
 % Not enough input arguments so we call chebop2 to adaptively select a
-% discretization size: 
+% discretization size:
 if ( nargin == 1 )
-    
+
     % Call is POISSON(F) so set G = 0 and use chebop2 to determine the
     % discretization size:
     g = 0;
-    N = chebop2.setuplaplace( f.domain );
+    N = chebop2.setupLaplace( f.domain );
     N.bc = g;
     u = N \ f;
     return
-    
+
 elseif ( nargin == 2 )
-    
+
     % Call is POISSON(F, G) so use chebop2 to determine the discretization
     % size:
     g = varargin{1};
     if ( ~isa(g, 'chebfun2') )
         g = chebfun2(g, f.domain);
     end
-    N = chebop2.setuplaplace( f.domain );
+    N = chebop2.setupLaplace( f.domain );
     % Note: chebfun2/subsref (e.g. g(-1,:)) does not work here, so we use
     %       feval instead. Is this a bug?
     N.lbc = feval(g, f.domain(1), ':');
@@ -93,20 +95,21 @@ elseif ( nargin == 2 )
     N.ubc = feval(g, ':', f.domain(4));
     u = N \ f;
     return
-    
+
 end
 
-% We are given a discretization size. It's solve time!    
+% We are given a discretization size. It's solve time!
 g = varargin{1};
 m = varargin{2};
+method = '';
 if ( nargin == 3 )
     % Call must be POISSON(F, G, N) so employ an NxN discretization:
     n = m; % square discretization
 elseif ( nargin == 4 )
-    
+
     % The user typed one of the following:
     % POISSON(F, G, N, METHOD) or POISSON(F, G, M, N).
-    
+
     if ( ischar( varargin{3} ) )
         % Call is POISSON(F, G, N, METHOD):
         method = varargin{3};
@@ -115,13 +118,14 @@ elseif ( nargin == 4 )
         % Call is POISSON(F, G, M, N):
         n = varargin{3};
     end
-    
+
 elseif ( nargin == 5 )
-    
+
     % We are given a discretization size and a method. It's solve time!
     % Call must be POISSON(F, G, M, N, METHOD).
     n = varargin{3};
     method = varargin{4};
+
 else
     error('CHEBFUN2:POISSON:NARGIN', ...
         'Too many input arguments to chebfun2.poisson().');
@@ -136,39 +140,31 @@ tol = chebfun2eps();
 % Solver only deals with zero homogeneous Dirichlet conditions. Therefore,
 % if nonzero Dirichlet conditions are given, we solve lap(u) = f with u|bc = g
 % as u = v + w, where v|bc = g, and lap(w) = f - lap(v), w|bc = 0:
-if ( isa(g, 'double') )
-    
-    % Make double into chebfun2:
-    g = chebfun2( g, f.domain);
-    
-elseif ( isa(g, 'chebfun2') )
+if ( isa(g, 'double') || isa(g, 'chebfun2') || isa(g, 'function_handle') )
+
+    % Make double or function handle into chebfun2:
+    if ( isa(g, 'double') || isa(g, 'function_handle') )
+        g = chebfun2(g, f.domain);
+    end
+
     if ( g.domain == f.domain )
-        % Adjust the rhs if nonzero:
-        if ( ~iszero( g ))
-            [Cg, Dg, Rg] = coeffs2(lap(g), m, n);
-            Cf = [Cf -Cg];
+        % Adjust the rhs, if nonzero:
+        lapg = lap(g);
+        if ( ~iszero( lapg ) )
+            [Cg, Dg, Rg] = coeffs2(lapg, m, n);
+            Cf = [Cf Cg];
             Z = zeros(size(Df,1),size(Dg,1));
-            Df = [Df Z ; Z' Dg];
+            Df = [Df Z ; Z' -Dg];
             Rf = [Rf Rg];
         end
     else
         error('CHEBFUN2:POISSON:BC', ...
             'Dirichlet data should be on the same domain as F.');
     end
-    
-elseif ( isa(g, 'function_handle') )
-    g = chebfun2(g, f.domain);
-    % Adjust the rhs, if nonzero:
-    if ( ~iszero( g ) )
-        [Cg, Dg, Rg] = coeffs2(lap(g), m, n);
-        Cf = [Cf Cg];
-        Z = zeros(size(Df,1),size(Dg,1));
-        Df = [Df Z ; Z' -Dg];
-        Rf = [Rf Rg];
-    end
+
 else
-    error('CHEBFUN2:POISSON',...
-        'Dirichlet data needs to be given as a scalar or function')
+    error('CHEBFUN2:POISSON', ...
+        'Dirichlet data needs to be given as a scalar or function.')
 end
 
 % Convert rhs to C^{(3/2)} coefficients:
@@ -197,74 +193,86 @@ Tm = scl_x * invDm * Mm;
 Cf = invDm * Cf;
 Rf = invDn * Rf;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%  Alternating Direction Implicit method %%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Solve TmX + XTn' = F using ADI, which requires O(n^2log(n)log(1/eps))
-% operations:
+switch lower(method)
 
+    case 'bartelsstewart'
 
-if exist('method', 'var')
-    if ( strcmpi(method, 'bartelsStewart') )
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%  Bartels-Stewart method %%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Solve TmX + XTn' = F using Bartels-Stewart, which requires O(n^3)
+        % operations:
+
         X = chebop2.bartelsStewart(Tm, eye(n), eye(m), Tn, Cf*Df*Rf.', 0, 0);
-    
+
         % Convert back to Chebyshev
         X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
         u = chebfun2( X, f.domain, 'coeffs' );
-        u = u + g;
-        return;
-    end
+
+    case {'adi', 'fadi', ''}
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%  Alternating Direction Implicit method %%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Solve TmX + XTn' = F using ADI, which requires
+        % O(n^2log(n)log(1/eps)) operations:
+
+        % An ADI method will be used (either given by the user, or selected
+        % by us.)
+
+        % Compute ADI shifts
+        a =  -4/pi^2 * scl_y;
+        b = -39*n^-4 * scl_y;
+        c =  39*m^-4 * scl_x;
+        d =   4/pi^2 * scl_x;
+        [p, q] = chebop2.adiShifts(a, b, c, d, tol);
+
+        if ( isempty(method) )
+            % Let's go and pick a good method to use:
+            % Test if we should use ADI or FADI:
+            rho = size(Cf,2); % Rank of rhs
+            adi_test = ( min(m,n) < rho*numel(p)/2 ); % Worth doing FADI?
+            if ( adi_test )
+                method = 'adi';
+            else
+                method = 'fadi';
+            end
+        end
+
+        % Solve matrix equation:
+        if ( strcmpi(method, 'adi') )
+            % Run the ADI method:
+            X = chebop2.adi(Tm, -Tn', Cf*Df*Rf.', p, q );
+
+            % Convert back to Chebyshev
+            X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
+            u = chebfun2( X, f.domain, 'coeffs' );
+
+        else
+            % Run the FADI method:
+            [UX, DX, VX] = chebop2.fadi(Tm, -Tn, Cf*Df, Rf, p, q);
+
+            % Convert back to Chebyshev:
+            UX = ultra1mx2cheb(UX);
+            VX = ultra1mx2cheb(VX);
+
+            UX = chebfun(UX, dom(3:4), 'coeffs');
+            VX = chebfun(VX, dom(1:2), 'coeffs');
+            u = chebfun2();
+            u.cols = UX;
+            u.rows = VX;
+            u.pivotValues = 1./diag(DX);
+            u.domain = dom;
+        end
+
+    otherwise
+        error('CHEBFUN2:POISSON:SOLVER', ...
+            'Method supplied to chebfun2.poisson() is not recognized.');
 end
 
-%compute ADI shifts
- a = -4/pi^2 * scl_y;
- b = -39*n^-4 * scl_y;
- c = 39*m^-4 * scl_x;
- d = 4/pi^2 * scl_x;
- [p, q] = chebop2.ADIshifts(a, b, c, d, tol);
+% Add back in the boundary data:
+u = u + g;
 
- rho = size(Cf,2);  % rank of rhs
-
-if ( ~exist( 'method', 'var' ) )
- % Let's go and pick a good method to use: 
- % Test if we should use ADI or FADI:
-   adi_test = ( min(m,n) < rho*numel(p)/2 ); % Worth doing FADI?
-   method = 'adi'; 
-   if ( ~adi_test )
-     method = 'fadi';
-   end
-end
-
-% Solve matrix equation:
-if ( strcmpi(method, 'adi') )
-    % Run the ADI method:
-    X = chebop2.adi(Tm, -Tn', Cf*Df*Rf.', p, q );
-    
-    % Convert back to Chebyshev
-    X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
-    u = chebfun2( X, f.domain, 'coeffs' );
-    u = u + g;
-elseif ( strcmpi(method, 'fadi') )
-    % Run the FADI method:
-    [UX, DX, VX] = chebop2.fadi(Tm, -Tn, Cf*Df, Rf, p, q);
-    
-    % Convert back to Chebyshev:
-    UX = ultra1mx2cheb(UX);
-    VX = ultra1mx2cheb(VX);
-    
-    UX = chebfun(UX, dom(3:4), 'coeffs');
-    VX = chebfun(VX, dom(1:2), 'coeffs');
-    u = chebfun2();
-    u.cols = UX;
-    u.rows = VX;
-    u.pivotValues = 1./diag(DX);
-    u.domain = dom;
-    u = u + g;
-
-else 
-    error('CHEBFUN2:POISSON:SOLVER', ...
-        'Method supplied to chebfun2.poisson() is not recognized.');
-end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,9 +1,8 @@
-function [p, q] = ADIshifts(a, b, c, d, tol)
-% ADISHIFTS  ADI shifts for solving AX-XB=F.
-%
-% [P, Q] = ADISHIFTS(a, b, c, d, TOL) returns the optimal ADI shifts for 
-% solving AX-XB = F with the ADI method when A and B have  eigenvalues lying
-% in [a,b] and [c,d], respectively. WLOG, we require that a<b<c<d and 
+function [p, q] = adiShifts(a, b, c, d, tol)
+%ADISHIFTS  ADI shifts for solving AX-XB=F.
+% [P, Q] = ADISHIFTS(a, b, c, d, TOL) returns the optimal ADI shifts for
+% solving AX-XB = F with the ADI method when A and B have eigenvalues lying
+% in [a,b] and [c,d], respectively. WLOG, we require that a<b<c<d and
 % 0<tol<1.
 
 gam = (c-a)*(d-b)/(c-b)/(d-a);                 % Cross-ratio of a,b,c,d

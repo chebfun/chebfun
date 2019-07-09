@@ -1,9 +1,9 @@
-function X = adi( A, B, F, p, q)
-%ADI    Alternating direction implicit method for solving AX-XB=F.
-%X = ADI( A, B, F, p, q)  solve the Sylvester equation
+function X = adi( A, B, F, p, q )
+%ADI   Alternating direction implicit method for solving AX-XB=F.
+% X = ADI( A, B, F, p, q) solves the Sylvester equation
 %
 %            A*X - X*B = F
-% 
+%
 % using the ADI method with shift parameters p and q.
 
 %% Reference: 
@@ -20,4 +20,5 @@ for j = 1:numel(p)
     X = (F-(A+q(j)*Im)*X) / (B+q(j)*In);
     X = (A+p(j)*Im) \ ( F - X*(B+p(j)*In) );
 end
+
 end
