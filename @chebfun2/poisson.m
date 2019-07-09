@@ -25,7 +25,7 @@ function u = poisson( f, varargin )
 %   are:
 %   'adi'   - alternating direction implicit method
 %   'fadi'  - factored alternating direction implicit method
-%   'bartelstewart' - Bartel-Stewart's algorithm
+%   'bartelsStewart' - Bartels-Stewart's algorithm
 %   If METHOD is not supplied, then this command selects one (based on the
 %   discretization size and the rank of the righthand side).
 %
@@ -203,23 +203,36 @@ Rf = invDn * Rf;
 % Solve TmX + XTn' = F using ADI, which requires O(n^2log(n)log(1/eps))
 % operations:
 
-% Calculate ADI shifts based on bounds on the eigenvalues of Tn and Tm:
-a = -4/pi^2 * scl_y;
-b = -39*n^-4 * scl_y;
-c = 39*m^-4 * scl_x;
-d = 4/pi^2 * scl_x;
-[p, q] = chebop2.ADIshifts(a, b, c, d, tol);
 
-rho = size(Cf,2);  % rank of rhs
+if exist('method', 'var')
+    if ( strcmpi(method, 'bartelsStewart') )
+        X = chebop2.bartelsStewart(Tm, eye(n), eye(m), Tn, Cf*Df*Rf.', 0, 0);
+    
+        % Convert back to Chebyshev
+        X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
+        u = chebfun2( X, f.domain, 'coeffs' );
+        u = u + g;
+        return;
+    end
+end
+
+%compute ADI shifts
+ a = -4/pi^2 * scl_y;
+ b = -39*n^-4 * scl_y;
+ c = 39*m^-4 * scl_x;
+ d = 4/pi^2 * scl_x;
+ [p, q] = chebop2.ADIshifts(a, b, c, d, tol);
+
+ rho = size(Cf,2);  % rank of rhs
 
 if ( ~exist( 'method', 'var' ) )
-    % Let's go and pick a good method to use: 
-    % Test if we should use ADI or FADI:
-    adi_test = ( min(m,n) < rho*numel(p)/2 ); % Worth doing FADI?
-    method = 'adi'; 
-    if ( ~adi_test )
-        method = 'fadi';
-    end
+ % Let's go and pick a good method to use: 
+ % Test if we should use ADI or FADI:
+   adi_test = ( min(m,n) < rho*numel(p)/2 ); % Worth doing FADI?
+   method = 'adi'; 
+   if ( ~adi_test )
+     method = 'fadi';
+   end
 end
 
 % Solve matrix equation:
@@ -247,13 +260,7 @@ elseif ( strcmpi(method, 'fadi') )
     u.pivotValues = 1./diag(DX);
     u.domain = dom;
     u = u + g;
-elseif ( strcmpi(method, 'bartelsStewart') )
-    X = chebop2.bartelsStewart(Tm, eye(n), eye(m), Tn, Cf*Df*Rf.', 0, 0);
-    
-    % Convert back to Chebyshev
-    X = ultra1mx2cheb( ultra1mx2cheb( X ).' ).';
-    u = chebfun2( X, f.domain, 'coeffs' );
-    u = u + g;
+
 else 
     error('CHEBFUN2:POISSON:SOLVER', ...
         'Method supplied to chebfun2.poisson() is not recognized.');

@@ -7,6 +7,13 @@ function [UX, DX, VX] = fadi( A, B, M, N, p, q)
 % using the FADI method with ADI shifts p and q. It requires that the 
 % righthand side is given in low-rank form, i.e., M and N where rhs = M*N.'.
 
+%% Reference: 
+%
+% [1] Benner, Peter, Ren-Cang Li, and Ninoslav Truhar. 
+% "On the ADI method for Sylvester equations." J. of Comp. and App. Math.
+% 233.4 (2009): 1035-1045. 
+
+
 [m, rho] = size( M ); 
 n = size(N, 1); 
 RankOfSolution = rho * numel(p);

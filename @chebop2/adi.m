@@ -6,6 +6,11 @@ function X = adi( A, B, F, p, q)
 % 
 % using the ADI method with shift parameters p and q.
 
+%% Reference: 
+% [1] Lu, An, and Eugene L. Wachspress. 
+%  "Solution of Lyapunov equations by alternating direction implicit iteration." 
+%  Comp. & Math. with Appl., 21.9 (1991): pp. 43-58.
+
 m = size(A, 1);
 n = size(B, 1);
 X = zeros(m, n);
