@@ -194,8 +194,8 @@ invDm = spdiags(-1./(jj.*(jj+3)+2), 0, m, m);
 
 % Construct T = D^{-1} * M:
 Tm = scl_x * invDm * Mm;
-Cf = invDm*Cf;
-Rf = invDn*Rf;
+Cf = invDm * Cf;
+Rf = invDn * Rf;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%  Alternating Direction Implicit method %%%%%%%

@@ -15,10 +15,10 @@ VX = zeros(n, RankOfSolution);
 DX = diag( kron(q-p, ones(1,rho)) );
 Im = speye(m);
 In = speye(n);
-UX(:, 1:rho) = (A-q(1)*Im)\M;
-VX(:, 1:rho) = (B-p(1)*In)\N;
+UX(:, 1:rho) = (A+p(1)*Im)\M;
+VX(:, 1:rho) = (B+q(1)*In)\N;
 for j = 1:numel(p)-1
-    UX(:, j*rho+(1:rho)) = (A-p(j)*Im)*((A-q(j+1)*Im)\UX(:,(j-1)*rho+(1:rho)));
-    VX(:, j*rho+(1:rho)) = (B-q(j)*In)*((B-p(j+1)*In)\VX(:,(j-1)*rho+(1:rho)));
+    UX(:, j*rho+(1:rho)) = (A+q(j)*Im)*((A+p(j+1)*Im)\UX(:,(j-1)*rho+(1:rho)));
+    VX(:, j*rho+(1:rho)) = (B+p(j)*In)*((B+q(j+1)*In)\VX(:,(j-1)*rho+(1:rho)));
 end
 end
