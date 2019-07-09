@@ -115,7 +115,7 @@ x = linspace(a, b, 100).';
 y_exact = fun_op(x);
 y_approx = feval(g, x);
 
-result = norm(y_exact - y_approx, Inf) < ...
-    1e4*max(get(f, 'vscale')*eps);
+result = norm(y_exact - y_approx, Inf) <...
+         8e4*max(get(f, 'vscale')*eps);
     
 end

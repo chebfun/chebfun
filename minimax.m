@@ -75,7 +75,7 @@ function varargout = minimax(f, varargin)
 %   best polynomial approximation in the chebfun system", BIT Numerical
 %   Mathematics, 49:721-742, 2009.
 %
-% See also AAA, CF, CHEBPADE, PADEAPPROX, RATINTERP.
+% See also AAA, CF, CHEBPADE, PADEAPPROX, RATINTERP, POLYFIT, POLYFITL1.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

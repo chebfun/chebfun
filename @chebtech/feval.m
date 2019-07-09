@@ -1,7 +1,6 @@
 function y = feval(f, x)
 %FEVAL   Evaluate a CHEBTECH.
-%   Y = FEVAL(F, X) Evaluation of the CHEBTECH F at points X via Clenshaw's
-%   algorithm (see CLENSHAW.m).
+%   Y = FEVAL(F, X) evaluates of the CHEBTECH F at points X.
 %
 %   If size(F, 2) > 1 then FEVAL returns values in the form [F_1(X), F_2(X),
 %   ...], where size(F_k(X)) = size(X).
@@ -16,7 +15,10 @@ function y = feval(f, x)
 %     view(0, 90), shg
 %     colormap(hsv)
 %
-% See also BARY, CLENSHAW.
+% See also BARY, CLENSHAW, NUDCT.
+
+% Developer note: We use either Clenshaw's algorithm or a nonuniform DCT, 
+% depending on the dimensions of F and X (determined heuristically).
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -26,8 +28,8 @@ if ( isempty(f) )
     return 
 end
 
-% Reshape x to be a column vector for passing to CLENSHAW():
-m = size(f, 2);
+% Reshape x to be a column vector
+[n, m] = size(f);
 sizex = size(x);
 ndimsx = ndims(x);
 x = x(:);
@@ -38,8 +40,13 @@ if ( (m > 1) && (ndimsx > 2) )
          'with more than two dimensions is not supported.']);
 end
 
-% Evaluate using Clenshaw's algorithm:
-y = f.clenshaw(x, f.coeffs);
+if ( n <= 4000 || numel(x) <= 4000 )
+    % Evaluate using Clenshaw's algorithm:
+    y = f.clenshaw(x, f.coeffs);
+else
+    % Use fast transform for high degree Chebyshev expansions: 
+    y = chebfun.ndct(x, f.coeffs);
+end
 
 % Reshape the output if possible:
 if ( (m == 1) && ( (ndimsx > 2) || (sizex(2) > 1) ) )

@@ -369,7 +369,7 @@ classdef chebfun
         f = lagrange(x, varargin);
         
         % Non-uniform discrete cosine transform:
-        y = ndct(u);
+        y = ndct(x, coeffs, th);
         
         % Non-uniform fast Fourier transform: 
         [y, p] = nufft( varargin );

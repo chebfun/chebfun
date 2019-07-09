@@ -49,7 +49,6 @@ end
 
 % Update coeffs and vscale:
 coeffs = f.vals2coeffs(values);
-vscl = max(abs(values), [], 1);
 
 % Append data to CHEBTECH:
 f.coeffs = coeffs;

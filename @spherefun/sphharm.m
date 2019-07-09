@@ -3,22 +3,13 @@ function Y = sphharm(l, m)
 %
 %   Y = SPHHARM(L, M) returns the degree L, order M real-valued 
 %   spherical harmonic on the sphere.  Y is normalized so that its two-norm
-%   over the sphere is 1.
+%   over the sphere is 1. 
 
-% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Add support for constructing spherical harmonics with the latitude
-% coordinate being -pi/2 <= th <= pi/2.
-
-% The degree l must be greater than or equal to the magnitude of the order
-% m:
 if ( l < abs(m) )
     error('CHEBFUN:SPHEREFUN:sphHarm', 'Degree must be >= order for spherical harmonic ');
-end
-
-if ( abs(l) > 120 )
-    warning('CHEBFUN:SPHEREFUN:sphHarm:maxDegree','Results may be inaccurate for degrees larger than approximately 120.');
 end
 
 % Developer note: once support for different longitude and latitude domains
@@ -47,55 +38,72 @@ end
 % theta. Specifically, it is a polynomial of cos(theta) or sin(theta)
 % if coord=0 or coord=1, respectively. The highest degree this
 % polynomial can be is l when when m=0.  So, we can resolve this using 2l+2
-% samples.  
+% samples. 
 
 % Construct a matrix of values at the latitude-longitude grid
-ll = trigpts( max( 2*abs(m)+2, 4 ), dom(1:2) );
+ll = trigpts( 2*abs(m)+2, dom(1:2) );
 tt = linspace( dom(3), dom(4), 2*l+2 );
-Y = spherefun( mySphHarm(l,m,ll,tt,coord), dom );
-% Simplify to get the most compressed representation.
-Y = simplify( Y );
+Y = spherefun( mySphHarm(l, m, ll, tt), dom );
 
 end
 
-function Y = mySphHarm(l, m, lam, th, coord)
+
+function Y = mySphHarm(l_max, m_max, lam, th)
 %MYSPHHARM   Main subroutine for computing the spherical harmonics.
 %
-% [TODO]: This implementation is not stable or fast for large (l, m) for the
-% following reasons:
-%
-% 1. Stability: it uses the normalized spherical harmonics and the
-% normalization factors are unstable to compute for large l and m.
-% 
-% 2. Efficiency: the code just uses matlab's `legendre` function for 
-% computing the associated legendre polynomials and this function is dead
-% slow. Instead a recursion formula should be used.
+% Copyright 2018 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-if ( nargin <= 4 )
-    coord = 0;
-end
+%%
+% Below is the implementation the Modified Forward Column (MFC) method 
+% described in the Holmes and Featherstones paper (2002)
+% It computes P^m_n/u^m by a stable recurrence to avoid numerical errors
+% near the poles
 
-if ( coord == 1 )
-    z = sin(th);  % Latitude
-else
-    z = cos(th);  % Co-latitude
-end
+abs_m_max = abs( m_max );
 
-% Make lam and z row vectors for what follows.
-z = z.';
 % Make lam row
-lam = lam(:).';
+lam = lam.';
+% Make th vector
+th = th.';
 
-% Get the normalized associated Legendre function.
-Y = (-1)^m/sqrt((1+double(m==0))*pi)*legendre(l, z, 'norm');
+% Precompute vector cos(th)
+p = length(th);
+CosTh = cos(th);
 
-% Get the right associated legendre function:
-Y = squeeze(Y(abs(m)+1, :, :)).';
+%% Compute P_m_max^m_max / u^m_max
+
+% Initialize P^0_0 / u^0
+Pold = ones(p, 1);
+
+% Compute P^m_m/u^m
+for m = 1:abs_m_max
+    % Compute Pm^m with Pm-1^m-1
+    Pold = sqrt( (2*m+1)/(2*m-(m==1)) ) * Pold;
+end
+
+% Initialize the recurrence (Pm^m-1 does not exist)
+Poldold = zeros(p, 1);
+
+%% Compute P^m_l / u^m with the recurrence formula, m_max+1 <= l <= l_max
+for l = abs_m_max+1:l_max
+    anm = sqrt( (4*l^2-1)/((l-abs_m_max)*(l+abs_m_max)) );
+    bnm = sqrt( (2*l+1)*(l+abs_m_max-1)*(l-abs_m_max-1)/((l-abs_m_max)*(l+abs_m_max)*(2*l-3)) );
+    % Compute the normalized associated legendre polynomial P^m_l/u^m
+    Pl = anm*CosTh.*Pold - bnm*Poldold;
+
+    % Update the polynomials for the recurrence
+    Poldold = Pold;
+    Pold = Pl;
+end
+
+% Normalize the polynomial and recover associated Legendre polynomials
+Pold = (-1)^abs_m_max*sin(th).^abs_m_max.*Pold/sqrt(4*pi);
 
 % Determine if the cos or sin term should be added:
-pos = abs(max(0, sign(m+1)));
+pos = abs( max(0, sign(m_max+1)) );
 
 % Compute the spherical harmonic:
-Y = Y*(pos*cos(m*lam) + (1-pos)*sin(abs(m)*lam));
+Y = Pold*( pos*cos(m_max*lam) + (1-pos)*sin(abs(m_max)*lam) );
 
 end

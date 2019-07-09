@@ -106,7 +106,7 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Make a CHEBTECH. (Constructor shortcut)
         f = make(varargin);
-
+        
         % Refinement function for CHEBTECH construction. (Evaluates OP on grid)
         [values, points, giveUp] = refine(op, values, pref)
 
@@ -128,7 +128,7 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Convert Chebyshev-T coefficients to Chebyshev-U coefficients.
         cU = chebTcoeffs2chebUcoeffs(cT)
-
+        
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 
