@@ -75,7 +75,7 @@ if ~plotOnHold
     hold off;
 end
 
-camlight;
+camlight('headlight');
 lighting phong;
 material dull;
 
