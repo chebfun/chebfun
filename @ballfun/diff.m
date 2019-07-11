@@ -21,18 +21,20 @@ if ( isempty(f) )
     return
 end
 
-% Parse user inputs:
-if ( nargin == 2 )
+% Default settings
+dim = 1;
+K = 1;
+Cart = true;
+
+if ( nargin == 1 )
+
+elseif ( nargin == 2 )
     dim = varargin{1};
-    K = 1;
-    Cart = true;
-elseif (nargin == 3 && isnumeric(varargin{2}))
+elseif ( nargin == 3 && isnumeric(varargin{2}) )
     dim = varargin{1};
     K = varargin{2};
-    Cart = true;
-elseif (nargin == 3 && ~isnumeric(varargin{2}))
+elseif ( nargin == 3 && ~isnumeric(varargin{2}) )
     dim = varargin{1};
-    K = 1;
     Cart = false;
 else
     dim = varargin{1};

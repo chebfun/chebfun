@@ -50,6 +50,7 @@ hold on
 
 % Evaluate the function at x = 0, y > 0
 ff = permute(fevalm(f,r,pi/2,th),[1 3 2]);
+ff = real(ff);
 % Plot the result
 surf(zeros(length(r),length(th)),r*sin(th),r*cos(th),ff,defaultOpts{:})
 
@@ -74,7 +75,7 @@ if ~plotOnHold
     hold off;
 end
 
-camlight;
+camlight('headlight');
 lighting phong;
 material dull;
 
