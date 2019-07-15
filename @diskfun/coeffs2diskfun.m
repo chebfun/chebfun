@@ -11,6 +11,9 @@ function F = coeffs2diskfun(X)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% To get the correct doubled-up grid, we can only accept
+% certain coeff matrix sizes: 
+
 % Get size: 
 [m, n] = size( X ); 
 

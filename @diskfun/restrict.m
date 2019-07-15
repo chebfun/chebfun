@@ -1,5 +1,5 @@
 function f = restrict(f, dom)
-% RESTRICT  Restrict the domain of a SPHEREFUN.
+% RESTRICT  Restrict the domain of a DISKFUN.
 %
 % F = RESTRICT(F, DOM) is not supported for a diskfun F. A diskfun
 % cannot be restricted. 

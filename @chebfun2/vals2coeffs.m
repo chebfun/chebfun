@@ -5,8 +5,9 @@ function varargout = vals2coeffs( U, S, V )
 % function from a tensor Chebyshev grid and converts them to a matrix V of
 % bivariate Chebyshev coefficients for the corresponding interpolant.
 % 
-% [U, S, V] = VALS2COEFFS( U, S, V ) the same as above but keeps everything in
-% low rank form.
+% [U, S, V] = VALS2COEFFS( C, D, R ) the same as above but keeps everything in
+% low rank form. Here, C*D*R.' is a sample on the Chebyshev-Chebyshev
+% tensor grid. 
 % 
 % See also COEFFS2VALS
 
@@ -19,9 +20,9 @@ if ( nargin == 1 )
     U = tech.vals2coeffs( U ); 
     U = tech.vals2coeffs( U.' ).'; 
     varargout = {U}; 
-elseif ( narargin == 3 )
+elseif ( nargin == 3 )
     U = tech.vals2coeffs( U ); 
-    V = tech.vals2coeffs( V.' ).';     
+    V = tech.vals2coeffs( V );     
     varargout = {U S V};
 else
     error('CHEBFUN:CHEBFUN2:vals2coeffs:inputs', ...
