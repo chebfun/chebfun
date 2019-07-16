@@ -4,8 +4,8 @@ function [X, Y] = vals2coeffs(U,V)
 %
 % U, V = VALS2COEFFS(X, Y) converts matrices X, Y of values representing 
 % samples of a function from a tensor Chebyshev-Fourier grid 
-% and converts them to matrices U, V of Chebyshev-Fourier coefficients 
-% for the corresponding interpolant.
+% to matrices U, V of Chebyshev-Fourier coefficients for the corresponding 
+% interpolants.
 % 
 %
 % See also COEFFS2VALS

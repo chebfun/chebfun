@@ -3,8 +3,8 @@ function varargout = vals2coeffs( U, varargin)
 % 
 % V = VALS2COEFFS( C ) converts a matrix C of values representing 
 % samples of a function from a tensor Chebyshev-Fourier grid 
-% and converts them to a matrix V of Chebyshev-Fourier coefficients 
-% for the corresponding interpolant.
+% to a matrix V of Chebyshev-Fourier coefficients for the corresponding 
+% interpolant.
 % 
 % [U, S, V] = VALS2COEFFS( U, S, V ) the same as above but keeps 
 % everything in low rank form.
