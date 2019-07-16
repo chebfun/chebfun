@@ -101,6 +101,9 @@ classdef spherefun < separableApprox
         % Convert matrix of coefficients to a spherefun: 
         f = coeffs2spherefun(CFS); 
         
+        varargout = coeffs2vals(U, varargin); 
+        varargout = vals2coeffs(U, varargin);  
+        
         % Convert a function in spherical coordinates to one in Cartesian
         % coordinates on the sphere.
         fdf = sphf2cartf(f, lam, th, coord);
@@ -110,7 +113,7 @@ classdef spherefun < separableApprox
         
         % Plot the outline of the landmasses of earth
         h = plotEarth(linespec);
-        
+ 
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
