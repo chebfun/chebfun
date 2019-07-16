@@ -28,6 +28,16 @@ classdef diskfunv
 
     end
     
+    methods ( Access = public, Static = true )
+        
+        f = coeffs2diskfunv(C1, C2);    
+       
+        [X, Y] = coeffs2vals(U, V); 
+        [U, V] = vals2coeffs(X,Y);
+    
+    
+    end
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
