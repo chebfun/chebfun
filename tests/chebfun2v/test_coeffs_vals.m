@@ -4,7 +4,7 @@ function pass = test_coeffs_vals( pref )
 if ( nargin == 0 )
     pref = chebfunpref();
 end
-tol = 1e2*pref.techPrefs.chebfuneps; 
+tol = 1e3*pref.techPrefs.chebfuneps; 
 j = 1;
 %grab some coeffs
 u = randnfun2(.3); 

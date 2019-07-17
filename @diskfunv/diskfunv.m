@@ -34,8 +34,6 @@ classdef diskfunv
        
         [X, Y] = coeffs2vals(U, V); 
         [U, V] = vals2coeffs(X,Y);
-    
-    
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

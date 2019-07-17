@@ -25,7 +25,13 @@ classdef spherefunv
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         % Unit normal vector:
-        n = unormal(dom);        
+        n = unormal(dom);  
+        
+        f = coeffs2spherefunv(C1, C2, C3);    
+       
+        [X, Y, Z] = coeffs2vals(U, V, W); 
+        [U, V, W] = vals2coeffs(X,Y,Z);
+    
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
