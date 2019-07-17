@@ -2,7 +2,7 @@ function [X, Y] = coeffs2vals(U,V)
 % COEFFS2VALS  componentwise conversion of matrix of bivariate Chebyshev
 % coefficients to values.
 %
-%  X,Y = COEFFS2VALS( U, V ) converts matrices U and V of bivariate
+%  X,Y = COEFFS2VALS(U, V) converts matrices U and V of bivariate
 %  Chebyshev coefficients to matrices of samples X and Y corresponding 
 % to values sampled on a 2D tensor Chebyshev grid. 
 %

@@ -1,7 +1,7 @@
-function varargout = vals2coeffs( U, varargin)
+function varargout = vals2coeffs( U, varargin )
 %VALS2COEFFS    Convert matrix of values to Chebyshev-Fourier coefficients. 
 % 
-% V = VALS2COEFFS( C ) converts a matrix C of values representing 
+% V = VALS2COEFFS( U ) converts a matrix U of values representing 
 % samples of a function from a tensor Chebyshev-Fourier grid 
 % to a matrix V of Chebyshev-Fourier coefficients for the corresponding 
 % interpolant.
@@ -24,7 +24,7 @@ elseif ( nargin == 3 )
     V = varargin{2}; 
     U = chebtech2.vals2coeffs( U ); 
     V = trigtech.vals2coeffs( V );     
-    varargout = {U S V};
+    varargout = { U S V };
 else
     error('CHEBFUN:DISKFUN:vals2coeffs:inputs', ...
         'The number of input arguments should be one or two.');

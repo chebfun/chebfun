@@ -1,8 +1,8 @@
-function F = coeffs2spherefunv(X, Y, Z)
+function F = coeffs2spherefunv( X, Y, Z )
 %COEFFS2SPHEREFUNV   Convert componentwise matrices of 2D Fourier 
 %   coefficients to a spherefunv. 
 % 
-%   F = coeffs2spherefunv(X, Y, Z) returns a spherefunv object F that has 
+%   F = coeffs2spherefunv( X, Y, Z ) returns a spherefunv object F that has 
 %   matrices of 2D Fourier coefficients X, Y, and Z for each component.  
 % 
 % See also SPHEREFUN/COEFFS2SPHEREFUN 

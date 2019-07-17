@@ -1,8 +1,8 @@
-function F = coeffs2diskfunv(X, Y)
+function F = coeffs2diskfunv( X, Y )
 %COEFFS2DISKFUNV   Convert componentwise matrices of Chebyshev-Fourier 
 %   coefficients to a diskfunv. 
 % 
-%   F = coeffs2diskfunv(X, Y) returns a diskfunv object F that has a
+%   F = coeffs2diskfunv( X, Y ) returns a diskfunv object F that has a
 %   Chebyshev-Fourier matrices of coefficients X, Y, for each component.  
 %   This is useful for computing quantities on the disk with the function F.
 % 

@@ -1,4 +1,4 @@
-function [X, Y] = vals2coeffs(U,V)
+function [U, V] = vals2coeffs(X,Y)
 % VALS2COEFFS  componentwise conversion of matrices of values to
 % matrices of bivariate Chebyshev coefficients.
 %
@@ -12,12 +12,8 @@ function [X, Y] = vals2coeffs(U,V)
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
-%%
-% Empty check:
-
-
-X = chebfun2.vals2coeffs(U); 
-Y = chebfun2.vals2coeffs(V); 
+U = chebfun2.vals2coeffs(X); 
+V = chebfun2.vals2coeffs(Y); 
 end
 
 

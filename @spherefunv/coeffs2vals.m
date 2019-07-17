@@ -1,4 +1,4 @@
-function [X,Y,Z] = coeffs2vals(U,V,W)
+function [ X,Y,Z ] = coeffs2vals( U,V,W )
 % COEFFS2VALS  componentwise conversion of 2D Fourier coefficient matrices
 % to values.
 %

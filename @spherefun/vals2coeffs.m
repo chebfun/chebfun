@@ -1,13 +1,14 @@
-function varargout = vals2coeffs( U, varargin)
+function varargout = vals2coeffs( U, varargin )
 %VALS2COEFFS    Convert matrix of values to Fourier-Fourier coefficients. 
 % 
-% V = VALS2COEFFS( C ) converts a matrix C of values representing 
+% V = VALS2COEFFS( U ) converts a matrix U of values representing 
 % samples of a function from a tensor double Fourier sphere grid 
-% and converts them to a matrix V of Fourier-Fourier coefficients 
-% for the corresponding interpolant.
+% to a matrix V of 2D Fourier coefficients for the corresponding 
+% interpolant.
 % 
 % [U, S, V] = VALS2COEFFS( U, S, V ) the same as above but keeps 
-% everything in low rank form.
+% everything in low rank form. Here, U*S*V.' is a sample of 
+% values on the double Fourier sphere grid.
 % 
 % See also COEFFS2VALS
 

@@ -13,6 +13,13 @@ function varargout = coeffs2( f, varargin)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+
+%empty check
+if isempty(f)
+    varargout = {}; 
+    return
+end
+
 F1 = f.components{1};
 F2 = f.components{2}; 
 if isempty(varargin)

@@ -11,7 +11,6 @@ function varargout = coeffs2vals( U, varargin )
 % low rank form. Here, C*D*R.' is a 2D coeff matrix.
 %
 
-% 
 % See also VALS2COEFFS.
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.

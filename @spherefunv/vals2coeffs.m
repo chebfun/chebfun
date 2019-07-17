@@ -1,10 +1,10 @@
-function [U, V, W] = vals2coeffs(X,Y,Z)
+function [ U, V, W ] = vals2coeffs( X,Y,Z )
 % VALS2COEFFS  componentwise conversion of matrices of values to
 % matrices of 2D Fourier coefficients.
 %
-% U, V, W = VALS2COEFFS(X,Y, Z) converts matrices X, Y and Z of values sampled
-% from doubly periodic functions on equally-spaced tensor grids of the 
-% latitude-longitude domain [-pi, pi) x [-pi, pi) to matrices U, V and W, 
+% U, V, W = VALS2COEFFS( X,Y, Z ) converts matrices X, Y and Z of values 
+% sampled from doubly periodic functions on equally-spaced tensor grids of 
+% the domain [-pi, pi) x [-pi, pi) to matrices U, V and W, 
 % containing 2D Fourier coefficients for the corresponding interpolants.
 % 
 %

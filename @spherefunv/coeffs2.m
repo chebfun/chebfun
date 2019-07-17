@@ -1,11 +1,11 @@
-function varargout = coeffs2( f, varargin) 
+function varargout = coeffs2( f, varargin ) 
 %COEFFS2   componentwise double Fourier coefficients of a SPHEREFUNV. 
 % 
 %   [X, Y, Z] = COEFFS2( F ) returns the 2D Fourier modes for each component 
 %   of the SPHEREFUNV F, where each component is a doubly-periodic
-%   function.
+%   function on the double Fourier sphere.
 %  
-%   [X, Y] = COEFFS2(F, M, N) returns bivariate coefficients with N Fourier 
+%   [X, Y] = COEFFS2( F, M, N ) returns bivariate coefficients with N Fourier 
 %   modes in the latitude direction and M Fourier modes in the
 %   longitude direction.
 %
@@ -13,6 +13,14 @@ function varargout = coeffs2( f, varargin)
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+
+
+%empty check
+if isempty(f)
+    varargout = {}; 
+    return
+end
 
 F1 = f.components{1};
 F2 = f.components{2}; 
