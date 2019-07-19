@@ -13,16 +13,14 @@ pass = [];
 % Construct from function handle
 u = @(x,y) sin(2*pi*x).*cos(2*pi*y);
 
-f1 = chebfun2(u, {'trig', []});
-f2 = chebfun2(u, {[], 'periodic'});
-f3 = chebfun2(u, {'periodic', 'trig'});
-f4 = chebfun2(u, 'trig');
-f5 = chebfun2(u);
+f1 = chebfun2(u, 'trigx');
+f2 = chebfun2(u, 'periodicy');
+f3 = chebfun2(u, 'trig');
+f4 = chebfun2(u);
 
 pass(end+1) = ( norm(f1 - f2) < tol );
 pass(end+1) = ( norm(f2 - f3) < tol );
 pass(end+1) = ( norm(f3 - f4) < tol );
-pass(end+1) = ( norm(f4 - f5) < tol );
 
 % Construct from data
 m = 31;
@@ -31,16 +29,14 @@ u = @(x,y) sin(2*pi*x).*cos(2*pi*y);
 [xc, yc] = chebpts2(n, m);
 [xt, yt] = meshgrid(trigpts(n), trigpts(m));
 
-f1 = chebfun2(u(xt,yc), {'trig', []});
-f2 = chebfun2(u(xc,yt), {[], 'periodic'});
-f3 = chebfun2(u(xt,yt), {'periodic', 'trig'});
-f4 = chebfun2(u(xt,yt), 'trig');
-f5 = chebfun2(u(xc,yc));
+f1 = chebfun2(u(xt,yc), 'trigx');
+f2 = chebfun2(u(xc,yt), 'periodicy');
+f3 = chebfun2(u(xt,yt), 'trig');
+f4 = chebfun2(u(xc,yc));
 
 pass(end+1) = ( norm(f1 - f2) < tol );
 pass(end+1) = ( norm(f2 - f3) < tol );
 pass(end+1) = ( norm(f3 - f4) < tol );
-pass(end+1) = ( norm(f4 - f5) < tol );
 
 %% 'equi' in one or both dimensions
 m = 31;
@@ -49,16 +45,14 @@ u = @(x,y) sin(x.*y);
 [xc, yc] = chebpts2(n, m);
 [xe, ye] = meshgrid(linspace(-1,1,n), linspace(-1,1,m));
 
-f1 = chebfun2(u(xe,yc), {'equi', []});
-f2 = chebfun2(u(xc,ye), {[], 'equi'});
-f3 = chebfun2(u(xe,ye), {'equi', 'equi'});
-f4 = chebfun2(u(xe,ye), 'equi');
-f5 = chebfun2(u(xc,yc));
+f1 = chebfun2(u(xe,yc), 'equix');
+f2 = chebfun2(u(xc,ye), 'equiy');
+f3 = chebfun2(u(xe,ye), 'equi');
+f4 = chebfun2(u(xc,yc));
 
 pass(end+1) = ( norm(f1 - f2) < tol );
 pass(end+1) = ( norm(f2 - f3) < tol );
 pass(end+1) = ( norm(f3 - f4) < tol );
-pass(end+1) = ( norm(f4 - f5) < tol );
 
 %% 'coeffs' in one or both dimensions
 m = 31;
@@ -72,15 +66,13 @@ coeffs_vals   = chebtech2.vals2coeffs( vals_vals.' ).';
 coeffs_coeffs = chebtech2.vals2coeffs( vals_coeffs.' ).';
 
 f1 = chebfun2(u);
-f2 = chebfun2(coeffs_vals, {'coeffs', []});
-f3 = chebfun2(vals_coeffs, {[], 'coeffs'});
-f4 = chebfun2(coeffs_coeffs, {'coeffs', 'coeffs'});
-f5 = chebfun2(coeffs_coeffs, 'coeffs');
+f2 = chebfun2(coeffs_vals, 'coeffsx');
+f3 = chebfun2(vals_coeffs, 'coeffsy');
+f4 = chebfun2(coeffs_coeffs, 'coeffs');
 
 pass(end+1) = ( norm(f1 - f2) < tol );
 pass(end+1) = ( norm(f2 - f3) < tol );
 pass(end+1) = ( norm(f3 - f4) < tol );
-pass(end+1) = ( norm(f4 - f5) < tol );
 
 %% 'trig' and 'coeffs' in one or both dimensions
 m = 31;
@@ -99,11 +91,11 @@ trigcoeffs_chebcoeffs =  trigtech.vals2coeffs( trigvals_chebcoeffs.' ).';
 chebvals_trigcoeffs   =  trigtech.vals2coeffs( chebvals_trigvals     );
 
 f1 = chebfun2(u);
-f2 = chebfun2(trigcoeffs_chebvals, {'coeffs', []}, {'trig', ''});
-f3 = chebfun2(trigvals_chebcoeffs, {'', 'coeffs'}, {'trig', ''});
-f4 = chebfun2(trigcoeffs_chebcoeffs, 'coeffs', {'trig', []});
-f5 = chebfun2(trigcoeffs_trigvals, 'trig', {'coeffs', ''});
-f6 = chebfun2(chebvals_trigcoeffs, {[], 'trig'}, {[], 'coeffs'});
+f2 = chebfun2(trigcoeffs_chebvals, 'coeffsx', 'trigx');
+f3 = chebfun2(trigvals_chebcoeffs, 'coeffsy', 'trigx');
+f4 = chebfun2(trigcoeffs_chebcoeffs, 'coeffs', 'trigx');
+f5 = chebfun2(trigcoeffs_trigvals, 'trig', 'coeffsx');
+f6 = chebfun2(chebvals_trigcoeffs, 'trigy', 'coeffsy');
 
 pass(end+1) = ( norm(f1 - f2) < tol );
 pass(end+1) = ( norm(f2 - f3) < tol );
@@ -128,8 +120,8 @@ g = chebfun2(@(x,y) sin(2*pi*x).*sin(2*pi*y));
 pass(end+1) = ( norm(f - g) < tol );
 
 %% The last argument takes precedence
-f = chebfun2(@(x,y) sin(2*pi*x).*y, 'trig', {'trig', ''});
-g = chebfun2(@(x,y) sin(2*pi*x).*y, {'trig', []});
+f = chebfun2(@(x,y) sin(2*pi*x).*y, 'trig', 'trigx');
+g = chebfun2(@(x,y) sin(2*pi*x).*y, 'trigx');
 pass(end+1) = ( norm(f - g) < tol );
 
 m = 31;
@@ -137,7 +129,7 @@ n = 32;
 u = @(x,y) sin(x.*y);
 [xx, yy] = meshgrid(linspace(-1,1,n), linspace(-1,1,m));
 uu = u(xx,yy);
-f = chebfun2(uu, {'equi', []}, 'equi');
+f = chebfun2(uu, 'equix', 'equi');
 g = chebfun2(uu, 'equi');
 pass(end+1) = ( norm(f - g) < tol );
 

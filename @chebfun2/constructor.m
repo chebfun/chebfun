@@ -683,24 +683,32 @@ if ( any(isPref) )
     end
 end
 
-isEqui = cellfun(@(p) any(strcmpi(p, 'equi')) && ...
-    ~( iscell(p) && numel(p) > 2 ), varargin);
-if ( any(isEqui) )
-    args = varargin(isEqui);
-    varargin(isEqui) = [];
-    isEqui = strcmpi(args{end}, 'equi');
-    isEqui = isEqui | [false false]; % Expand to be 1 x 2
-else
-    isEqui = [false false];
+isEqui = [false false];
+match = cellfun(@(p) any(strcmpi(p, {'equi', 'equix', 'equiy'})), varargin);
+if ( any(match) )
+    args = varargin(match);
+    varargin(match) = [];
+    if ( strcmpi(args{end}, 'equix') )
+        isEqui = [true false];
+    elseif ( strcmpi(args{end}, 'equiy') )
+        isEqui = [false true];
+    else
+        isEqui = [true true];
+    end
 end
 
-isTrig = cellfun(@(p) any(strcmpi(p, 'trig') | strcmpi(p, 'periodic')) && ...
-    ~( iscell(p) && numel(p) > 2 ), varargin);
-if ( any(isTrig) )
-    args = varargin(isTrig);
-    varargin(isTrig) = [];
-    isTrig = strcmpi(args{end}, 'trig') | strcmpi(args{end}, 'periodic');
-    isTrig = isTrig | [false false]; % Expand to be 1 x 2
+match = cellfun(@(p) any(strcmpi(p, {'trig', 'trigx', 'trigy', ...
+    'periodic', 'periodicx', 'periodicy'})), varargin);
+if ( any(match) )
+    args = varargin(match);
+    varargin(match) = [];
+    if ( any(strcmpi(args{end}, {'trigx', 'periodicx'})) )
+        isTrig = [true false];
+    elseif ( any(strcmpi(args{end}, {'trigy', 'periodicy'})) )
+        isTrig = [false true];
+    else
+        isTrig = [true true];
+    end
     if ( isTrig(1) ), prefx.tech = @trigtech; end
     if ( isTrig(2) ), prefy.tech = @trigtech; end
 else
@@ -714,7 +722,7 @@ else
               isa(prefy.tech(), 'trigtech')];
 end
 
-isEpsGiven = find(cellfun(@(p) ~iscell(p) && strcmpi(p, 'eps'), varargin));
+isEpsGiven = find(cellfun(@(p) strcmpi(p, 'eps'), varargin));
 if ( isEpsGiven )
     pseudoLevel = varargin{isEpsGiven+1};
     varargin(isEpsGiven+(0:1)) = [];
@@ -725,7 +733,7 @@ prefx.cheb2Prefs.chebfun2eps = max(prefx.cheb2Prefs.chebfun2eps, pseudoLevel);
 prefy.cheb2Prefs.chebfun2eps = max(prefy.cheb2Prefs.chebfun2eps, pseudoLevel);
 
 % Look for vectorize flag:
-vectorize = find(cellfun(@(p) ~iscell(p) && strncmpi(p, 'vectori', 7), varargin));
+vectorize = find(cellfun(@(p) strncmpi(p, 'vectori', 7), varargin));
 if ( vectorize )
     varargin(vectorize) = [];
     vectorize = true;
@@ -753,20 +761,24 @@ if ( fixedLength && ~isnumeric(op) )
     end
 end
 
-isPadua = find(cellfun(@(p) ~iscell(p) && strcmpi(p, 'padua'), varargin));
+isPadua = find(cellfun(@(p) strcmpi(p, 'padua'), varargin));
 if ( isPadua )
     varargin(isPadua) = [];
     op = chebfun2.paduaVals2coeffs(op);
     op = chebfun2.coeffs2vals(op);
 end
 
-isCoeffs = cellfun(@(p) any(strcmpi(p, 'coeffs')) && ...
-    ~( iscell(p) && numel(p) > 2 ), varargin);
-if ( any(isCoeffs) )
-    args = varargin(isCoeffs);
-    varargin(isCoeffs) = [];
-    isCoeffs = strcmpi(args{end}, 'coeffs');
-    isCoeffs = isCoeffs | [false false]; % Expand to be 1x2
+match = cellfun(@(p) any(strcmpi(p, {'coeffs', 'coeffsx', 'coeffsy'})), varargin);
+if ( any(match) )
+    args = varargin(match);
+    varargin(match) = [];
+    if ( strcmpi(args{end}, 'coeffsx') )
+        isCoeffs = [true false];
+    elseif ( strcmpi(args{end}, 'coeffsy') )
+        isCoeffs = [false true];
+    else
+        isCoeffs = [true true];
+    end
 
     % Get the coeffs2vals transform corresponding to each tech
     if ( ~( isa(prefx.tech(), 'chebtech2') || isa(prefy.tech(), 'chebtech2') || ...
