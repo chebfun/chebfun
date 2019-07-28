@@ -17,7 +17,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
-%       (default MMAX = 100).
+%       (default MMAX = 100).  R will be of rational type (M-1,M-1).
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
@@ -27,11 +27,10 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %       then CLEANUPTOL defaults to 1e-13.
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
-%   This is equivalent to defining Z = LINSPACE(DOM(1), DOM(2), LENGTH(F)) if F
-%   is a vector (by default DOM = [-1, 1]).
-%   If F is a function handle or a chebfun, AAA attempts to resolve F on its
-%   domain DOM.  By default, DOM = [-1, 1] for a function handle, and
-%   DOM = F.DOMAIN([1, END]) for a chebfun.
+%   If F is a vector, this is equivalent to R = AAA(F, Z) with
+%   Z = LINSPACE(-1, 1, LENGTH(F)).  If F is a function handle or a chebfun,
+%   AAA attempts to resolve F on its domain, which defaults to [-1,1] for
+%   a function handle.
 %
 % Examples:
 %   r = aaa(@exp); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
@@ -193,6 +192,7 @@ r = @(zz) reval(zz, zj, fj, wj);
 
 if ( cleanup_flag )
     % Remove Froissart doublets:
+
     [r, pol, res, zer, zj, fj, wj] = ...
         cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
 end
