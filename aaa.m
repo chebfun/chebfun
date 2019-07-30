@@ -1,4 +1,4 @@
-function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
+function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %AAA   Computes a AAA rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
@@ -66,7 +66,7 @@ toKeep = ~isnan(F);
 F = F(toKeep); Z = Z(toKeep);
 
 % Remove repeated elements of Z and corresponding elements of F:
-[Z, uni] = unique(Z); F = F(uni);
+[Z, uni] = unique(Z,'stable'); F = F(uni);
 
 M = length(Z);
 
@@ -154,28 +154,39 @@ end
 % 
 %         - Nick Trefethen and Abi Gopal, 29 June 2018.
 
+wt = NaN(M,1); wt_new = ones(M,1);
 if ( nlawson > 0 )      % nlawson steps of Lawson iteration
 
-  nj = length(zj); Z2 = Z; F2 = F; np2 = M - nj;
-  for j = 1:nj
-    [i,~] = find(Z2==zj(j));
-    Z2(i) = []; F2(i) = [];
+  nj = length(zj);
+  A = [];
+  for j = 1:nj                                   % Cauchy/Loewner matrix
+    A = [A 1./(Z-zj(j)) F./(Z-zj(j))];
   end
-  A = []; for j = 1:nj, A = [A 1./(Z2-zj(j)) F2./(Z2-zj(j))]; end
-  wt = ones(np2,1);
-  for n = 0:nlawson
-    W = spdiags(sqrt(wt),0,np2,np2); [U,S,V] = svd(W*A,0); c = V(:,end);
-    denom = zeros(np2,1); num = zeros(np2,1);
+  for j = 1:nj
+    [i,~] = find(Z==zj(j));                      % support point rows are special
+    A(i,:) = 0; A(i,2*j-1) = 1; A(i,2*j) = F(i);
+  end
+  for n = 1:nlawson
+    wt = wt_new;
+   %wt = (wt+wt_new)/2;                          % underrelaxation with factor 0.5
+    W = spdiags(sqrt(wt),0,M,M);
+    [U,S,V] = svd(W*A,0);
+    c = V(:,end);
+    denom = zeros(M,1); num = zeros(M,1);
     for j = 1:nj
-      denom = denom + c(2*j)./(Z2-zj(j));
-      num = num - c(2*j-1)./(Z2-zj(j));
+      denom = denom + c(2*j)./(Z-zj(j));
+      num = num - c(2*j-1)./(Z-zj(j));
     end
-    err = F2 - num./denom; abserr = abs(err);
-    wt = wt.*abserr; wt = wt/norm(wt,inf);
+    R = num./denom;
+    for j = 1:nj
+      [i,~] = find(Z==zj(j));                    % support point rows are special
+      R(i) = -c(2*j-1)/c(2*j);
+    end
+    err = F - R; abserr = abs(err);
+    wt_new = wt.*abserr; wt_new = wt_new/norm(wt_new,inf);
   end
   wj = c(2:2:end);
   fj = -c(1:2:end)./wj;
-
 end
 
 % Remove support points with zero weight:
