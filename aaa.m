@@ -1,11 +1,11 @@
 function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
-%AAA   Computes a AAA rational approximation.
+%AAA   AAA and AAA-Lawson (near-minimax) rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
 %   or as a function handle or a chebfun.
 %
-%   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles POL,
-%   residues RES, and zeros ZER of R.
+%   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles POL, residues RES,
+%   and zeros ZER of R.
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAA(F, Z) also returns the vectors
 %   of support points ZJ, function values FJ, and weights WJ of the
@@ -18,13 +18,25 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
 %       (default MMAX = 100).  R will be of rational type (M-1,M-1).
+%       By default, this will turn on Lawson iteration: see next paragraph.
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
 %   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
-%       Poles with residues less than this number times the maximium absolute
+%       Poles with residues less than this number times the maximum absolute
 %       component of F are deemed spurious by the cleanup procedure. If TOL = 0,
 %       then CLEANUPTOL defaults to 1e-13.
+%   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
+%       to bring approximation closer to minimax.  See next paragraph.
+%
+%   If 'mmax' is specified and 'lawson' is not, then AAA attempts to find a
+%   minimax approximant of type (MMAX-1,MMAX-1) by Lawson iteration with
+%   adaptively determined parameters.  This will generally be possible only
+%   if the minimax error is well above machine precision.  If 'mmax' and 'lawson'
+%   are both specified, then exactly NLAWSON Lawson steps are taken (so
+%   NLAWSON = 0 corresponds to AAA approximation with no Lawson iteration).
+%   The final weight vector WT of the Lawson iteration is available with
+%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
 %   If F is a vector, this is equivalent to R = AAA(F, Z) with
@@ -35,12 +47,27 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 % Examples:
 %   r = aaa(@exp); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
 %
+%   r = aaa(@exp,'mmax',5); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
+%
 %   Z = exp(2i*pi*linspace(0,1,500)); 
 %   [r,pol,res] = aaa(@tan,Z); disp([pol res])
 %
-%   Reference:
+%   X = linspace(-1,1,1000); F = tanh(20*X);
+%   subplot(1,2,1)
+%   r = aaa(F,X,'mmax',16,'lawson',0); plot(X,F-r(X)), hold on
+%   r = aaa(F,X,'mmax',16); plot(X,F-r(X)), hold off
+% 
+%   Z = exp(1i*pi*linspace(-1,1,1000)); G = exp(Z);
+%   subplot(1,2,2)
+%   r = aaa(G,Z,'mmax',4,'lawson',0); plot(G-r(Z)), axis equal, hold on
+%   r = aaa(G,Z,'mmax',4); plot(G-r(Z)), axis equal, hold off
+%
+%   References:
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
+%
+%   [2] Yuji Nakasukasa and Lloyd N. Trefethen, An algorithm for real and
+%   complex rational minimax approximation, in preparation.
 %
 % See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
@@ -125,34 +152,12 @@ if ( M == 2 )
     errvec(2) = 0;
 end
 
-% The following Lawson iteration option is, as of mid-2018,
-% an undocumented feature.  The reason for introducing this is
-% that we are in the midst of extensive experiments with 
-% the AAA-Lawson idea, for which we want it to be conveniently
-% available as an option in the aaa code.  However, until the
-% experiments reach their conclusion, we don't regard the Lawson
-% idea as settled and reliable enough to be publicized to users
-% in the help text.  The default operation of aaa invokes no
-% Lawson steps, so users will not notice the existence of this
-% feature.
-%
-% Note that Lawson steps are generally useless for approximations
-% down near machine precision.  They should be used in the
-% context of a looser aaa 'tol' or a restricted aaa 'mmax'.
-% 
-% Examples:
-%
-% X = linspace(-1,1,1000); F = tanh(20*X);
-% subplot(1,2,1)
-% r = aaa(F,X,'mmax',16); plot(X,F-r(X)), hold on
-% r = aaa(F,X,'mmax',16,'lawson',50); plot(X,F-r(X)), hold off
-% 
-% Z = exp(1i*pi*linspace(-1,1,1000)); G = exp(Z);
-% subplot(1,2,2)
-% r = aaa(G,Z,'tol',1e-6); plot(G-r(Z)), axis equal, hold on
-% r = aaa(G,Z,'tol',1e-6,'lawson',10); plot(G-r(Z)), axis equal, hold off
-% 
-%         - Nick Trefethen and Abi Gopal, 29 June 2018.
+% We now enter Lawson iteration: barycentric IRLS = iteratively reweighted
+% least-squares if 'lawson', NLAWSON is specified with NLAWSON > 0 or
+% 'mmax' is specified and 'lawson' is not.  In the latter case the
+% number of steps is chosen adaptively.  Note that the Lawson
+% iteration is unlikely to be successful when the errors are close
+% to machine precision.
 
 wt = NaN(M,1); wt_new = ones(M,1);
 if ( nlawson > 0 )      % nlawson steps of Lawson iteration
