@@ -1,15 +1,15 @@
-function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
-%AAA   Computes a AAA rational approximation.
+function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
+%AAA   AAA and AAA-Lawson (near-minimax) rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
 %   or as a function handle or a chebfun.
 %
-%   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles POL,
-%   residues RES, and zeros ZER of R.
+%   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles POL, residues RES,
+%   and zeros ZER of R.
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAA(F, Z) also returns the vectors
-%   of support points ZJ, function values FJ, and weights WJ of the
-%   barycentric representation of R.
+%   of support points ZJ, approximation values FJ = r(ZJ), and weights WJ 
+%   of the barycentric representation of R. 
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the
 %   vector of errors ||f-r||_infty in successive iteration steps of AAA.
@@ -18,13 +18,30 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
 %       (default MMAX = 100).  R will be of rational type (M-1,M-1).
+%       By default, this will turn on Lawson iteration: see next paragraph.
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
 %   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
-%       Poles with residues less than this number times the maximium absolute
+%       Poles with residues less than this number times the maximum absolute
 %       component of F are deemed spurious by the cleanup procedure. If TOL = 0,
 %       then CLEANUPTOL defaults to 1e-13.
+%   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
+%       to bring approximation closer to minimax; specifying NLAWSON = 0 
+%       ensures there is no Lawson iteration.  See next paragraph.
+%
+%   If 'mmax' is specified and 'lawson' is not, then AAA attempts to find a
+%   minimax approximant of type (MMAX-1,MMAX-1) by Lawson iteration with
+%   an adaptively determined number of steps.  This will generally be
+%   successful only if the minimax error is well above machine precision.
+%   If 'mmax' and 'lawson' are both specified, then exactly NLAWSON Lawson
+%   steps are taken (so NLAWSON = 0 corresponds to AAA approximation with no
+%   Lawson iteration).  The final weight vector WT of the Lawson iteration is
+%   available with [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
+%
+%   Note that R may have fewer than MMAX-1 poles and zeros.  This may
+%   happen, for example, if MMAX is too large, or if F is even and MMAX-1
+%   is odd, or if F is odd and MMAX-1 is even.
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
 %   If F is a vector, this is equivalent to R = AAA(F, Z) with
@@ -35,12 +52,27 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 % Examples:
 %   r = aaa(@exp); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
 %
+%   r = aaa(@exp,'mmax',5); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
+%
 %   Z = exp(2i*pi*linspace(0,1,500)); 
 %   [r,pol,res] = aaa(@tan,Z); disp([pol res])
 %
-%   Reference:
+%   X = linspace(-1,1,1000); F = tanh(20*X);
+%   subplot(1,2,1)
+%   r = aaa(F,X,'mmax',16,'lawson',0); plot(X,F-r(X)), hold on
+%   r = aaa(F,X,'mmax',16); plot(X,F-r(X)), hold off
+% 
+%   Z = exp(1i*pi*linspace(-1,1,1000)); G = exp(Z);
+%   subplot(1,2,2)
+%   r = aaa(G,Z,'mmax',4,'lawson',0); plot(G-r(Z)), axis equal, hold on
+%   r = aaa(G,Z,'mmax',4); plot(G-r(Z)), axis equal, hold off
+%
+%   References:
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
+%
+%   [2] Yuji Nakasukasa and Lloyd N. Trefethen, An algorithm for real and
+%   complex rational minimax approximation, in preparation.
 %
 % See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
@@ -66,7 +98,7 @@ toKeep = ~isnan(F);
 F = F(toKeep); Z = Z(toKeep);
 
 % Remove repeated elements of Z and corresponding elements of F:
-[Z, uni] = unique(Z); F = F(uni);
+[Z, uni] = unique(Z,'stable'); F = F(uni);
 
 M = length(Z);
 
@@ -106,16 +138,17 @@ for m = 1:mmax
     R(J) = N(J)./D(J);
     
     % Error in the sample points:
-    err = norm(F - R, inf);
-    errvec = [errvec; err];
+    maxerr = norm(F - R, inf);
+    errvec = [errvec; maxerr];
     
     % Check if converged:
-    if ( err <= reltol )
+    if ( maxerr <= reltol )
         break
     end
 end
+maxerrAAA = maxerr;                     % error at end of AAA 
 
-% Note: When M == 2, one weight is zero and r is constant.
+% When M == 2, one weight is zero and r is constant.
 % To obtain a good approximation, interpolate in both sample points.
 if ( M == 2 )
     zj = Z;
@@ -123,59 +156,62 @@ if ( M == 2 )
     wj = [1; -1];       % Only pole at infinity.
     wj = wj/norm(wj);   % Impose norm(w) = 1 for consistency.
     errvec(2) = 0;
+    maxerrAAA = 0;
 end
 
-% The following Lawson iteration option is, as of mid-2018,
-% an undocumented feature.  The reason for introducing this is
-% that we are in the midst of extensive experiments with 
-% the AAA-Lawson idea, for which we want it to be conveniently
-% available as an option in the aaa code.  However, until the
-% experiments reach their conclusion, we don't regard the Lawson
-% idea as settled and reliable enough to be publicized to users
-% in the help text.  The default operation of aaa invokes no
-% Lawson steps, so users will not notice the existence of this
-% feature.
-%
-% Note that Lawson steps are generally useless for approximations
-% down near machine precision.  They should be used in the
-% context of a looser aaa 'tol' or a restricted aaa 'mmax'.
-% 
-% Examples:
-%
-% X = linspace(-1,1,1000); F = tanh(20*X);
-% subplot(1,2,1)
-% r = aaa(F,X,'mmax',16); plot(X,F-r(X)), hold on
-% r = aaa(F,X,'mmax',16,'lawson',50); plot(X,F-r(X)), hold off
-% 
-% Z = exp(1i*pi*linspace(-1,1,1000)); G = exp(Z);
-% subplot(1,2,2)
-% r = aaa(G,Z,'tol',1e-6); plot(G-r(Z)), axis equal, hold on
-% r = aaa(G,Z,'tol',1e-6,'lawson',10); plot(G-r(Z)), axis equal, hold off
-% 
-%         - Nick Trefethen and Abi Gopal, 29 June 2018.
+% We now enter Lawson iteration: barycentric IRLS = iteratively reweighted
+% least-squares if 'lawson' is specified with NLAWSON > 0 or 'mmax' is
+% specified and 'lawson' is not.  In the latter case the number of steps
+% is chosen adaptively.  Note that the Lawson iteration is unlikely to be
+% successful when the errors are close to machine precision.
 
-if ( nlawson > 0 )      % nlawson steps of Lawson iteration
+wj0 = wj; fj0 = fj;     % Save parameters in case Lawson fails
+wt = NaN(M,1); wt_new = ones(M,1);
+if ( nlawson > 0 )      % Lawson iteration
 
-  nj = length(zj); Z2 = Z; F2 = F; np2 = M - nj;
-  for j = 1:nj
-    [i,~] = find(Z2==zj(j));
-    Z2(i) = []; F2(i) = [];
-  end
-  A = []; for j = 1:nj, A = [A 1./(Z2-zj(j)) F2./(Z2-zj(j))]; end
-  wt = ones(np2,1);
-  for n = 0:nlawson
-    W = spdiags(sqrt(wt),0,np2,np2); [U,S,V] = svd(W*A,0); c = V(:,end);
-    denom = zeros(np2,1); num = zeros(np2,1);
-    for j = 1:nj
-      denom = denom + c(2*j)./(Z2-zj(j));
-      num = num - c(2*j-1)./(Z2-zj(j));
+    maxerrold = maxerrAAA;
+    maxerr = maxerrold;
+    nj = length(zj);
+    A = [];
+    for j = 1:nj                              % Cauchy/Loewner matrix
+        A = [A 1./(Z-zj(j)) F./(Z-zj(j))];
     end
-    err = F2 - num./denom; abserr = abs(err);
-    wt = wt.*abserr; wt = wt/norm(wt,inf);
-  end
-  wj = c(2:2:end);
-  fj = -c(1:2:end)./wj;
-
+    for j = 1:nj
+        [i,~] = find(Z==zj(j));               % support pt rows are special
+        A(i,:) = 0;
+        A(i,2*j-1) = 1;
+        A(i,2*j) = F(i);
+    end
+    stepno = 0;
+    while ( (nlawson < inf) & (stepno < nlawson) ) |...
+          ( (nlawson == inf) & (stepno < 10) ) |...
+          ( (nlawson == inf) & (maxerr/maxerrold < .995) & (stepno < 1000) ) 
+        stepno = stepno + 1;
+        wt = wt_new;
+        W = spdiags(sqrt(wt),0,M,M);
+        [U,S,V] = svd(W*A,0);
+        c = V(:,end);
+        denom = zeros(M,1); num = zeros(M,1);
+        for j = 1:nj
+            denom = denom + c(2*j)./(Z-zj(j));
+            num = num - c(2*j-1)./(Z-zj(j));
+        end
+        R = num./denom;
+        for j = 1:nj
+            [i,~] = find(Z==zj(j));           % support pt rows are special
+            R(i) = -c(2*j-1)/c(2*j);
+        end
+        err = F - R; abserr = abs(err);
+        wt_new = wt.*abserr; wt_new = wt_new/norm(wt_new,inf);
+        maxerrold = maxerr;
+        maxerr = max(abserr);
+    end
+    wj = c(2:2:end);
+    fj = -c(1:2:end)./wj;
+    % If Lawson has not reduced the error, return to pre-Lawson values.
+    if (maxerr > maxerrAAA) & (nlawson == Inf)
+        wj = wj0; fj = fj0;
+    end
 end
 
 % Remove support points with zero weight:
@@ -190,9 +226,7 @@ r = @(zz) reval(zz, zj, fj, wj);
 % Compute poles, residues and zeros:
 [pol, res, zer] = prz(r, zj, fj, wj);
 
-if ( cleanup_flag )
-    % Remove Froissart doublets:
-
+if ( cleanup_flag )                       % Remove Froissart doublets:
     [r, pol, res, zer, zj, fj, wj] = ...
         cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
 end
@@ -230,7 +264,7 @@ end
 tol = 1e-13;         % Relative tolerance.
 mmax = 100;          % Maximum number of terms.
 cleanup_tol = 1e-13; % Cleanup tolerance.
-nlawson = 0;         % number of Lawson steps
+nlawson = Inf;       % number of Lawson steps (Inf means adaptive)
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -238,7 +272,7 @@ else
     dom = [-1, 1];
 end
 cleanup_flag = 1;   % Cleanup on.
-mmax_flag = 0;
+mmax_flag = 0;      % Checks if mmax manually specified.
 cleanup_set = 0;    % Checks if cleanup_tol manually specified.
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
@@ -335,6 +369,10 @@ else
     needZ = 1;
     Z = [];
     M = length(Z);
+end
+
+if ~mmax_flag & (nlawson == Inf)
+    nlawson = 0;               
 end
 
 end % End of PARSEINPUT().
