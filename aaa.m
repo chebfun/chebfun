@@ -8,8 +8,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   and zeros ZER of R.
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAA(F, Z) also returns the vectors
-%   of support points ZJ, function values FJ, and weights WJ of the
-%   barycentric representation of R.
+%   of support points ZJ, approximation values FJ = r(ZJ), and weights WJ 
+%   of the barycentric representation of R. 
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the
 %   vector of errors ||f-r||_infty in successive iteration steps of AAA.
@@ -27,17 +27,23 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %       component of F are deemed spurious by the cleanup procedure. If TOL = 0,
 %       then CLEANUPTOL defaults to 1e-13.
 %   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
-%       to bring approximation closer to minimax.  See next paragraph.
+%       to bring approximation closer to minimax; specifying NLAWSON = 0 
+%       ensures there is no Lawson iteration.  See next paragraph.
 %
 %   If 'mmax' is specified and 'lawson' is not, then AAA attempts to find a
 %   minimax approximant of type (MMAX-1,MMAX-1) by Lawson iteration with
 %   adaptively determined parameters.  [As of 2 Aug. 2019, this just means
-%   10 Lawson steps!].  This will generally be possible only if the minimax
-%   error is well above machine precision.  If 'mmax' and 'lawson'
-%   are both specified, then exactly NLAWSON Lawson steps are taken (so
-%   NLAWSON = 0 corresponds to AAA approximation with no Lawson iteration).
-%   The final weight vector WT of the Lawson iteration is available with
+%   taking 20 Lawson steps and checking that the error has improved.]
+%   This will generally be successful only if the minimax error is well
+%   above machine precision.  If 'mmax' and 'lawson' are both specified,
+%   then exactly NLAWSON Lawson steps are taken (so NLAWSON = 0 corresponds
+%   to AAA approximation with no Lawson iteration).  The final weight
+%   vector WT of the Lawson iteration is available with
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
+%
+%   Note that R may have fewer than MMAX-1 poles and zeros.  This may
+%   happen, for example, if MMAX is too large, or if F is even and MMAX-1
+%   is odd, or if F is odd and MMAX-1 is even.
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
 %   If F is a vector, this is equivalent to R = AAA(F, Z) with
@@ -134,11 +140,11 @@ for m = 1:mmax
     R(J) = N(J)./D(J);
     
     % Error in the sample points:
-    err = norm(F - R, inf);
-    errvec = [errvec; err];
+    maxerr = norm(F - R, inf);
+    errvec = [errvec; maxerr];
     
     % Check if converged:
-    if ( err <= reltol )
+    if ( maxerr <= reltol )
         break
     end
 end
@@ -151,32 +157,35 @@ if ( M == 2 )
     wj = [1; -1];       % Only pole at infinity.
     wj = wj/norm(wj);   % Impose norm(w) = 1 for consistency.
     errvec(2) = 0;
+    maxerr = 0;
 end
 
 % We now enter Lawson iteration: barycentric IRLS = iteratively reweighted
-% least-squares if 'lawson', NLAWSON is specified with NLAWSON > 0 or
-% 'mmax' is specified and 'lawson' is not.  In the latter case the
-% number of steps is chosen adaptively.  Note that the Lawson
-% iteration is unlikely to be successful when the errors are close
-% to machine precision.
+% least-squares if 'lawson' is specified with NLAWSON > 0 or 'mmax' is
+% specified and 'lawson' is not.  In the latter case the number of steps
+% is chosen adaptively.  Note that the Lawson iteration is unlikely to be
+% successful when the errors are close to machine precision.
 
+wj0 = wj; fj0 = fj;     % Save parameters in case Lawson fails
+
+nlawson2 = nlawson;
 if nlawson == Inf
-    nlawson = 10;   % Our initial approximation to adaptivity!
+    nlawson2 = 20;      % Our initial approximation to adaptivity!
 end
 
 wt = NaN(M,1); wt_new = ones(M,1);
-if ( nlawson > 0 )      % nlawson steps of Lawson iteration
+if ( nlawson2 > 0 )     % Take nlawson2 steps of Lawson iteration
 
     nj = length(zj);
     A = [];
-    for j = 1:nj                                 % Cauchy/Loewner matrix
+    for j = 1:nj                             % Cauchy/Loewner matrix
         A = [A 1./(Z-zj(j)) F./(Z-zj(j))];
     end
     for j = 1:nj
-        [i,~] = find(Z==zj(j));                  % support pt rows are special
+        [i,~] = find(Z==zj(j));              % support pt rows are special
         A(i,:) = 0; A(i,2*j-1) = 1; A(i,2*j) = F(i);
     end
-    for n = 1:nlawson
+    for n = 1:nlawson2
         wt = wt_new;
         W = spdiags(sqrt(wt),0,M,M);
         [U,S,V] = svd(W*A,0);
@@ -188,7 +197,7 @@ if ( nlawson > 0 )      % nlawson steps of Lawson iteration
         end
         R = num./denom;
         for j = 1:nj
-            [i,~] = find(Z==zj(j));              % support pt rows are special
+            [i,~] = find(Z==zj(j));          % support pt rows are special
             R(i) = -c(2*j-1)/c(2*j);
         end
         err = F - R; abserr = abs(err);
@@ -196,6 +205,11 @@ if ( nlawson > 0 )      % nlawson steps of Lawson iteration
     end
     wj = c(2:2:end);
     fj = -c(1:2:end)./wj;
+    % If Lawson has not reduced the error, return to pre-Lawson values.
+    if (max(abserr) > maxerr) & (nlawson == Inf)
+        wj = wj0; fj = fj0;
+    end
+
 end
 
 % Remove support points with zero weight:
