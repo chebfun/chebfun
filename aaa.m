@@ -31,8 +31,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %
 %   If 'mmax' is specified and 'lawson' is not, then AAA attempts to find a
 %   minimax approximant of type (MMAX-1,MMAX-1) by Lawson iteration with
-%   adaptively determined parameters.  This will generally be possible only
-%   if the minimax error is well above machine precision.  If 'mmax' and 'lawson'
+%   adaptively determined parameters.  [As of 2 Aug. 2019, this just means
+%   10 Lawson steps!].  This will generally be possible only if the minimax
+%   error is well above machine precision.  If 'mmax' and 'lawson'
 %   are both specified, then exactly NLAWSON Lawson steps are taken (so
 %   NLAWSON = 0 corresponds to AAA approximation with no Lawson iteration).
 %   The final weight vector WT of the Lawson iteration is available with
@@ -159,39 +160,42 @@ end
 % iteration is unlikely to be successful when the errors are close
 % to machine precision.
 
+if nlawson == Inf
+    nlawson = 10;   % Our initial approximation to adaptivity!
+end
+
 wt = NaN(M,1); wt_new = ones(M,1);
 if ( nlawson > 0 )      % nlawson steps of Lawson iteration
 
-  nj = length(zj);
-  A = [];
-  for j = 1:nj                                   % Cauchy/Loewner matrix
-    A = [A 1./(Z-zj(j)) F./(Z-zj(j))];
-  end
-  for j = 1:nj
-    [i,~] = find(Z==zj(j));                      % support point rows are special
-    A(i,:) = 0; A(i,2*j-1) = 1; A(i,2*j) = F(i);
-  end
-  for n = 1:nlawson
-    wt = wt_new;
-   %wt = (wt+wt_new)/2;                          % underrelaxation with factor 0.5
-    W = spdiags(sqrt(wt),0,M,M);
-    [U,S,V] = svd(W*A,0);
-    c = V(:,end);
-    denom = zeros(M,1); num = zeros(M,1);
-    for j = 1:nj
-      denom = denom + c(2*j)./(Z-zj(j));
-      num = num - c(2*j-1)./(Z-zj(j));
+    nj = length(zj);
+    A = [];
+    for j = 1:nj                                 % Cauchy/Loewner matrix
+        A = [A 1./(Z-zj(j)) F./(Z-zj(j))];
     end
-    R = num./denom;
     for j = 1:nj
-      [i,~] = find(Z==zj(j));                    % support point rows are special
-      R(i) = -c(2*j-1)/c(2*j);
+        [i,~] = find(Z==zj(j));                  % support pt rows are special
+        A(i,:) = 0; A(i,2*j-1) = 1; A(i,2*j) = F(i);
     end
-    err = F - R; abserr = abs(err);
-    wt_new = wt.*abserr; wt_new = wt_new/norm(wt_new,inf);
-  end
-  wj = c(2:2:end);
-  fj = -c(1:2:end)./wj;
+    for n = 1:nlawson
+        wt = wt_new;
+        W = spdiags(sqrt(wt),0,M,M);
+        [U,S,V] = svd(W*A,0);
+        c = V(:,end);
+        denom = zeros(M,1); num = zeros(M,1);
+        for j = 1:nj
+            denom = denom + c(2*j)./(Z-zj(j));
+            num = num - c(2*j-1)./(Z-zj(j));
+        end
+        R = num./denom;
+        for j = 1:nj
+            [i,~] = find(Z==zj(j));              % support pt rows are special
+            R(i) = -c(2*j-1)/c(2*j);
+        end
+        err = F - R; abserr = abs(err);
+        wt_new = wt.*abserr; wt_new = wt_new/norm(wt_new,inf);
+    end
+    wj = c(2:2:end);
+    fj = -c(1:2:end)./wj;
 end
 
 % Remove support points with zero weight:
@@ -246,7 +250,7 @@ end
 tol = 1e-13;         % Relative tolerance.
 mmax = 100;          % Maximum number of terms.
 cleanup_tol = 1e-13; % Cleanup tolerance.
-nlawson = 0;         % number of Lawson steps
+nlawson = Inf;         % number of Lawson steps (Inf means adaptive)
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -254,7 +258,7 @@ else
     dom = [-1, 1];
 end
 cleanup_flag = 1;   % Cleanup on.
-mmax_flag = 0;
+mmax_flag = 0;      % Checks if mmax manually specified.
 cleanup_set = 0;    % Checks if cleanup_tol manually specified.
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
@@ -351,6 +355,10 @@ else
     needZ = 1;
     Z = [];
     M = length(Z);
+end
+
+if ~mmax_flag & (nlawson == Inf)
+    nlawson = 0;               
 end
 
 end % End of PARSEINPUT().
