@@ -32,14 +32,12 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %
 %   If 'mmax' is specified and 'lawson' is not, then AAA attempts to find a
 %   minimax approximant of type (MMAX-1,MMAX-1) by Lawson iteration with
-%   adaptively determined parameters.  [As of 2 Aug. 2019, this just means
-%   taking 20 Lawson steps and checking that the error has improved.]
-%   This will generally be successful only if the minimax error is well
-%   above machine precision.  If 'mmax' and 'lawson' are both specified,
-%   then exactly NLAWSON Lawson steps are taken (so NLAWSON = 0 corresponds
-%   to AAA approximation with no Lawson iteration).  The final weight
-%   vector WT of the Lawson iteration is available with
-%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
+%   an adaptively determined number of steps.  This will generally be
+%   successful only if the minimax error is well above machine precision.
+%   If 'mmax' and 'lawson' are both specified, then exactly NLAWSON Lawson
+%   steps are taken (so NLAWSON = 0 corresponds to AAA approximation with no
+%   Lawson iteration).  The final weight vector WT of the Lawson iteration is
+%   available with [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
 %
 %   Note that R may have fewer than MMAX-1 poles and zeros.  This may
 %   happen, for example, if MMAX is too large, or if F is even and MMAX-1
@@ -148,8 +146,9 @@ for m = 1:mmax
         break
     end
 end
+maxerrAAA = maxerr;                     % error at end of AAA 
 
-% Note: When M == 2, one weight is zero and r is constant.
+% When M == 2, one weight is zero and r is constant.
 % To obtain a good approximation, interpolate in both sample points.
 if ( M == 2 )
     zj = Z;
@@ -157,7 +156,7 @@ if ( M == 2 )
     wj = [1; -1];       % Only pole at infinity.
     wj = wj/norm(wj);   % Impose norm(w) = 1 for consistency.
     errvec(2) = 0;
-    maxerr = 0;
+    maxerrAAA = 0;
 end
 
 % We now enter Lawson iteration: barycentric IRLS = iteratively reweighted
@@ -167,25 +166,27 @@ end
 % successful when the errors are close to machine precision.
 
 wj0 = wj; fj0 = fj;     % Save parameters in case Lawson fails
+wt_new = ones(M,1);
+if ( nlawson > 0 )      % Lawson iteration
 
-nlawson2 = nlawson;
-if nlawson == Inf
-    nlawson2 = 20;      % Our initial approximation to adaptivity!
-end
-
-wt = NaN(M,1); wt_new = ones(M,1);
-if ( nlawson2 > 0 )     % Take nlawson2 steps of Lawson iteration
-
+    maxerrold = maxerrAAA;
+    maxerr = maxerrold;
     nj = length(zj);
     A = [];
-    for j = 1:nj                             % Cauchy/Loewner matrix
+    for j = 1:nj                              % Cauchy/Loewner matrix
         A = [A 1./(Z-zj(j)) F./(Z-zj(j))];
     end
     for j = 1:nj
-        [i,~] = find(Z==zj(j));              % support pt rows are special
-        A(i,:) = 0; A(i,2*j-1) = 1; A(i,2*j) = F(i);
+        [i,~] = find(Z==zj(j));               % support pt rows are special
+        A(i,:) = 0;
+        A(i,2*j-1) = 1;
+        A(i,2*j) = F(i);
     end
-    for n = 1:nlawson2
+    stepno = 0;
+    while ( (nlawson < inf) & (stepno < nlawson) ) |...
+          ( (nlawson == inf) & (stepno < 10) ) |...
+          ( (nlawson == inf) & (maxerr/maxerrold < .995) & (stepno < 1000) ) 
+        stepno = stepno + 1;
         wt = wt_new;
         W = spdiags(sqrt(wt),0,M,M);
         [U,S,V] = svd(W*A,0);
@@ -197,19 +198,20 @@ if ( nlawson2 > 0 )     % Take nlawson2 steps of Lawson iteration
         end
         R = num./denom;
         for j = 1:nj
-            [i,~] = find(Z==zj(j));          % support pt rows are special
+            [i,~] = find(Z==zj(j));           % support pt rows are special
             R(i) = -c(2*j-1)/c(2*j);
         end
         err = F - R; abserr = abs(err);
         wt_new = wt.*abserr; wt_new = wt_new/norm(wt_new,inf);
+        maxerrold = maxerr;
+        maxerr = max(abserr);
     end
     wj = c(2:2:end);
     fj = -c(1:2:end)./wj;
     % If Lawson has not reduced the error, return to pre-Lawson values.
-    if (max(abserr) > maxerr) & (nlawson == Inf)
+    if (maxerr > maxerrAAA) & (nlawson == Inf)
         wj = wj0; fj = fj0;
     end
-
 end
 
 % Remove support points with zero weight:
@@ -224,9 +226,7 @@ r = @(zz) reval(zz, zj, fj, wj);
 % Compute poles, residues and zeros:
 [pol, res, zer] = prz(r, zj, fj, wj);
 
-if ( cleanup_flag )
-    % Remove Froissart doublets:
-
+if ( cleanup_flag )                       % Remove Froissart doublets:
     [r, pol, res, zer, zj, fj, wj] = ...
         cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
 end
@@ -264,7 +264,7 @@ end
 tol = 1e-13;         % Relative tolerance.
 mmax = 100;          % Maximum number of terms.
 cleanup_tol = 1e-13; % Cleanup tolerance.
-nlawson = Inf;         % number of Lawson steps (Inf means adaptive)
+nlawson = Inf;       % number of Lawson steps (Inf means adaptive)
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);

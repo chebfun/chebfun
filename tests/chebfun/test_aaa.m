@@ -92,8 +92,8 @@ pass(21) = (err_aaa/err_minimax < 1.1);
 
 % Make sure Lawson bails out if unsuccessful because of machine precision
 xx = linspace(-1,1);
-r = aaa(@tanh,Z); err1 = norm(tanh(xx) - r(xx),inf);
-r = aaa(@tanh,Z,'mmax',40); err2 = norm(tanh(xx) - r(xx),inf);
+r = aaa(@tanh,xx); err1 = norm(tanh(xx) - r(xx),inf);
+r = aaa(@tanh,xx,'mmax',40); err2 = norm(tanh(xx) - r(xx),inf);
 pass(22) = abs(err2/err1 - 1) < 1.01; 
 
 % Make sure Lawson bails out if unsuccessful because of symmetry
