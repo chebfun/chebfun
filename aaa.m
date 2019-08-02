@@ -166,7 +166,7 @@ end
 % successful when the errors are close to machine precision.
 
 wj0 = wj; fj0 = fj;     % Save parameters in case Lawson fails
-wt_new = ones(M,1);
+wt = NaN(M,1); wt_new = ones(M,1);
 if ( nlawson > 0 )      % Lawson iteration
 
     maxerrold = maxerrAAA;
