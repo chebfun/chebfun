@@ -84,6 +84,19 @@ elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
     % OP has two input variables.
     
     g = varargin{1};
+
+    % OP(f,g) should be periodic if:
+    %  - f and g are periodic
+    %  - f is periodic, g is scalar
+    %  - f is scalar, g is periodic
+    pref = chebfunpref;
+    if ( (isa(f, 'chebfun2') && isPeriodicTech(f) && ...
+          isa(g, 'chebfun2') && isPeriodicTech(g))                || ...
+         (isa(f, 'chebfun2') && isPeriodicTech(f) && isscalar(g)) || ...
+         (isscalar(f) && isa(g, 'chebfun2') && isPeriodicTech(g)) )
+        pref.tech = @trigtech;
+    end
+
     if ( isa(g, 'double') )     % promote
         g = chebfun2(g, f.domain);
     end
@@ -93,7 +106,7 @@ elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
     end
     
     % Call constructor:
-    f = chebfun2(@(x,y) op(feval(f, x, y), feval(g, x, y)), f.domain);
+    f = chebfun2(@(x,y) op(feval(f, x, y), feval(g, x, y)), f.domain, pref);
     
 else
     % Not sure what to do, error:
