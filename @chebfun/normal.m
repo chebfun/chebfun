@@ -15,12 +15,11 @@ n = -1i*diff(c);
 
 if ( nargin > 1 ) 
     if ( strcmpi(unit, 'unit') )
-        nrmn = norm(n);
-        if ( nrmn == 0 )
-            error('CHEBFUN:CHEBFUN:normal:zero', 'Normal vector is zero.'); 
-        else
-            n = n./nrmn;
+        r = roots( n );
+        if ( ( ~isempty(r) ) || ( norm(n) == 0 ) )
+            error('CHEBFUN:CHEBFUN:normal:zero', 'Normal vector is zero.');
         end
+        n = n ./ abs(n);
     else
         error('CHEBFUN:CHEBFUN:normal:args', ...
             'Second argument is not recognised.');
