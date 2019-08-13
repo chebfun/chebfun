@@ -15,5 +15,6 @@ ntrue = [real(ntrue), imag(ntrue)];
 n = normal(g, 'unit');
 
 pass(1) = ( norm(n - ntrue) < tol );
+pass(2) = ( norm(sqrt(n(:,1).^2+n(:,2).^2) - 1) < tol );
 
 end
