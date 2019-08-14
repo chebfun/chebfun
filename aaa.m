@@ -285,8 +285,21 @@ while ( ~isempty(varargin) )
         end
         varargin([1, 2]) = [];
         
-    elseif ( strncmpi(varargin{1}, 'mmax', 4) )
+    elseif ( strncmpi(varargin{1}, 'degree', 6) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+            if ( mmax_flag == 1 ) && ( mmax ~= varargin{2}+1 )
+                error('CHEBFUN:aaa:degmmaxmismatch', ' mmax must equal degree+1.')
+            end            
+            mmax = varargin{2}+1;
+            mmax_flag = 1;
+        end
+        varargin([1, 2]) = [];
+        
+    elseif ( strncmpi(varargin{1}, 'mmax', 4) )
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )            
+            if ( mmax_flag == 1 ) && ( mmax ~= varargin{2})                
+                error('CHEBFUN:aaa:degmmaxmismatch', ' mmax must equal degree+1.')
+            end
             mmax = varargin{2};
             mmax_flag = 1;
         end
