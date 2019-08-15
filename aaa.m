@@ -2,7 +2,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %AAA   AAA and AAA-Lawson (near-minimax) rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
-%   or as a function handle or a chebfun.
+%   or as a function handle or a chebfun.  R = AAA(F, Z, 'degree', N) computes
+%   the minimax approximation of degree N (i.e., rational type (N,N)).
 %
 %   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles POL, residues RES,
 %   and zeros ZER of R.
@@ -17,8 +18,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
-%       (default MMAX = 100).  R will be of rational type (M-1,M-1).
-%       By default, this will turn on Lawson iteration: see next paragraph.
+%       (default MMAX = 100).  R will be of degree M-1.  By default,
+%       this will turn on Lawson iteration: see next paragraph.
+%   - 'degree', N: identical to 'mmax', N+1.
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
@@ -30,18 +32,18 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %       to bring approximation closer to minimax; specifying NLAWSON = 0 
 %       ensures there is no Lawson iteration.  See next paragraph.
 %
-%   If 'mmax' is specified and 'lawson' is not, then AAA attempts to find a
-%   minimax approximant of type (MMAX-1,MMAX-1) by Lawson iteration with
-%   an adaptively determined number of steps.  This will generally be
-%   successful only if the minimax error is well above machine precision.
-%   If 'mmax' and 'lawson' are both specified, then exactly NLAWSON Lawson
-%   steps are taken (so NLAWSON = 0 corresponds to AAA approximation with no
-%   Lawson iteration).  The final weight vector WT of the Lawson iteration is
-%   available with [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
+%   If 'degree' or equivalently 'mmax' is specified and 'lawson' is not, then
+%   AAA attempts to find a minimax approximant of degree N by Lawson iteration.
+%   This will generally be successful only if the minimax error is well
+%   above machine precision.  If 'degree' and 'lawson' are both specified,
+%   then exactly NLAWSON Lawson steps are taken (so NLAWSON = 0 corresponds to
+%   AAA approximation with no Lawson iteration).  The final weight vector WT
+%   of the Lawson iteration is available with 
+%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
 %
-%   Note that R may have fewer than MMAX-1 poles and zeros.  This may
-%   happen, for example, if MMAX is too large, or if F is even and MMAX-1
-%   is odd, or if F is odd and MMAX-1 is even.
+%   Note that R may have fewer than N poles and zeros.  This may happen,
+%   for example, if N is too large, or if F is even and N is odd, or if F is
+%   odd and N is even.
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
 %   If F is a vector, this is equivalent to R = AAA(F, Z) with
@@ -52,27 +54,27 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 % Examples:
 %   r = aaa(@exp); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
 %
-%   r = aaa(@exp,'mmax',5); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
+%   r = aaa(@exp,'degree',4); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
 %
 %   Z = exp(2i*pi*linspace(0,1,500)); 
 %   [r,pol,res] = aaa(@tan,Z); disp([pol res])
 %
 %   X = linspace(-1,1,1000); F = tanh(20*X);
 %   subplot(1,2,1)
-%   r = aaa(F,X,'mmax',16,'lawson',0); plot(X,F-r(X)), hold on
-%   r = aaa(F,X,'mmax',16); plot(X,F-r(X)), hold off
+%   r = aaa(F,X,'degree',15,'lawson',0); plot(X,F-r(X)), hold on
+%   r = aaa(F,X,'degree',15); plot(X,F-r(X)), hold off
 % 
 %   Z = exp(1i*pi*linspace(-1,1,1000)); G = exp(Z);
 %   subplot(1,2,2)
-%   r = aaa(G,Z,'mmax',4,'lawson',0); plot(G-r(Z)), axis equal, hold on
-%   r = aaa(G,Z,'mmax',4); plot(G-r(Z)), axis equal, hold off
+%   r = aaa(G,Z,'degree',3,'lawson',0); plot(G-r(Z)), axis equal, hold on
+%   r = aaa(G,Z,'degree',3); plot(G-r(Z)), axis equal, hold off
 %
 %   References:
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
 %
 %   [2] Yuji Nakasukasa and Lloyd N. Trefethen, An algorithm for real and
-%   complex rational minimax approximation, in preparation.
+%   complex rational minimax approximation, arXiv, 2019.
 %
 % See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
