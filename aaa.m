@@ -17,10 +17,13 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
+%   - 'degree', N: maximal degree (default degree = 99). 
+%      Output rational approximant will be at most of type (N,N). 
+%      Identical to 'mmax', N+1. 
+%      By default, this will turn on Lawson iteration: see next paragraph. 
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
-%       (default MMAX = 100).  R will be of degree M-1.  By default,
-%       this will turn on Lawson iteration: see next paragraph.
-%   - 'degree', N: identical to 'mmax', N+1.
+%       (default MMAX = 100). R will be of degree M-1. 
+%       Identical to 'degree', MMAX-1. Also turns on Lawson iteration. 
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
@@ -212,7 +215,7 @@ if ( nlawson > 0 )      % Lawson iteration
     fj = -c(1:2:end)./wj;
     % If Lawson has not reduced the error, return to pre-Lawson values.
     if (maxerr > maxerrAAA) & (nlawson == Inf)
-        wj = wj0; fj = fj0;
+        wj = wj0; fj = fj0; 
     end
 end
 

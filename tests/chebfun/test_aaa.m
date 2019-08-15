@@ -115,7 +115,7 @@ F = exp(Z);
 [r, pol] = aaa(F, Z, 'degree', 3);
 [r2, pol2] = aaa(F, Z, 'mmax', 4);
 pass(25) = (numel(pol) == 3);
-pass(26) = (numel(pol) == 3);
+pass(26) = (numel(pol2) == 3);
 pass(27) = (norm(r(Z)-r2(Z)) < 1e-10);
 
 warning('on', 'CHEBFUN:aaa:Froissart');
