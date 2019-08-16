@@ -1,5 +1,5 @@
 function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
-%AAA   AAA and AAA-Lawson (near-minimax) rational approximation.
+%AAA   AAA and AAA-Lawson (near-minimax) real or complex rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
 %   or as a function handle or a chebfun.  R = AAA(F, Z, 'degree', N) computes
@@ -17,12 +17,12 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
-%   - 'degree', N: maximal degree (default degree = 99). 
+%   - 'degree', N: maximal degree (default N = 99). 
 %      Output rational approximant will be at most of type (N,N). 
 %      Identical to 'mmax', N+1. 
 %      By default, this will turn on Lawson iteration: see next paragraph. 
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
-%       (default MMAX = 100). R will be of degree M-1. 
+%       (default MMAX = 100). R will be of degree MMAX-1. 
 %       Identical to 'degree', MMAX-1. Also turns on Lawson iteration. 
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
@@ -38,10 +38,11 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   If 'degree' or equivalently 'mmax' is specified and 'lawson' is not, then
 %   AAA attempts to find a minimax approximant of degree N by Lawson iteration.
 %   This will generally be successful only if the minimax error is well
-%   above machine precision.  If 'degree' and 'lawson' are both specified,
-%   then exactly NLAWSON Lawson steps are taken (so NLAWSON = 0 corresponds to
-%   AAA approximation with no Lawson iteration).  The final weight vector WT
-%   of the Lawson iteration is available with 
+%   above machine precision, and is more reliable for complex problems than
+%   real ones.  If 'degree' and 'lawson' are both specified, then exactly
+%   NLAWSON Lawson steps are taken (so NLAWSON = 0 corresponds to AAA
+%   approximation with no Lawson iteration).  The final weight vector WT of
+%   the Lawson iteration is available with 
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
 %
 %   Note that R may have fewer than N poles and zeros.  This may happen,
@@ -231,7 +232,7 @@ r = @(zz) reval(zz, zj, fj, wj);
 % Compute poles, residues and zeros:
 [pol, res, zer] = prz(r, zj, fj, wj);
 
-if ( cleanup_flag )                       % Remove Froissart doublets:
+if ( cleanup_flag & nlawson == 0)       % Remove Froissart doublets
     [r, pol, res, zer, zj, fj, wj] = ...
         cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
 end
