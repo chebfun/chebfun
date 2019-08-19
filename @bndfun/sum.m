@@ -33,7 +33,8 @@ if ( islinear(f.mapping) )
 else
     % TODO: Comment what is going on (change of variables).
     m = f.mapping;
-    mp = diff(bndfun(m.For));
+%     mp = diff(bndfun(m.For));
+    mp = bndfun(m.Der);
     f.mapping = mapping.linear([-1,1]);
     f.domain = [-1,1];
     out = sum(f.*mp);

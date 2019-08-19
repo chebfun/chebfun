@@ -31,7 +31,8 @@ if ( dim == 1 )
     else
         % TODO: Comment what is going on (change of variables).
         m = f.mapping;
-        mp = diff(bndfun(m.For));
+%         mp = diff(bndfun(m.For));
+        mp = bndfun(m.Der);
         f.mapping = mapping.linear([-1,1]);
         g = cumsum(f.*mp);
     end

@@ -106,7 +106,7 @@ classdef singularMapping < mapping
                     end
             end
             
-            m = singularMapping(For, Inv, Der, pow);
+            m = singularMapping(For, Der, Inv, pow);
             
         end
         
