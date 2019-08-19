@@ -9,9 +9,9 @@ function data = dispData(f)
 data = dispData(f.onefun);
 
 if ( isa(f.mapping, 'singularMapping') )
-    data{1}(end+1).name = '  singmap params ';
+    data(end+1).name = ' singmap params ';
     params = f.mapping.params;
-    data{1}(end).data = ['  [' num2str(params(1), '%2.2g,') '     ' ...
+    data(end).data = ['  [' num2str(params(1), '%2.2g,') '     ' ...
             num2str(params(2), '%2.2g') ']  '];
 end
 

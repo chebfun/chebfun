@@ -15,9 +15,7 @@ numFuns = numel(f.funs);
 
 % Loop over each FUN:
 for j = 1:numFuns
-    tmp = dispData(f.funs{j});
-    if  ( ~isempty(tmp) ), tmp = [tmp{:}]; end
-    info{j} = tmp;
+    info{j} = dispData(f.funs{j});
 end
 
 %% Organize the output which will be passed to DISPLAY:
@@ -33,7 +31,7 @@ for j = 1:numFuns
         namejk = info{j}(k).name;
         datajk = info{j}(k).data;
         name = [name, namejk];
-        z = repmat(' ', size(datajk))
+        z = repmat(' ', size(datajk));
         for l = 1:(j-1)
             data{l,1} = [data{l,1}, z];
         end
@@ -50,15 +48,12 @@ for j = 1:numFuns
                     end
                 end
             end
-            isz
             if ( isz )
                 data{l,1} = [data{l,1}, z];
             end
         end
     end
 end
-
-data
 
 % More information for F can be appended to DATA:
 

@@ -6,7 +6,7 @@ function data = dispData(f)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-data{1}.name = 'tech';
-data{1}.data = 'trig';
+data.name = 'tech';
+data.data = 'trig';
 
 end
