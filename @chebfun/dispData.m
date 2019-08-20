@@ -26,8 +26,8 @@ data = cell(j,1);
 
 % Loop through each fun, look for duplicate names. Insert space if no duplicates.
 for j = 1:numFuns
-    if ( isempty(info{j}) ), continue, end
     for k = 1:numel(info{j})
+        if ( ~isfield(info{j}(k), 'name')), continue, end
         namejk = info{j}(k).name;
         datajk = info{j}(k).data;
         name = [name, namejk];

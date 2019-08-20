@@ -35,6 +35,7 @@ if ( dim == 1 )
         mp = bndfun(m.Der);
         f.mapping = mapping.linear([-1,1]);
         g = cumsum(f.*mp);
+        g.mapping = m;
     end
     
     if ( iscell(g) )
