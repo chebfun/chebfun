@@ -1,8 +1,8 @@
-% function pass = test_singmap(pref)
+function pass = test_singmap(pref)
 
-% if ( nargin == 0 )
-%     pref = chebfunpref();
-% end
+if ( nargin == 0 )
+    pref = chebfunpref();
+end
 
 tol = 1e-13;
 
@@ -57,6 +57,4 @@ pass(10) = norm(ff(x) - f(x), inf) < 100*tol && norm(ff(x+1) - f(x), inf) < 100*
 r = 0.114360282839375;
 pass(11) = abs(roots(fcheb-5) - r) < tol;
 
-% end
-
-pass
+end
