@@ -1,4 +1,4 @@
-function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol)
+function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, opts)
 %PADEAPPROX   Pade approximation to a function or Taylor series.
 %   [R, A, B, MU, NU, POLES, RESIDUES] = PADEAPPROX(F, M, N, TOL) constructs a
 %   Pade approximant to F using the robust algorithm from [1] based on the SVD.
@@ -11,6 +11,11 @@ function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol)
 %   robustness. The output is a function handle R of for an exact type (MU, NU)
 %   Pade approximant to F with coefficient vectors A and B and, optionally, the
 %   POLES and RESIDUES.
+%
+%   PADEAPPROX(F, M, N, OPTS), where OPTS is a struct containing fields .tol,
+%   .r, and .N, is similar, but allows changing the radius (r) and number of
+%   roots of unity (N) used when F is a function handle to compute approximate
+%   Taylor coefficients via FFT. Default values are r = 1, N = 2048.
 %
 %   This code is included in the Chebfun distribution for the convenience of
 %   readers of _Approximation Theory and Approximation Practice_, but it is not
@@ -26,26 +31,39 @@ function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Default to relative tolerance of 1e-14.
-if ( nargin < 4 )
-    tol = 1e-14;
+% Parse inputs:
+tol = []; r = []; N = [];
+if ( nargin == 4 )
+    if ( isnumeric(opts) )
+        tol = opts;
+    elseif ( isstruct(opts) )
+        if ( isfield(opts, 'tol') ), tol = opts.tol; end
+        if ( isfield(opts, 'r') ),   r = opts.r;     end
+        if ( isfield(opts, 'N') ),   N = opts.N;     end
+    end
 end
+% Default values:
+if ( isempty(tol) ), tol = 1e-14; end
+if ( isempty(r) ),   r = 1;       end
+if ( isempty(N) ),   N = 2048;    end
 
 % Compute coefficients if necessary.
 if ( ~isnumeric(f) )
-    % Sample at many roots of unity and use FFT to get coeffs.
-    N = 2048;
-    z = exp(2i*pi*(0:N-1)'/N);
+    % Sample at many (scaled) roots of unity and use FFT to get coeffs.
+    z = r*exp(2i*pi*(0:N-1)'/N);
     f = fft(f(z))/N;
-
+    
     % Discard near-zero coefficients.
     tc = 1e-15*norm(f);
     f(abs(f) < tc) = 0;
-
+    
     % Remove imaginary rounding errors.  (Make real functions real.)
     if ( norm(imag(f), inf) < tc )
         f = real(f);
     end
+    
+    % Recale:
+    f = f./r.^(0:(N-1))';
 end
 
 % Make sure c is long enough but not longer than necessary.
