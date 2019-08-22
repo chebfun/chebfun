@@ -1,4 +1,4 @@
-function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, opts)
+function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol, r, N)
 %PADEAPPROX   Pade approximation to a function or Taylor series.
 %   [R, A, B, MU, NU, POLES, RESIDUES] = PADEAPPROX(F, M, N, TOL) constructs a
 %   Pade approximant to F using the robust algorithm from [1] based on the SVD.
@@ -12,10 +12,10 @@ function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, opts)
 %   Pade approximant to F with coefficient vectors A and B and, optionally, the
 %   POLES and RESIDUES.
 %
-%   PADEAPPROX(F, M, N, OPTS), where OPTS is a struct containing fields .tol,
-%   .r, and .N, is similar, but allows changing the radius (r) and number of
-%   roots of unity (N) used when F is a function handle to compute approximate
-%   Taylor coefficients via FFT. Default values are r = 1, N = 2048.
+%   PADEAPPROX(F, M, N, TOL, R, N) allows changing the radius R and number of
+%   roots of unity N used when F is a function handle to compute approximate
+%   Taylor coefficients via FFT. Empty values are set to the defaults, which are
+%   TOL = 1e-14, R = 1, and N = 2048.
 %
 %   This code is included in the Chebfun distribution for the convenience of
 %   readers of _Approximation Theory and Approximation Practice_, but it is not
@@ -31,24 +31,15 @@ function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, opts)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Parse inputs:
-tol = []; r = []; N = [];
-if ( nargin == 4 )
-    if ( isnumeric(opts) )
-        tol = opts;
-    elseif ( isstruct(opts) )
-        if ( isfield(opts, 'tol') ), tol = opts.tol; end
-        if ( isfield(opts, 'r') ),   r = opts.r;     end
-        if ( isfield(opts, 'N') ),   N = opts.N;     end
-    end
-end
-% Default values:
-if ( isempty(tol) ), tol = 1e-14; end
-if ( isempty(r) ),   r = 1;       end
-if ( isempty(N) ),   N = 2048;    end
+% Default to relative tolerance of 1e-14.
+if ( nargin < 4 || isempty(tol) ), tol = 1e-14; end
 
 % Compute coefficients if necessary.
 if ( ~isnumeric(f) )
+    % Default radius and evaluation points if not specified:
+    if ( nargin < 5 || isempty(r) ),   r = 1;       end
+    if ( nargin < 6 || isempty(N) ),   N = 2048;    end
+    
     % Sample at many (scaled) roots of unity and use FFT to get coeffs.
     z = r*exp(2i*pi*(0:N-1)'/N);
     f = fft(f(z))/N;

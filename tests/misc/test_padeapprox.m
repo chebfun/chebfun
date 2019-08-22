@@ -14,8 +14,7 @@ c = [1 1i];
 pass(2) = (abs(a-1) < 1e-10) && (abs(b(2)-(-1i)) < tol); 
 
 f = @(x) x./(1-x);
-opts = struct('tol', 1e-10, 'r', 0.5);
-[r, a, b, mu, nu, poles, residues] = padeapprox(f, 5, 6, opts);
+[r, a, b, mu, nu, poles, residues] = padeapprox(f, 5, 6, [], 0.5);
 pass(3) = (mu == 1) && (nu == 1) && norm(a-[0;1])<tol && ...
     norm(b-[1;-1])<tol && abs(poles-1)<tol && abs(residues+1)<tol;
 
