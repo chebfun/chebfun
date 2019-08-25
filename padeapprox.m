@@ -2,29 +2,30 @@ function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol, r, N)
 %PADEAPPROX   Pade approximation to a function or Taylor series.
 %   [R, A, B, MU, NU, POLES, RESIDUES] = PADEAPPROX(F, M, N, TOL) constructs a
 %   Pade approximant to F using the robust algorithm from [1] based on the SVD.
-%   F must be a function handle or a vector of coefficients f_0, ..., f_{m + n},
-%   and if F is a function handle, the function must be analytic in a
-%   neighborhood of the unit disc, since the coefficients are computed via FFT.
-%   M and N are the desired numerator and denominator degrees, respectively, and
-%   must be nonnegative. The optional TOL argument specifies the relative
-%   tolerance; if omitted, it defaults to 1e-14. Set TOL to 0 to turn off
-%   robustness. The output is a function handle R of for an exact type (MU, NU)
-%   Pade approximant to F with coefficient vectors A and B and, optionally, the
-%   POLES and RESIDUES.
+%   F must be a function handle or a vector of coefficients f_0, ..., f_K with
+%   K >= M+N, and if F is a function handle, the function must be analytic by
+%   default in a neighborhood of the unit disc, since the coefficients are
+%   computed via FFT; alternatively one can adjust the radius for this
+%   computation as inidcated below.  M and N are the desired numerator and
+%   denominator degrees, respectively, and must be nonnegative.  The optional
+%   TOL argument specifies the relative tolerance; if omitted, it defaults to
+%   1e-14.  Set TOL to 0 to turn off robustness.  The output is a function
+%   handle R for an exact type (MU, NU) Pade approximant to F with coefficient
+%   vectors A and B and, optionally, the POLES and RESIDUES.
 %
 %   PADEAPPROX(F, M, N, TOL, R, N) allows changing the radius R and number of
-%   roots of unity N used when F is a function handle to compute approximate
-%   Taylor coefficients via FFT. Empty values are set to the defaults, which are
+%   roots of unity N used when F is a function handle to compute Taylor 
+%   coefficients via FFT.  Empty values are set to the defaults, which are
 %   TOL = 1e-14, R = 1, and N = 2048.
 %
 %   This code is included in the Chebfun distribution for the convenience of
-%   readers of _Approximation Theory and Approximation Practice_, but it is not
-%   actually a Chebfun code. A Chebfun analogue is CHEBPADE.
+%   readers of _Approximation Theory and Approximation Practice_, though it
+%   does not involve chebfuns.  A Chebfun analogue is CHEBPADE.
 %
 %   References:
 %
-%   [1] P. Gonnet, S. Guettel, and L. N. Trefethen, "ROBUST PADE APPROXIMATION 
-%       VIA SVD", SIAM Rev., 55:101-117, 2013.
+%   [1] P. Gonnet, S. Guettel, and L. N. Trefethen, "Robust Pade approximation 
+%       via SVD", SIAM Rev., 55:101-117, 2013.
 %
 % See also AAA, CF, CHEBPADE, MINIMAX, RATINTERP.
 
