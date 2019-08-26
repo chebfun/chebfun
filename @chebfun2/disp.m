@@ -32,6 +32,10 @@ techRow = get(F.rows.funs{1}, 'tech');
 % Display the information: 
 if ( isa(techCol(), 'trigtech') && isa(techRow(), 'trigtech') )
     disp('   chebfun2 object  (trig)')
+elseif ( isa(techRow(), 'trigtech') )
+    disp('   chebfun2 object  (trig in x)')
+elseif ( isa(techCol(), 'trigtech') )
+    disp('   chebfun2 object  (trig in y)')
 else
     disp('   chebfun2 object')
 end

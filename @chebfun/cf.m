@@ -23,9 +23,8 @@ function [p, q, r, s] = cf(f, m, n, M)
 %   results may be wrong.
 %
 %   CF = Caratheodory-Fejer approximation is a near-best approximation that is
-%   often indistinguishable from the true best approximation (which for
-%   polynomials can be computed using REMEZ(F, M)), but often much faster to
-%   compute.
+%   often indistinguishable from the true best approximation (which in Chebfun
+%   can be computed with MINIMAX), but often much faster to compute.
 %
 %   Examples:
 %

@@ -102,7 +102,9 @@ for k = (n+1):-2:3
     bk1 = c(k-1) + x.*bk2 - bk1;
 end
 if ( mod(n, 2) )
-    [bk1, bk2] = deal(c(2) + x.*bk1 - bk2, bk1);
+    tmp = bk1;
+    bk1 = c(2) + x.*bk1 - bk2;
+    bk2 = tmp;
 end
 y = c(1) + .5*x.*bk1 - bk2;
 end
@@ -120,7 +122,9 @@ for k = (n+1):-2:3
     bk1 = e*c(k-1,:) + x.*bk2 - bk1;
 end
 if ( mod(n, 2) )
-    [bk1, bk2] = deal(e*c(2,:) + x.*bk1 - bk2, bk1);
+    tmp = bk1;
+    bk1 = e*c(2,:) + x.*bk1 - bk2;
+    bk2 = tmp;
 end
 y = e*c(1,:) + .5*x.*bk1 - bk2;
 end

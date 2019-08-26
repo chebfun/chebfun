@@ -42,11 +42,12 @@ if all(size(v) == size(r))
 end
 
 f = chebfun2( zeros(5,4) ); 
-pass(5) = (norm( coeffs2(f) - zeros(5,4) ) == 0 );
+pass(5) = ( norm( coeffs2(f) - zeros(5,4) ) == 0 );
 
 f = chebfun2( 0 ); 
-[C, D, R] = coeffs2( f, 11, 13); 
-pass(6) = ( norm( C - zeros(11,1) ) == 0 &&...
-            norm( D - 1 ) == 0 && norm( R - zeros(13,1) ) == 0 ); 
+[C, D, R] = coeffs2( f, 11, 13 );
+pass(6) = ( norm( C - zeros(11,1) ) == 0 && ...
+            norm( D - 1 )           == 0 && ...
+            norm( R - zeros(13,1) ) == 0 );
 
 end
