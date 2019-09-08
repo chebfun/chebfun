@@ -111,7 +111,7 @@ end
 
 % Data mine L for faster "mat-vec" computations in the CG iteration:
 % Uses a non-divergence form
-x = chebfun( @(x) x );
+x = chebfun(@(x) x, dom);
 c = L(x, 1+0*x); 
 bminusa = L(x, x) - c.*x;
 a = -L(x, x.^2/2) + bminusa.*x + c.*x.^2/2;
