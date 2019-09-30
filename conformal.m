@@ -105,7 +105,7 @@ rot = exp(-1i*angle(dwdz));                     % rotation for f'(ctr) > 0
 f = @(z) rot*f0(z);                             % rotate mapping function
 W = rot*W;                                      % rotate points on circle
 [finv, polinv] = aaa(Z, W, 'tol', tol);         % inverse map
-warning(w2.state, 'MATLAB:rankDeficientMatrix')
+warning(w2.state, 'CHEBFUN:aaa:Froissart')
 
 inC = inpolygon(real(pol), imag(pol), ...       % check for poles of f in region
                 real(Z), imag(Z));
