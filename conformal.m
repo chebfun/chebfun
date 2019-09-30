@@ -2,7 +2,7 @@ function [f, finv, pol, polinv] = conformal(C, varargin)
 %% CONFORMAL  Conformal map to unit disk
 %   CONFORMAL(C, ctr) computes a conformal map F of the region bounded by the
 %   complex periodic chebfun C to the unit disk and its inverse FINV, with the
-%   interior point ctr mapping to 0.  Both maps are represented by function
+%   F(ctr) = 0 and F'(ctr) > 0.  Both maps are represented by function
 %   handles evaluating rational functions, whose poles are optionally returned
 %   in the vectors POL and POLINV.  If ctr is omitted it is set to 0.
 %
@@ -52,6 +52,7 @@ function [f, finv, pol, polinv] = conformal(C, varargin)
 t1 = tic;
 [ctr, tol, plots, numbers, poly] = parseinputs(C, varargin{:});
 err = Inf;
+scl = norm(C-ctr, inf);
 
 if poly == 0               % MAIN ALGORITHM: KERZMAN-STEIN INTEGRAL EQUATION
 
@@ -66,11 +67,11 @@ if poly == 0               % MAIN ALGORITHM: KERZMAN-STEIN INTEGRAL EQUATION
             break
         end
     end
+
 else                       % ALTERNATIVE ALGORITHM: POLYNOMIAL EXPANSION
 
     w1 = warning('off', 'MATLAB:rankDeficientMatrix');
     logn = 4;
-    scl = norm(C-ctr, inf);
     dom = domain(C); 
     dom = dom([1 end]);
     while err > tol
@@ -97,8 +98,13 @@ else                       % ALTERNATIVE ALGORITHM: POLYNOMIAL EXPANSION
 end
 
 w2 = warning('off', 'CHEBFUN:aaa:Froissart');
-[f, pol] = aaa(W, Z, 'tol', tol);               % forward map in rational form
-[finv, polinv] = aaa(Z, W, 'tol', tol);         % inverse map in rational form
+[f0, pol] = aaa(W, Z, 'tol', tol);              % forward map
+zz  = 1e-4*scl*[1 1i -1 -1i];                   % finite diff for simplicity
+dwdz = sum(f0(ctr+zz)./zz);                     % derivative at ctr
+rot = exp(-1i*angle(dwdz));                     % rotation for f'(ctr) > 0
+f = @(z) rot*f0(z);                             % rotate mapping function
+W = rot*W;                                      % rotate points on circle
+[finv, polinv] = aaa(Z, W, 'tol', tol);         % inverse map
 warning(w2.state, 'MATLAB:rankDeficientMatrix')
 
 inC = inpolygon(real(pol), imag(pol), ...       % check for poles of f in region
