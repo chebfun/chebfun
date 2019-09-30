@@ -54,12 +54,13 @@ t1 = tic;
 err = Inf;
 scl = norm(C-ctr, inf);
 
-if poly == 0               % MAIN ALGORITHM: KERZMAN-STEIN INTEGRAL EQUATION
+if poly == 0               % DEFAULT ALGORITHM: KERZMAN-STEIN INTEGRAL EQUATION
 
     M = 300;
     while err > tol
         M = M + 300;
-        [g, Z, W] = kerzstein(C, M, ctr);
+        [g, Z, W] = kerzstein((C-ctr)/scl, M, ctr);
+        Z = Z*scl + ctr;
         gc = trigcoeffs(g);
         err = norm(gc([1:10 end-9:end]));           % a crude error measure
         if (err > tol) && (M >= 1200)
@@ -80,14 +81,14 @@ else                       % ALTERNATIVE ALGORITHM: POLYNOMIAL EXPANSION
         logn = logn + 1/2;
         Z = C(dom(1) + (1:M)'*diff(dom)/M);     % sample points
         Zscl = (Z-ctr)/scl;                     % rescale to improve conditioning
-        H = -log(abs(Z-ctr));                   % RHS for Dirichlet problem
+        H = -log(abs(Zscl));                    % RHS for Dirichlet problem
         n1 = 0:n;                               % exponents for real part
         n2 = 1:n;                               % of exponents for imag part
         A = [real(Zscl.^n1) imag(Zscl.^n2)];    % matrix for least-squares problem
         c = A\H;                                % soln of least-squares problem
         err = norm(A*c-H, inf);                 % max error
         cc = c(n1+1)-1i*[0; c(n+1+n2)];         % coeffs for harmonic -> analytic
-        W = (Z-ctr).*exp(((Z-ctr)/scl).^n1*cc); % images on boundary
+        W = Zscl.*exp(Zscl.^n1*cc);             % images on boundary
         if (err > tol) && (logn >= 9)
             warning('CONFORMAL did not converge')
             break
@@ -104,6 +105,8 @@ dwdz = sum(f0(ctr+zz)./zz);                     % derivative at ctr
 rot = exp(-1i*angle(dwdz));                     % rotation for f'(ctr) > 0
 f = @(z) rot*f0(z);                             % rotate mapping function
 W = rot*W;                                      % rotate points on circle
+sizeZ = norm(Z)
+sizeW = norm(W)
 [finv, polinv] = aaa(Z, W, 'tol', tol);         % inverse map
 warning(w2.state, 'CHEBFUN:aaa:Froissart')
 
@@ -126,9 +129,9 @@ if plots
     circ = exp(2i*pi*(0:300)/300);
   
     h1 = axes(PO, [.04 .38 .45 .53]);         % plot C and poles of f
-    plot(C, 'b', LW, 1), axis(1.6*[-1 1 -1 1])
-    axis square, hold on, set(gca,XT,-1:1,YT,-1:1)
-    plot(pol, '.r', MS, 8)
+    plot(C, 'b', LW, 1)
+    axis([real(ctr)+1.4*scl*[-1 1] imag(ctr)+1.4*scl*[-1 1]])
+    axis square, hold on, plot(pol, '.r', MS, 8)
     title([num2str(length(pol)) ' poles'],FW,NO)
   
     h2 = axes(PO, [.52 .38 .45 .53]);         % plot disk and poles of finv
