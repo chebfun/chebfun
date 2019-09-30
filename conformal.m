@@ -105,8 +105,6 @@ dwdz = sum(f0(ctr+zz)./zz);                     % derivative at ctr
 rot = exp(-1i*angle(dwdz));                     % rotation for f'(ctr) > 0
 f = @(z) rot*f0(z);                             % rotate mapping function
 W = rot*W;                                      % rotate points on circle
-sizeZ = norm(Z)
-sizeW = norm(W)
 [finv, polinv] = aaa(Z, W, 'tol', tol);         % inverse map
 warning(w2.state, 'CHEBFUN:aaa:Froissart')
 
