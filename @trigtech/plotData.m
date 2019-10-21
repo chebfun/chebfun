@@ -3,15 +3,15 @@ function data = plotData(f, g, h)
 %   DATA = PLOTDATA(F) returns a struct containing data that can be used for
 %   plotting F. The struct DATA contains the following fields:
 %
-%       xLine: x-coordinates of for plotting smooth curves.
+%       xLine: x-coordinates for plotting smooth curves.
 %       yLine: Function values of F at the coordinates stored in xLine.
-%       xPoints: x-coordinates of the Chebyshev points used to represent F.
-%       yPoints: Function value at the Chebyshev points used to represent F.
+%       xPoints: x-coordinates of the points used to represent F.
+%       yPoints: Function values at these points.
 %   
 %   DATA.xLine and DATA.yLine are used for plotting smooth curves (usually
 %   passed to PLOT() with the '-' option). 
 %
-%   DATA.xPoints and DATA.yPoints contain the (x, F(x)) data at the Chebyshev
+%   DATA.xPoints and DATA.yPoints contain the (x, F(x)) data at the
 %   grid used to represent F, and are used for plots with marks (e.g.
 %   PLOT(F,'-o').
 %
@@ -110,11 +110,11 @@ elseif ( isa(g, 'trigtech') )
         
         % Grid data for h:
         data.hGrid.xLine = trigpts(npts);
-        % Use the maximum of the lenghts of f, g and h to match the number of
+        % Use the maximum of the lengths of f, g and h to match the number of
         % values returned:    
         data.hGrid.xPoints = trigpts(len);
         
-         % Values on oversampled uniform grid:
+        % Values on oversampled uniform grid:
         data.zLine = get(prolong(h, npts), 'values');
         data.zPoints = get(prolong(h, len), 'values');  
         

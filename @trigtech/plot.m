@@ -1,4 +1,5 @@
 function varargout = plot(f, varargin)
+%disp('hello there!'), pause     %%%
 %PLOT   Basic linear plot for TRIGTECH objects. 
 %   PLOT(F) plots the TRIGTECH object F.
 %
