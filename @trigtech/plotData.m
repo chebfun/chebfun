@@ -38,7 +38,6 @@ end
 len = max([length(f), length(g), length(h)]);
 npts = min(max(501, round(4*pi*len)), trigtech.techPref().maxLength);
 
-
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
     'yLim', [], 'defaultXLim', 1, 'defaultYLim', 1);
@@ -104,6 +103,10 @@ elseif ( isa(g, 'trigtech') )
     % yLim:
     ydata = [get(g, 'lval'); data.yLine; get(g, 'rval')];
     data.yLim = [min(ydata(:)) max(ydata(:))];
+    
+    % Include end points to the curve
+    data.xLine = xdata;
+    data.yLine = ydata;
     
     if ( isa(h, 'trigtech') )
         % PLOT3(F, G, H)
