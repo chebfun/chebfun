@@ -12,7 +12,7 @@ function [f, finv, pol, polinv] = conformal(C, varargin)
 %
 %   CONFORMAL(..., 'numbers') prints various quantities
 %
-%   CONFORMAL(..., 'poly') uses an algorithm based on polynomials
+%   CONFORMAL(..., 'poly') uses a less robust algorithm based on polynomials
 %                          instead of the Kerzman-Stein integral equation
 %
 %   This experimental code is good for smooth simple regions, but easy to break.
@@ -76,20 +76,28 @@ else                       % ALTERNATIVE ALGORITHM: POLYNOMIAL EXPANSION
     dom = domain(C); 
     dom = dom([1 end]);
     while err > tol
-        n = round(2^logn);                      % degree of polynomial
-        M = 8*n;                                % number of sample points
+        n = round(2^logn);                    % degree of polynomial
+        M = 8*n;                              % number of sample points
         logn = logn + 1/2;
-        Z = C(dom(1) + (1:M)'*diff(dom)/M);     % sample points
-        Zscl = (Z-ctr)/scl;                     % rescale to improve conditioning
-        H = -log(abs(Zscl));                    % RHS for Dirichlet problem
-        n1 = 0:n;                               % exponents for real part
-        n2 = 1:n;                               % of exponents for imag part
-        A = [real(Zscl.^n1) imag(Zscl.^n2)];    % matrix for least-squares problem
-        c = A\H;                                % soln of least-squares problem
-        err = norm(A*c-H, inf);                 % max error
-        cc = c(n1+1)-1i*[0; c(n+1+n2)];         % coeffs for harmonic -> analytic
-        W = Zscl.*exp(Zscl.^n1*cc);             % images on boundary
-        if (err > tol) && (logn >= 9)
+        Z = C(dom(1) + (1:M)'*diff(dom)/M);   % sample points
+        Zscl = (Z-ctr)/scl;                   % rescale to improve conditioning
+        G = -log(abs(Zscl));                  % RHS for Dirichlet problem
+        n1 = 0:n;                             % exponents for real part
+        n2 = 1:n;                             % of exponents for imag part
+        Q = ones(size(Zscl));                 % Arnoldi.  Q has orthog cols of norm sqrt(M).
+        H = zeros(n+1,n);  
+        for k = 1:n
+            v = Zscl.*Q(:,k)/M;
+            v = v - Q*(Q'*v)/M;               % or execute twice for better orthogonality!
+            H(k+1,k) = norm(v)/sqrt(M);       % At end, Zscl.*Q(:,1:n)/M = Q*H
+            Q = [Q v/H(k+1,k)];               % Q has orthog cols of norm sqrt(M)
+        end
+        A = [real(Q) imag(Q(:,2:end))];
+        c = A\G;                              % soln of least-squares problem
+        err = norm(A*c-G, inf);               % max error
+        cc = c(n1+1)-1i*[0; c(n+1+n2)];       % coeffs for harmonic -> analytic
+        W = Zscl.*exp(Q*cc);                  % images on boundary
+        if (err > tol) && (logn >= 9.5)
             warning('CONFORMAL did not converge')
             break
         end
@@ -99,21 +107,21 @@ else                       % ALTERNATIVE ALGORITHM: POLYNOMIAL EXPANSION
 end
 
 w2 = warning('off', 'CHEBFUN:aaa:Froissart');
-[f0, pol] = aaa(W, Z, 'tol', tol);              % forward map
-zz  = 1e-4*scl*[1 1i -1 -1i];                   % finite diff for simplicity
-dwdz = sum(f0(ctr+zz)./zz);                     % derivative at ctr
-rot = exp(-1i*angle(dwdz));                     % rotation for f'(ctr) > 0
-f = @(z) rot*f0(z);                             % rotate mapping function
-W = rot*W;                                      % rotate points on circle
-[finv, polinv] = aaa(Z, W, 'tol', tol);         % inverse map
+[f0, pol] = aaa(W, Z, 'tol', tol);            % forward map
+zz  = 1e-4*scl*[1 1i -1 -1i];                 % finite diff for simplicity
+dwdz = sum(f0(ctr+zz)./zz);                   % derivative at ctr
+rot = exp(-1i*angle(dwdz));                   % rotation for f'(ctr) > 0
+f = @(z) rot*f0(z);                           % rotate mapping function
+W = rot*W;                                    % rotate points on circle
+[finv, polinv] = aaa(Z, W, 'tol', tol);       % inverse map
 warning(w2.state, 'CHEBFUN:aaa:Froissart')
 
-inC = inpolygon(real(pol), imag(pol), ...       % check for poles of f in region
-                real(Z), imag(Z));
+inC = inpolygon(real(pol), imag(pol), ...     % check for poles of f in region
+	real(Z), imag(Z));
 if max(inC) > 0
-    warning('CONFORMAL: pole in region')
+warning('CONFORMAL: pole in region')
 end
-if min(abs(polinv)) < 1                         % check for poles of finv in disk
+if min(abs(polinv)) < 1                       % check for poles of finv in disk
     warning('CONFORMAL: pole in disk')
 end
 tcomp = toc(t1);
