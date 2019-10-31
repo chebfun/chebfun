@@ -87,7 +87,7 @@ else                       % ALTERNATIVE ALGORITHM: POLYNOMIAL EXPANSION
         Q = ones(size(Zscl));                 % Arnoldi.  Q has orthog cols of norm sqrt(M).
         H = zeros(n+1,n);  
         for k = 1:n
-            v = Zscl.*Q(:,k)/M;
+            v = Zscl.*Q(:,k);
             v = v - Q*(Q'*v)/M;               % or execute twice for better orthogonality!
             H(k+1,k) = norm(v)/sqrt(M);       % At end, Zscl.*Q(:,1:n)/M = Q*H
             Q = [Q v/H(k+1,k)];               % Q has orthog cols of norm sqrt(M)
