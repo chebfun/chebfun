@@ -20,13 +20,16 @@ function [f, finv, pol, polinv] = conformal(C, varargin)
 %   Examples:
 %
 %   C = chebfun('exp(pi*1i*t)','trig')*(1+.15*randnfun(.2,'trig'));
-%   [f, finv] = conformal(C, 'plots');                              % random
+%   [f, finv] = conformal(C, 'plots');                               % random
+%
+%   C = chebfun('2*cos(t)+1i*(sin(t)+2*cos(t).^3)',[0 2*pi],'trig'); % Ellacott
+%   conformal(C, 'poly', 'plots');                                   % blade
 %
 %   C = chebfun('exp(pi*1i*t)*(1+.3*cos(6*pi*t))','trig');
-%   conformal(C, 'plots', 'tol', 1e-8, 'numbers');                  % snowflake
+%   conformal(C, 'plots', 'tol', 1e-8, 'numbers');                   % snowflake
 %
 %   s = chebfun('s'); C = join(s-.5i,1+.5i*s,.5i-s,-1-.5i*s);
-%   conformal(C, 'poly', 'plots');                                  % rectangle
+%   conformal(C, 'poly', 'plots');                                   % rectangle
 
 %%
 %   Default algorithm:
