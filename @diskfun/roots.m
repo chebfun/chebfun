@@ -36,21 +36,21 @@ if ( nargin > 1 )
         dom = [-pi pi 0 1];
         % we require f and g to be chebfuns. Cart2pol isn't enough because
         % it keeps the rows represented in the Fourier basis.
-        f = chebfun2(@(t,r) feval(f, t, r, 'polar'), dom);
+        f = chebfun2(@(t,r) feval(f, t, r), dom);
         g = chebfun2(@(t,r) feval(g, t, r, 'polar'), dom); 
         r = roots@separableApprox(f,g, varargin{3:end});
         
         %convert to cartesian
-        [x,y] = pol2cart(r(:,1),r(:,2));
-        r = [x,y];
+        if ~isempty(r)
+            [x,y] = pol2cart(r(:,1),r(:,2));
+            r = [x,y];
+        end
         return
     end
 end
 
 rts = roots@separableApprox(f, varargin{2:end});
 
-% Now make into a collection of array-valued chebfuns ready for plotting on
-% the disk. 
 
 %convert from polar coords to complex-valued chebfuns: 
 x = chebpts(max(length(rts),101));
@@ -60,8 +60,7 @@ rvals = imag(r).*exp(1i*real(r)); %c = re^(i*x)
 
 r = chebfun(rvals);
 
-% This code, like spherefun, 
-% creates a real-valued parametrization of the curves. 
+% The code below creates a real-valued parametrization of the curves. 
 %
 % Go through each component and make it an array-valued chebfun: 
 % for k = 1:size(vals, 2)
