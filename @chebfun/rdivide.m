@@ -195,6 +195,15 @@ if ( isa(f, 'chebfun') )
     % Divide the pointValues:
     h.pointValues = f.pointValues./g.pointValues;
     
+    % Avoid NaN or Inf from divide by zero where possible:
+    hpv = h.pointValues; fpv = f.pointValues; gpv = g.pointValues;
+    idx = (isnan(hpv) & ~(isnan(fpv) | isnan(gpv))) | ...
+        (isinf(hpv) & (abs(fpv) < 100*chebfuneps*vscale(f)));
+    if ( any(idx) )
+        pvavg = (feval(h, h.domain, 'left') + feval(h, h.domain, 'right'))/2;
+    end
+    h.pointValues(idx) = hpv(idx);
+    
 else
 
     % Copy g to h in preparation for output:
