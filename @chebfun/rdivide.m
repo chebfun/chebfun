@@ -201,8 +201,9 @@ if ( isa(f, 'chebfun') )
         (isinf(hpv) & (abs(fpv) < 100*chebfuneps*vscale(f)));
     if ( any(idx) )
         pvavg = (feval(h, h.domain, 'left') + feval(h, h.domain, 'right'))/2;
+        h.pointValues(idx) = pvavg(idx);
     end
-    h.pointValues(idx) = hpv(idx);
+    
     
 else
 
