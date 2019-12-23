@@ -6,6 +6,8 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
+%%
+
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
@@ -203,6 +205,14 @@ pass(22) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
 h2 = chebfun(@(x) [cos(x)./(2+x), sin(x)./(2+x.^3)], dom, pref);
 pass(23) = norm(h1-h2, inf) < 1e2*eps*get(h2,'vscale');
 
+%% Avoid introducing NaNs/Infs when dividing by zero:
+
+y1 = chebfun('abs(sin(5*x))','splitting','on');
+y2 = chebfun('abs(sin(4*x))','splitting','on');
+y3 = y2 - y1;
+g = (exp(2*y3) - exp(y3))./y3;
+mg = merge(g);
+pass(24) = (vscale(g) < inf) && (numel(g.funs) == 6);
 
 %%
 % #1111

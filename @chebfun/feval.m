@@ -100,6 +100,7 @@ numFuns = numel(f.funs);
 
 funs = f.funs;
 dom = f.domain;
+isTrans = f.isTransposed;
 
 %% LEFT AND RIGHT LIMITS:
 % Deal with feval(f, x, 'left') and feval(f, x, 'right'):
@@ -162,10 +163,12 @@ if ( any(xAtBreaks) )
     if ( leftFlag )
         % Note that for leftFlag we use 'rval-local', which corresponds to the
         % function value at the right part of the subdomain.
-        pointValues = [f.pointValues(1,:); get(f, 'rval-local')];
+        rvals = get(f, 'rval-local'); if ( isTrans ), rvals = rvals.'; end
+        pointValues = [f.pointValues(1,:); rvals];
     elseif ( rightFlag )
         % Similarly rightFlag uses lval-local.
-        pointValues = [get(f, 'lval-local'); f.pointValues(end,:)];
+        lvals = get(f, 'lval-local'); if ( isTrans ), lvals = lvals.'; end
+        pointValues = [lvals; f.pointValues(end,:)];
     else
         pointValues = f.pointValues;
     end

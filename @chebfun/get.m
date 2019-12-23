@@ -11,7 +11,7 @@ function out = get(f, prop, simpLevel)
 %       'ishappy'        - Is F happy?
 %       'lval'           - Value(s) of F at left-hand side of domain.
 %       'rval'           - Value(s) of F at right-hand side of domain.
-%       'lval-local      - Value(s) of F's FUNs at left sides of their domains.
+%       'lval-local'     - Value(s) of F's FUNs at left sides of their domains.
 %       'rval-local'     - Value(s) of F's FUNs at right sides of their domains.
 %       'exps'           - Exponents in a CHEBFUN, a two vector.
 %       'exponents'
