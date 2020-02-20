@@ -24,22 +24,22 @@ pass(3) = doesNotCrash(@() quiver(N, [0 2 0 4], 'normalize', true, ...
 N = chebop(@(t,u) diff(u)-sin(t)*u);
 pass(4) = doesNotCrash(@() quiver(N,[-1.2*pi 1.2*pi -1 1]));
 
-%% Third order ODE should give an error
-N = chebop(0, 10*pi);
-N.op = @(t,y) diff(y, 3) + sin(y);
-try 
-    quiver(N,[-2 2 -1 1]);
-catch ME
-    pass(5) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:quiver:tooHighOrder');
-end
-
-%% Second order coupled system should also give an error
-N = chebop(@(t,u,v) [diff(u,2)-2.*u+u.*v; diff(v)+v-u.*v], [0 4]);
-try 
-    quiver(N,[-2 2 -1 1]);
-catch ME
-    pass(6) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:quiver:tooHighOrder');
-end
+% %% Third order ODE should give an error
+% N = chebop(0, 10*pi);
+% N.op = @(t,y) diff(y, 3) + sin(y);
+% try 
+%     quiver(N,[-2 2 -1 1]);
+% catch ME
+%     pass(5) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:quiver:tooHighOrder');
+% end
+% 
+% %% Second order coupled system should also give an error
+% N = chebop(@(t,u,v) [diff(u,2)-2.*u+u.*v; diff(v)+v-u.*v], [0 4]);
+% try 
+%     quiver(N,[-2 2 -1 1]);
+% catch ME
+%     pass(6) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:quiver:tooHighOrder');
+% end
 
 end
 
