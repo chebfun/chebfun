@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref; 
 end 
 
-tol = 10000*pref.cheb2Prefs.chebfun2eps;
+tol = 20000*pref.cheb2Prefs.chebfun2eps;
 j = 1; 
 
 Battery = {
