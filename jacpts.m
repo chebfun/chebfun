@@ -359,7 +359,7 @@ function [x, w, v] = asy1(n, a, b, nbdy)
     % Approximate roots via asymptotic formula: (Gatteschi and Pittaluga, 1985)
     K = (2*(n:-1:1)+a-.5)*pi/(2*n+a+b+1);
     tt = K + 1/(2*n+a+b+1)^2*((.25-a^2)*cot(.5*K)-(.25-b^2)*tan(.5*K));
-
+    
     % First half (x > 0):
     t = tt(tt <= pi/2);
     mint = t(end-nbdy+1);
@@ -445,13 +445,13 @@ function [vals, ders] = feval_asy1(n, a, b, t, idx, flag)
             sgn = -sgn;
             fact = fact*(2*j+3)*(2*j+2);
             DH = DH.*dh2;
-            if ( norm(dc, inf) < eps/2000 )
+            if ( norm(dc(idx), inf) < eps/2000 )
                 break
             end
         end
-        tmp(2:2:end) = -tmp(2:2:end);          % }
-        [~, loc] = max(abs(tmp));              %  } Fix up the sign.
-        tmp = sign(cosA(1,loc)*tmp(loc))*tmp;  % }
+        tmp(2:2:end) = -tmp(2:2:end);                    % }
+        [~, loc] = max(abs(tmp(idx)));                   %  } Fix up the sign.
+        tmp = sign(cosA(1,idx(loc))*tmp(idx(loc)))*tmp;  % }
         cosA(1,:) = tmp;
     end
 

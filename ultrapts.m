@@ -319,16 +319,15 @@ PP = (-n*x.*P + (n+lam2-1)*P1)./c2;
 % Quadrature weights for nonnegative values:
 % w = cte./(c2.*PP.*PP); % Usual relation.
 w = 1./(c2.*PP.^2);
- 
- 
+  
 if ( n >= 20 )
     cte = gammaratio(n+1,lam2-1);
-    C = 4^(1-lambda)*pi*cte/exp(2*gammaln(lambda));
+    C = 4^(1-lambda)*pi*cte/exp(2*gammaln(lambda+1));
 else
-    C = 4^(1-lambda)*pi*exp(gammaln(n+lam2)-gammaln(n+1)-2*gammaln(lambda));
+    C = 4^(1-lambda)*pi*exp(gammaln(n+lam2)-gammaln(n+1)-2*gammaln(lambda+1));
 end
-w = C*w;
- 
+C = C*lambda*lambda;
+w = C*w; 
  
 % Reflect for negative values:
 s = mod(n,2);
