@@ -53,9 +53,12 @@ c = randn(m,n) + 1i*randn(m,n);         % random coeffs
 c(1,:) = sqrt(2)*real(c(1,:));
 c = (exp(-sqrt((1:m)'/L)).*c)/sqrt(L);  % root-expoential decay
 c = [conj(c(end:-1:2,:)); c];           % symmetrize for real result
+
 if cmplx
-disp('not implemented');                 
+    error('CHEBFUN:smoothie:UnknownOption',...
+        'Unknown input parameter.')
 end
+
 f = chebfun(c, dom, 'trig', 'coeffs');
 
 end
