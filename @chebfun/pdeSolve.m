@@ -828,6 +828,7 @@ clear global
             F = double(pdeFun(t, x, myU));
             
             if ( ISPERIODIC )
+                F = F(:);
                 return
             end
             
