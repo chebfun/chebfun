@@ -6,14 +6,11 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
-% Save the current warning state and then clear it in case scribble() issued a
-% warning previously.
+% Save the current warning state and then clear it
 [lastmsg, lastid] = lastwarn();
 lastwarn('');
 
-% To pass, this call to scribble() must not crash or generate any warnings.
 circle = chebfun('exp(pi*1i*x)','trig');
-
 C = real(circle) + .8i*imag(circle);    
 
 % compare the two algorithms on a simple problem

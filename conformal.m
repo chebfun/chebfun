@@ -1,7 +1,7 @@
 function [f, finv, pol, polinv] = conformal(C, varargin)
 %% CONFORMAL  Conformal map to unit disk
 %   CONFORMAL(C, ctr) computes a conformal map F of the region bounded by the
-%   complex periodic chebfun C to the unit disk and its inverse FINV, with the
+%   complex periodic chebfun C to the unit disk and its inverse FINV, with
 %   F(ctr) = 0 and F'(ctr) > 0.  Both maps are represented by function
 %   handles evaluating rational functions, whose poles are optionally returned
 %   in the vectors POL and POLINV.  If ctr is omitted it is set to 0.
@@ -42,15 +42,19 @@ function [f, finv, pol, polinv] = conformal(C, varargin)
 %     (3) Set f = z*exp(w(z-ctr));
 %     (4) Use AAA to approximate f and its inverse by rational functions
 %
-%   Although in principle these algorithms should be imbedded in the
+%   Although in principle these algorithms should be embedded in the
 %   Chebfun constructor, for simplicity in this numerically challenging
 %   area we have not done that.
 %
 % This code was written by L. N. Trefethen in September 2019.  The
 % Kerzman-Stein part originates with Anne Greenbaum and Trevor Caldwell.
-% For information about the use of AAA approximation, see Gopal and Trefethen,
-% Representation of conformal maps by rational functions, Numer. Math.
-% 142 (2019), 359--382.
+% References:
+% 
+% A. Gopal and L. N. Trefethen, Representation of conformal maps by
+% rational functions, Numer. Math. 142 (2019), 359--382.
+%
+% L. N. Trefethen, Numerical conformal mapping with rational 
+% functions, Computational Methods and Function Theory, to appear.
 
 t1 = tic;
 [ctr, tol, plots, numbers, poly] = parseinputs(C, varargin{:});
@@ -62,7 +66,7 @@ if poly == 0               % DEFAULT ALGORITHM: KERZMAN-STEIN INTEGRAL EQUATION
     M = 300;
     while err > tol
         M = M + 300;
-        [g, Z, W] = kerzstein((C-ctr)/scl, M, ctr);
+        [g, Z, W] = kerzstein((C-ctr)/scl, M, 0);
         Z = Z*scl + ctr;
         gc = trigcoeffs(g);
         err = norm(gc([1:10 end-9:end]));           % a crude error measure
