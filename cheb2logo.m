@@ -40,7 +40,7 @@ ff = [f(xx) f2(xx)];
 close all
 surf(repmat([0 1], length(xx), 1), -[xx xx], ff)
 shading interp
-colormap winter
+colormap(gca, winter)
 
 fs = 18;
 
@@ -71,7 +71,7 @@ plot3(0*xx, -xx, f(xx), LW, lw, 'Color', C)
 plot3(0*xx + 1, -xx, f2(xx), 'b', LW, lw, 'Color', C)
 plot3([0 1], -dom(2)*[1 1], f(xx(end)) + [0 2], 'b', LW, lw, 'Color', C)
 plot3([0 1], [1 1], [1 3], 'b', LW, lw, 'Color', C)
-colormap([1 1 1 ; .5 .5 .5]);
+colormap(gca, [1 1 1 ; .5 .5 .5]);
 
 flist = listfonts;
 k = strmatch('Rockwell', flist);  % 1st choice
