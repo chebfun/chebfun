@@ -60,13 +60,13 @@ equations and vector calculus. Many users use the Examples as templates for
 their own problems.
 
 To get a taste of what computing with Chebfun is like, type
-```
+```matlab
 x = chebfun('x');
 ```
 and start playing. The variable `x` is a chebfun and can be manipulated in a
 way that feels symbolic, although everything Chebfun does is numeric. So try,
 for instance:
-```
+```matlab
 f = sin(12*x).*exp(-x);         % A function on [-1, 1]
 g = max(f, 1./(x+2));           % The max of f and 1./(x+2)
 plot(g)                         % A function with discontinuous derivative
