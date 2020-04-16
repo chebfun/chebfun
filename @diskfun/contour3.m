@@ -156,15 +156,6 @@ end
 [c, h] = contour3( X, Y, vals, argin{:} );
 axis square
 
-% Add unit circle
-holdState = ishold;
-circ = exp(1i*pi*linspace(-1,1,101));
-hold on
-plot(real(circ), imag(circ), 'k-', 'Linewidth', .3)
-if ( ~holdState )
-    hold off
-end
-
 % Return plot handle if appropriate.
 if ( nargout == 1 )
     varargout = {h};
