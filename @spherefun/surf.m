@@ -8,6 +8,7 @@ function varargout = surf(f, varargin)
 %   SURF(..., 'PROJECTION', type) plots F using one of the following map
 %   projections specified by the string type:
 %     'sphere'          : 3D plot on the sphere (default)
+%     'bumpy'           : 3D plot on the sphere with bumps
 %     'equirectangular' : Standard latitude-longitude cylindrical projection
 %     'hammer'          : Hammer (or Hammer-Aitoff) pseudoazimuthal projection
 %     'albers'          : Albers conic projection
@@ -85,7 +86,10 @@ while ( ~isempty(varargin) )
         end
     elseif strcmpi(varargin{1}, 'projection')
         plotType = varargin{2};
-        addGrid = 1;
+        if ( ~any(strcmpi(plotType, {'sphere', 'bumpy'})) )
+            % Only add grid automatically for 2D projections.
+            addGrid = 1;
+        end
         varargin(1:2) = [];
     else
         argin{j} = varargin{1};
@@ -124,8 +128,16 @@ if ( isa(f,'spherefun') )
     
     
     % Plot on the surface of the sphere: 3D plot
-    if strcmpi(plotType,'sphere')
-        [xx,yy,zz] = sph2cart(ll,pi/2 - tt,ones(size(ll)));
+    if any(strcmpi(plotType, {'sphere', 'bumpy'}))
+        vv = ones(size(ll));
+        lim = [-1 1];
+        if strcmpi(plotType, 'bumpy')
+            % Bump out the radial components according to function values.
+            scl = 0.15;
+            vv = vv + rescale(C, -scl, scl); % Only bump out by scl.
+            lim = lim + [-scl scl];          % Pad the axis limits.
+        end
+        [xx,yy,zz] = sph2cart(ll,pi/2 - tt,vv);
         h = surf(xx, yy, zz, C, defaultOpts{:}, argin{:});
         if addGrid == 1
             [xxg,yyg,zzg] = sph2cart(llgl,pi/2-ttgl,1+0*llgl);
@@ -137,9 +149,9 @@ if ( isa(f,'spherefun') )
                 hold off;
             end
         end
-        xlim([-1 1])
-        ylim([-1 1])
-        zlim([-1 1])
+        xlim(lim)
+        ylim(lim)
+        zlim(lim)
     else
         % Compute the mapped points
         [xh,yh] = sph2map(plotType,ll,tt);
