@@ -8,7 +8,7 @@ function varargout = contour3( f, varargin )
 %   The values V are still chosen automatically.
 %   
 %   CONTOUR3(F, V) draws LENGTH(V) contour lines at the values specified in
-%   vector V. Use CONTOUR3(F, [V V]) to compute a single contour at the
+%   the vector V. Use CONTOUR3(F, [V V]) to compute a single contour at the
 %   level V.
 %
 %   CONTOUR3(X, Y, F, ...), CONTOUR3(X, Y, F, N, ...), and
@@ -19,7 +19,7 @@ function varargout = contour3( f, varargin )
 %   CONTOURC and a handle H to a contour object. This handle can be used as
 %   input to CLABEL.
 %
-%   CONTOUR3(F, 'NUMPTS', N) plots the contour lines on a N by N uniform
+%   CONTOUR3(F, 'NUMPTS', N) plots the contour lines on an N by N uniform
 %   grid. If NUMPTS is not given then we plot on a 200 by 200 grid.
 %
 %   CONTOUR3(F, 'PIVOTS', STR) plots the contour lines with the pivot
