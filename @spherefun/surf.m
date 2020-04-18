@@ -35,6 +35,9 @@ function varargout = surf(f, varargin)
 %      f = spherefun.sphharm(4,0) + sqrt(5/7)*spherefun.sphharm(4,4);
 %      surf(f, 'projection', 'hammer', 'grid')
 %
+%      f = spherefun.sphharm(10,4);
+%      surf(f,'projection','bumpy'), camlight, axis off
+%
 % See also MESH, PLOT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
