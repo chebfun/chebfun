@@ -181,6 +181,14 @@ for pIndex = 1:numOfPars
             str(p) = '-';
         end
 
+        if ( (minOpInside == 2) && ~isempty(nextOpLeft) && ...
+                strcmp(str(pLeft - 1), '/') )
+            % Deal with division.  Unlike subtraction, we don't intend to
+            % generally change a/(b/c) into a*c/b, so just move on.
+            % (See GitHub issue #2357.)
+            continue;
+        end
+
         % Remove parenthesis pairs
         str(pLeft) = [];
         str(pRight-1) = [];
