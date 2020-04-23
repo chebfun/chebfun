@@ -42,6 +42,10 @@ if ( (numel(s) == 2) && all( s == f.domain) )
     return
 end
 
+if ( ~islinear(f.mapping) )
+    error('Restrict not yet implemented for nonlinear mappings.');
+end
+
 % Compute the breaks in [-1,1] space and restrict the onefun:
 t = f.mapping.Inv(s);
 

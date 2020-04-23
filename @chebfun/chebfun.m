@@ -640,6 +640,14 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Store exponents.
             data.exponents = args{2};
             args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'map') )
+            % Store map types.
+            data.map = args{2};
+            args(1:2) = [];     
+        elseif ( strcmpi(args{1}, 'singmap') )
+            % Store map types.
+            data.map = @(dom) singularMapping.singmap(dom, args{2});
+            args(1:2) = [];            
         elseif ( any(strcmpi(args{1}, 'chebkind')) )
             % Translate "chebkind" and "kind" --> "tech.@chebtech".
             if ( (isnumeric(args{2}) && (args{2} == 1)) || ...
