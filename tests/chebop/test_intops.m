@@ -79,5 +79,13 @@ A.bc = 'periodic';
 u = A\f;
 pass(9) = norm(A*u-f) < tol;
 
+
+%%
+% From #2360.
+K = @(x,y) 1+0*x;
+N = chebop(@(x,u) - u + exp(x) + 1/3*x*(1-exp(3*x)) + x*volt(K, u^3), [0, 1]);
+u = N\0;
+pass(10) = norm(u-chebfun(@exp, [0 1])) < tol;
+
 end
 
