@@ -1,5 +1,5 @@
 function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
-%AAA   Trigonometric AAA and AAA-Lawson (near-minimax) real or complex
+%AAATRIG   Trigonometric AAA and AAA-Lawson (near-minimax) real or complex
 %      rational approximation.
 %   R = AAATRIG(F, Z) computes an trigonometric AAA rational approximant R (function
 %   handle) to data F on the set of sample points Z.  The rational
@@ -9,7 +9,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %   (N,N)).
 %
 %   [R, POL, RES, ZER] = AAATRIG(F, Z) returns vectors of poles POL, residues
-%   RES, and zeros ZER of R.
+%   RES, and zeros ZER of R. The poles and zeros are repeated at interavals
+%   of 2*pi.
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAATRIG(F, Z) also returns the vectors of
 %   support points ZJ, approximation values FJ = r(ZJ), and weights WJ of
@@ -88,7 +89,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %   [2] Yuji Nakasukasa and Lloyd N. Trefethen, An algorithm for real and
 %   complex rational minimax approximation, arXiv, 2019.
 %   
-%   [3] P. J. Baddoo, “AAA rational approximation of periodic functions,”
+%   [3] P. J. Baddoo, “AAA rational approximation of periodic functions”,
 %   In Prepration, 2020.
 %
 % See also AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
@@ -177,7 +178,7 @@ for m = 1:mmax
                 Jv = [Jv, size(A,1)];
             end
         elseif strcmp(form,'even')
-        A = [A; (finfP-fj.')];                  % Add a row to A to enforce behaviour at infinity.
+        A = [A; (finfP-fj.')]; 
         Jv = [Jv, size(A,1)];
         end
     end
@@ -223,7 +224,7 @@ maxerrAAA = maxerr;                     % error at end of AAA
 if ( M == 2 )
     zj = Z;
     fj = F;
-    wj = [1; -1];       % Only pole at infinity.
+    wj = [1; -1];       
     wj = wj/norm(wj);   % Impose norm(w) = 1 for consistency.
     errvec(2) = 0;
     maxerrAAA = 0;
@@ -240,7 +241,7 @@ wt = NaN(M,1); wt_new = ones(M,1);
 if ( nlawson > 0 )      % Lawson iteration
 
   if ~isempty([finfP,finfM])
-    warning('Specifying the function values is not currently compatible with Lawson iteration.')
+    warning('Specifying the function values at infinity is not currently compatible with Lawson iteration.')
   end
    
     maxerrold = maxerrAAA;
@@ -253,8 +254,8 @@ if ( nlawson > 0 )      % Lawson iteration
     for j = 1:nj
         [i,~] = find(Z==zj(j));               % support pt rows are special
         A(i,:) = 0;
-        A(i,2*j-1) = 2; % changed from original PJB
-        A(i,2*j) = 2*F(i); % changed from original PJB
+        A(i,2*j-1) = 2;
+        A(i,2*j) = 2*F(i);
     end
     stepno = 0;
     while ( (nlawson < inf) & (stepno < nlawson) ) |...
