@@ -212,6 +212,15 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
                 return
             end
             
+            if ( (isa(f, 'chebfun2') && isa(g, 'adchebfun2')) ...
+                    || (isa(f, 'adchebfun2') && isa(g, 'chebfun2')) )
+                % catch error: CHEBFUN2 * ADCHEBFUN2
+                msg1 = 'Cannot use * between chebfun2 and adchebfun2.\n';
+                msg2 = 'Did you mean .* ?';
+                msg = strcat(msg1, msg2);
+                error('ADCHEBFUN2:mtimes:InvalidOperation', msg);
+            end
+            
             if ( isa(f, 'double') ) % DOUBLE * ADCHEBFUN2.
                 h = g;
                 h.func = f * vertcat(g.func);          
