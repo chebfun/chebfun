@@ -1,13 +1,15 @@
-function [x, w, v] = radaupts(n, varargin)
+function [x, w, v] = radaupts(n, dom)
 %RADAUPTS   Gauss-Legendre-Radau quadrature nodes and weights.
-%  RADAUPTS(N) returns N Legendre-Radau points X in (-1,1).
+%  RADAUPTS(N) returns N Legendre-Radau points X in [-1,1).
 %
 %  [X, W] = RADAUPTS(N) returns also a row vector W of weights for
-%  Gauss-Legendre-Lobatto quadrature.
+%  Gauss-Legendre-Radau quadrature.
 %
 %  [X, W, V] = RADAUPTS(N) returns additionally a column vector V of weights in
 %  the barycentric formula corresponding to the points X. The weights are scaled
 %  so that max(abs(V)) = 1.
+%
+%  ... = RADAUPTS(N, [A,B]) scales the nodes and weights for the interval [A,B) .
 %
 %  In each case, N should be a positive integer.
 %
@@ -34,35 +36,44 @@ function [x, w, v] = radaupts(n, varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: Scaled domains?
 
 %% Trivial cases:
 if ( n == 1 )
     x = -1;
     w = 2;
     v = 1;
-    return
+    
 elseif ( n == 1 )
     x = [-1, 1/3];
     w = [.5 ; 1.5];
     v = [-1 ; 1];
-    return
+    
+else
+    % Call JACPTS():
+    [x, w, v] = jacpts(n - 1, 0, 1);
+
+    % Nodes:
+    x = [-1 ; x];
+
+    % Quadrature weights:
+    w = [2/n^2, w./(1 + x(2:end).')];
+
+    % Barycentric weights:
+    v = v./(1 + x(2:end));
+    v = v/max(abs(v));
+    v1 = -abs(sum(x(2:end).*v));
+    v = [v1 ; v];
 end
 
-%% Call JACPTS():
-[x, w, v] = jacpts(n - 1, 0, 1, varargin{:});
-
-%% Nodes:
-x = [-1 ; x];
-
-%% Quadrature weights:
-w = [2/n^2, w./(1 + x(2:end).')];
-
-%% Barycentric weights:
-v = v./(1 + x(2:end));
-v = v/max(abs(v));
-v1 = -abs(sum(x(2:end).*v));
-v = [v1 ; v];
+% Scale the nodes and weights:
+if ( nargin > 1 )
+    if ( dom(1) == -1 && dom(2) == 1 )
+        % Nodes are already on [-1, 1];
+    else
+        x = dom(2)*(x + 1)/2 + dom(1)*(1 - x)/2;
+        w = (diff(dom)/2)*w;
+    end
+end
 
 end
 

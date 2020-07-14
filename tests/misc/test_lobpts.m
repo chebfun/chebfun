@@ -14,4 +14,9 @@ pass(5) = abs(w(37) - 0.029306411216166) < tol;
 pass(6) = abs(v(37) + 0.622355798366776) < tol;
 pass(7) = ( x(1) == -1 && x(n) == 1 );
 
+% Test domain scaling
+[x, w] = lobpts(n, [0 1]);
+pass(8) = x(1) == 0 && x(end) == 1;
+pass(9) = abs(w*x - 1/2) < tol && abs(w*x.^2 - 1/3) < tol;
+
 end
