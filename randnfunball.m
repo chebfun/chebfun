@@ -145,10 +145,12 @@ fcart = randnfun3( lambda );
 % Create a tensor product grid in (r,lam,th)
 sz = min(length(fcart),50);
 
-% Sample on a [sz,sz,sz] grid:
-r = chebpts( sz );
-lam  = pi*trigpts( 2*sz+1 );
-th  = pi*trigpts( 2*sz+1 );
+% Sample on a [0,1] x [-pi,pi[ x [0,pi] grid:
+r = chebpts( sz + 1 - mod(sz,2) );
+r = r(floor(length(r)/2)+1:end);
+lam  = pi*trigpts( 2*sz+2 );
+th  = pi*trigpts( 2*sz+2 );
+th = [th(length(th)/2+1:end); pi];
 
 [rr, ll, tt] = ndgrid(r, lam, th);
 
