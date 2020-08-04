@@ -37,8 +37,8 @@ end
 m = numel(zj);
 npts = numel(zz);
 
-zv = zz(:);                            % vectorize zz if necessary
-zvp= zv - 2*pi*floor(real(zv/(2*pi))); % project evaluation points onto first period window
+zv = zz(:);                            % Vectorize zz if necessary
+zvp= zv - 2*pi*floor(real(zv/(2*pi))); % Project evaluation points onto first period window
 
 % Define basis functions
 if strcmp(form,'even')
@@ -55,6 +55,7 @@ rp = zeros(npts,N+1);
 D = zeros(m,m,N+1);
 D(:,:,1) = eye(m);
 rp(:,1) = rn;
+
 % Compute the N derivatives
 for p = 1:N
     % Derivative away from support points
@@ -104,7 +105,7 @@ rp(isinf(real(zvp/1i)),N+1) = 0;
 % Reshape to input format:
 d = reshape(rp(:,N+1), size(zz));
 
-end % End of REVAL().
+end %
 
 function d = diffCot(t,n) % Returns the n-th derivative of Cot evaluated at t
 % using derivative polynomials. The t can take arbitrary dimension.
