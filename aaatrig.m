@@ -1,15 +1,15 @@
 function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %AAATRIG   Trigonometric AAA and AAA-Lawson (near-minimax) real or complex
 %      rational approximation.
-%   R = AAATRIG(F, Z) computes an trigonometric AAA rational approximant R (function
-%   handle) to data F on the set of sample points Z.  The rational
-%   approximant is periodic with period 2*pi. F may be given by its values
-%   at Z, or as a function handle or a chebfun.  R = AAATRIG(F, Z, 'degree', N)
+%   R = AAATRIG(F, Z) computes an trigonometric AAA rational approximant R
+%   (function handle) to data F on the set of sample points Z.  The rational
+%   approximant is periodic with period 2*pi. F may be given by its values at
+%   Z, or as a function handle or a chebfun.  R = AAATRIG(F, Z, 'degree', N)
 %   computes the minimax approximation of degree N (i.e., rational type
 %   (N,N)).
 %
 %   [R, POL, RES, ZER] = AAATRIG(F, Z) returns vectors of poles POL, residues
-%   RES, and zeros ZER of R. The poles and zeros are repeated at interavals
+%   RES, and zeros ZER of R. The poles and zeros are repeated at intervals
 %   of 2*pi.
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAATRIG(F, Z) also returns the vectors of
@@ -89,8 +89,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %   [2] Yuji Nakasukasa and Lloyd N. Trefethen, "An algorithm for real and
 %   complex rational minimax approximation", SIAM J. Sci. Comp. (2020).
 %   
-%   [3] Peter J. Baddoo, “The AAAtrig algorithm for rational approximation 
-%   of periodic functions”, arXiv (2020).
+%   [3] Peter J. Baddoo, "The AAAtrig algorithm for rational approximation 
+%   of periodic functions", arXiv (2020).
 %
 % See also AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
 
