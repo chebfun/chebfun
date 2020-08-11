@@ -105,7 +105,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
     [r, pol, res, zer, zj, fj, wj, errvec] = ...
-        aaatrig_autoZ(F, form, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag);
+        aaatrig_autoZ(F, form, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson);
     return
 end
 
@@ -551,7 +551,7 @@ end % End of CLEANUPTRIG().
 %% Automated choice of sample set
 
 function [r, pol, res, zer, zj, fj, wj, errvec] = ...
-    aaatrig_autoZ(F, form, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag)
+    aaatrig_autoZ(F, form, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson)
 %
 
 % Flag if function has been resolved:
@@ -561,9 +561,9 @@ isResolved = 0;
 for n = 5:14
     % Sample points:
     % Next line enables us to do pretty well near poles
-    Z = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), 1 + 2^n).';
+    Z = linspace(dom(1)+1.37e-7*diff(dom), dom(2), 2 + 2^n).'; Z(end) = [];
     [r, pol, res, zer, zj, fj, wj, errvec] = aaatrig(F, Z, form, 'tol', tol, ...
-        'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol);
+        'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, 'lawson', nlawson);
     
     % Test if rational approximant is accurate:
     reltol = tol * norm(F(Z), inf);
@@ -571,7 +571,8 @@ for n = 5:14
     % On Z(n):
     err(1,1) = norm(F(Z) - r(Z), inf);
     Zrefined = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), ...
-        round(1.5 * (1 + 2^(n+1)))).';
+        1 + round(1.5 * (1 + 2^(n+1)))).';
+    Zrefined(end) = [];
     err(2,1) = norm(F(Zrefined) - r(Zrefined), inf);
     
     if ( all(err < reltol) )
@@ -580,7 +581,7 @@ for n = 5:14
         xeval = [-0.357998918959666; 0.036785641195074];
         % Scale to dom:
         xeval = (dom(2) - dom(1))/2 * xeval + (dom(2) + dom(1))/2;
-        
+
         if ( norm(F(xeval) - r(xeval), inf) < reltol )
             isResolved = 1;
             break
