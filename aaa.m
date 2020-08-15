@@ -93,7 +93,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
     [r, pol, res, zer, zj, fj, wj, errvec] = ...
-        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag);
+        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson);
     return
 end
 
@@ -453,7 +453,7 @@ end % End of CLEANUP().
 %% Automated choice of sample set
 
 function [r, pol, res, zer, zj, fj, wj, errvec] = ...
-    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag)
+    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson)
 %
 
 % Flag if function has been resolved:
@@ -465,7 +465,7 @@ for n = 5:14
     % Next line enables us to do pretty well near poles
     Z = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), 1 + 2^n).';
     [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
-        'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol);
+        'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, 'lawson', nlawson);
     
     % Test if rational approximant is accurate:
     reltol = tol * norm(F(Z), inf);
