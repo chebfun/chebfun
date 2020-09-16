@@ -111,9 +111,6 @@ M = length(Z);
 % Relative tolerance:
 reltol = tol * norm(F, inf);
 
-% Left scaling matrix:
-SF = spdiags(F, 0, M, M);
-
 % Initialization for AAA iteration:
 J = logical(ones(M, 1));
 zj = [];
@@ -126,16 +123,16 @@ R = F - mean(F); % residual
 % AAA iteration:
 for m = 1:mmax
     % Select next support point where error is largest:
-    [~, jj] = max(abs(R));               % Select next support point.
-    zj = [zj; Z(jj)];                    % Update support points.
-    fj = [fj; F(jj)];                    % Update data values.
-    J(jj) = 0;                           % Update index vector.
-    C = [C, 1 ./ (Z - Z(jj))];           % Next column of Cauchy matrix.
-    A = [A, (F - F(jj)) ./ (Z - Z(jj))]; % Next column of Loewner matrix.
+    [~, jj] = max(abs(R));              % Select next support point.
+    zj = [zj; Z(jj)];                   % Update support points.
+    fj = [fj; F(jj)];                   % Update data values.
+    J(jj) = 0;                          % Update index vector.
+    C = [C 1./(Z - Z(jj))];             % Next column of Cauchy matrix.
+    A = [A (F - F(jj))./(Z - Z(jj))];   % Next column of Loewner matrix.
     
     % Compute weights:
-    [~, ~, V] = svd(A(J, :), 0);         % Reduced SVD.
-    wj = V(:,m);                         % weight vector = min sing vector
+    [~, ~, V] = svd(A(J, :), 0);        % Reduced SVD.
+    wj = V(:,m);                        % weight vector = min sing vector
     
     % Residual for rational approximant on Z:
     Wj = repmat(wj.', M, 1);
@@ -433,10 +430,8 @@ m = length(z);
 M = length(Z);
 
 % Build Loewner matrix:
-SF = spdiags(F, 0, M, M);
-Sf = diag(f);
 C = 1./bsxfun(@minus, Z, z.');      % Cauchy matrix.
-A = SF*C - C*Sf;                    % Loewner matrix.
+A = bsxfun(@minus, F, f.').*C;      % Loewner matrix.
 
 % Solve least-squares problem to obtain weights:
 [~, ~, V] = svd(A, 0);
