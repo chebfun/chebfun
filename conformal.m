@@ -30,6 +30,14 @@ function [f, finv, pol, polinv] = conformal(C, varargin)
 %
 %   s = chebfun('s'); C = join(s-.5i,1+.5i*s,.5i-s,-1-.5i*s);
 %   conformal(C, 'poly', 'plots');                                   % rectangle
+%
+% References:
+% 
+% A. Gopal and L. N. Trefethen, Representation of conformal maps by
+% rational functions, Numer. Math. 142 (2019), 359--382.
+%
+% L. N. Trefethen, Numerical conformal mapping with rational 
+% functions, Computational Methods and Function Theory, 2020.
 
 %%
 %   Default algorithm:
@@ -48,13 +56,6 @@ function [f, finv, pol, polinv] = conformal(C, varargin)
 %
 % This code was written by L. N. Trefethen in September 2019.  The
 % Kerzman-Stein part originates with Anne Greenbaum and Trevor Caldwell.
-% References:
-% 
-% A. Gopal and L. N. Trefethen, Representation of conformal maps by
-% rational functions, Numer. Math. 142 (2019), 359--382.
-%
-% L. N. Trefethen, Numerical conformal mapping with rational 
-% functions, Computational Methods and Function Theory, to appear.
 
 t1 = tic;
 [ctr, tol, plots, numbers, poly] = parseinputs(C, varargin{:});
