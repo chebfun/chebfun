@@ -1,21 +1,22 @@
 function pass = test_gmres(pref) 
 % Test operator GMRES method. 
-
+%%
 % Tolerance: 
 if ( nargin == 0 )
     pref = cheboppref;
 end
 tol = 1e2*pref.bvpTol;
 
-%% Example 1: (-u_xx=f, bc=0, sum(f)==0)
+%% Example 1: (-u_xx=f, bc=0, sum(f)==0, 0<x<1)
+dom = [0 1];
 a = @(x) 1;
 c = @(x) 1;
 L = @(x,u) -diff(a(x).*diff(u)) + c(x).*u;
 
 % Chebop solve:
-N = chebop( L );
+N = chebop( L, dom );
 N.bc = 0; 
-f = chebfun(@(x) 1-3*x.^2);
+f = chebfun(@(x) 1-3*x.^2, dom);
 
 u = N\f;
 

@@ -279,4 +279,17 @@ uu = pde15s(f, 0:.025:.5, u, bcc, opts);
    bc = 'neumann';     
    [t, u, v, w] = pde15s(f,0:.1:3,u,bc);
    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MISC
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
+%% A periodic example which was failing (#2349)
+    dom = [0, 1];
+    t = [0, .1];
+    bc = 'periodic';
+    pdefun = @(t,x,u,v) [diff(v); diff(u)];
+    x = chebfun(@(x) x, dom);
+    ic = [sin(2*pi*x), 0];
+    [t, u, v] = pde23t(pdefun, t, ic, bc);   
+   
 end

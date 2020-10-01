@@ -14,7 +14,7 @@ function varargout = chebfuneps(val)
 %   If changing the preference is needed only for a single construction, 
 %   calling constructor with the 'eps' flag is a better option.
 %
-% See also CHEBFUN2EPS.
+% See also CHEBFUN2EPS and CHEBFUN3EPS.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

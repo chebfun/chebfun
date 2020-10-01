@@ -45,4 +45,10 @@ C = C0; C(2,1) = .5; C(2,3) = .5;
 f = chebfun2(C,'trig','coeffs');
 pass(11) = norm( f - cos(pi*x) ) < tol;
 
+f = chebfun2(@(x,y) sin(2*pi*x),   'trig');
+g = chebfun2(@(x,y) cos(2*pi*x)+2, 'trig');
+pass(12) = isPeriodicTech( f+1 );
+pass(13) = isPeriodicTech( f.^2 );
+pass(14) = isPeriodicTech( f./g );
+
 end

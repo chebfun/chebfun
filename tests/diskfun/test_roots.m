@@ -29,13 +29,24 @@ end
 % Zero contour at  x.^2+y.^2=.5^2
 f = diskfun(@(t,r) r.^2-.5^2, 'polar');
 r = roots(f);
-% First component of roots should be cos(pi*lam) (or its negative).
-r1true = chebfun(@(t) .5*cos(pi*t));
-pass(3) = ( ( norm(r{1}(:,1)-r1true) < tol ) || ...
-            ( norm(r{1}(:,1)+r1true) < tol ) );
-% Second component of roots should be sin(pi*lam) (or its negative).
-r2true = chebfun(@(t) .5*sin(pi*t));
-pass(4) = ( ( norm(r{1}(:,2)-r2true) < tol ) || ...
-            ( norm(r{1}(:,2)+r2true) < tol ) );
 
+x = chebpts(257); 
+pass(3) = (norm(.5*exp(1i*x*pi) - r(x))) < tol; 
+
+% multiple roots
+f = diskfun(@(t,r) cos(5*r), 'polar'); 
+r = roots(f); 
+rt = pi/5*[1, 2] - pi/10;
+rt = rt.*exp(1i*x*pi); 
+
+r1 = r(:,1); r2 = r(:,2); 
+pass(4) = (norm(rt(:,1) - r1(x)))<tol; 
+pass(5) = (norm(rt(:,2) - r2(x)))<tol; 
+
+% pair of functions: 
+x = diskfun(@(x,y) x); 
+y = diskfun(@(x,y) y); 
+f = x.^2 + y.^2 - 1/4; 
+r = roots(f,x); 
+pass(6) = (norm(r - [0, -.5; 0, .5]))<tol; 
 end

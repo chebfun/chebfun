@@ -1,21 +1,28 @@
-function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
-%AAA   AAA and AAA-Lawson (near-minimax) real or complex rational approximation.
-%   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
-%   data F on the set of sample points Z.  F may be given by its values at Z,
-%   or as a function handle or a chebfun.  R = AAA(F, Z, 'degree', N) computes
-%   the minimax approximation of degree N (i.e., rational type (N,N)).
+function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
+%AAATRIG   Trigonometric AAA and AAA-Lawson (near-minimax) real or complex
+%      rational approximation.
+%   R = AAATRIG(F, Z) computes an trigonometric AAA rational approximant R
+%   (function handle) to data F on the set of sample points Z.  The rational
+%   approximant is periodic with period 2*pi. F may be given by its values at
+%   Z, or as a function handle or a chebfun.  R = AAATRIG(F, Z, 'degree', N)
+%   computes the minimax approximation of degree N (i.e., rational type
+%   (N,N)).
 %
-%   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles POL, residues RES,
-%   and zeros ZER of R.
+%   [R, POL, RES, ZER] = AAATRIG(F, Z) returns vectors of poles POL, residues
+%   RES, and zeros ZER of R. The poles and zeros are repeated at intervals
+%   of 2*pi.
 %
-%   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAA(F, Z) also returns the vectors
-%   of support points ZJ, approximation values FJ = r(ZJ), and weights WJ 
-%   of the barycentric representation of R. 
+%   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAATRIG(F, Z) also returns the vectors of
+%   support points ZJ, approximation values FJ = r(ZJ), and weights WJ of
+%   the barycentric representation of R.
 %
-%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the
-%   vector of errors ||f-r||_infty in successive iteration steps of AAA.
+%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAATRIG(F, Z) also returns the
+%   vector of errors ||f-r||_infty in successive iteration steps of AAATRIG.
 %
-%   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
+%   R = AAATRIG(F,Z,FORM) computes a rational approximant of type FORM.
+%   FORM can either be 'odd' (default) or 'even'.
+%
+%   R = AAATRIG(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'degree', N: maximal degree (default N = 99). 
 %      Output rational approximant will be at most of type (N,N). 
@@ -24,7 +31,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
 %       (default MMAX = 100). R will be of degree MMAX-1. 
 %       Identical to 'degree', MMAX-1. Also turns on Lawson iteration. 
-%   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
+%   - 'dom', DOM: domain (default DOM = [0, 2*pi]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
 %   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
@@ -36,64 +43,69 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %       ensures there is no Lawson iteration.  See next paragraph.
 %
 %   If 'degree' or equivalently 'mmax' is specified and 'lawson' is not, then
-%   AAA attempts to find a minimax approximant of degree N by Lawson iteration.
+%   AAATRIG attempts to find a minimax approximant of degree N by Lawson iteration.
 %   This will generally be successful only if the minimax error is well
 %   above machine precision, and is more reliable for complex problems than
 %   real ones.  If 'degree' and 'lawson' are both specified, then exactly
 %   NLAWSON Lawson steps are taken (so NLAWSON = 0 corresponds to AAA
 %   approximation with no Lawson iteration).  The final weight vector WT of
 %   the Lawson iteration is available with 
-%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
+%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAATRIG(F, Z).
 %
 %   Note that R may have fewer than N poles and zeros.  This may happen,
 %   for example, if N is too large, or if F is even and N is odd, or if F is
 %   odd and N is even.
 %
-%   One can also execute R = AAA(F), with no specification of a set Z.
-%   If F is a vector, this is equivalent to R = AAA(F, Z) with
-%   Z = LINSPACE(-1, 1, LENGTH(F)).  If F is a function handle or a chebfun,
-%   AAA attempts to resolve F on its domain, which defaults to [-1,1] for
+%   One can also execute R = AAATRIG(F), with no specification of a set Z.
+%   If F is a vector, this is equivalent to R = AAATRIG(F, Z) with
+%   Z = LINSPACE(0, 2*pi, LENGTH(F)).  If F is a function handle or a chebfun,
+%   AAATRIG attempts to resolve F on its domain, which defaults to [0,2*pi] for
 %   a function handle.
 %
 % Examples:
-%   r = aaa(@exp); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
 %
-%   r = aaa(@exp,'degree',4); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
+%   f = @(x) exp(cos(x));
+%   r = aaatrig(f); xx = linspace(-pi,pi); plot(xx,r(xx)-f(xx))
+%
+%   r = aaatrig(f,'degree',4); xx = linspace(-pi,pi); plot(xx,r(xx)-f(xx))
 %
 %   Z = exp(2i*pi*linspace(0,1,500)); 
-%   [r,pol,res] = aaa(@tan,Z); disp([pol res])
+%   [r,pol,res] = aaatrig(@tan,Z); disp([pol res])
 %
-%   X = linspace(-1,1,1000); F = tanh(20*X);
+%   X = linspace(0,2*pi,1000); F = gamma(2+sin(X));
 %   subplot(1,2,1)
-%   r = aaa(F,X,'degree',15,'lawson',0); plot(X,F-r(X)), hold on
-%   r = aaa(F,X,'degree',15); plot(X,F-r(X)), hold off
+%   r = aaatrig(F,X,'degree',10,'lawson',0); plot(X,F-r(X)), hold on
+%   r = aaatrig(F,X,'degree',10); plot(X,F-r(X)), hold off
 % 
-%   Z = exp(1i*pi*linspace(-1,1,1000)); G = exp(Z);
+%   Z = exp(1i*linspace(0,2*pi,1000)); G = exp(1i*tan(Z));
 %   subplot(1,2,2)
-%   r = aaa(G,Z,'degree',3,'lawson',0); plot(G-r(Z)), axis equal, hold on
-%   r = aaa(G,Z,'degree',3); plot(G-r(Z)), axis equal, hold off
+%   r = aaatrig(G,Z,'degree',5,'lawson',0); plot(G-r(Z)), axis equal, hold on
+%   r = aaatrig(G,Z,'degree',5); plot(G-r(Z)), axis equal, hold off
 %
 %   References:
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
 %
-%   [2] Yuji Nakasukasa and Lloyd N. Trefethen, An algorithm for real and
-%   complex rational minimax approximation, arXiv, 2019.
+%   [2] Yuji Nakasukasa and Lloyd N. Trefethen, "An algorithm for real and
+%   complex rational minimax approximation", SIAM J. Sci. Comp. (2020).
+%   
+%   [3] Peter J. Baddoo, "The AAAtrig algorithm for rational approximation 
+%   of periodic functions", arXiv (2020).
 %
-% See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
+% See also AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 
 % Parse inputs:
-[F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, nlawson] ...
+[F, Z, M, form, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, nlawson] ...
     = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
     [r, pol, res, zer, zj, fj, wj, errvec] = ...
-        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson);
+        aaatrig_autoZ(F, form, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson);
     return
 end
 
@@ -102,6 +114,26 @@ toKeep = ~isinf(F);
 F = F(toKeep); Z = Z(toKeep);
 toKeep = ~isnan(F);
 F = F(toKeep); Z = Z(toKeep);
+
+% Find sample points at infity
+infP = find(Z==+1i*Inf);
+infM = find(Z==-1i*Inf);
+finfP = F(infP); % value at +1i*Inf
+finfM = F(infM); % value at -1i*Inf
+F([infP,infM])=[]; Z([infP,infM])=[];
+if strcmp(form,'even') && numel([finfP,finfM])==2 && finfP~=finfM
+    error('The even representation must take the same values at +/-i*Inf.')
+end
+
+% Define basis functions
+if strcmp(form,'even')
+    cst = @(x) cot(x);
+elseif strcmp(form,'odd')
+    cst = @(x) csc(x);
+end
+
+% Project sample points onto a single period window
+Z = Z - 2*pi*floor(real(Z/(2*pi)));
 
 % Remove repeated elements of Z and corresponding elements of F:
 [Z, uni] = unique(Z,'stable'); F = F(uni);
@@ -129,29 +161,62 @@ for m = 1:mmax
     zj = [zj; Z(jj)];                   % Update support points.
     fj = [fj; F(jj)];                   % Update data values.
     J(J == jj) = [];                    % Update index vector.
-    C = [C 1./(Z - Z(jj))];             % Next column of Cauchy matrix.
-    
+    C = [C cst((Z - Z(jj))/2)];
     % Compute weights:
     Sf = diag(fj);                      % Right scaling matrix.
     A = SF*C - C*Sf;                    % Loewner matrix.
-    [~, ~, V] = svd(A(J,:), 0);         % Reduced SVD.
+    % Add value(s) at infinity to least-squares problem 
+    Jv = J;
+    if ~isempty([finfP,finfM]) 
+        if strcmp(form,'odd')
+            if ~isempty(finfP)
+                A = [A; (finfP - fj.').*exp(-1i*zj.'/2)];
+                Jv = [Jv, size(A,1)];
+            end
+            if ~isempty(finfM)
+                A = [A; (finfM - fj.').*exp(+1i*zj.'/2)];
+                Jv = [Jv, size(A,1)];
+            end
+        elseif strcmp(form,'even')
+        A = [A; (finfP-fj.')]; 
+        Jv = [Jv, size(A,1)];
+        end
+    end
+    [~, ~, V] = svd(A(Jv,:), 0); % Reduced SVD. Includes the bottom
     wj = V(:,m);                        % weight vector = min sing vector
-    
     % Rational approximant on Z:
     N = C*(wj.*fj);                     % Numerator
     D = C*wj;                           % Denominator
     R = F;
     R(J) = N(J)./D(J);
     
-    % Error in the sample points:
-    maxerr = norm(F - R, inf);
+    % Error in the sample points and at infinity:
+    err = F - R;
+    if isempty([finfP,finfM])
+    maxerr = norm(1, inf);
+    else
+        if strcmp(form,'odd')
+            if ~isempty(finfP)
+            errInfP = finfP - (fj.'.*exp(-1i*zj.'/2)*wj)./(exp(-1i*zj.'/2)*wj); % error at +1i*infinity
+            err = [err; errInfP];
+            end
+            if ~isempty(finfM)
+            errInfM = finfM - (fj.'.*exp(+1i*zj.'/2)*wj)./(exp(+1i*zj.'/2)*wj); % error at -1i*infinity
+            err = [err; errInfM];
+            end
+        elseif strcmp(form,'even')
+            errInf = finfP - fj.'*wj./sum(wj); % error at +/-1i*infinity
+            err = [err; errInf];
+        end
+    end
+    maxerr = norm(err,inf);
     errvec = [errvec; maxerr];
-    
     % Check if converged:
     if ( maxerr <= reltol )
         break
     end
 end
+
 maxerrAAA = maxerr;                     % error at end of AAA 
 
 % When M == 2, one weight is zero and r is constant.
@@ -159,7 +224,7 @@ maxerrAAA = maxerr;                     % error at end of AAA
 if ( M == 2 )
     zj = Z;
     fj = F;
-    wj = [1; -1];       % Only pole at infinity.
+    wj = [1; -1];       
     wj = wj/norm(wj);   % Impose norm(w) = 1 for consistency.
     errvec(2) = 0;
     maxerrAAA = 0;
@@ -175,18 +240,22 @@ wj0 = wj; fj0 = fj;     % Save parameters in case Lawson fails
 wt = NaN(M,1); wt_new = ones(M,1);
 if ( nlawson > 0 )      % Lawson iteration
 
+  if ~isempty([finfP,finfM])
+    warning('Specifying the function values at infinity is not currently compatible with Lawson iteration.')
+  end
+   
     maxerrold = maxerrAAA;
     maxerr = maxerrold;
     nj = length(zj);
     A = [];
     for j = 1:nj                              % Cauchy/Loewner matrix
-        A = [A 1./(Z-zj(j)) F./(Z-zj(j))];
+        A = [A cst((Z-zj(j))/2) F.*cst((Z-zj(j))/2)];
     end
     for j = 1:nj
         [i,~] = find(Z==zj(j));               % support pt rows are special
         A(i,:) = 0;
-        A(i,2*j-1) = 1;
-        A(i,2*j) = F(i);
+        A(i,2*j-1) = 2;
+        A(i,2*j) = 2*F(i);
     end
     stepno = 0;
     while ( (nlawson < inf) & (stepno < nlawson) ) |...
@@ -199,8 +268,8 @@ if ( nlawson > 0 )      % Lawson iteration
         c = V(:,end);
         denom = zeros(M,1); num = zeros(M,1);
         for j = 1:nj
-            denom = denom + c(2*j)./(Z-zj(j));
-            num = num - c(2*j-1)./(Z-zj(j));
+            denom = denom + c(2*j).*cst((Z-zj(j))/2);
+            num = num - c(2*j-1).*cst((Z-zj(j))/2);
         end
         R = num./denom;
         for j = 1:nj
@@ -216,10 +285,9 @@ if ( nlawson > 0 )      % Lawson iteration
     fj = -c(1:2:end)./wj;
     % If Lawson has not reduced the error, return to pre-Lawson values.
     if (maxerr > maxerrAAA) & (nlawson == Inf)
-        wj = wj0; fj = fj0; 
+        wj = wj0; fj = fj0;
     end
 end
-
 % Remove support points with zero weight:
 I = find(wj == 0);
 zj(I) = [];
@@ -227,31 +295,30 @@ wj(I) = [];
 fj(I) = [];
 
 % Construct function handle:
-r = @(zz) reval(zz, zj, fj, wj);
+r = @(zz) revaltrig(zz, zj, fj, wj, form);
 
 % Compute poles, residues and zeros:
-[pol, res, zer] = prz(r, zj, fj, wj);
+[pol, res, zer] = prztrig(r, zj, fj, wj, form);
 
 if ( cleanup_flag & nlawson == 0)       % Remove Froissart doublets
     [r, pol, res, zer, zj, fj, wj] = ...
-        cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
+        cleanuptrig(r, form, finfP, finfM,pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
 end
 
-end % of AAA()
-
+end % of AAATRIG()
 
 %% parse Inputs:
 
-function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
+function [F, Z, M, form, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
     needZ, mmax_flag, nlawson] = parseInputs(F, varargin)
-% Input parsing for AAA.
+% Input parsing for AAATRIG.
 
 % Check if F is empty:
 if ( isempty(F) )
-    error('CHEBFUN:aaa:emptyF', 'No function given.')
+    error('CHEBFUN:aaatrig:emptyF', 'No function given.')
 elseif ( isa(F, 'chebfun') )
     if ( size(F, 2) ~= 1 )
-        error('CHEBFUN:aaa:nColF', 'Input chebfun must have one column.')
+        error('CHEBFUN:aaatrig:nColF', 'Input chebfun must have one column.')
     end
 end
 
@@ -260,7 +327,7 @@ if ( ~isempty(varargin) && isfloat(varargin{1}) )
     % Z is given.
     Z = varargin{1};
     if ( isempty(Z) )
-        error('CHEBFUN:aaa:emptyZ', ...
+        error('CHEBFUN:aaatrig:emptyZ', ...
             'If sample set is provided, it must be nonempty.')
     end
     varargin(1) = [];
@@ -275,14 +342,23 @@ nlawson = Inf;       % number of Lawson steps (Inf means adaptive)
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
 else
-    dom = [-1, 1];
+    dom = [0, 2*pi];
 end
 cleanup_flag = 1;   % Cleanup on.
 mmax_flag = 0;      % Checks if mmax manually specified.
 cleanup_set = 0;    % Checks if cleanup_tol manually specified.
+form = 'odd';
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
-    if ( strncmpi(varargin{1}, 'tol', 3) )
+    
+    if  strncmpi(varargin{1},'even',4)
+          form = 'even';
+          varargin(1) = [];
+    elseif strncmpi(varargin{1},'odd',3)
+          form = 'odd';
+          varargin(1) = [];
+        
+    elseif ( strncmpi(varargin{1}, 'tol', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             tol = varargin{2};
             if ~cleanup_set & tol > 0 % If not manually set, set cleanup_tol to tol.
@@ -294,7 +370,7 @@ while ( ~isempty(varargin) )
     elseif ( strncmpi(varargin{1}, 'degree', 6) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             if ( mmax_flag == 1 ) && ( mmax ~= varargin{2}+1 )
-                error('CHEBFUN:aaa:degmmaxmismatch', ' mmax must equal degree+1.')
+                error('CHEBFUN:aaatrig:degmmaxmismatch', ' mmax must equal degree+1.')
             end            
             mmax = varargin{2}+1;
             mmax_flag = 1;
@@ -304,7 +380,7 @@ while ( ~isempty(varargin) )
     elseif ( strncmpi(varargin{1}, 'mmax', 4) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )            
             if ( mmax_flag == 1 ) && ( mmax ~= varargin{2})                
-                error('CHEBFUN:aaa:degmmaxmismatch', ' mmax must equal degree+1.')
+                error('CHEBFUN:aaatrig:degmmaxmismatch', ' mmax must equal degree+1.')
             end
             mmax = varargin{2};
             mmax_flag = 1;
@@ -324,7 +400,7 @@ while ( ~isempty(varargin) )
         varargin([1, 2]) = [];
         if ( isa(F, 'chebfun') )
             if ( ~isequal(dom, F.domain([1, end])) )
-                warning('CHEBFUN:aaa:dom', ...
+                warning('CHEBFUN:aaatrig:dom', ...
                     ['Given domain does not match the domain of the chebfun.\n', ...
                     'Results may be inaccurate.'])
             end
@@ -344,7 +420,7 @@ while ( ~isempty(varargin) )
         varargin([1, 2]) = [];
         
     else
-        error('CHEBFUN:aaa:UnknownArg', 'Argument unknown.')
+        error('CHEBFUN:aaatrig:UnknownArg', 'Argument unknown.')
     end
 end
 
@@ -371,7 +447,7 @@ if ( exist('Z', 'var') )
         % Work with column vector and check that it has correct length.
         F = F(:);
         if ( length(F) ~= M )
-            error('CHEBFUN:aaa:lengthFZ', ...
+            error('CHEBFUN:aaatrig:lengthFZ', ...
                 'Inputs F and Z must have the same length.')
         end
     elseif ( ischar(F) )
@@ -379,7 +455,7 @@ if ( exist('Z', 'var') )
         F = str2op(vectorize(F));
         F = F(Z);
     else
-        error('CHEBFUN:aaa:UnknownF', 'Input for F not recognized.')
+        error('CHEBFUN:aaatrig:UnknownF', 'Input for F not recognized.')
     end
     
 else
@@ -400,7 +476,7 @@ end % End of PARSEINPUT().
 %% Cleanup
 
 function [r, pol, res, zer, z, f, w] = ...
-    cleanup(r, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
+    cleanuptrig(r, form, finfP, finfM, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
 % Remove spurious pole-zero pairs.
 
 % Find negligible residues:
@@ -410,16 +486,16 @@ if ( ni == 0 )
     % Nothing to do.
     return
 elseif ( ni == 1 )
-    warning('CHEBFUN:aaa:Froissart','1 Froissart doublet');
+    warning('CHEBFUN:aaatrig:Froissart','1 Froissart doublet');
 else
-    warning('CHEBFUN:aaa:Froissart',[int2str(ni) ' Froissart doublets']);
+    warning('CHEBFUN:aaatrig:Froissart',[int2str(ni) ' Froissart doublets']);
 end
-
-% For each spurious pole find and remove closest support point:
+% For each spurious pole find and remove closest support point.
 for j = 1:ni
-    azp = abs(z-pol(ii(j)));
+    % Find the closest support point modulo the period
+    np = fix(real((z-pol(ii(j)))/pi));
+    azp = abs(z-(pol(ii(j)) + np*2*pi));
     jj = find(azp == min(azp),1);
-    
     % Remove support point(s):
     z(jj) = [];
     f(jj) = [];
@@ -430,30 +506,52 @@ for jj = 1:length(z)
     F(Z == z(jj)) = [];
     Z(Z == z(jj)) = [];
 end
+
 m = length(z);
 M = length(Z);
+
+% Define basis functions
+if strcmp(form,'even')
+    cst = @(x) cot(x);
+elseif strcmp(form,'odd')
+    cst = @(x) csc(x);
+end
 
 % Build Loewner matrix:
 SF = spdiags(F, 0, M, M);
 Sf = diag(f);
-C = 1./bsxfun(@minus, Z, z.');      % Cauchy matrix.
+C = cst(bsxfun(@minus, Z, z.')/2);      % Cauchy matrix.
 A = SF*C - C*Sf;                    % Loewner matrix.
+
+% Enforce value(s) at infinity 
+if ~isempty([finfP,finfM]) 
+    if strcmp(form,'odd')
+        if ~isempty(finfP)
+            A = [A; (finfP - f.').*exp(-1i*z.'/2)];
+        end
+        if ~isempty(finfM)
+            A = [A; (finfM - f.').*exp(+1i*z.'/2)];
+        end
+    elseif strcmp(form,'even')
+    A = [A; (finfP-f.')];   % Add a row to A to enforce behaviour at infinity.
+    end
+end
 
 % Solve least-squares problem to obtain weights:
 [~, ~, V] = svd(A, 0);
 w = V(:,m);
 
 % Build function handle and compute poles, residues and zeros:
-r = @(zz) reval(zz, z, f, w);
-[pol, res, zer] = prz(r, z, f, w);
+r = @(zz) revaltrig(zz, z, f, w, form);
+[pol, res, zer] = prztrig(r, z, f, w, form);
 
-end % End of CLEANUP().
+end % End of CLEANUPTRIG().
 
 
 %% Automated choice of sample set
 
 function [r, pol, res, zer, zj, fj, wj, errvec] = ...
-    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson)
+    aaatrig_autoZ(F, form, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson)
 %
 
 % Flag if function has been resolved:
@@ -463,8 +561,8 @@ isResolved = 0;
 for n = 5:14
     % Sample points:
     % Next line enables us to do pretty well near poles
-    Z = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), 1 + 2^n).';
-    [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
+    Z = linspace(dom(1)+1.37e-7*diff(dom), dom(2), 2 + 2^n).'; Z(end) = [];
+    [r, pol, res, zer, zj, fj, wj, errvec] = aaatrig(F, Z, form, 'tol', tol, ...
         'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, 'lawson', nlawson);
     
     % Test if rational approximant is accurate:
@@ -472,9 +570,9 @@ for n = 5:14
     
     % On Z(n):
     err(1,1) = norm(F(Z) - r(Z), inf);
-    
     Zrefined = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), ...
-        round(1.5 * (1 + 2^(n+1)))).';
+        1 + round(1.5 * (1 + 2^(n+1)))).';
+    Zrefined(end) = [];
     err(2,1) = norm(F(Zrefined) - r(Zrefined), inf);
     
     if ( all(err < reltol) )
@@ -483,7 +581,7 @@ for n = 5:14
         xeval = [-0.357998918959666; 0.036785641195074];
         % Scale to dom:
         xeval = (dom(2) - dom(1))/2 * xeval + (dom(2) + dom(1))/2;
-        
+
         if ( norm(F(xeval) - r(xeval), inf) < reltol )
             isResolved = 1;
             break
@@ -492,11 +590,11 @@ for n = 5:14
 end
 
 if ( ( isResolved == 0 ) && ~mmax_flag )
-    warning('CHEBFUN:aaa:notResolved', ...
+    warning('CHEBFUN:aaatrig:notResolved', ...
         'Function not resolved using %d pts.', length(Z))
 end
 
-end % End of AAA_AUTOZ().
+end % End of AAATRIG_AUTOZ().
 
 function op = str2op(op)
     % Convert string inputs to either numeric format or function_handles.

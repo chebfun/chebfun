@@ -67,5 +67,10 @@ pass(27) = w*x.^2 - 4/15 < 10*eps;
 [x, w] = jacpts(25, .3, .5, 'GW'); 
 pass(28) = abs(sum(w) - 1.652030414885670) < 100*eps;
 
+% Fix a problem with sign errors for certain a, b, n choices in asy formula:
+a = 0.1785; b = 2;
+[x1a, w1a] = jacpts(100, a , b, [-1,1], 'asy');
+[x1r, w1r] = jacpts(100, a, b, [-1,1], 'rec');
+pass(29) = norm(x1a-x1r) < 100*eps && norm(w1a-w1r) < 100*eps;
 
 end

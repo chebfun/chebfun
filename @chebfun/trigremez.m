@@ -38,7 +38,7 @@ function varargout = trigremez(f, varargin)
 %   [1] Javed, M. "Algorithms for trigonometric polynomial and 
 %   rational approximation". DPhil thesis, Oxford.
 %
-% See also REMEZ, CF.
+% See also MINIMAX, CF.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

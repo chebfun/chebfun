@@ -158,6 +158,12 @@ function u = mypartition(disc, values, dimAdjust)
 
 % TODO: Document dimAdjust.
 
+if ( isempty(values) )
+    % Nothing to do here. (Fixes #2360)
+    u = values;
+    return
+end
+
 % Which variables are functions (as opposed to scalars)?
 isFun = isFunVariable(disc.source);
 

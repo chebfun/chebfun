@@ -21,7 +21,7 @@ if ( isempty(f) )
 end
 
 F = f.coeffs;
-[~, n, p] = size( f );
+[m, n, p] = size( f );
 
 % Get the size of the lists
 Nr = length( r );
@@ -33,26 +33,19 @@ r = reshape(r, Nr, 1);
 lam = reshape(lam, Nlam, 1);
 th = reshape(th, Nth, 1);
 
-G = zeros(Nr, n, p);
 % Evaluate f at the points r
-for i = 1:p
-    G(:, :, i) = clenshaw_vec( r, F(:, :, i) );
-end
+F1 = reshape(F, m, n*p);
+G = reshape(clenshaw_vec( r, F1 ), Nr, n, p);
+G = permute(G, [2, 1, 3]);
+G = reshape(G, n, Nr*p);
 
-H = zeros(Nr, Nlam, p); 
-% Evaluate f at the points lambda
-for i = 1:p
-    H(:, :, i) = horner_vec_cmplx(lam/pi, G(:, :, i).' ).';
-end
+% Permute G to evaluate f at lambda
+H = reshape(horner_vec_cmplx( lam/pi, G ), Nlam, Nr, p);
+H = permute(H, [3, 2, 1]);
+H = reshape(H, p, Nr*Nlam);
 
-% Permute G to evaluate f at theta
-H = permute(H, [3, 1, 2]);
-
-vals = zeros(Nth, Nr, Nlam);
-% Evaluate f at the points theta
-for i = 1:Nlam
-   vals(:, :, i) = horner_vec_cmplx( th/pi, H(:, :, i) ); 
-end
+% Evaluate H at theta
+vals = reshape(horner_vec_cmplx( th/pi, H ), Nth, Nr, Nlam); 
 
 % Permute H to get the array of values r x lambda x theta
 vals = permute(vals, [2, 3, 1]);

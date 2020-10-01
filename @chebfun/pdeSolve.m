@@ -826,6 +826,7 @@ clear global
             % Evaluate the PDEFUN:
             myU = mydouble(U, DOMAIN);
             F = double(pdeFun(t, x, myU));
+            F = F(:);
             
             if ( ISPERIODIC )
                 return
@@ -833,7 +834,8 @@ clear global
             
             % Enforce boundary constraints:
             
-            F = P*F(:); % Project.
+            % Project:
+            F = P*F; 
             
             % Replacements for the BC algebraic conditions:
             if ( numLinBCs > 0 )
