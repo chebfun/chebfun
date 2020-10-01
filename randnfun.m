@@ -27,7 +27,7 @@ function f = randnfun(varargin)
 %
 %   Reference: S. Filip, A. Javeed, and L. N. Trefethen, "Smooth random
 %   functions, random ODEs, and Gaussian processes," SIAM Review, 61
-%   (2010), pp. 185-205.
+%   (2019), pp. 185-205.
 %
 % Examples:
 %
@@ -43,7 +43,7 @@ function f = randnfun(varargin)
 %
 %   plot(cumsum(randnfun(.01,[0 5],'complex','big'))), axis equal
 %
-% See also RANDNFUN2, RANDNFUNSPHERE, RANDNFUNDISK.
+% See also RANDNFUN2, RANDNFUNSPHERE, RANDNFUNDISK, SMOOTHIE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
