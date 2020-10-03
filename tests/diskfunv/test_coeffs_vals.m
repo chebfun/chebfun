@@ -7,8 +7,8 @@ end
 tol = 1e3*pref.techPrefs.chebfuneps; 
 j = 1;
 %grab some coeffs
-u = randnfundisk(.3); 
-v = randnfundisk(.4); 
+u = diskfun(@(x,y) exp(-cos(pi*(x+y)))); 
+v = diskfun(@(x,y) x.*sin(x.*y)); 
 f = [u;v];
 
 % test coeffs2: 
