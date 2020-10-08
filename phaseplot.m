@@ -1,4 +1,4 @@
-function h = phaseplot(f,ax)  % Plot phase portrait.
+function varargout = phaseplot(f,ax)  % Plot phase portrait.
 %PHASEPLOT   Phase (= argument) plot of a complex function
 %   PHASEPLOT(F), where F is a function handle, draws a phase plot of F(Z) in
 %   the complex plane.  As arg(f(z)) ranges over [0,2pi] the colors run
@@ -50,4 +50,7 @@ colormap hsv(600)
 view(0,90)
 if ( holdstate == 0 )
     hold off
+end
+if ( nargout > 0 )
+    varargout = {h};
 end
