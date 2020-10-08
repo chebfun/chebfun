@@ -11,7 +11,7 @@ function varargout = phaseplot(f,ax)  % Plot phase portrait.
 % Examples:
 %   
 %   phaseplot(@(z) z.^2), axis square
-%   phaseplot(@(z) 1./z), axis square
+%   phaseplot(@(z) exp(1./z.^2)), axis square
 %   phaseplot(@(z) besselj(6,z),[-12 12 -5 5]), axis equal
 %   phaseplot(cheb.gallery2('airycomplex')), axis equal off
 %
