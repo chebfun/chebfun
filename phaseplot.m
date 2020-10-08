@@ -1,4 +1,4 @@
-function phaseplot(f,ax)  % Plot phase portrait.
+function h = phaseplot(f,ax)  % Plot phase portrait.
 %PHASEPLOT   Phase (= argument) plot of a complex function
 %   PHASEPLOT(F), where F is a function handle, draws a phase plot of F(Z) in
 %   the complex plane.  As arg(f(z)) ranges over [0,2pi] the colors run
@@ -28,10 +28,10 @@ function phaseplot(f,ax)  % Plot phase portrait.
 % Copyright 2020 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if nargin == 2
+if ( nargin == 2 )
     figure
     axis(ax)
-elseif isempty(get(gcf, 'CurrentAxes'))
+elseif ( isempty(get(gcf, 'CurrentAxes')) )
     ax = [-1 1 -1 1];
     axis(ax)
 else
@@ -48,6 +48,6 @@ set(h, 'EdgeColor','none');
 caxis([-pi pi])
 colormap hsv(600)
 view(0,90)
-if holdstate == 0
+if ( holdstate == 0 )
     hold off
 end
