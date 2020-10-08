@@ -35,7 +35,7 @@ function varargout = plot(varargin)
 %   to produce many different styles of phase portraits go to
 %   http://www.visual.wegert.com
 %
-% See also SURF, MESH.
+% See also SURF, MESH, PHASEPLOT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
