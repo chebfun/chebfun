@@ -1,5 +1,5 @@
-function varargout = phaseplot(f,ax)  % Plot phase portrait.
-%PHASEPLOT   Phase (= argument) plot of a complex function
+function varargout = phaseplot(f, varargin)  % Plot phase portrait.
+%PHASEPLOT   Phase (= argument) plot of a complex function.
 %   PHASEPLOT(F), where F is a function handle or a CHEBFUN2 defining a
 %   complex function, draws a phase plot of F(Z) in the complex plane.
 %   As arg(f(z)) ranges over [0,2pi] the colors run
@@ -7,6 +7,9 @@ function varargout = phaseplot(f,ax)  % Plot phase portrait.
 %   
 %   The existing axes are used, or the domain of F if it is a CHEBFUN2,
 %   otherwise [-1 1 -1 1].  PHASEPLOT(F,[A B C D]) uses the axes [A B C D].
+%
+%   PHASEPLOT(F,'CLASSIC') uses the color scheme from [1] rather than
+%   a somewhat smoothed variant.
 %
 % Examples:
 %   
@@ -25,15 +28,35 @@ function varargout = phaseplot(f,ax)  % Plot phase portrait.
 %
 % Reference:
 %
-%   E. Wegert, Visual Complex Functions: An Introduction with Phase Portraits,
-%   Springer Basel, 2012.
+%   [1] E. Wegert, Visual Complex Functions: An Introduction with Phase
+%   Portraits, Springer Basel, 2012.
 %
 % See also CHEBFUN2/PLOT.
 
 % Copyright 2020 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( nargin == 2 )
+%% Parse inputs
+
+classic = 0;   % default: used smoothed colors, not classic
+axspec = 0;    % begin by assuming axes not explicitly specified
+j = 1;
+while ( j < nargin )
+    j = j+1;
+    v = varargin{j-1};
+    if ~ischar(v)
+        axspec = 1;
+        ax = v;
+    elseif strcmp(v, 'classic')
+        classic = 1;
+    else
+        error('PHASEPLOT:inputs', 'Unrecognized input')
+    end
+end
+
+%% Set axes
+
+if ( axspec )
     axis(ax)
 elseif ( isa(f, 'chebfun2') )
     ax = f.domain;
@@ -45,11 +68,19 @@ else
 end
 holdstate = ishold;
 hold on
+
+%% Produce the phase plot
+
 x = linspace(ax(1), ax(2), 500);
 y = linspace(ax(3), ax(4), 500);
 [xx,yy] = meshgrid(x, y);
-zz = xx+1i*yy;
-h = surf(real(zz), imag(zz), -ones(size(zz)), angle(-f(zz)));
+zz = xx + 1i*yy;
+if ( classic )
+    phi = @(t) t;
+else
+    phi = @(t) t - .5*cos(1.5*t).^3.*sin(1.5*t);
+end
+h = surf(real(zz), imag(zz), -ones(size(zz)), phi(angle(-f(zz))));
 set(h, 'EdgeColor','none');
 caxis([-pi pi])
 colormap hsv(600)
@@ -60,3 +91,4 @@ end
 if ( nargout > 0 )
     varargout = {h};
 end
+
