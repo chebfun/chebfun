@@ -7,7 +7,7 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %   
 %   If HOLD is ON, the existing axes are used.  If HOLD is OFF, the axes
 %   are taken as the domain of F if it is a CHEBFUN2, otherwise [-1 1 -1 1].
-%   PHASEPLOT(F,[A B C D]) uses the axes [A B C D].
+%   PHASEPLOT(F, [A B C D]) uses the axes [A B C D].
 %
 %   PHASEPLOT(F, 'CLASSIC') uses the color scheme from [1] rather than
 %   a somewhat smoothed variant.
@@ -17,14 +17,15 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %   phaseplot(@(z) z.^2)
 %   phaseplot(@(z) exp(1./z.^2))
 %   phaseplot(@(z) besselj(6,z),[-12 12 -5 5])
-%   phaseplot(cheb.gallery2('airycomplex')), axis off
+%   phaseplot(cheb.gallery2('airycomplex'))
 %
 %   plot(chebfun('exp(1i*s)',[-pi,pi]),'k')
 %   axis([-2 2 -2 2]), axis square, hold on
-%   r = padeapprox(@(z) sqrt(1-z.^3),24,24); phaseplot(r)
+%   r = padeapprox(@(z) -sqrt(1-z.^3),24,24); phaseplot(r)
 %
 %   Z = rand(1000,1) + 1i*rand(1000,1);
-%   plot(Z,'.k','markersize',4), axis([-1 2 -1.5 1.5]), axis square, hold on
+%   plot(Z,'.k','markersize',4)
+%   axis([-1 2 -1.5 1.5]), axis square, hold on
 %   F = sqrt(Z.*(1-Z)); [r,pol] = aaa(F,Z); phaseplot(r)
 %
 % Reference:
@@ -39,16 +40,15 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 
 %% Parse inputs
 
-holdstate = ishold;   % starting hold state
-classic = 0;          % default: use smoothed colors, not classic
+classic = 0;                      % default: smoothed colors
 j = 1;
 while ( j < nargin )
     j = j+1;
     v = varargin{j-1};
     if ~ischar(v)                
-        ax = v;                    % user specifies axes
+        ax = v;                   % user specifies axes
     elseif strcmp(v, 'classic')
-        classic = 1;               % user requests classic color scheme
+        classic = 1;              % user requests classic color scheme
     else
         error('PHASEPLOT:inputs', 'Unrecognized input')
     end
@@ -57,7 +57,7 @@ end
 %% Determine axes
 
 if ~exist( 'ax' )
-    if holdstate
+    if ( ishold )
         ax = axis;
     elseif ( isa(f, 'chebfun2') )
         ax = f.domain;
@@ -82,7 +82,7 @@ set(h, 'EdgeColor','none');
 caxis([-pi pi])
 colormap hsv(600)
 view(0,90)
-if ( ~holdstate )
+if ( ~ishold )
     axis(ax)
     if ( ax(2)-ax(1) == ax(4)-ax(3) )
         axis square
