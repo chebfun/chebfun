@@ -136,4 +136,15 @@ classdef chebfun2v
         end
     end 
     
+   methods ( Access = public, Static = true )
+        
+       % build a chebfun2v from coeffs
+        f = coeffs2chebfun2v(C1, C2);    
+       
+       % component-wise coeffs2vals, vals2coeffs
+        [X, Y] = coeffs2vals(U, V); 
+        [U, V] = vals2coeffs(X,Y);
+
+    end
+    
 end

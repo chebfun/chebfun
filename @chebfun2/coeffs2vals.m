@@ -6,8 +6,8 @@ function varargout = coeffs2vals( U, varargin )
 %   sum_i sum_j C(i,j) T_{i-1}(y)T_{j-1}(x) 
 % at a tensor Chebyshev grid of size size(C).
 % 
-% [U, S, V] = COEFFS2VALS( U, S, V ) the same as above but keeps everything in
-% low rank form.
+% [U, S, V] = COEFFS2VALS( C, D, R ) the same as above but keeps 
+% everything in low rank form. Here, C*D*R.' is a 2D matrix of coefficients.
 % 
 % See also VALS2COEFFS.
 
@@ -22,9 +22,14 @@ if ( nargin == 1 )
 elseif ( nargin == 3 )
     S = varargin{1}; 
     V = varargin{2}; 
-    U = chebtech2.coeffs2vals( flipud(U) ); 
-    V = chebtech2.coeffs2vals( (fliplr(V)).' ).'; 
-    varargout = {U S V};
+    %U = chebtech2.coeffs2vals( flipud(U) ); 
+    %V = chebtech2.coeffs2vals( (fliplr(V)).' ).'; 
+    U = chebtech2.coeffs2vals( U ); 
+    V = chebtech2.coeffs2vals( V );
+    %varargout = {U S V};
+    varargout{1} = U; 
+    varargout{2} = S; 
+    varargout{3} = V; 
     
 else
     error('CHEBFUN:CHEBFUN2:coeffs2vals:inputs', ...

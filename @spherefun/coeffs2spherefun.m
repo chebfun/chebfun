@@ -1,4 +1,4 @@
-function F = coeffs2spherefun(X)
+function F = coeffs2spherefun( X )
 %COEFFS2SPHEREFUN      Make a SPHEREFUN object from a matrix of Fourier
 %   coefficients. 
 %
