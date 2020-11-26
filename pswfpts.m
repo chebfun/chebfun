@@ -9,8 +9,8 @@ function [x, w] = pswfpts(N, c, dom, quadtype)
 % which should be a finite two-vector.
 %
 % [X,W] = PSWFPTS(N, C, DOM, 'GGQ') returns rather the nodes and weights
-% corresponding to the generalised Gauss quadrature rule which is exact for
-% PSWFs with bandwidth C and of order up to 2N.
+% corresponding to the N-point generalised Gauss quadrature rule which is
+% exact for PSWFs with bandwidth C and of order up to 2N.
 %
 % See also PSWF, LEGPTS.
 
@@ -44,7 +44,7 @@ if ( nargin < 4 )
 end    
 
 if ( strcmpi(quadtype, 'ggq') )
-    [x,w] = qqg(N, c);
+    [x,w] = ggq(N, c);
 else
     [x,w] = rootsquad(N, c);
 end
