@@ -118,10 +118,14 @@ for k = 1:10
     w = S/A;
     dx = w(2:2:end)./w(1:2:end);
     x = x + dx.';
-    norm(dx, inf)
     if ( norm(dx, inf) < 1e-10 )
         break
     end
+end
+
+if ( (norm(dx) > 1e-10) || any(isnan(x)) )
+    warning('CHEBFUN:pswfpts:iterationfailure', ...
+        'Newton iteration may have failed to converge.');
 end
 
 % Compute the weights:
