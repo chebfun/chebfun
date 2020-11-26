@@ -16,7 +16,7 @@ pass(1) = norm(P'*P - eye(10)) < 1e-10;
 pass(2) = numel(roots(P(:,end))) == 9;
 
 % Check some precomputed values:
-pass(3) = abs(sum(P(.5,:)) - (-0.070494617679645)) < 1e-10;
+pass(3) = abs(sum(P(.5,:)) - 1.204236518115228) < 1e-10;
 
 %% Test PSWFPTS:
 

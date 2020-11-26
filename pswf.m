@@ -1,4 +1,4 @@
-function [P, V] = pswf(N, c, dom, flag)
+function [P, lam] = pswf(N, c, dom, flag)
 %PSWF   Prolate spheroidal wave functions.
 % P = PSWF(N, C) computes a CHEBFUN representing the Nth prolate spheroidal
 % wavefunction (PSWF) with bandwidth C on the interval [-1,1]. C must be a
@@ -10,9 +10,12 @@ function [P, V] = pswf(N, c, dom, flag)
 % P = PSWF(N, C, DOM) computes the PSWFs as above, but scaled to the interval 
 % DOM, which must be a finite two-vector.
 %
-% [P, V] = PSWF(...) returns also a the matrix of Legendre coefficients for
-% the computed PSWF. V = PSWF(N, C, DOM, 'coeffs') returns only the
-% coefficient matrix and not the CHEBFUN P.
+% [P, LAM] = PSWF(...) returns also a vector V of length N containing the
+% N eigenvalues (in ascending order) of the bandwidth-C PSWF differential
+% eigenvalue problem.
+%
+% [V, LAM] = PSWF(N, C, DOM, 'coeffs') returns the matrix V of Legendre
+% coefficients for the computed PSWF rather than a Chebfun.
 %
 % See also PSWFPTS.
 
@@ -64,16 +67,19 @@ while ( ~ishappy )
     
     % Compute (sorted) eigenvectors:
     [Ve, De] = eig(Ae);
-    [~, idx] = sort(diag(De), 'ascend');
+    [lame, idx] = sort(diag(De), 'ascend');
     Ve = Ve(:,idx);
     [Vo, Do] = eig(Ao);
-    [~, idx] = sort(diag(Do), 'ascend');
+    [lamo, idx] = sort(diag(Do), 'ascend');
     Vo = Vo(:,idx);
     
-    % Reassemble full V:
+    % Reassemble full V and eigenvalues:
     V = zeros(M+1,M+1);
     V(1:2:end,1:2:end) = Ve;
     V(2:2:end,2:2:end) = Vo;
+    lam = zeros(M+1,1);
+    lam(1:2:end) = lame;
+    lam(2:2:end) = lamo;
     
     % Check discretisation size was large enough;
     ishappy = sum(abs(V(end-3:end,N)))/(2*numel(N)) < tol;
@@ -91,6 +97,7 @@ end
 
 % Extract required columns and unnormalise:
 V = bsxfun(@times, V(:,N), sqrt((0:M)'+1/2) );
+lam = lam(N);
 
 % Quit now if only coefficients are required:
 if ( strcmpi(flag, 'coeffs') )
