@@ -1,16 +1,21 @@
 function [x, w] = pswfpts(N, c, dom, quadtype)
-%PSWFPTS   Quadrature nodes and weights from PSWF roots
-% X = PSWFPTS(N, C) returns the N roots the Nth PSWF with bandwidth C.
+%PSWFPTS   Quadrature nodes and weights from PSWF roots.
+% X = PSWFPTS(N, C) returns the N roots of the Nth PSWF with bandwidth C.
 %   
-% [X,W] = PSWFPTS(N, C) returns also the weights for the interpolatory PSWF
+% [X, W] = PSWFPTS(N, C) returns also the weights for the interpolatory PSWF
 % quadrature rule with the nodes X.
 %
-% [X,W] = PSWFPTS(N, C, DOM) scales the nodes and weights to the interval DOM,
+% [X, W] = PSWFPTS(N, C, DOM) scales the nodes and weights to the interval DOM,
 % which should be a finite two-vector.
 %
-% [X,W] = PSWFPTS(N, C, DOM, 'GGQ') returns rather the nodes and weights
-% corresponding to the N-point generalised Gauss quadrature rule which is
-% exact for PSWFs with bandwidth C and of order up to 2N.
+% [X, W] = PSWFPTS(N, C, DOM, 'GGQ') returns rather the nodes and weights
+% corresponding to the N-point generalised Gauss quadrature rule, which is
+% exact for PSWFs with bandwidth C of order up to 2N.
+%
+% Example:
+%
+% f = pswf(9,pi); sum(f)
+% [x,w] = pswfpts(5,pi,[-1,1],'GGQ'); w*f(x)
 %
 % See also PSWF, LEGPTS.
 
@@ -20,35 +25,60 @@ function [x, w] = pswfpts(N, c, dom, quadtype)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: The approach used is to compute the Legendre coefficients
 % of the degree N+1 PSWF using the CHEBFUN.PSWF code and then find the
-% roots with the Legendre analogue of the Colleague matrix [1]. This is OK
+% roots with the Legendre analogue of the colleague matrix [1]. This is OK
 % for small N and C, but for larger values more advanced techniques should
 % be used; for instance as described in [2].
 %
-% For GGQ we use the ides from [3]. See further comments in the subroutine.
+% For GGQ we use the ideas from [3]. See further comments in the subroutine.
 %
-% [1] RM Corless and G Litt, Generalized Companion Matrices for Polynomials
-% not expressed in Monomial Bases (Unpublished note)
-% [2] A Glaser, X Liu, and V Rokhlin, A fast algorithm for the roots of
-% special functions, SISC, 29, 4, p1420-1438, 2007.
-% [3] Ma, Rokhlin, Wandzura, "Generalised Gaussian Quadrature Rules For
-% Systems of Arbitrary Functions", SINUM 1996.
-%
-% Additional comment: Symmetry is not enforced in either the nodes or weights.
+% [1] R. M. Corless and G. Litt, Generalized companion matrices for polynomials
+% not expressed in monomial Bases (Unpublished note)
+% [2] A. Glaser, X. Liu, and V. Rokhlin, A fast algorithm for the roots of
+% special functions, SISC, 29, 4, pp. 1420-1438, 2007.
+% [3] J. Ma, V. Rokhlin, and S. Wandzura, "Generalised Gaussian Quadrature
+% rules For systems of arbitrary functions", SINUM, 1996.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( nargin == 1 )
-    c = N;
-end
-if ( nargin < 4 )
+% Defaults:
+if ( nargin < 3 )
+    dom = [-1 1];
     quadtype = 'roots';
-end    
+end
+if ( nargin == 3 )
+    if ( isnumeric(dom) )   
+        quadtype = 'roots';
+    else
+        quadtype = dom;
+        dom = [-1 1];
+    end
+end
 
+% Parse inputs:
+assert( (numel(N)==1) && (round(N)==N) && (N>=0) , ...
+    'N must be a non-negative integer.');
+assert( (numel(c)==1) && (c>=0) , ...
+    'C must be a non-negative scalar.');
+assert( numel(dom)==2 && all(isfinite(dom)) , ...
+    'Domain must be a finite two-vector.');
+
+% Trivial case:
+if ( N == 0 )
+    x = []; w = [];
+    return
+end
+
+% Fork based on desired quadratyure type (PSWF roots or GGQ):
 if ( strcmpi(quadtype, 'ggq') )
     [x,w] = ggq(N, c);
 else
     [x,w] = rootsquad(N, c);
 end
+
+% Enforce symmetry:
+x = mean([x -flipud(x)],2);
+w = mean([w; fliplr(w)]);
     
+% Scale if required:
 if ( nargin >= 3 )
     x = scaleNodes(x, dom);
     w = scaleWeights(w, dom);
@@ -98,7 +128,7 @@ function [x,w] = ggq(N, c)
 % Initial guess:
 % x = pswfpts(N, c); % PSWF roots
 x = legpts(N); % Gauss-Legendre nodes
-% Use KTE map to improve chances of Newton convergece!
+% Use KTE map to improve chances of Newton convergence!
 a = .5; x = asin(a*x)./asin(a); % Hello, my old friend!
 
 % Get Legendre coeffs of the first 2N PSWFs:
