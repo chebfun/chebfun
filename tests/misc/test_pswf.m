@@ -7,7 +7,7 @@ if ( nargin < 1 )
 end
 
 %% Test PSWF:
-P = pswf(1:10, 4);
+P = pswf(0:9, 4);
 
 % Check orthogonality:
 pass(1) = norm(P'*P - eye(10)) < 1e-10;

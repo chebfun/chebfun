@@ -2,20 +2,19 @@ function [P, lam] = pswf(N, c, dom, flag)
 %PSWF   Prolate spheroidal wave functions.
 % P = PSWF(N, C) computes a CHEBFUN representing the Nth prolate spheroidal
 % wave function (PSWF) with bandwidth C on the interval [-1,1]. C must be a
-% scalar but N may be a vector of integers, in which case the output is
-% an array-valued CHEBFUN with LENGTH(N) columns. 
-%
-% P = PSWF(N) is as above, but with assumption that C = max(N).
+% scalar but N may be a vector of non-negative integers, in which case the
+% output is an array-valued CHEBFUN with LENGTH(N) columns.
 %
 % P = PSWF(N, C, DOM) computes the PSWFs as above, but scaled to the interval 
 % DOM, which must be a finite 2-vector.
 %
-% [P, LAM] = PSWF(...) returns also a vector V of length N containing the
-% N eigenvalues (in ascending order) of the bandwidth-C PSWF differential
+% [P, LAM] = PSWF(N, C, ...) returns also a vector LAM of length N containing the
+% corresponding eigenvalues of the bandwidth-C PSWF differential
 % eigenvalue problem.
 %
-% [V, LAM] = PSWF(N, C, DOM, 'coeffs') returns the matrix V of Legendre
-% coefficients for the computed PSWF rather than a chebfun.
+% [V, LAM] = PSWF(N, C, DOM, 'coeffs') or [V, LAM] = PSWF(N, C, 'coeffs')
+% returns the matrix V of Legendre coefficients for the computed PSWF
+% rather than a CHEBFUN.
 %
 % Example:
 %
@@ -37,15 +36,26 @@ function [P, lam] = pswf(N, c, dom, flag)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults:
-if ( nargin < 2 )
-    c = max(N);
-end
 if ( nargin < 3 )
     dom = [-1 1];
-end
-if ( nargin < 4 )
     flag = 'chebfun';
 end
+if ( nargin == 3 )
+    if ( isnumeric(dom) )   
+        flag = 'chebfun';
+    else
+        flag = dom;
+        dom = [-1 1];
+    end
+end
+
+% Parse inputs:
+assert( all(round(N)==N) && all(N>=0) , ...
+    'N must be vector of non-negative integers.');
+assert( (numel(c)==1) && (c>=0) , ...
+    'C must be a non-negative integer.');
+assert( numel(dom)==2 && all(isfinite(dom)) , ...
+    'Domain must be a finite two-vector.');
 
 % Set discretisation size. Heuristic estimates for initialisation.
 M = max(ceil([2*sqrt(c)*N, 2*c, 20]));
@@ -86,7 +96,7 @@ while ( ~ishappy )
     lam(2:2:end) = lamo;
     
     % Check discretisation size was large enough;
-    ishappy = sum(abs(V(end-3:end,N)))/(2*numel(N)) < tol;
+    ishappy = sum(abs(V(end-3:end,N+1)))/(2*length(N)) < tol;
     if ( ~ishappy )
         M = 2*M;
     end
@@ -100,8 +110,13 @@ while ( ~ishappy )
 end
 
 % Extract required columns and unnormalise:
-V = bsxfun(@times, V(:,N), sqrt((0:M)'+1/2) );
-lam = lam(N);
+V = bsxfun(@times, V(:,N+1), sqrt((0:M)'+1/2) );
+lam = lam(N+1);
+
+% Trim trailing coefficients below machine precision:
+M = max(abs(V), [],2);
+idx = find(M > eps, 1, 'last');
+V = V(1:idx,:);
 
 % Quit now if only coefficients are required:
 if ( strcmpi(flag, 'coeffs') )
@@ -119,6 +134,8 @@ W(2:2:end,~idx) = 0;
 
 % Create a Chebfun from the Chebyshev  coefficients:
 P = chebfun(W, dom, 'coeffs');
-P = simplify(P);    
+
+% The coefficients are trimmed in V, so simplifying should not be necessary.
+% P = simplify(P);    
 
 end

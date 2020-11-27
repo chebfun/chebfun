@@ -1,6 +1,6 @@
 function [x, w] = pswfpts(N, c, dom, quadtype)
 %PSWFPTS   Quadrature nodes and weights from PSWF roots
-% X = PSWFPTS(N, C) returns the N roots the (N+1)st PSWF with bandwidth C.
+% X = PSWFPTS(N, C) returns the N roots the Nth PSWF with bandwidth C.
 %   
 % [X,W] = PSWFPTS(N, C) returns also the weights for the interpolatory PSWF
 % quadrature rule with the nodes X.
@@ -63,7 +63,7 @@ function [x,w] = rootsquad(N, c)
 % rule.
 
 % Obtain Legendre coeffs of PSWFs of up to degree N+1:
-V = pswf(1:N+1, c, [-1 1], 'coeffs');
+V = pswf(0:N, c, [-1 1], 'coeffs');
 
 % Compute the roots of P_{N+1}:
 x = legroots(V(:,end));
@@ -102,7 +102,8 @@ x = legpts(N); % Gauss-Legendre nodes
 a = .5; x = asin(a*x)./asin(a); % Hello, my old friend!
 
 % Get Legendre coeffs of the first 2N PSWFs:
-V = pswf(1:2*N, c, [-1 1], 'coeffs'); S = 2*V(1,:);
+V = pswf(0:2*N-1, c, [-1 1], 'coeffs'); 
+S = 2*V(1,:); % Integral of each column (using orthogonality of Legendre)
 % Differentiate the PSWFs:
 M = size(V,1);
 C = ultraS.convertmat(M-1, 0.5, 0.5);
@@ -111,16 +112,16 @@ Vp = C\(D*V(2:end,:));
 
 % Modified Newton iteration to find x (see [1]):
 A = zeros(2*N,2*N);
-for k = 1:10
-    % Construct Legendre-Hermite-Vandermonde matrix:
+for k = 1:10 % Quadratic convergence expected, so 10 iterations should be OK.
+    % Construct Legendre-Hermite-Vandermonde matrix:  
     A(1:2:end,:) = legpolyval(V,x);
     A(2:2:end,:) = legpolyval(Vp,x);
+    % Invert and integrate (can be reduced to one solve):
     w = S/A;
-    dx = w(2:2:end)./w(1:2:end);
+    % Modified Newton update.
+    dx = w(2:2:end)./w(1:2:end); 
     x = x + dx.';
-    if ( norm(dx, inf) < 1e-10 )
-        break
-    end
+    if ( norm(dx, inf) < 1e-10 ), break, end % Escape clause
 end
 
 if ( (norm(dx) > 1e-10) || any(isnan(x)) )
@@ -131,15 +132,14 @@ end
 % Compute the weights:
 w = S/legpolyval(V,x);
 
-% % Test by integating for k = 1..2n (TODO: Remove.)
-% P = pswf(1:2*N, c, [-1 1]);
-% err = norm(w*P(x) - integral(P), inf)
-
 end
 
 
 function x = legroots(v)
 %LEGROOTS    Roots of a Legendre series
+
+% See RM Corless and G Litt, "Generalized Companion Matrices for Polynomials
+% not expressed in Monomial Bases" (Unpublished note)
 
 % Remove trailing zeros:
 v = v(1:find(v, 1, 'last'));
