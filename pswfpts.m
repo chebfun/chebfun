@@ -10,7 +10,7 @@ function [x, w] = pswfpts(N, c, dom, quadtype)
 %
 % [X, W] = PSWFPTS(N, C, DOM, 'GGQ') returns rather the nodes and weights
 % corresponding to the N-point generalised Gauss quadrature rule, which is
-% exact for PSWFs with bandwidth C of order up to 2N.
+% exact for PSWFs with bandwidth C of order up to 2N-1.
 %
 % Example:
 %
