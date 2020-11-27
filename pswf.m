@@ -1,21 +1,25 @@
 function [P, lam] = pswf(N, c, dom, flag)
 %PSWF   Prolate spheroidal wave functions.
 % P = PSWF(N, C) computes a CHEBFUN representing the Nth prolate spheroidal
-% wavefunction (PSWF) with bandwidth C on the interval [-1,1]. C must be a
+% wave function (PSWF) with bandwidth C on the interval [-1,1]. C must be a
 % scalar but N may be a vector of integers, in which case the output is
-% an array-valued CHEBFUN with NUMEL(N) columns. 
+% an array-valued CHEBFUN with LENGTH(N) columns. 
 %
 % P = PSWF(N) is as above, but with assumption that C = max(N).
 %
 % P = PSWF(N, C, DOM) computes the PSWFs as above, but scaled to the interval 
-% DOM, which must be a finite two-vector.
+% DOM, which must be a finite 2-vector.
 %
 % [P, LAM] = PSWF(...) returns also a vector V of length N containing the
 % N eigenvalues (in ascending order) of the bandwidth-C PSWF differential
 % eigenvalue problem.
 %
 % [V, LAM] = PSWF(N, C, DOM, 'coeffs') returns the matrix V of Legendre
-% coefficients for the computed PSWF rather than a Chebfun.
+% coefficients for the computed PSWF rather than a chebfun.
+%
+% Example:
+%
+% plot(pswf([1 3 5],100))
 %
 % See also PSWFPTS.
 
@@ -28,7 +32,7 @@ function [P, lam] = pswf(N, c, dom, flag)
 % The Legendre coefficients are then converted to Chebyshev via LEG2CHEB,
 % and a Chebfun constructed.
 %
-% [1] H Xiao, V Rokhlin and N Yarvin, Prolate spheroidal wavefunctions,
+% [1] H. Xiao, V. Rokhlin and N. Yarvin, Prolate spheroidal wavefunctions,
 % quadrature and interpolation, Inverse Problems, 17 (2001) 805–838.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
