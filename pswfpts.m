@@ -1,22 +1,22 @@
 function [x, w] = pswfpts(N, c, dom, quadtype)
 %PSWFPTS   Quadrature nodes and weights from PSWF roots.
 % X = PSWFPTS(N, C) returns the N roots of the Nth PSWF with bandwidth C.
-% (See >> HELP PSWF for the definition.) 
+% (See HELP PSWF for the definition.) 
 %   
-% [X, W] = PSWFPTS(N, C) returns also the weights for the interpolatory PSWF
+% [X, W] = PSWFPTS(N, C) also returns the weights for the interpolatory PSWF
 % quadrature rule with the nodes X.
 %
 % [X, W] = PSWFPTS(N, C, DOM) scales the nodes and weights to the interval DOM,
-% which should be a finite two-vector.
+% which should be a finite 2-vector.
 %
 % [X, W] = PSWFPTS(N, C, DOM, 'GGQ')  or PSWFPTS(N, C, 'GGQ') returns
 % rather the nodes and weights corresponding to the N-point generalised
 % Gauss quadrature rule, which is exact for PSWFs with bandwidth C of order
-% up to 2N-1. Note" The current implementation is reliable for 0 <= N <= 101 
+% up to 2N-1. Note: the current implementation is reliable for 0 <= N <= 101 
 % and 0 <= C <= N. Values outside this range should be used with caution.
 %
 % Example:
-%  f = pswf(9,pi); sum(f)
+%  f = pswf(8,pi); sum(f)
 %  [x,w] = pswfpts(5,pi,[-1,1],'GGQ'); w*f(x)
 %
 % See also PSWF, LEGPTS.

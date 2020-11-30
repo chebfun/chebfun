@@ -1,30 +1,32 @@
 function [P, lam] = pswf(N, c, dom, output_type)
 %PSWF   Prolate spheroidal wave functions.
 % P = PSWF(N, C) returns a CHEBFUN P representing the Nth prolate spheroidal
-% wave function (PSWF) with bandwidth C on the interval [-1,1], i.e., the
-% Nth eigenfunction of the differential eigenvalue problem
+% wave function with bandwidth C on the interval [-1,1], i.e., the Nth
+% eigenfunction of the differential eigenvalue problem
 %
-%   [(1-x^2)*P(x)')' + (LAM - C^2*x^2)*P(x) = 0.
+%    [(1-x^2)*P(x)')' + (LAM - C^2*x^2)*P(x) = 0,
 %
-% The input C must be a scalar but N may be a vector of non-negative
-% integers, in which case the output is an array-valued CHEBFUN with
-% LENGTH(N) columns. The eigenfunctions P are scaled so that P'*P = 2/(2N+1),
-% which is consistent with [2].
+% with N = 0,1,2,....  C must be a scalar but N may be a vector, in which
+% case the output is an array-valued CHEBFUN with LENGTH(N) columns.
+% P is scaled so that P'*P = 2/(2N+1), which is consistent with [2].
 %
-% [P, LAM] = PSWF(N, C) returns also the Nth eigenvalue of the PSWF
-% eigenvalue problem. If N is a vector then LAM is a vector of LENGTH(N).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% [V, LAM] = PSWF(N, C, 'coeffs') returns the matrix V of Legendre
-% coefficients for the computed PSWF(s) rather than a CHEBFUN.
+% [P, LAM] = PSWF(N, C) also returns the eigenvalue(s).
 %
-% Example:
-%    plot(pswf([1 3 5], 100))
+% Examples:
+%    f = pswf(2,pi); f(0.3)  % matches WolframAlpha spheroidalPS(2,0,pi,.3)
+%    plot(pswf(0:2:6, 100))
+%
+% [1] H. Xiao, V. Rokhlin and N. Yarvin, Prolate spheroidal wavefunctions,
+% quadrature and interpolation, Inverse Problems, 17 (2001), 805-838.
+%
+% [2] https://reference.wolfram.com/language/ref/SpheroidalPS.html
 %
 % See also PSWFPTS.
 
-% Copyright 2020 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/ for Chebfun information.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [V, LAM] = PSWF(N, C, 'coeffs') returns the matrix V of Legendre
+% coefficients for the computed PSWF(s) rather than a CHEBFUN.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: The approach is to compute the (approximate) normalised
@@ -33,11 +35,11 @@ function [P, lam] = pswf(N, c, dom, output_type)
 % and a Chebfun constructed.
 %
 % There is functionality for scaling the domain, but this is currently
-% undocumented, since we need to figure out the correct scaling.
+% undocumented, since we are not sure at present whether this choice
+% is the right one.
 %
-% [1] H. Xiao, V. Rokhlin and N. Yarvin, Prolate spheroidal wavefunctions,
-% quadrature and interpolation, Inverse Problems, 17 (2001) 805–838.
-% [2] https://reference.wolfram.com/language/ref/SpheroidalPS.html
+% Copyright 2020 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults:
