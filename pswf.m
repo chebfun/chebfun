@@ -9,6 +9,8 @@ function [P, lam] = pswf(N, c, dom, output_type)
 % with N = 0,1,2,....  C must be a scalar but N may be a vector, in which
 % case the output is an array-valued CHEBFUN with LENGTH(N) columns.
 % P is scaled so that P'*P = 2/(2N+1), which is consistent with [2].
+% Furthermore, the sign is chosen so hat P_N(0) > 0 when N is even and
+% P_N'(0) > 0 when N is odd.
 %
 % [P, LAM] = PSWF(N, C) also returns the eigenvalue(s).
 %
@@ -128,6 +130,19 @@ V = V(1:idx,:);
 
 % Scale as per Wolfram Alpha definition [1]:
 V = (1./sqrt(N+0.5)).*V;
+
+% Enforce P_N(0) > 0 for N even and P'_N(0) > 0 for N odd.
+m = 0:(idx-1)/2; idx = ~mod(N,2);
+if ( any(idx) )
+    L0 = (-1).^m./(beta(m,.5).*m); L0(1) = 1;
+    V0 = L0*V(1:2:end,idx);
+    V(:,idx) = sign(V0).*V(:,idx);
+end
+if ( ~all(idx) )
+    Lp0 = 2*(-1).^m./beta(m+1,.5); Lp0 = Lp0(1:length(V(2:2:end,1)));
+    Vp0 = Lp0*V(2:2:end,~idx);
+    V(:,~idx) = sign(Vp0).*V(:,~idx);
+end
 
 % Quit now if only coefficients are required:
 if ( strcmpi(output_type, 'coeffs') )

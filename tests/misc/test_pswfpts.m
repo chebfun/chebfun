@@ -40,9 +40,9 @@ err = abs(w*f(x) - I);
 pass(5) = err < 1e-10;
 
 % Check symmetry:
-[x,w] = pswfpts(10,pi,[-7,7])
+[x,w] = pswfpts(10,pi,[-7,7]);
 pass(6) = (norm(w-fliplr(w)) == 0) & (norm(x+flipud(x)) == 0);
-[x,w] = pswfpts(15,sqrt(2),[-7,7],'ggq')
+[x,w] = pswfpts(15,sqrt(2),[-7,7],'ggq');
 pass(7) = (norm(w-fliplr(w)) == 0) & (norm(x+flipud(x)) == 0);
 
 end
