@@ -1,6 +1,7 @@
 function [x, w] = pswfpts(N, c, dom, quadtype)
 %PSWFPTS   Quadrature nodes and weights from PSWF roots.
 % X = PSWFPTS(N, C) returns the N roots of the Nth PSWF with bandwidth C.
+% (See >> HELP PSWF for the definition.) 
 %   
 % [X, W] = PSWFPTS(N, C) returns also the weights for the interpolatory PSWF
 % quadrature rule with the nodes X.
@@ -8,14 +9,15 @@ function [x, w] = pswfpts(N, c, dom, quadtype)
 % [X, W] = PSWFPTS(N, C, DOM) scales the nodes and weights to the interval DOM,
 % which should be a finite two-vector.
 %
-% [X, W] = PSWFPTS(N, C, DOM, 'GGQ') returns rather the nodes and weights
-% corresponding to the N-point generalised Gauss quadrature rule, which is
-% exact for PSWFs with bandwidth C of order up to 2N-1.
+% [X, W] = PSWFPTS(N, C, DOM, 'GGQ')  or PSWFPTS(N, C, 'GGQ') returns
+% rather the nodes and weights corresponding to the N-point generalised
+% Gauss quadrature rule, which is exact for PSWFs with bandwidth C of order
+% up to 2N-1. Note" The current implementation is reliable for 0 <= N <= 101 
+% and 0 <= C <= N. Values outside this range should be used with caution.
 %
 % Example:
-%
-% f = pswf(9,pi); sum(f)
-% [x,w] = pswfpts(5,pi,[-1,1],'GGQ'); w*f(x)
+%  f = pswf(9,pi); sum(f)
+%  [x,w] = pswfpts(5,pi,[-1,1],'GGQ'); w*f(x)
 %
 % See also PSWF, LEGPTS.
 
@@ -24,7 +26,7 @@ function [x, w] = pswfpts(N, c, dom, quadtype)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: The approach used is to compute the Legendre coefficients
-% of the degree N+1 PSWF using the CHEBFUN.PSWF code and then find the
+% of the degree N PSWF using the CHEBFUN.PSWF code and then find the
 % roots with the Legendre analogue of the colleague matrix [1]. This is OK
 % for small N and C, but for larger values more advanced techniques should
 % be used; for instance as described in [2].
@@ -54,10 +56,11 @@ if ( nargin == 3 )
 end
 
 % Parse inputs:
+assert( nargin >= 2, 'PSWFPTS requires at least two input arguments.')
 assert( (numel(N)==1) && (round(N)==N) && (N>=0) , ...
-    'N must be a non-negative integer.');
+    'Input N must be a non-negative integer.');
 assert( (numel(c)==1) && (c>=0) , ...
-    'C must be a non-negative scalar.');
+    'Input C must be a non-negative scalar.');
 assert( numel(dom)==2 && all(isfinite(dom)) , ...
     'Domain must be a finite two-vector.');
 
@@ -69,9 +72,9 @@ end
 
 % Fork based on desired quadratyure type (PSWF roots or GGQ):
 if ( strcmpi(quadtype, 'ggq') )
-    [x,w] = ggq(N, c);
+    [x,w] = pswfggq(N, c);
 else
-    [x,w] = rootsquad(N, c);
+    [x,w] = pswfrootsquad(N, c);
 end
 
 % Enforce symmetry:
@@ -86,13 +89,16 @@ end
 
 end
 
-function [x,w] = rootsquad(N, c)
-%ROOTSQUAD   Quadrature rule with nodes at PSWF roots.
-% [X,W] = ROOTSQUAD(N,C) returns the N roots the (N+1)st PSWF with
-% bandwidth C and the weights for the associated interpolatory quadrature
-% rule.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Obtain Legendre coeffs of PSWFs of up to degree N+1:
+function [x,w] = pswfrootsquad(N, c)
+%ROOTSQUAD   Quadrature rule with nodes at PSWF roots.
+% [X,W] = ROOTSQUAD(N,C) returns the N roots the Nth PSWF with bandwidth C
+% and the weights for the associated interpolatory quadrature rule that
+% integrates PSWFs with bandwidth C and degree 0...N-1 exactly.
+
+% Obtain Legendre coeffs of PSWFs of up to degree N:
 V = pswf(0:N, c, [-1 1], 'coeffs');
 
 % Compute the roots of P_{N+1}:
@@ -109,11 +115,14 @@ end
 
 end
 
-function [x,w] = ggq(N, c)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [x,w] = pswfggq(N, c)
 %Generalised (PSWF) Gauss quadrature.
 % [X, W] = ggq(N, C) returns the N quadrature nodes and weights for
-% the generalised Gauss quadrature method which exactly integrates PSWFS
-% of orders 1 to 2N with bandwidth parameter C.
+% the generalised Gauss quadrature method which exactly integrates PSWFs
+% of orders 0 to 2N-1 with bandwidth parameter C.
 
 % See [1] Ma, Rokhlin, Wandzura, "Generalised Gaussian Quadrature Rules For
 % Systems of Arbitrary Functions", SINUM 1996.
@@ -137,8 +146,7 @@ S = 2*V(1,:); % Integral of each column (using orthogonality of Legendre)
 % Differentiate the PSWFs:
 M = size(V,1);
 C = ultraS.convertmat(M-1, 0.5, 0.5);
-D = ultraS.diffmat(M-1, 0);
-Vp = C\(D*V(2:end,:));
+Vp = C\V(2:end,:);
 
 % Modified Newton iteration to find x (see [1]):
 A = zeros(2*N,2*N);
@@ -149,13 +157,16 @@ for k = 1:10 % Quadratic convergence expected, so 10 iterations should be OK.
     % Invert and integrate (can be reduced to one solve):
     w = S/A;
     % Modified Newton update.
-    dx = w(2:2:end)./w(1:2:end); 
+    dx = w(2:2:end)./w(1:2:end);
     x = x + dx.';
-    if ( norm(dx, inf) < 1e-10 ), break, end % Escape clause
+    if ( norm(dx, inf) < 1e-12 ), break, end % Escape clause
 end
 
-if ( (norm(dx) > 1e-10) || any(isnan(x)) )
-    warning('CHEBFUN:pswfpts:iterationfailure', ...
+if ( any(isnan(x)) || any(abs(x) > 1) )
+    error('CHEBFUN:pswfpts:iterationfailure', ...
+        'Newton iteration failed to converge.');
+elseif ( (norm(dx, inf) > 1e-10) )
+    warning('CHEBFUN:pswfpts:possibleiterationfailure', ...
         'Newton iteration may have failed to converge.');
 end
 
@@ -164,10 +175,19 @@ w = S/legpolyval(V,x);
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function x = legroots(v)
 %LEGROOTS    Roots of a Legendre series
+% X = LEGROOTS(V) returns the real-valued roots in [-1, 1] of the
+% polynomial whose Legendre series coefficients are given by the vector V.
+% Note that the coefficients in V should be given in DESCENDING order,
+% i.e., P(x) = C(1)*P_0(x) + C(2)*P_1(x) + ... + C(N)*P_{N-1}(x)
+%
+% See also CHEBTECH/ROOTS.
 
+% The roots are found by solving a 'companion matrix' eigenvalue problem.
 % See RM Corless and G Litt, "Generalized Companion Matrices for Polynomials
 % not expressed in Monomial Bases" (Unpublished note)
 
@@ -195,8 +215,28 @@ x = sort(x);
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function y = legpolyval(c, x)
-% Clenshaw scheme for array-valued functions.
+%LEGPOLYVAL   Evaluate a Legendre polynomial.
+% Y = LEGPOLYVAL(C, X), when C is a column vector of length N+1 whose
+% elements are the Legendre coefficients of a polynomial, is the value of the
+% polynomial evaluated at X, i.e.,
+% 
+%   Y = C(1)*P_N(X) + C(2)*T_{N-1}(X) + ... + C(N)*T_1(X) + C(N+1)*I
+% 
+% If C is an (N+1) x M matrix, then LEGPOLYVAL interprets each of the columns
+% of C as coefficients of a degree N polynomial and evaluates the M Legendre
+% expansions
+% 
+%   Y_m = C(1,m)*T_N(X) + ... + C(N,m)*T_1(X) + C(N+1,m)*P_0(X), 1 <= m <= M,
+% 
+% returning the results as columns of a matrix Y = [Y_1 ... Y_M].
+%
+% X must be a scalar or a column vector.
+
+% Modified Clenshaw scheme:
 x = repmat(x(:), 1, size(c, 2));
 bk1 = zeros(size(x, 1), size(c, 2)); 
 bk2 = bk1;
@@ -211,6 +251,25 @@ y = e*c(1,:) + x.*bk1 - .5*bk2;
 end
 
 % function y = legpolyval(c, x)
+% %LEGPOLYVAL   Evaluate a Legendre polynomial.
+% % Y = LEGPOLYVAL(C, X), when C is a column vector of length N+1 whose
+% % elements are the Legendre coefficients of a polynomial, is the value of the
+% % polynomial evaluated at X, i.e.,
+% % 
+% %   Y = C(1)*P_N(X) + C(2)*T_{N-1}(X) + ... + C(N)*T_1(X) + C(N+1)*I
+% % 
+% % If C is an (N+1) x M matrix, then LEGPOLYVAL interprets each of the columns
+% % of C as coefficients of a degree N polynomial and evaluates the M Legendre
+% % expansions
+% % 
+% %   Y_m = C(1,m)*T_N(X) + ... + C(N,m)*T_1(X) + C(N+1,m)*P_0(X), 1 <= m <= M,
+% % 
+% % returning the results as columns of a matrix Y = [Y_1 ... Y_M].
+% %
+% % X must be a scalar or a column vector.
+%
+% Construct Legendre-Vandermonde matrix and multiply. (This is faster, but
+% possibly less accurate tan using the modified Clenshaw scheme above.)
 % x = x(:);
 % n = size(c,1)-1;
 % P = zeros(length(x),n+1);
@@ -220,6 +279,9 @@ end
 % end
 % y = P*c;
 % end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function y = scaleNodes(x, dom)
 %SCALENODES   Scale the nodes X from [-1,1] to DOM.
@@ -233,6 +295,9 @@ end
 y = dom(2)*(x + 1)/2 + dom(1)*(1 - x)/2;
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function w = scaleWeights(w, dom)
 %SCALEWEIGHTS   Scale the weights W from [-1,1] to DOM.
 % TODO: Deal with unbounded domains
@@ -243,3 +308,6 @@ end
 % Scale the weights:
 w = (diff(dom)/2)*w;
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

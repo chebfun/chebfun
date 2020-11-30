@@ -10,13 +10,14 @@ end
 P = pswf(0:9, 4);
 
 % Check orthogonality:
-pass(1) = norm(P'*P - eye(10)) < 1e-10;
+pass(1) = norm(P'*P - diag(2./(1:2:19))) < 1e-10;
 
 % Check number of roots:
 pass(2) = numel(roots(P(:,end))) == 9;
 
-% Check some precomputed values:
-pass(3) = abs(sum(P(.5,:)) - 1.204236518115228) < 1e-10;
+% Check a precomputed value:
+P4pi05 = -0.335179227182412994123178747; % From Wolfram Alpha
+pass(3) = abs(feval(pswf(4,pi), 0.5) - P4pi05) < 1e-10;
 
 %% Test PSWFPTS:
 

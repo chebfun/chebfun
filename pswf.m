@@ -1,24 +1,25 @@
-function [P, lam] = pswf(N, c, dom, flag)
+function [P, lam] = pswf(N, c, dom, output_type)
 %PSWF   Prolate spheroidal wave functions.
-% P = PSWF(N, C) computes a CHEBFUN representing the Nth prolate spheroidal
-% wave function (PSWF) with bandwidth C on the interval [-1,1]. C must be a
-% scalar but N may be a vector of non-negative integers, in which case the
-% output is an array-valued CHEBFUN with LENGTH(N) columns.
+% P = PSWF(N, C) returns a CHEBFUN P representing the Nth prolate spheroidal
+% wave function (PSWF) with bandwidth C on the interval [-1,1], i.e., the
+% Nth eigenfunction of the differential eigenvalue problem
 %
-% P = PSWF(N, C, DOM) computes the PSWFs as above, but scaled to the interval 
-% DOM, which must be a finite 2-vector.
+%   [(1-x^2)*P(x)')' + (LAM - C^2*x^2)*P(x) = 0.
 %
-% [P, LAM] = PSWF(N, C, ...) returns also a vector LAM of length N containing the
-% corresponding eigenvalues of the bandwidth-C PSWF differential
-% eigenvalue problem.
+% The input C must be a scalar but N may be a vector of non-negative
+% integers, in which case the output is an array-valued CHEBFUN with
+% LENGTH(N) columns. The eigenfunctions P are scaled so that P'*P = 2/(2N+1),
+% which is consistent with [2].
 %
-% [V, LAM] = PSWF(N, C, DOM, 'coeffs') or [V, LAM] = PSWF(N, C, 'coeffs')
-% returns the matrix V of Legendre coefficients for the computed PSWF
-% rather than a CHEBFUN.
+% [P, LAM] = PSWF(N, C) returns also the Nth eigenvalue of the PSWF
+% eigenvalue problem. If N is a vector then LAM is a vector of LENGTH(N).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% [V, LAM] = PSWF(N, C, 'coeffs') returns the matrix V of Legendre
+% coefficients for the computed PSWF(s) rather than a CHEBFUN.
 %
 % Example:
-%
-% plot(pswf([1 3 5],100))
+%    plot(pswf([1 3 5], 100))
 %
 % See also PSWFPTS.
 
@@ -31,29 +32,34 @@ function [P, lam] = pswf(N, c, dom, flag)
 % The Legendre coefficients are then converted to Chebyshev via LEG2CHEB,
 % and a Chebfun constructed.
 %
+% There is functionality for scaling the domain, but this is currently
+% undocumented, since we need to figure out the correct scaling.
+%
 % [1] H. Xiao, V. Rokhlin and N. Yarvin, Prolate spheroidal wavefunctions,
 % quadrature and interpolation, Inverse Problems, 17 (2001) 805–838.
+% [2] https://reference.wolfram.com/language/ref/SpheroidalPS.html
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults:
 if ( nargin < 3 )
     dom = [-1 1];
-    flag = 'chebfun';
+    output_type = 'chebfun';
 end
 if ( nargin == 3 )
     if ( isnumeric(dom) )   
-        flag = 'chebfun';
+        output_type = 'chebfun';
     else
-        flag = dom;
+        output_type = dom;
         dom = [-1 1];
     end
 end
 
 % Parse inputs:
-assert( all(round(N)==N) && all(N>=0) , ...
-    'N must be vector of non-negative integers.');
+assert( nargin >= 2, 'PSWF requires at least two input arguments.')
+assert( all(round(N)==N) && all(N>=0) && isvector(N), ...
+    'Input N must be vector of non-negative integers.');
 assert( (numel(c)==1) && (c>=0) , ...
-    'C must be a non-negative scalar.');
+    'Input C must be a non-negative scalar.');
 assert( numel(dom)==2 && all(isfinite(dom)) , ...
     'Domain must be a finite two-vector.');
 
@@ -63,7 +69,7 @@ M = max(ceil([2*sqrt(c)*N, 2*c, 20]));
 % Increase discretisation size until the trailing Legendre coefficients are
 % sufficiently small:
 ishappy = 0;
-tol = 1e-14;
+tol = eps;
 count = 0;
 
 while ( ~ishappy )
@@ -109,26 +115,29 @@ while ( ~ishappy )
     
 end
 
-% Extract required columns and unnormalise:
+% Extract required columns and unnormalise the Legendre coeffients:
 V = bsxfun(@times, V(:,N+1), sqrt((0:M)'+1/2) );
 lam = lam(N+1);
 
-% Trim trailing coefficients below machine precision:
-M = max(abs(V), [],2);
+% Trim trailing coefficients that are below machine precision:
+M = max(abs(V), [], 2);
 idx = find(M > eps, 1, 'last');
 V = V(1:idx,:);
 
+% Scale as per Wolfram Alpha definition [1]:
+V = (1./sqrt(N+0.5)).*V;
+
 % Quit now if only coefficients are required:
-if ( strcmpi(flag, 'coeffs') )
+if ( strcmpi(output_type, 'coeffs') )
     P = V;
     return
 end
 
-% Convert to Chebyshev coeffs:
+% Convert Legendre coeffs to Chebyshev coeffs:
 W = leg2cheb(V);
 
 % Enforce even/oddness (which is lost in leg2cheb):
-idx = abs(W(1,:)) < tol;
+idx = logical(mod(N,2));
 W(1:2:end,idx) = 0;
 W(2:2:end,~idx) = 0;
 
