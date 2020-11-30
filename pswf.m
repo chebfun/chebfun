@@ -25,11 +25,6 @@ function [P, lam] = pswf(N, c, dom, output_type)
 %
 % See also PSWFPTS.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [V, LAM] = PSWF(N, C, 'coeffs') returns the matrix V of Legendre
-% coefficients for the computed PSWF(s) rather than a CHEBFUN.
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: The approach is to compute the (approximate) normalised
 % Legendre coefficients of the PSWFs by solving an eigenvalue problem [1].
@@ -72,7 +67,7 @@ M = max(ceil([2*sqrt(c)*N, 2*c, 20]));
 
 % Increase discretisation size until the trailing Legendre coefficients are
 % sufficiently small:
-ishappy = 0;
+ishappy = 0;val = -0.175738914563712759; % WolframAlpha spheroidalPS(15,0,sqrt(2),1/3)
 tol = eps;
 count = 0;
 
