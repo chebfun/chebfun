@@ -8,11 +8,10 @@ function [P, lam] = pswf(N, c, dom, output_type)
 %
 % with N = 0,1,2,....  C must be a positive scalar but N may be a vector of
 % non-negative inegers, in which case the output is an array-valued CHEBFUN
-% with LENGTH(N) columns. P is scaled so that P'*P = 2/(2N+1), which is
-% consistent with [2] and [3]. Furthermore, the sign P_N(x) is chosen so that
-% sign(P_N(0)) == sign(L_N(0)) when N is even and sign(P_N'(0)) ==
-% sign(L_N'(0)) when N is odd, where L_N(x) is the degree N Legendre
-% polynomial (see (30.4.2) in [3]).
+% with LENGTH(N) columns. P is scaled so that P'*P = 2/(2N+1), as in
+% [2] and [3]. The sign of P is chosen so that P(0) and L(0) have the same
+% sign if N is even and P'(0) and L'(0) have the same sign if N is odd,
+% where L is the degree N Legendre polynomial (see [3], eq. (30.4.2)).
 %
 % [P, LAM] = PSWF(N, C) also returns the eigenvalue(s).
 %
