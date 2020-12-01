@@ -12,8 +12,7 @@ function [x, w] = pswfpts(N, c, dom, quadtype)
 % [X, W] = PSWFPTS(N, C, DOM, 'GGQ')  or PSWFPTS(N, C, 'GGQ') returns
 % rather the nodes and weights corresponding to the N-point generalised
 % Gauss quadrature rule, which is exact for PSWFs with bandwidth C of order
-% up to 2N-1. Note: the current implementation is reliable for 0 <= N <= 101 
-% and 0 <= C <= N. Values outside this range should be used with caution.
+% up to 2N-1.
 %
 % Example:
 %  f = pswf(8,pi); sum(f)
@@ -59,7 +58,7 @@ end
 assert( nargin >= 2, 'PSWFPTS requires at least two input arguments.')
 assert( (numel(N)==1) && (round(N)==N) && (N>=0) , ...
     'Input N must be a non-negative integer.');
-assert( (numel(c)==1) && (c>=0) , ...
+assert( (numel(c)==1) && (c>0) , ...
     'Input C must be a non-negative scalar.');
 assert( numel(dom)==2 && all(isfinite(dom)) , ...
     'Domain must be a finite two-vector.');
@@ -118,7 +117,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [x,w] = pswfggq(N, c)
+function [x,w] = pswfggq(N, c, x)
 %Generalised (PSWF) Gauss quadrature.
 % [X, W] = ggq(N, C) returns the N quadrature nodes and weights for
 % the generalised Gauss quadrature method which exactly integrates PSWFs
@@ -134,11 +133,21 @@ function [x,w] = pswfggq(N, c)
 % for smallish N and C.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Initial guess:
-% x = pswfpts(N, c); % PSWF roots
-x = legpts(N); % Gauss-Legendre nodes
-% Use KTE map to improve chances of Newton convergence!
-a = .5; x = asin(a*x)./asin(a); % Hello, my old friend!
+if ( nargin == 2 )
+    % Initial guess:
+    % x = pswfpts(N, 2*c); % PSWF roots
+    x = legpts(N); % Gauss-Legendre nodes
+    % Use KTE map to improve chances of Newton convergence!
+    a = .5; x = asin(a*x)./asin(a); % Hello, my old friend!
+end
+
+% Continuation for c > N. (Hacky! should be improved.)
+if ( nargin == 2 && c > N )
+    for cc = [N:2:c c]
+        [x, w] = pswfggq(N, cc, x);
+    end
+    return
+end
 
 % Get Legendre coeffs of the first 2N PSWFs:
 V = pswf(0:2*N-1, c, [-1 1], 'coeffs'); 

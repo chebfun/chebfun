@@ -6,16 +6,16 @@ function [P, lam] = pswf(N, c, dom, output_type)
 %
 %    [(1-x^2)*P(x)')' + (LAM - C^2*x^2)*P(x) = 0,
 %
-% with N = 0,1,2,....  C must be a scalar but N may be a vector, in which
-% case the output is an array-valued CHEBFUN with LENGTH(N) columns.
-% P is scaled so that P'*P = 2/(2N+1), which is consistent with [2].
-% Furthermore, the sign is chosen so hat P_N(0) > 0 when N is even and
-% P_N'(0) > 0 when N is odd.
+% with N = 0,1,2,....  C must be a positive scalar but N may be a vector of
+% non-negative inegers, in which case the output is an array-valued CHEBFUN
+% with LENGTH(N) columns. P is scaled so that P'*P = 2/(2N+1), which is
+% consistent with [2]. Furthermore, the sign is chosen so hat P_N(0) > 0
+% when N is even and P_N'(0) > 0 when N is odd.
 %
 % [P, LAM] = PSWF(N, C) also returns the eigenvalue(s).
 %
 % Examples:
-%    f = pswf(2,pi); f(0.3)  % matches WolframAlpha spheroidalPS(2,0,pi,.3)
+%    f = pswf(2,pi); f(0.3)
 %    plot(pswf(0:2:6, 100))
 %
 % [1] H. Xiao, V. Rokhlin and N. Yarvin, Prolate spheroidal wavefunctions,
@@ -57,8 +57,8 @@ end
 assert( nargin >= 2, 'PSWF requires at least two input arguments.')
 assert( all(round(N)==N) && all(N>=0) && isvector(N), ...
     'Input N must be vector of non-negative integers.');
-assert( (numel(c)==1) && (c>=0) , ...
-    'Input C must be a non-negative scalar.');
+assert( (numel(c)==1) && (c>0) , ...
+    'Input C must be a positive scalar.');
 assert( numel(dom)==2 && all(isfinite(dom)) , ...
     'Domain must be a finite two-vector.');
 
@@ -67,7 +67,7 @@ M = max(ceil([2*sqrt(c)*N, 2*c, 20]));
 
 % Increase discretisation size until the trailing Legendre coefficients are
 % sufficiently small:
-ishappy = 0;val = -0.175738914563712759; % WolframAlpha spheroidalPS(15,0,sqrt(2),1/3)
+ishappy = 0;
 tol = eps;
 count = 0;
 
@@ -131,12 +131,14 @@ m = 0:(idx-1)/2; idx = ~mod(N,2);
 if ( any(idx) )
     L0 = (-1).^m./(beta(m,.5).*m); L0(1) = 1;
     V0 = L0*V(1:2:end,idx);
-    V(:,idx) = sign(V0).*V(:,idx);
+    scl = sign(V0);
+    V(:,idx) = scl.*V(:,idx);
 end
 if ( ~all(idx) )
     Lp0 = 2*(-1).^m./beta(m+1,.5); Lp0 = Lp0(1:length(V(2:2:end,1)));
     Vp0 = Lp0*V(2:2:end,~idx);
-    V(:,~idx) = sign(Vp0).*V(:,~idx);
+    scl = sign(Vp0);
+    V(:,~idx) = scl.*V(:,~idx);
 end
 
 % Quit now if only coefficients are required:
