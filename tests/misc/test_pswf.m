@@ -19,11 +19,12 @@ P4pi05 = -0.335179227182412994123178747; % WolframAlpha spheroidalPS(4,0,pi,0.5)
 pass(3) = abs(feval(pswf(4,pi), 0.5) - P4pi05) < 1e-10;
 
 % And another:
-val = -0.175738914563712759; % WolframAlpha spheroidalPS(15,0,sqrt(2),1/3)
+val = 0.175738914563712759; % WolframAlpha spheroidalPS(15,0,sqrt(2),1/3)
 pass(4) = abs(feval(pswf(15,sqrt(2)), 1/3) - val) < 1e-10;
 
-% Check signs:
+% Check signs (see DLMNF (30.4.2)):
 f = pswf(0:20,100);
-pass(5) = all(f(.01) > 0);
+L = legpoly(0:20);
+pass(5) = all(sign(f(0.001)) == sign(L(0.001)));
 
 end

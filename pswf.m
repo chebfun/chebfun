@@ -9,8 +9,10 @@ function [P, lam] = pswf(N, c, dom, output_type)
 % with N = 0,1,2,....  C must be a positive scalar but N may be a vector of
 % non-negative inegers, in which case the output is an array-valued CHEBFUN
 % with LENGTH(N) columns. P is scaled so that P'*P = 2/(2N+1), which is
-% consistent with [2]. Furthermore, the sign is chosen so hat P_N(0) > 0
-% when N is even and P_N'(0) > 0 when N is odd.
+% consistent with [2] and [3]. Furthermore, the sign P_N(x) is chosen so that
+% sign(P_N(0)) == sign(L_N(0)) when N is even and sign(P_N'(0)) ==
+% sign(L_N'(0)) when N is odd, where L_N(x) is the degree N Legendre
+% polynomial (see (30.4.2) in [3]).
 %
 % [P, LAM] = PSWF(N, C) also returns the eigenvalue(s).
 %
@@ -22,8 +24,10 @@ function [P, lam] = pswf(N, c, dom, output_type)
 % quadrature and interpolation, Inverse Problems, 17 (2001), 805-838.
 %
 % [2] https://reference.wolfram.com/language/ref/SpheroidalPS.html
+% 
+% [3] https://dlmf.nist.gov/30.4
 %
-% See also PSWFPTS.
+% See also PSWFPTS, LEGPOLY.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: The approach is to compute the (approximate) normalised
@@ -126,18 +130,24 @@ V = V(1:idx,:);
 % Scale as per Wolfram Alpha definition [1]:
 V = (1./sqrt(N+0.5)).*V;
 
+%%
+
 % Enforce P_N(0) > 0 for N even and P'_N(0) > 0 for N odd.
 m = 0:(idx-1)/2; idx = ~mod(N,2);
 if ( any(idx) )
     L0 = (-1).^m./(beta(m,.5).*m); L0(1) = 1;
     V0 = L0*V(1:2:end,idx);
-    scl = sign(V0);
+    currentSign = sign(V0);
+    desiredSign = 1 - mod(N(idx),4);
+    scl = currentSign.*desiredSign;
     V(:,idx) = scl.*V(:,idx);
 end
 if ( ~all(idx) )
     Lp0 = 2*(-1).^m./beta(m+1,.5); Lp0 = Lp0(1:length(V(2:2:end,1)));
     Vp0 = Lp0*V(2:2:end,~idx);
-    scl = sign(Vp0);
+    currentSign = sign(Vp0);
+    desiredSign = 1 - mod(N(~idx)-1,4);
+    scl = currentSign.*desiredSign;
     V(:,~idx) = scl.*V(:,~idx);
 end
 
