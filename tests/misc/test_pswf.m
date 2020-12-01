@@ -23,9 +23,9 @@ val = 1.053221995207094811; % WolframAlpha spheroidalPS(0,0,1,0)
 pass(4) = abs(feval(pswf(0,1), 0) - val) < 1e-10;
 val = 0.079588252262137702; % WolframAlpha spheroidalPS(100,0,1,0)
 pass(5) = abs(feval(pswf(100,1), 0) - val) < 1e-10;
-val = 0.005959162025821166; % WolframAlpha spheroidalPS(33,0,33,.9)
+val = -0.005959162025821166; % WolframAlpha spheroidalPS(33,0,33,.9) times -1 !
 pass(6) = abs(feval(pswf(33,33), .9) - val) < 1e-10;
-val = 0.000000509171971545; % WolframAlpha spheroidalPS(1,0,20,-1)
+val = -0.000000509171971545; % WolframAlpha spheroidalPS(1,0,20,-1) times -1 !
 pass(7) = abs(feval(pswf(1,20), -1) - val) < 1e-10;
 
 % Check signs (see DLMNF (30.4.2)):
