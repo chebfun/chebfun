@@ -1,4 +1,4 @@
-function pass = test_lobpts(pref)
+function pass = test_radaupts(pref)
 
 % Choose a tolerance:
 tol = 1e-14;
@@ -13,5 +13,10 @@ pass(4) = abs(x(37) - 0.908847278001044) < tol;
 pass(5) = abs(w(37) - 0.031190846817016) < tol;
 pass(6) = abs(v(37) + 0.171069152683909) < tol;
 pass(7) = x(1) == -1;
+
+% Test domain scaling
+[x, w] = radaupts(n, [0 1]);
+pass(8) = x(1) == 0;
+pass(9) = abs(w*x - 1/2) < tol && abs(w*x.^2 - 1/3) < tol;
 
 end
