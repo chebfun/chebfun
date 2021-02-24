@@ -2,7 +2,7 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %PHASEPLOT   Phase (= argument) plot of a complex function.
 %   PHASEPLOT(F), where F is a function handle or a CHEBFUN2 defining a
 %   complex function, draws a phase plot of F(Z) in the complex plane.
-%   As arg(f(z)) ranges over [0,2pi] the colors run
+%   As arg(f(z)) ranges over [-pi,pi] the colors run
 %   red -> yellow -> green -> cyan -> blue -> magenta -> red.
 %   
 %   If HOLD is ON, the existing axes are used.  If HOLD is OFF, the axes
@@ -12,12 +12,16 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %   PHASEPLOT(F, 'CLASSIC') uses the color scheme from [1] rather than
 %   a somewhat smoothed variant.
 %
+%   PHASEPLOT(F, 'caxis', [theta, theta+2*pi]) changes the color axis to 
+%   [theta, theta+2*pi] instead of the default [-pi,pi].
+%
 % Examples:
 %   
 %   phaseplot(@(z) z.^2)
 %   phaseplot(@(z) exp(1./z.^2))
 %   phaseplot(@(z) besselj(6,z),[-12 12 -5 5])
 %   phaseplot(cheb.gallery2('airycomplex'))
+%   phaseplot(@(z) z, [0,2*pi])
 %
 %   plot(chebfun('exp(1i*s)',[-pi,pi]),'k')
 %   axis([-2 2 -2 2]), axis square, hold on
@@ -42,13 +46,17 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 
 classic = 0;                      % default: smoothed colors
 j = 1;
+theta = -pi;
 while ( j < nargin )
     j = j+1;
     v = varargin{j-1};
-    if ~ischar(v)                
+    if ~ischar(v)               
         ax = v;                   % user specifies axes
     elseif strcmp(v, 'classic')
         classic = 1;              % user requests classic color scheme
+    elseif strcmp(v, 'caxis') && (j<nargin)
+        theta = varargin{j}(1);              % user requests caxis
+        j = j+1;
     else
         error('PHASEPLOT:inputs', 'Unrecognized input')
     end
@@ -77,9 +85,9 @@ if ( classic )
 else
     phi = @(t) t - .5*cos(1.5*t).^3.*sin(1.5*t);
 end
-h = surf(real(zz), imag(zz), -ones(size(zz)), phi(angle(-f(zz))));
+h = surf(real(zz), imag(zz), ones(size(zz)), mod(phi(angle(f(zz)))-theta, 2*pi)+theta);
 set(h, 'EdgeColor','none');
-caxis([-pi pi])
+caxis([theta, theta+2*pi])
 colormap hsv(600)
 view(0,90)
 if ( ~ishold )
@@ -96,4 +104,3 @@ end
 if ( nargout > 0 )
     varargout = {h};
 end
-
