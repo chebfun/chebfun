@@ -21,7 +21,7 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %   phaseplot(@(z) exp(1./z.^2))
 %   phaseplot(@(z) besselj(6,z),[-12 12 -5 5])
 %   phaseplot(cheb.gallery2('airycomplex'))
-%   phaseplot(@(z) z, [0,2*pi])
+%   phaseplot(@(z) z,'caxis',[0,2*pi])
 %
 %   plot(chebfun('exp(1i*s)',[-pi,pi]),'k')
 %   axis([-2 2 -2 2]), axis square, hold on
