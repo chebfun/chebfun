@@ -3,7 +3,7 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %   PHASEPLOT(F), where F is a function handle or a CHEBFUN2 defining a
 %   complex function, draws a phase plot of F(Z) in the complex plane.
 %   As arg(f(z)) ranges over [-pi,pi] the colors run
-%   red -> yellow -> green -> cyan -> blue -> magenta -> red.
+%   cyan -> blue -> magenta -> red -> yellow -> green.
 %   
 %   If HOLD is ON, the existing axes are used.  If HOLD is OFF, the axes
 %   are taken as the domain of F if it is a CHEBFUN2, otherwise [-1 1 -1 1].
@@ -88,7 +88,10 @@ end
 h = surf(real(zz), imag(zz), ones(size(zz)), mod(phi(angle(f(zz)))-theta, 2*pi)+theta);
 set(h, 'EdgeColor','none');
 caxis([theta, theta+2*pi])
-colormap hsv(600)
+map = colormap(hsv(600));
+shift_map = round(600*mod(theta,2*pi)/(2*pi));
+map = circshift(map, -shift_map);
+colormap(map);
 view(0,90)
 if ( ~ishold )
     axis(ax)
