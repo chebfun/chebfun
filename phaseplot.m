@@ -105,6 +105,8 @@ if ( ~ishold )
     else
         axis equal
     end
+    xlim([ax(1), ax(2)])
+    ylim([ax(3), ax(4)])
 end
 if ( ~classic )
     alpha .8           % transparency makes it less harsh
