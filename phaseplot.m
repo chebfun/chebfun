@@ -90,7 +90,7 @@ if ( classic )
 else
     phi = @(t) t - .5*cos(1.5*t).^3.*sin(1.5*t);
 end
-h = surf(real(zz), imag(zz), ones(size(zz)), mod(phi(angle(f(zz)))-theta, 2*pi)+theta);
+h = surf(real(zz), imag(zz), ones(size(zz)), phi(mod(angle(f(zz))-theta, 2*pi))+theta);
 set(h, 'EdgeColor','none');
 caxis([theta, theta+2*pi])
 map = colormap(hsv(600));
