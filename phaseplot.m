@@ -24,7 +24,7 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %   phaseplot(@(z) besselj(6,z),[-12 12 -5 5])
 %   phaseplot(cheb.gallery('bessel'))
 %   phaseplot(cheb.gallery2('airycomplex'))
-%   phaseplot(@(z) z,'caxis',[0,2*pi])
+%   phaseplot(@(z) z,'caxis',[0,2*pi]), colorbar
 %
 %   plot(chebfun('exp(1i*s)',[-pi,pi]),'k')
 %   axis([-2 2 -2 2]), axis square, hold on
@@ -90,7 +90,7 @@ if ( classic )
 else
     phi = @(t) t - .5*cos(1.5*t).^3.*sin(1.5*t);
 end
-h = surf(real(zz), imag(zz), ones(size(zz)), phi(mod(angle(f(zz))-theta, 2*pi))+theta);
+h = surf(real(zz), imag(zz), ones(size(zz)), mod(phi(angle(f(zz))-pi)+pi-theta, 2*pi)+theta);
 set(h, 'EdgeColor','none');
 caxis([theta, theta+2*pi])
 map = colormap(hsv(600));
