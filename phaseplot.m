@@ -1,14 +1,12 @@
 function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %PHASEPLOT   Phase (= argument) plot of a complex function.
-%   PHASEPLOT(F), where F is a function handle, a CHEBFUN, or a CHEBFUN2 
-%   defining a complex function, draws a phase plot of F(Z) in the complex 
-%   plane.
+%   PHASEPLOT(F), where F is a function handle or a CHEBFUN2 defining a 
+%   complex function, draws a phase plot of F(Z) in the complex plane.
 %   As arg(f(z)) ranges over [-pi,pi] the colors run
 %   cyan -> blue -> magenta -> red -> yellow -> green.
 %   
 %   If HOLD is ON, the existing axes are used.  If HOLD is OFF, the axes
-%   are taken as the domain of F if it is a CHEBFUN or a CHEBFUN2, otherwise 
-%   [-1 1 -1 1].
+%   are taken as the domain of F if it is a CHEBFUN2, otherwise [-1 1 -1 1].
 %   PHASEPLOT(F, [A B C D]) uses the axes [A B C D].
 %
 %   PHASEPLOT(F, 'CLASSIC') uses the color scheme from [1] rather than
@@ -22,7 +20,6 @@ function varargout = phaseplot(f, varargin)  % Plot phase portrait.
 %   phaseplot(@(z) z.^2)
 %   phaseplot(@(z) exp(1./z.^2))
 %   phaseplot(@(z) besselj(6,z),[-12 12 -5 5])
-%   phaseplot(chebfun(@(z)sin(2*pi*z)))
 %   phaseplot(cheb.gallery2('airycomplex'))
 %   phaseplot(@(z) z,'caxis',[0,2*pi]), colorbar
 %
