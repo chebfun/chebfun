@@ -127,7 +127,7 @@ for k = index
     % And lengths of funs on either side:
     lengthPrevFun = length(newFuns{j-1});
     lengthThisFun = length(newFuns{j});
-
+    
     % Prevent merge if existing FUN lengths add to more than 1.2*maxn:
     if ( lengthPrevFun + lengthThisFun >= 1.2*maxn )
         % Skip to next breakpoint:
@@ -136,7 +136,8 @@ for k = index
 
     % Prevent merging if there are jumps:
     v = [oldPointVals(k,:); get(oldFuns{k-1}, 'rval'); get(oldFuns{k}, 'lval')];
-    if ( all( norm(v([1, 1],:) - v(2:3,:), inf) >= 1e3*pref.chebfuneps ) || any(isinf(v(:))) )
+    jumps = norm(v([1, 1],:) - v(2:3,:), inf)./vs;
+    if ( all( jumps >= 1e3*pref.chebfuneps ) || any(isinf(v(:))) )
         % Skip to next breakpoint:
         continue
     end
