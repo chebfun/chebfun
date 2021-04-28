@@ -3,7 +3,7 @@ function c_cheb = leg2cheb(c_leg, varargin)
 %   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
 %   to a vector C_CHEB of Chebyshev coefficients such that
 %       C_CHEB(1)*T0 + ... + C_CHEB(N)*T{N-1} = ...
-%           C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1},
+%           C_LEG(1)*P0 + ... + C_LEG(N)*P{N-1},
 %   where P{k} is the degree k Legendre polynomial normalized so that max(|P{k}|
 %   = 1.
 %
