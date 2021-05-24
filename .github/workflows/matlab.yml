@@ -12,4 +12,4 @@ jobs:
       - name: Run commands
         uses: matlab-actions/run-command@v0
         with:
-          command: addpath('.'); results = chebfun.test; assert(all([results{:,2}] > 0))
+          command: addpath('.'); results = chebtest; assert(all([results{:,2}] > 0))
