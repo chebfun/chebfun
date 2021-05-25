@@ -85,7 +85,7 @@ else
     else  
         % Do full n^2 by n^2 matrix kronecker product.
         % Make massive mn by mn matrix.
-        sz = size(CC{1,1}, 1) * size(CC{2,1}, 2);
+        sz = size(CC{1,1}, 1) * size(CC{1,2}, 2);
         if sz > 65^2
             error('CHEBFUN:CHEBOP2:denseSolve:unresolved1', ...
                 'Solution was unresolved on a 65 by 65 grid.');
@@ -110,7 +110,7 @@ else
         end
 
         % Unvectorize.
-        X = reshape(X, size(CC{1,1}, 1), size(CC{2,1}, 2));
+        X = reshape(X, size(CC{1,1}, 1), size(CC{1,2}, 2));
 
         % Impose linear constraints:
         X = imposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
