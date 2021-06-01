@@ -28,4 +28,9 @@ for r = 1:size(D,1)
     pass(j) = ( norm( f.*g - FtimesG ) < 10*tolr ); j = j + 1;
 end
 
+f = chebfun2(@(x,y) cos(x.*y)); 
+g = chebfun2(@(x,y) cos(2*x.*y)); 
+h = f*g; 
+pass(j) = norm( feval(h,0,0) - 1 ) < tol;  
+
 end

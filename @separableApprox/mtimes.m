@@ -68,7 +68,7 @@ if ( isa(f, 'separableApprox') )           % SEPARABLEAPPROX * ???
         X = innerProduct( fRows, gCols );
         
         % Construct low rank form of the result:
-        [U, S, V] = svd( X );
+        [U, S, V] = svd( X, 0 );
         h = f;
         h.cols = fCols * U;
         h.rows = gRows * V;
