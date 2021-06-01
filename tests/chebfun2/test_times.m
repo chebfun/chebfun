@@ -31,6 +31,6 @@ end
 f = chebfun2(@(x,y) cos(x.*y)); 
 g = chebfun2(@(x,y) cos(2*x.*y)); 
 h = f*g; 
-pass(j) = norm( feval(h,0,0) - 1 ) < tol;  
+pass(j) = norm( feval(h,0,0) - 2 ) < tol;  
 
 end
