@@ -34,7 +34,7 @@ data.exponents = [-a, -b];
 data.singType = {'sing', 'sing'};
 f = singfun(fh, data, pref);
 err = norm(feval(f,x) - feval(fh,x), inf);
-tol = 1e3*eps;
+tol = 2e3*eps;
 pass(3) = err < tol;
 
 %%

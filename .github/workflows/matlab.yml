@@ -1,0 +1,15 @@
+name: chebfun Tests
+on: [push]
+jobs:
+  chebfun-test:
+    name: Run chebfun tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Install MATLAB
+        uses: matlab-actions/setup-matlab@v0
+      - name: Run commands
+        uses: matlab-actions/run-command@v0
+        with:
+          command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
