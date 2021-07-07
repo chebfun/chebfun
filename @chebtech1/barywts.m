@@ -23,7 +23,7 @@ else
     % the sine function, those computed with a big argument are replaced by ones
     % with a small argument, improving the relative accuracy.
     v(1:floor(n/2)) = v(end:-1:n-floor(n/2)+1);
-    v(end-1:-2:1) = -v(end-1:-2:1);
+    v(2:2:end) = -v(2:2:end); % make the first barycentric weights positive
 end
 
 end

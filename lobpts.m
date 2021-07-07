@@ -73,7 +73,7 @@ else
     v1 = -abs(sum(v.*x(2:end-1))/2);
     sgn = -1;
 end
-v = [v1 ; v ; sgn*v1];
+v = -1 * [v1 ; v ; sgn*v1]; % make the first barycentric weight positive
 
 end
 

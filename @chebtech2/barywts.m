@@ -19,9 +19,9 @@ if ( n == 0 )                      % Special case (no points)
 elseif ( n == 1 )                  % Special case (single point)
     v = 1;
 else                               % General case
-    v = [ones(n-1,1) ; .5];        % Note v(end) is positive.
-    v(end-1:-2:1) = -1; 
-    v(1) = .5*v(1);
+    v = [0.5; ones(n-1,1)];        % Note v(1) is positive.
+    v(2:2:end) = -1; 
+    v(end) = .5*v(end);
 end
 
 end

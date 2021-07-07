@@ -37,7 +37,7 @@ if ( (n < 2001) )              % For small n using matrices is faster.
 else                           % For large n use a loop.
    w = ones(n,1);
    for j = 1:n
-       v = C*(x(j) - x); v(j) = 1;
+       v = C*(x- x(j)); v(j) = 1; % make the first barycentric weight positive
        vv = exp(sum(log(abs(v))));
        w(j) = 1./(prod(sign(v))*vv);
    end

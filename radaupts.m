@@ -62,7 +62,7 @@ w = [2/n^2, w./(1 + x(2:end).')];
 v = v./(1 + x(2:end));
 v = v/max(abs(v));
 v1 = -abs(sum(x(2:end).*v));
-v = [v1 ; v];
+v = -1 * [v1 ; v]; % make first barycentric weight positive
 
 end
 
