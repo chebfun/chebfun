@@ -190,7 +190,9 @@ if ( isempty(xk) ) % no initial reference is given by the user
         
         if ~status.success % all attempts failed
         	error('CHEBFUN:CHEBFUN:minimax:failure', ...
-                'MINIMAX failed to produce the best approximant.')            
+               ['MINIMAX failed to produce the best approximant. ' ...
+                'If the accuracy is close to machine precision, ' ...
+                'try reducing the degree.'])
         end
     end
 else  % the user has also given a starting reference
