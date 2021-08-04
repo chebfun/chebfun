@@ -6,6 +6,11 @@ function varargout = quantumstates(varargin)
 %   and the potential function V is given as a Chebfun. The domain of the
 %   problem is the domain of V, with boundary conditions u=0 at both ends.
 %
+%   If V is a periodic chebfun, the BCs are periodic.  Warning! -- in the
+%   periodic case only eigenmodes with the same periodicity are computed.
+%   Thus for example, there is no continuous spectrum, though there would
+%   be one for a periodic infinite potential.
+%
 %   Inputs:
 %
 %       QUANTUMSTATES(V) plots 10 eigenstates for h=0.1
@@ -23,9 +28,13 @@ function varargout = quantumstates(varargin)
 %   Examples:
 %
 %       x = chebfun('x', [-3, 3]);
-%       V = x.^2;                 % harmonic oscillator, or
-%       V = abs(x);               % absolute value, or
-%       V = (x.^2-1).^4;          % double well
+%       V = x.^2;                               % harmonic oscillator, or
+%       V = abs(x);                             % absolute value, or
+%       V = (x.^2-1).^4;                        % double well
+%       quantumstates(V)
+%
+%       V = chebfun('sin(pi*x/2)^2','trig');    % a periodic example
+%       quantumstates(V)
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -55,9 +64,14 @@ end
 
 %% Eigenvalue computation:
 [xmin, xmax] = domain(V);                          % domain of problem
-% Create a CHEBOP with Dirichlet BCs
+% Create a CHEBOP
 L = chebop([xmin, xmax]);
-L.lbc = 0; L.rbc = 0;
+istrig = isa(V.funs{1}.onefun,'trigtech');         % is the potential periodic?
+if istrig   
+    L.bc = 'periodic';
+else
+    L.lbc = 0; L.rbc = 0;
+end
 L.op = @(x,u) -h^2*diff(u,2) + V.*u;               % Schroedinger operator
 [U, D] = eigs(L, n, 'sr');                         % compute evals/efuns
 d = diag(D);                                       % vector of evals
@@ -96,12 +110,14 @@ ymin = ymin - 0*ydiff;
 % V values at endpoints:
 Vxmin = feval(V, xmin); 
 Vxmax = feval(V, xmax);
-if ( ymax > Vxmin )                              % The potential 
-    plot(xmin*[1 1], [ymax, Vxmin], 'k', LW, lw)  %   V(x) effectively
-end                                              %   goes to infinity
-if ( ymax > Vxmax )                              %   at the endpoints,
-    plot(xmax*[1 1], [ymax Vxmax], 'k', LW, lw)   %   so we make the
-end                                              %   plot show this.
+if ~istrig
+    if ( ymax >  Vxmin )                              % The potential 
+        plot(xmin*[1 1], [ymax, Vxmin], 'k', LW, lw)  %   V(x) effectively
+    end                                               %   goes to infinity
+    if ( ymax > Vxmax )                               %   at the endpoints,
+        plot(xmax*[1 1], [ymax Vxmax], 'k', LW, lw)   %   so we make the
+    end                                               %   plot show this.
+end
 dx = .05*(xmax - xmin); 
 dy = .25*ydiff/max(5, n);
 
@@ -120,11 +136,13 @@ plot(W, LW, lw)
 
 % Plot V(x) again (so that black ends up on top):
 plot(V, 'k', LW, lw, 'jumpline', '-k')
-if ( ymax > Vxmin )
-    plot(xmin*[1, 1], [ymax, Vxmin], 'k', LW, lw)
-end                                          
-if ( ymax > Vxmax )
-    plot(xmax*[1, 1], [ymax Vxmax], 'k', LW, lw)    
+if ~istrig
+    if ( ymax > Vxmin )
+        plot(xmin*[1, 1], [ymax, Vxmin], 'k', LW, lw)
+    end                                          
+    if ( ymax > Vxmax )
+        plot(xmax*[1, 1], [ymax Vxmax], 'k', LW, lw)    
+    end
 end
 
 % Set axis:
