@@ -37,7 +37,9 @@ function [f, finv, pol, polinv] = conformal(C, varargin)
 % rational functions, Numer. Math. 142 (2019), 359--382.
 %
 % L. N. Trefethen, Numerical conformal mapping with rational 
-% functions, Computational Methods and Function Theory, 2020.
+% functions, Comp. Meth. Funct. Th. 20 (2020), 369-387.
+%
+% See also CONFORMAL2.
 
 %%
 %   Default algorithm:
