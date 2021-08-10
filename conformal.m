@@ -1,19 +1,21 @@
 function [f, finv, pol, polinv] = conformal(C, varargin)
 %% CONFORMAL  Conformal map to unit disk
-%   CONFORMAL(C, ctr) computes a conformal map F of the region bounded by the
-%   complex periodic chebfun C to the unit disk and its inverse FINV, with
-%   F(ctr) = 0 and F'(ctr) > 0.  Both maps are represented by function
-%   handles evaluating rational functions, whose poles are optionally returned
-%   in the vectors POL and POLINV.  If ctr is omitted it is set to 0.
+%   [F, FINV] = CONFORMAL(C, ctr) computes a conformal map F of the region
+%   bounded by the complex periodic chebfun C to the unit disk and its inverse
+%   FINV, with F(ctr) = 0 and F'(ctr) > 0.  Both maps are represented by
+%   function handles evaluating rational functions.  If ctr is omitted it is
+%   set to 0.
 %
 %   CONFORMAL(..., 'tol', tol) uses tolerance tol instead of the default 1e-5.
 %
-%   CONFORMAL(..., 'plots') produces plots of the map and its inverse
+%   CONFORMAL(..., 'plots') produces plots of the map and its inverse.
 %
-%   CONFORMAL(..., 'numbers') prints various quantities
+%   CONFORMAL(..., 'numbers') prints various quantities.
 %
 %   CONFORMAL(..., 'poly') uses a less robust algorithm based on polynomials
-%                          instead of the Kerzman-Stein integral equation
+%                          instead of the Kerzman-Stein integral equation.
+%
+%   [F, FINV, POL, POLINV] = CONFORMAL(...) returns the poles of F and FINV.
 %
 %   This experimental code is good for smooth simple regions, but easy to break.
 %
