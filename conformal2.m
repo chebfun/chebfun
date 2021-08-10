@@ -2,12 +2,13 @@ function [f, finv, rho, pol, polinv] = conformal2(C1, C2, varargin)
 %% CONFORMAL2  Doubly-connected conformal map to annulus
 %   [F, FINV] = CONFORMAL2(C1, C2) computes a conformal map F of the smooth
 %   annular region bounded by the two complex periodic chebfuns C1 (outer
-%   boundary) and C2 (inner) to a circular annulus and its inverse FINV.  Both
-%   maps are represented by function handles evaluating rational functions.
-%   The circular annulus has radii 1 and RHO < 1, the conformal modulus, which
-%   is determined as part of the calculation.
+%   boundary) and C2 (inner boundary, enclosing the origin) to a circular
+%   annulus and its inverse FINV.  Both maps are represented by function
+%   handles evaluating rational functions.  The circular annulus has radii 1
+%   and RHO < 1, the conformal modulus, which is determined as part of the
+%   calculation.
 %
-%   CONFORMAL2(..., 'tol', tol) uses tolerance tol instead of the default 1e-5.
+%   CONFORMAL2(..., 'tol', tol) uses tolerance tol instead of the default 1e-6.
 %
 %   CONFORMAL2(..., 'plots') produces plots of the map and its inverse.
 %
@@ -19,6 +20,11 @@ function [f, finv, rho, pol, polinv] = conformal2(C1, C2, varargin)
 %   This experimental code is only good for very simple regions.  Easy to break.
 %
 %   Examples:
+%
+%   circle = chebfun('exp(1i*pi*z)','trig');
+%   ellipse2 = real(circle) + .6i*imag(circle);
+%   ellipse1 = (2+1i)*ellipse2 + .5;
+%   conformal2(ellipse1, ellipse2, 'plots');        
 %
 %   z = chebfun('exp(1i*pi*z)','trig');
 %   C1 = z.*abs(1+.1*z^4); C2 = .5*z.*abs(1+.2*z^3);
@@ -42,7 +48,7 @@ function [f, finv, rho, pol, polinv] = conformal2(C1, C2, varargin)
 %   Chebfun constructor, for simplicity in this numerically challenging
 %   area we have not done that.
 %
-% This code was written by L. N. Trefethen in October 2019.  For
+% This code was written by L. N. Trefethen mainly in October 2019.  For
 % information about the use of AAA approximation, see Gopal and Trefethen,
 % Representation of conformal maps by rational functions, Numer. Math.
 % 142 (2019), 359-382.  See also Trefethen, Numerical conformal mapping
@@ -61,39 +67,33 @@ while err > tol
     n = round(2^logn);                      % degree of polynomial
     M = 8*n;                                % # of sample points on each curve
     MM = (1:M)';
-    logn = logn + 1/2;
     Z1 = C1(dom1(1) + MM*diff(dom1)/M);     % sample points, outer curve
     Z2 = C2(dom2(1) + MM*diff(dom2)/M);     % sample points, inner curve
     Z = [Z1; Z2];
     H = -log(abs(Z));                       % RHS for Dirichlet problem
     H(M+MM) = H(M+MM)+1;
-    n1 = 0:n;                               % exponents for real part
-    n2 = 1:n;                               % exponents for imag part
     rvec = [zeros(M,1); ones(M,1)];
- %  A = [real(Z.^n1) imag(Z.^n2) ...
- %       real(Z.^-n2) imag(Z.^-n2) rvec];   % matrix for least-squares problem
     [Hes, P] = VAorthog(Z,n);               % orthogonalize nonnegative powers
     [Hes2, P2] = VAorthog(Z.^(-1),n);       % orthogonalize negative powers
     A = [real(P) real(P2) -imag(P) -imag(P2) rvec];
     N = size(A,2);
     c = A\H;                                % soln of least-squares problem
     logrho = 1 - c(end);
-    rho = exp(logrho)                       % conformal modulus
+    rho = exp(logrho);                      % conformal modulus
     err = norm(A*c-H, inf);                 % max error
     errvec = [errvec err];
     c(end) = [];
-    c = reshape(A\H, [], 2)*[1; 1i];
+    c = reshape(c, [], 2)*[1; 1i];
     F = [P P2]*c;
-    U = real(F);
-    V = imag(F);
-    W = Z.*(exp(U+1i*V));
-    if (err > tol) && (logn >= 7)
+    W = Z.*(exp(F));
+    logn = logn + 1/2;
+    if (err > tol) && (logn > 8)
         warning('CONFORMAL2 did not converge')
         break
     end
 end
 warning(w1.state, 'MATLAB:rankDeficientMatrix')
-semilogy(errvec,'.-','linewidth',1,'markersize',10), grid on, pause %%%
+%semilogy(errvec,'.-','linewidth',1,'markersize',10), grid on, pause
 
 w2 = warning('off', 'CHEBFUN:aaa:Froissart');
 [f, pol] = aaa(W, Z, 'tol', tol);           % forward map
@@ -120,7 +120,7 @@ if plots
   
     h1 = axes(PO, [.04 .38 .45 .53]);       % plot C1, C2 and poles of f
     plot([C1 C2], 'b', LW, 1)
-    axis(1.3*norm(C1,inf)*[-1 1 -1 1])
+    axis(1.2*norm(C1,inf)*[-1 1 -1 1])
     axis square, hold on, plot(pol, '.r', MS, 8)
     title([num2str(length(pol)) ' poles'],FW,NO)
   
@@ -168,14 +168,13 @@ if numbers
     fprintf('     max error of least-squares problem, err:  %6.1e\n', err)
     fprintf('                        polynomial degree, n:  %d\n', n)
     fprintf('        number of real degrees of freedom, N:  %d\n', 2*n+1)
-    fprintf('condition number of least-squares matrix A:  %6.1e\n', cond(A))
     disp(' ')
 end
 
 end   % end of conformal2
 
 function [tol, plots, numbers, poly] = parseinputs(C1, C2, varargin)
-tol = 1e-5; 
+tol = 1e-6; 
 plots = 0;
 numbers = 0;
 poly = 0;
