@@ -27,7 +27,7 @@ function [f, finv, rho, pol, polinv] = conformal2(C1, C2, varargin)
 %   conformal2(ellipse1, ellipse2, 'plots');        
 %
 %   z = chebfun('exp(1i*pi*z)','trig');
-%   C1 = z.*abs(1+.1*z^4); C2 = .5*z.*abs(1+.2*z^3);
+%   C1 = z*abs(1+.1*z^4); C2 = .5*z*abs(1+.2*z^3);
 %   conformal2(C1, C2, 'plots');        
 %
 %   z = chebfun('exp(pi*1i*t)','trig');
