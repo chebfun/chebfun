@@ -143,7 +143,14 @@ function [y, x] = localMinAndMax(f)
 %LOCALMINANDMAX   Compute local extrema of f.
 
 % Compute the turning points:
-df = diff(f);
+if ( isreal(f) )
+    df = diff(f);
+else
+    % Note: If F is complex-valued, absolute values are taken to determine 
+    % extrema, but the resulting values correspond to those of the original 
+    % function. To achieve this we athr computer the extrema of |f|^2:
+    df = diff(real(f).^2 + imag(f).^2);
+end
 % Ensure endpoints are included:
 for k = 1:numel(df)
     df(k).pointValues([1,end],:) = 0;
