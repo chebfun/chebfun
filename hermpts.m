@@ -580,8 +580,9 @@ for kk = 1:10
     x0 = x0 - dx;
     if norm(dx, inf)<sqrt(eps), break; end
 end
+[~, dval] = hermpoly_rec(n, x0);      % Compute derivatives once more.
 x = x0/sqrt(2);
-w = (exp(-x.^2)./dval.^2)';            % quadrature weights
+w = (exp(-x.^2)./dval.^2)';           % Quadrature weights
 v = exp(-x.^2/2)./dval;               % Barycentric weights
 
 if mod(n,2) == 1                              % fold out
