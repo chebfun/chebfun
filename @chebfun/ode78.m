@@ -1,5 +1,5 @@
 function varargout = ode78(varargin)
-%ODE45   Solve stiff differential equations and DAEs. Output a CHEBFUN.
+%ODE78   Solve stiff differential equations and DAEs. Output a CHEBFUN.
 %   Y = CHEBFUN.ODE78(ODEFUN, D, ...) applies the standard ODE78 method to
 %   solve an initial-value problem on the domain D. The result is then converted
 %   to a piecewise-defined CHEBFUN with one column per solution component.
