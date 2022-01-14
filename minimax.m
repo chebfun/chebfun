@@ -1913,6 +1913,8 @@ if length(cU)<=1, r = []; return; end % constant function
 if (length(cU)==2)
     % degree 1 polynomial: just take the root
     ei = -cU(2)/(2*cU(1));
+    % remove root if outside domain
+    ei = ei(abs(ei)<=1+1e-7);
 else
     % now construct colleague matrix for ChebyshevU
     oh = ones(len-2,1)/2;
@@ -1920,8 +1922,8 @@ else
     cU = -cU(2:end)/cU(1)/2;cU(2) = cU(2)+.5;
     C(1,:) = cU.';
     ei = eig(C);
-    ei = real(ei(abs(imag(ei))<1e-5 & abs(ei)<=1+1e-7)); 
     % remove irrelevant roots
+    ei = real(ei(abs(imag(ei))<1e-5 & abs(ei)<=1+1e-7)); 
 end
 r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
 end
