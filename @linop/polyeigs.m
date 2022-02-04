@@ -455,7 +455,7 @@ while ( ~isempty(queue) )
                 vcoeffsq = [ zeros(lnc2 - lvcs,1) ; vcoeffsq ; ]; %#ok<AGROW>
                 lvcs = length(vcoeffsq);
             end
-            % Only the most significant rows affected
+            % Only the most signifi        256         512cant rows affected
             rows = (lvcs - lnc2 + 1):lvcs;
             vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2; %#ok<AGROW>
         end

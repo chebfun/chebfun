@@ -69,7 +69,6 @@ for k = 1:nargin-1
         % Tell CHEBOP/LINEARIZE() that we don't want it to try to reshape inputs
         % that it believes are parameters to doubles, rather than CHEBFUNs.
         paramReshape = false;
-        
         % Linearise the second CHEBOP:
         [varargin{k}, ~, isLinear] = ...
             linearize(varargin{k}, u0, [], linCheck, paramReshape);
@@ -105,7 +104,6 @@ else
     % to LINOP/EIGS below.
     varargin{nargin} = prefs;
 end
-
 
 % Call LINOP/EIGS.
 [varargout{1:nargout}] = polyeigs(L, varargin{:});

@@ -4,8 +4,6 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 
-tol = 1e-8;
-
 % TEST01 (Taken from V4 implementation. Original source unknown.)
 
 x = chebfun('x');
@@ -32,6 +30,34 @@ for k = 1:5
 end
 
 err = norm(err, inf);
-pass = err < tol;
+tol = 1e-8;
+pass(1) = err < tol;
+
+%% ORR-SOMMERFELD (Taken from [1])
+% [1] F Tisseur and NJ Higham, Structured Pseudospectra for polynomial 
+% eigenvalue problems, SIAM J. Matrix Anal. Appl., 2001
+
+R = 5772;
+w = 0.26943;
+
+A = chebop(@(x,u) diff(u,4)+1i*R*w*diff(u,2));
+A.lbc = @(u) [u ; diff(u)];
+A.rbc = @(u) [u ; diff(u)];
+U = @(x) 1-x.^2;
+Upp = @(x) -2 + 0*x;
+B = chebop(@(x,u) -1i*R*U(x)*diff(u,2) + 1i*R*Upp(x)*u);
+C = chebop(@(x,u) -2*diff(u,2) - 1i*R*w*u);
+D = chebop(@(x,u) 1i*R*U(x).*u);
+E = chebop(@(x,u) u);
+
+pref = cheboppref();
+pref.discretization = @ultraS;
+% pref.discretization = @chebcolloc2; pref.bvpTol = 1e-7;
+[~, lam] = polyeigs(A, B, C, D, E, 1, 1, pref);
+
+% Tisseur & Higham only give the first few digits (plus the problem is very
+% illconditioned!)
+tol = 1e-5;
+pass(2) = abs(lam - (1.02056+9.7e-7*1i)) < tol;
 
 end
