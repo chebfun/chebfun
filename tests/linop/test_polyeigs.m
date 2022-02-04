@@ -23,9 +23,10 @@ pref.discretization = @chebcolloc2; % TODO <- this should not be necessary
 DV4 =[
    1.359355061649311
   -1.876033230373888
-   3.0400000000000080
+   3.000000000000080
   -3.537162428575718
    4.643868772821881];
+
 err = [];
 err(6) = norm(sort(D) - sort(DV4), inf);
 
