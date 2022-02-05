@@ -33,7 +33,7 @@ err = norm(err, inf);
 tol = 1e-8;
 pass(1) = err < tol;
 
-%% ORR-SOMMERFELD (Taken from [1])
+%% Test 02: ORR-SOMMERFELD (Taken from [1])
 % [1] F Tisseur and NJ Higham, Structured Pseudospectra for polynomial 
 % eigenvalue problems, SIAM J. Matrix Anal. Appl., 2001
 
@@ -50,14 +50,30 @@ C = chebop(@(x,u) -2*diff(u,2) - 1i*R*w*u);
 D = chebop(@(x,u) 1i*R*U(x).*u);
 E = chebop(@(x,u) u);
 
-pref = cheboppref();
-pref.discretization = @ultraS;
-% pref.discretization = @chebcolloc2; pref.bvpTol = 1e-7;
-[~, lam] = polyeigs(A, B, C, D, E, 1, 1, pref);
+prefs = cheboppref();
+prefs.discretization = @ultraS;
+% prefs.discretization = @chebcolloc2; prefs.bvpTol = 1e-7;
+[~, lam] = polyeigs(A, B, C, D, E, 1, 1, prefs);
 
 % Tisseur & Higham only give the first few digits (plus the problem is very
 % illconditioned!)
 tol = 1e-5;
 pass(2) = abs(lam - (1.02056+9.7e-7*1i)) < tol;
+
+%% TEST03: Submitted by user Yang Yang
+
+k = .1;
+A = chebop(@(z,w) z*(1-k^2*z^2)*diff(w,2)- 2*diff(w) - 2*k^2*z*w);
+A.bc = 'dirichlet';
+B = chebop(@(z,w) (1-3*k^2*z^2)*diff(w,2)- 2*k^2*z*w);
+C = chebop(@(z,w) -3*k^2*z*diff(w, 2));
+D = chebop(@(z,w) -k^2*diff(w, 2));
+
+[w, c] = polyeigs(A, B, C, D, 1, 'LI', pref);
+
+z = chebfun('z');
+res = A(z,w) + c*B(z,w) + c^2*C(z,w) + c^3*D(z,w);
+c_stored = 0.001337317520467 + 0.571947192226180i;
+pass(3) = (norm(res) < tol) && abs(c - c_stored) < tol;
 
 end
