@@ -1,67 +1,64 @@
 function varargout = polyeigs(varargin)
-%EIGS    Eigenvalues and eigenfunctions of a linear operator.
+%POLYEIGS    Polynomial eigenvalues and eigenfunctions of a linear operator.
 %   Important (1): While you can construct a LINOP and apply this method, the
-%   recommended procedure is to use CHEBOP/EIGS instead.
+%   recommended procedure is to use CHEBOP/POLYEIGS instead.
 %   Important (2): A CHEBOPPREF object PREFS has to be passed. When this method
-%   is called via CHEBOP/EIGS, PREFS is inherited from the CHEBOP level.
+%   is called via CHEBOP/POLYEIGS, PREFS is inherited from the CHEBOP level.
 %
-%   D = EIGS(A, PREFS) returns a vector of 6 eigenvalues of the linop A. EIGS 
-%   will attempt to return the eigenvalues corresponding to the most easily
-%   resolved eigenfunctions. (This is unlike the built-in EIGS, which
-%   returns the largest eigenvalues by default.)
+% [X,E] = POLYEIG(A0,A1,..,Ap,K) solves the polynomial eigenvalue problem
+% of degree p:
+%    (A0 + lambda*A1 + ... + lambda^p*Ap)*x = 0.
+% The input is p+1 linops, A0, A1, ..., Ap and the output is an inf-by-K
+% chebfun quasimatrix, X, whose columns are the K least oscillatory
+% eigenfunctions, and a vector of length k, E, whose elements are the
+% eigenvalues.
+%    for j = 1:K
+%       lambda = E(j)
+%       u = X(:,j)
+%       A0(u) + lambda*A1(u) + ... + lambda^p*Ap(u) %is approximately 0.
+%    end
+% Any boundary conditions, continuity constraints, or other constraints on
+% the eigenvectors should be homogeneous and specified in A0. Inhomogenous
+% constraints are set to zero, and constarints in A1, ..., Ap are ignored.
+% K defaults to 6 if not specified.
 %
-%   [V, D] = EIGS(A, PREFS) returns a diagonal 6x6 matrix D of A's most easily
-%   resolved eigenvalues, and their corresponding eigenfunctions in the
-%   chebmatrix V, where V{i}(:,j) is the jth eigenfunction in variable i of
-%   the system.
+% E = POLYEIGS(A0,A1,..,Ap,K) is a vector of length k whose elements are
+% the K least oscillatory eigenvalues of the polynomial eigenvalue problem.
 %
-%   [...] = EIGS(A, B, PREFS) solves the generalized eigenproblem A*V = B*V*D,
-%   where B is another linop.
+% EIGS(A0,A1,..,Ap,K,SIGMA) also finds K solutions to the polynomial
+% eigenvalue problem. If SIGMA is a scalar, the eigenvalues found are the
+% ones closest to SIGMA. Other possibilities are 'LR' and 'SR' for the
+% eigenvalues of largest and smallest real part, and 'LM' (or Inf) and 'SM'
+% for largest and smallest magnitude. SIGMA must be chosen appropriately
+% for the given operator; for example, 'LM' for an unbounded operator will
+% fail to converge!
 %
-%   EIGS(A, K, PREFS) and EIGS(A, B, K, PREFS) find the K most easily resolved 
-%   eigenvalues.
+% Similarly to LINOP/EIGS, this routine uses the built-in POLYEIG on dense
+% matrices of increasing size, stopping when the targeted eigenfunctions
+% appear to have converged, as determined by the chebfun constructor.
 %
-%   EIGS(A, K, SIGMA, PREFS) and EIGS(A, B, K, SIGMA, PREFS) find K eigenvalues. 
-%   If SIGMA is a scalar, the eigenvalues found are the ones closest to SIGMA. 
-%   Other selection possibilities for SIGMA are:
+% Example:
 %
-%      'LM' (or Inf) and 'SM' for largest and smallest magnitude
-%      'LR' and 'SR' for largest and smallest real part
-%      'LI' and 'SI' for largest and smallest imaginary part
-%
-%   SIGMA must be chosen appropriately for the given operator. For example,
-%   'LM' for an unbounded operator will fail to converge.
-%
-%   [...] = EIGS(A, ..., 'rayleigh') performs one step of Rayleigh quotient
-%   iteration on the computed eigenpairs in an attempt to improve accuracy.
-%
-%   This version of EIGS does not use iterative methods as in the built-in
-%   EIGS for sparse matrices. Instead, it uses the built-in EIG on dense
-%   matrices of increasing size, stopping when the targeted eigenfunctions
-%   appear to have converged, as determined by the chebfun constructor.
-%
-%   EXAMPLE: Simple harmonic oscillator
-%
-%   d = [0 pi];
-%   A = linop( operatorBlock.diff(d, 2) );
-%   E = functionalBlock.eval(d);
-%   A = addbc(A, E(0), 0);
-%   A = addbc(A, E(pi), 0);
-%   prefs = cheboppref();
-%   prefs.discretization = @chebcolloc2;
-%   [V,D] = eigs(A, 10, prefs);
-%   format long, sqrt(-diag(D))  % integers, to 14 digits
-%
-% See also CHEBOPPREF, CHEBOP.EIGS.
+% d = [-1 1];
+% x = chebfun('x', d);
+% A = linop( operatorBlock.diff(d, 2) );
+% E = functionalBlock.eval(d);
+% A = addbc(A, E(-1), 0);
+% A = addbc(A, E(1), 0);
+% B = -linop( operatorBlock.mult(x)*operatorBlock.diff(d) );
+% C = linop( operatorBlock.eye() );
+% prefs = cheboppref();
+% prefs.discretization = @chebcolloc2;
+% [V,D] = polyeigs(A, B, C, 6, prefs)
 
-% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% Copyright 2022 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parsing inputs.
 A = {};
 k = [];       % will be made default value below
 sigma = [];   % default 'auto' mode
-prefs = [];
+prefs = cheboppref();
 gotk = false; % until we detect a value of k in inputs
 for j = 1:nargin
     item = varargin{j};
@@ -81,12 +78,8 @@ for j = 1:nargin
     end
 end
 
-p = numel(A);
-% TODO: Perhaps B must be negated?
-if ( p <= 2 )
-    varargout{1:nargout} = eig(varargin{:});
-    return
-end
+% Degree of the polynomial eigenvalue equation.
+p = numel(A)-1;
 
 % Check for unbounded domains:
 if ( ~all(isfinite(A{1}.domain)) )
@@ -118,7 +111,7 @@ end
 % The domains must be merged before deriving the continuity equations for A:
 dom = cellfun(@(A) A.domain, A, 'uniformoutput', false);
 dom = domain.merge(dom{:});
-for j = 1:p
+for j = 1:p+1
     A{j}.domain = dom;
 end
 
@@ -143,25 +136,26 @@ end
 % Construct a discretization for B:
 constructor = str2func( class(discA) );   % constructor handle.
 discA = {discA};
-for j = 2:p
+for j = 2:p+1
     discA{j} = constructor(A{j});
 end
 
-% TODO: Put this back in?
-% % We can ignore constraints and continuity--enforced on the left side.
-% if ( ~isempty(discB.source.constraint) )
-%     discB.source.constraint = [];
-%     warning('CHEBFUN:LINOP:eigs:constraints', ...
-%             'Constraints on B are ignored.')
-% end
-% if ( ~isempty(discB.source.continuity) )
-%     discB.source.continuity = [];
-%     warning('CHEBFUN:LINOP:eigs:continuity', ...
-%             'Continuity conditions on B are ignored.')
-% end       
+% We can ignore constraints and continuity--enforced on A[0].
+for j = 2:p+1
+    if ( ~isempty(discA{j}.source.constraint) )
+        discA{j}.source.constraint = [];
+        warning('CHEBFUN:LINOP:eigs:constraints', ...
+                'Constraints on A[%d] are ignored.', j-1);
+    end
+    if ( ~isempty(discA{j}.source.continuity) )
+        discA{j}.source.continuity = [];
+        warning('CHEBFUN:LINOP:eigs:continuity', ...
+                'Continuity conditions on A[%d] are ignored.', j-1)
+    end       
+end
 
 % Merge the all discretizations:
-[discA{1:p}] = merge(discA{:});
+[discA{1:p+1}] = merge(discA{:});
 
 if ( isempty(A{1}.continuity) )
      % Apply continuity conditions:
@@ -336,12 +330,12 @@ end
 function [V, D, P] = getEigenvalues(discA, k, sigma)
 % Formulate the discrete problem and solve for the eigenvalues
 
-    p = numel(discA);
+    p = numel(discA)-1;
     
     % Discretize the LHS operator (incl. constraints/continuity):
     [PA, P, C, ignored, PS] = matrix(discA{1});
     PA = {PA};
-    for j = 2:p
+    for j = 2:p+1
         discA{j}.dimension = discA{1}.dimension;
         PB = matrix(discA{j});
         PA{j} = [ zeros(size(C)) ; PB ];

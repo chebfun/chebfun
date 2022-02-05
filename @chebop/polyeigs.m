@@ -1,45 +1,43 @@
 function varargout = polyeigs(N, varargin)
-%EIGS   Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
-%   D = EIGS(A) returns a vector of 6 eigenvalues of the linear CHEBOP A. EIGS
-%   will attempt to return the eigenvalues corresponding to the least
-%   oscillatory eigenfunctions. (This is unlike the built-in EIGS, which returns
-%   the largest eigenvalues by default.) If A is not linear, an error is
-%   returned.
+%POLYEIGS   Solve a CHEBOP polynomial eigenvalue problem.
+% [X,E] = POLYEIG(A0,A1,..,Ap,K) solves the CHEBOP polynomial eigenvalue
+% problem of degree p:
+%    (A0 + lambda*A1 + ... + lambda^p*Ap)*x = 0.
+% The input is p+1 CHEBOPs, A0, A1, ..., Ap and the output is an inf-by-K
+% chebfun quasimatrix, X, whose columns are the K least oscillatory
+% eigenfunctions, and a vector of length K, E, whose elements are the
+% eigenvalues.
+%    for j = 1:K
+%       lambda = E(j)
+%       u = X(:,j)
+%       A0(u) + lambda*A1(u) + ... + lambda^p*Ap(u) %is approximately 0.
+%    end
 %
-%   [V, D] = EIGS(A) returns a diagonal 6x6 matrix D of A's least oscillatory
-%   eigenvalues, and a quasimatrix V of the corresponding eigenfunctions.
+% E = POLYEIGS(A0,A1,..,Ap,K) is a vector of length k whose elements are
+% the K least oscillatory eigenvalues of the polynomial eigenvalue problem.
 %
-%   EIGS(A, B) solves the generalized eigenproblem A*V = B*V*D, where B is
-%   another chebop on the same domain.
+% POLYEIGS(A0,A1,..,Ap,K,SIGMA) also finds K solutions to the polynomial
+% eigenvalue problem. If SIGMA is a scalar, the eigenvalues found are the
+% ones closest to SIGMA. Other possibilities are 'LR' and 'SR' for the
+% eigenvalues of largest and smallest real part, and 'LM' (or Inf) and 'SM'
+% for largest and smallest magnitude. SIGMA must be chosen appropriately
+% for the given operator; for example, 'LM' for an unbounded operator will
+% fail to converge!
 %
-%   EIGS(A, K) and EIGS(A, B, K) for an integer K > 0 find the K smoothest
-%   eigenvalues.
-%
-%   EIGS(A, K, SIGMA) and EIGS(A, B, K, SIGMA) find K eigenvalues. If SIGMA is a
-%   scalar, the eigenvalues found are the ones closest to SIGMA. Other
-%   possibilities are 'LR' and 'SR' for the eigenvalues of largest and smallest
-%   real part, and 'LM' (or Inf) and 'SM' for largest and smallest magnitude.
-%   SIGMA must be chosen appropriately for the given operator; for example, 'LM'
-%   for an unbounded operator will fail to converge!
-%
-%   EIGS(..., PREFS) accepts a CHEBOPPREF to control the behavior of the
-%   algorithm. If empty, defaults are used.
-%
-%   Despite the syntax, this version of EIGS does not use iterative methods
-%   as in the built-in EIGS for sparse matrices. Instead, it uses the
-%   built-in EIG on dense matrices of increasing size, stopping when the 
-%   targeted eigenfunctions appear to have converged, as determined by the
-%   chebfun constructor.
+% Similarly to CHEBOP/EIGS, this routine uses the built-in POLYEIG on dense
+% matrices of increasing size, stopping when the targeted eigenfunctions
+% appear to have converged, as determined by the chebfun constructor.
 %
 % Example:
-%   N = chebop(@(u) diff(u, 2), [0 pi], 'dirichlet');
-%   [V, D] = eigs(N, 10);
-%   format long, sqrt(-diag(D))  % integers, to 14 digits
-%   plot(V) % scaled sine waves
+%   A = chebop(@(x,u) diff(u,2),[-1 1],'dirichlet');
+%   B = chebop(@(x,u) -x.*diff(u));
+%   C = chebop(@(x,u) u);
+%   [V D] = polyeigs(A,B,C,6,0)
+%   plot(V)
 %
-% See also LINOP/EIGS.
+% See also CHEBOP/EIGS, POLYEIG, LINOP/POLYEIGS.
 
-% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2022 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Did we get preferences passed?
