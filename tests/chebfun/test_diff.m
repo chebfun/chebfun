@@ -108,6 +108,17 @@ pass(11) = norm(err, inf) < 1e3*eps*get(g,'vscale');
 
 % [TODO]:  Check fractional derivatives once implemented.
 
+%% Test diff(f, [n1 n2 n3]):
+
+f = chebfun(@exp);
+fp = diff(f, [1 2 3]);
+pass(12) = size(fp, 2) == 3 && norm(f - fp, 2) < 1e4*eps*get(fp,'vscale');
+
+f = chebfun(@(x) x.*exp(x));
+fp = diff(f, [1 2]);
+g = chebfun(@(x) [(1+x).*exp(x), (2+x).*exp(x)]);
+pass(13) = size(fp, 2) == 2 && norm(g - fp, 2) < 1e4*eps*get(fp,'vscale');
+
 end
 
 function y = test_df2(x)
