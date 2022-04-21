@@ -13,7 +13,7 @@ function y = idct(u, type)
 %   where IDCT(U) is the implementation in the Matlab signal processing toolbox.
 %   The two are related by 
 %       IDCT(U) = CHEBFUN.DCT(E*U)
-%   where E = sqrt(2)*eye(n); E(1,1) = 2;
+%   where E = sqrt(n/2)*eye(n); E(1,1) = sqrt(n);
 %
 % See also CHEBFUN.DCT, CHEBFUN.DST, CHEBFUN.IDST.
 
