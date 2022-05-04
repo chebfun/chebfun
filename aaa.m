@@ -77,8 +77,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
 %
-%   [2] Yuji Nakasukasa and Lloyd N. Trefethen, An algorithm for real and
-%   complex rational minimax approximation, arXiv, 2019.
+%   [2] Yuji Nakatsukasa and Lloyd N. Trefethen, An algorithm for real and
+%   complex rational minimax approximation, SIAM J. Sci. Comp. 42 (2020),
+%   A3157-A3179.
 %
 % See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
