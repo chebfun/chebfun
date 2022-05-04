@@ -1,12 +1,11 @@
-function [pol, res, zer] = prz(r, zj, fj, wj)
-%PRZ   Computes poles, residues, and zeros of rational function in barycentric
-%      form.
-%   [POL, RES, ZER] = PRZ(R, ZJ, FJ, WJ) returns vectors of poles POL,
-%   residues RES, and zeros ZER of R, where R is a function handle, ZJ are
-%   the support points, FJ are the function values, and WJ are the
-%   barycentric weights.
+function [pol, res, zer] = prz(zj, fj, wj)
+%PRZ   Computes poles, residues, and zeros of a rational function in
+%      barycentric form.
+%   [POL, RES, ZER] = PRZ(ZJ, FJ, WJ) returns vectors of poles POL,
+%   residues RES, and zeros ZER of the rational function defined by
+%   support points ZJ, function values FJ, and barycentric weights WJ.
 %
-% See also AAA, MINIMAX, REVAL.
+% See also AAA, PRZTRIG, REVAL.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
