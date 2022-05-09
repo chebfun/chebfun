@@ -1112,6 +1112,22 @@ if dialogFlag
     end 
     qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
     pvals = nodex.*feval(N,x);
+    % If certain Chebyshev points map to support points, inf values will
+    % get propagated, so we need to handle them separately
+    for ii = 1:length(xsupport)
+        for jj = 1:length(x)
+            if x(jj) == xsupport(ii)
+                nodei = 1.0;
+                for kk = 1:length(xsupport)
+                    if ~(kk == ii)
+                        nodei = nodei * (x(jj) - xsupport(kk)); 
+                    end
+                end
+                qvals(jj) = -nodei*wD(ii);
+                pvals(jj) = nodei*wN(ii);
+            end
+        end
+    end
  
     p = chebfun(pvals,f.domain([1,end]));
     q = chebfun(qvals,f.domain([1,end]));
