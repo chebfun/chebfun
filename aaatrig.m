@@ -298,7 +298,7 @@ fj(I) = [];
 r = @(zz) revaltrig(zz, zj, fj, wj, form);
 
 % Compute poles, residues and zeros:
-[pol, res, zer] = prztrig(r, zj, fj, wj, form);
+[pol, res, zer] = prztrig(zj, fj, wj, form);
 
 if ( cleanup_flag & nlawson == 0)       % Remove Froissart doublets
     [r, pol, res, zer, zj, fj, wj] = ...
@@ -543,7 +543,7 @@ w = V(:,m);
 
 % Build function handle and compute poles, residues and zeros:
 r = @(zz) revaltrig(zz, z, f, w, form);
-[pol, res, zer] = prztrig(r, z, f, w, form);
+[pol, res, zer] = prztrig(z, f, w, form);
 
 end % End of CLEANUPTRIG().
 

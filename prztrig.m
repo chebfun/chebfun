@@ -1,10 +1,9 @@
-function [pol, res, zer] = prztrig(r, zj, fj, wj, form)
-%PRZTRIG   Computes poles, residues, and zeros of a periodic rational function in 
-% trigonometric barycentric form.
-%   [POL, RES, ZER] = PRZTRIG(R, ZJ, FJ, WJ) returns vectors of poles POL,
-%   residues RES, and zeros ZER of R, where R is a function handle, ZJ are
-%   the support points, FJ are the function values, and WJ are the
-%   trigonometric barycentric weights.
+function [pol, res, zer] = prztrig(zj, fj, wj, form)
+%PRZTRIG   Computes poles, residues, and zeros of a periodic rational function
+%          in trigonometric barycentric form.
+%   [POL, RES, ZER] = PRZTRIG(ZJ, FJ, WJ) returns vectors of poles POL,
+%   residues RES, and zeros ZER of the periodic rational function defined by
+%   support points ZJ, function values FJ, and barycentric weights WJ.
 %
 % See also AAATRIG, PRZ, REVALTRIG.
 
