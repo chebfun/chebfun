@@ -13,7 +13,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   of the barycentric representation of R. 
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the
-%   vector of errors ||f-r||_infty in successive iteration steps of AAA.
+%   vector of errors ||f-r||_infty in successive iterative steps of AAA.
+%   Note that the rational degrees are not 1,2,...,length(ERRVEC) but
+%   0,1,...,length(ERRVEC)-1.
 %
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
