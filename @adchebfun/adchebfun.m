@@ -555,7 +555,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             if ( isa(r,'chebfun') )
                 r = mat2cell(r);
             end
-            operatorBlock/operatorBlock.m
+            
             % Initalise a variable for the derivative of the deflated operator:
             defDeriv = 0;
             
