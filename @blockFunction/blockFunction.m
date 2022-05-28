@@ -65,6 +65,13 @@ classdef blockFunction
     %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
+
+        function E = compose(A, g)
+        %COMPOSE
+        %
+        % Returns a BLOCKFUNCTION corresponding to a call to chebfun/compose.    
+            E = blockFunction( @(u) compose(u, g) );
+        end
         
         function C = cumsum(A, m)
         %CUMSUM   
