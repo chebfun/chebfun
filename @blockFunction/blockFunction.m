@@ -70,7 +70,7 @@ classdef blockFunction
         %COMPOSE
         %
         % Returns a BLOCKFUNCTION corresponding to a call to chebfun/compose.    
-            E = blockFunction( @(u) compose(u, g) );
+            E = blockFunction( @(u) compose(g, u) );
         end
         
         function C = cumsum(A, m)

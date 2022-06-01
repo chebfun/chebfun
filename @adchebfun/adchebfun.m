@@ -1035,7 +1035,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % LOGLOG    log-log plot of the CHEBFUN part of an ADCHEBFUN
             [varargout{1:nargout}] = loglog(f.func, varargin{:});
         end
-        
+      
         function f = mean(f)
             % MEAN(F) is the mean value of the ADCHEBFUN F.
             
