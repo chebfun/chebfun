@@ -15,7 +15,6 @@ N = chebop2(@(u) diffy(u,1) + diffx(u,1), d);
 N.dbc = @(x) exp(-x);
 N.lbc = @(t) exp(1).*exp(t);
 u = N \ 0;
-norm(u - exact)
 pass(1) = ( norm(u - exact) < 2*tol ); 
 
 %% Simple example on square domain. 
@@ -25,7 +24,6 @@ N = chebop2(@(u) diffy(u,1) + diffx(u,1), d);
 N.dbc = @(x) exp(-x);
 N.lbc = @(t) exp(t);
 u = N \ 0;
-norm(u - exact)
 pass(2) = ( norm(u - exact) < tol ); 
 
 %% Simple example on square domain. 
@@ -35,7 +33,6 @@ N = chebop2(@(u) diffy(u,1) + diffx(u,1), d);
 N.dbc = @(x) exp(-x) + exp(-.5*x);
 N.lbc = @(t) exp(1).*exp(t) + exp(.5).*exp(.5*t);
 u = N \ 0;
-norm(u - exact)
 pass(3) = ( norm(u - exact) < 5*tol ); 
 
 %% Transport equation with different transport parameter. 
@@ -45,7 +42,6 @@ N = chebop2(@(u) diffy(u,1) + 5*diffx(u,1), d);
 N.dbc = @(x) exp(x);
 N.lbc = @(t) exp(-pi).*exp(-5*t);
 u = N \ 0;
-norm(u - exact)
 pass(4) = ( norm(u - exact) < 10*tol );  
 
 %% Transport equation with different transport parameter, and large time
@@ -56,7 +52,6 @@ N = chebop2(@(u) diffy(u,1) + .1*diffx(u,1), d);
 N.dbc = @(x) exp(x);
 N.lbc = @(t) exp(-pi).*exp(-t/10);
 u = N \ 0;
-norm(u - exact)
 pass(5) = ( norm(u - exact) < 1e4*tol);
 
 
