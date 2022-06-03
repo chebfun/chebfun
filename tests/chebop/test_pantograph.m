@@ -31,4 +31,4 @@ pass(3) = norm(diff(u,2) - u(.5*diff(u))) < tol;
 N = chebop(@(x,u) diff(u,2) - u(x*u^2) , [0 2]);
 N.lbc = 0.1; N.rbc = 1;
 u = N\0;
-pass(4) = norm(diff(u,2) - u(x*u^2)) < 10*tol;
+pass(4) = norm(diff(u,2) - u(x*u^2)) < 100*tol;

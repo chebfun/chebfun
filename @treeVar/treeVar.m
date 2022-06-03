@@ -485,11 +485,16 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'sqrt');
         end
 
-        function f = subsref(varargin)
+        function out = subsref(t, index)
             %SUBSREF   Not supported.
-            error('CHEBFUN:TREEVAR:SUBSREF:notSupported', ...
-                ['Subsref is not supported in treeVar. Please specify '...
-                'conditions via N.BC rather than N.LBC/RBC.']);
+            if ( strcmp(index(1).type, '.') )
+                out = builtin('subsref', t, index);
+            else
+                % This is required to force Chebop to use solvebvp rather
+                % than solveivp in for operators involving compositions.
+                error('CHEBFUN:TREEVAR:SUBSREF:notSupported', ...
+                    't() is not supported in treeVar.');
+            end
         end
         
         function f = sum(f)
