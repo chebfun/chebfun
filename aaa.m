@@ -417,7 +417,7 @@ Zdistances = NaN(size(pol));
 for j = 1:length(Zdistances);
    Zdistances(j) = min(abs(pol(j)-Z));
 end
-ii = find(abs(res).*Zdistances < cleanup_tol * geometric_mean_of_absF);
+ii = find(abs(res)./Zdistances < cleanup_tol * geometric_mean_of_absF);
 ni = length(ii);
 if ( ni == 0 )
     % Nothing to do.
