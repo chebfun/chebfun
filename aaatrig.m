@@ -36,8 +36,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %       doublets
 %   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
 %       Poles with residues less than this number times the maximum absolute
-%       component of F are deemed spurious by the cleanup procedure. If TOL = 0,
-%       then CLEANUPTOL defaults to 1e-13.
+%       component of F and times the maximum distance to Z are deemed spurious
+%       by the cleanup procedure. If TOL = 0, then CLEANUPTOL defaults to 1e-13.
 %   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
 %       to bring approximation closer to minimax; specifying NLAWSON = 0 
 %       ensures there is no Lawson iteration.  See next paragraph.
@@ -473,13 +473,19 @@ end
 end % End of PARSEINPUT().
 
 
-%% Cleanup
+%% Cleanup.  In June 2022 the residue size test was changed to be relative to
+%            the distance to the approximation set Z.
 
 function [r, pol, res, zer, z, f, w] = ...
     cleanuptrig(r, form, finfP, finfM, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
 % Remove spurious pole-zero pairs.
 
 % Find negligible residues:
+Zdistances = NaN(size(pol));
+for j = 1:length(Zdistances);
+   Zdistances(j) = min(abs(pol(j)-Z));
+end
+ii = find(abs(res).*Zdistances < cleanup_tol * norm(F, inf));
 ii = find(abs(res) < cleanup_tol * norm(F, inf));
 ni = length(ii);
 if ( ni == 0 )
