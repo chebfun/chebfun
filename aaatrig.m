@@ -86,11 +86,11 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
 %
-%   [2] Yuji Nakasukasa and Lloyd N. Trefethen, "An algorithm for real and
+%   [2] Yuji Nakatsukasa and Lloyd N. Trefethen, "An algorithm for real and
 %   complex rational minimax approximation", SIAM J. Sci. Comp. (2020).
 %   
 %   [3] Peter J. Baddoo, "The AAAtrig algorithm for rational approximation 
-%   of periodic functions", arXiv (2020).
+%   of periodic functions", SIAM J. Sci. Comp. (2021).
 %
 % See also AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
 

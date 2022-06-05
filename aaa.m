@@ -83,7 +83,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   complex rational minimax approximation, SIAM J. Sci. Comp. 42 (2020),
 %   A3157-A3179.
 %
-% See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
+% See also AAATRIG, CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
