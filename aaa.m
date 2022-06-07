@@ -31,7 +31,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %       doublets
 %   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
 %       Poles with residues less than this number times the geometric mean size
-%       of F times the maximum distance to Z are deemed spurious by the cleanup
+%       of F times the minimum distance to Z are deemed spurious by the cleanup
 %       procedure. If TOL = 0, then CLEANUPTOL defaults to 1e-13.
 %   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
 %       to bring approximation closer to minimax; specifying NLAWSON = 0 
@@ -406,7 +406,7 @@ end % End of PARSEINPUT().
 function [r, pol, res, zer, z, f, w] = ...
     cleanup(r, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
 % Remove spurious pole-zero pairs.
-
+keyboard
 % Find negligible residues:
 if any(F)
    geometric_mean_of_absF = exp(mean(log(abs(F(F~=0)))));

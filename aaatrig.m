@@ -36,7 +36,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %       doublets
 %   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
 %       Poles with residues less than this number times the geometric mean size
-%       of F times the maximum distance to Z are deemed spurious by the cleanup
+%       of F times the minimum distance to Z are deemed spurious by the cleanup
 %       procedure. If TOL = 0, then CLEANUPTOL defaults to 1e-13.
 %   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
 %       to bring approximation closer to minimax; specifying NLAWSON = 0 
