@@ -345,7 +345,7 @@ while ~happy
     % Restart
     if ~happy
         if restarts + 1 == maxRestarts
-            warning('Chebfun3F: max number of restarts reached')
+            warning('chebfun3f: max number of restarts reached')
             return
         end
         
@@ -398,4 +398,100 @@ F(1,:) = F(1,:)/2;
 F(:,n) = F(:,n)/2;
 F(n,:) = F(n,:)/2;
 F = (2/(n-1)).*F;
+end
+
+%% Additional Functions
+
+%% Adaptive Cross Approximation with full pivoting
+function [Ac, At, Ar, rowInd, colInd] = ACA(A, tol, maxIter)
+Ac = [];
+Ar = [];
+At = [];
+rowInd = [];
+colInd = [];
+Aoriginal = A;
+
+for iter = 1:maxIter
+    
+    [error,I2] = max(abs(A(:)));
+    if isempty(error) || error < tol
+        Ac = Aoriginal(:,colInd);
+        Ar = Aoriginal(rowInd,:)';
+        At = Aoriginal(rowInd,colInd);
+        return
+    end
+    
+    [I,J] = ind2sub(size(A), I2);
+    rowInd = [rowInd, I];
+    colInd = [colInd, J];
+    
+    A = A-A(:,J)*A(I,:)./A(I,J);
+end
+Ac = Aoriginal(:,colInd);
+Ar = Aoriginal(rowInd,:)';
+At = Aoriginal(rowInd,colInd);
+end
+
+%% Discrete Empirical Interpolation 
+function indices = DEIM(U)
+indices = [];
+[~, I] = max(abs(U(:,1)));
+indices = [indices,I];
+for l = 2:size(U,2)
+    c = U(indices,1:(l-1)) \ U(indices,l);
+    r = U(:,l) - U(:,1:(l-1))*c;
+    [~, I] = max(abs(r));
+    indices = [indices,I];
+end
+end
+
+%% Create temporary chebtech2 object
+function ct2 = createCT2(W,data)
+data.vscale = max(abs(W(:)));
+ct2 = chebtech2(W, data);
+ct2.coeffs = sum(abs(ct2.coeffs), 2);
+end
+
+%% Get suitable tolerances as in chebfun3 (see https://github.com/chebfun/chebfun/issues/1491)
+function [relTol, absTol] = getTol(M, pseudoLevel, tolOld,domDiff)
+relTol = 2*size(M,1)^(4/5) * pseudoLevel;
+vscale = max(abs(M(:)));
+cheb = @(i,n) -cos((i-1).*pi/(n-1));
+points = 1:size(M,1);
+points = cheb(points, size(M,1));
+gradNorms = zeros([1,size(M,1)]);
+for i = 1:size(M,2)
+    gradNorms(i) = max(abs(diff(M(:,i)) ./ diff(points)'));
+end
+gradNorms = max(gradNorms);
+absTol = max(max(domDiff.*gradNorms), vscale) * relTol;
+absTol = max([absTol, tolOld, pseudoLevel]);
+end
+
+%% Random initialization of indices by drawing one index in each subintervall of equal length
+function X = initializeIndexRandomly(r, maxVal)
+box = floor(maxVal/r);
+X = [];
+for i = 1:r
+    val = i*box + randi(box,1);
+    X = [X,val];
+end
+end
+
+%% Evaluate X x_1 U x_2 V x_3 W
+function X = tprod(X,U,V,W)
+n = size(X);
+m = [size(U,1),size(V,1),size(W,1)];
+X = reshape(U*reshape(X,[n(1),n(2)*n(3)]),[m(1),n(2),n(3)]);
+X = permute(reshape(V*reshape(permute(X,[2,1,3]),[n(2),m(1)*n(3)]),[m(2),m(1),n(3)]),[2,1,3]);
+X = permute(reshape(W*reshape(permute(X,[3,2,1]),[n(3),m(2)*m(1)]),[m(3),m(2),m(1)]),[3,2,1]);
+end
+
+%% Evaluate X x_1 inv(U) x_2 inv(V) x_3 inv(W) using backslash
+function X = invtprod(X,U,V,W)
+n = size(X);
+m = [size(U,1),size(V,1),size(W,1)];
+X = reshape(U\reshape(X,[n(1),n(2)*n(3)]),[m(1),n(2),n(3)]);
+X = permute(reshape(V\reshape(permute(X,[2,1,3]),[n(2),m(1)*n(3)]),[m(2),m(1),n(3)]),[2,1,3]);
+X = permute(reshape(W\reshape(permute(X,[3,2,1]),[n(3),m(2)*m(1)]),[m(3),m(2),m(1)]),[3,2,1]);
 end
