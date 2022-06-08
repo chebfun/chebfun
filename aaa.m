@@ -30,9 +30,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
 %   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
-%       Poles with residues less than this number times the maximum absolute
-%       component of F are deemed spurious by the cleanup procedure. If TOL = 0,
-%       then CLEANUPTOL defaults to 1e-13.
+%       Poles with residues less than this number times the geometric mean size
+%       of F times the minimum distance to Z are deemed spurious by the cleanup
+%       procedure. If TOL = 0, then CLEANUPTOL defaults to 1e-13.
 %   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
 %       to bring approximation closer to minimax; specifying NLAWSON = 0 
 %       ensures there is no Lawson iteration.  See next paragraph.
@@ -83,7 +83,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   complex rational minimax approximation, SIAM J. Sci. Comp. 42 (2020),
 %   A3157-A3179.
 %
-% See also CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
+% See also AAATRIG, CF, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -400,14 +400,24 @@ end
 end % End of PARSEINPUT().
 
 
-%% Cleanup
+%% Cleanup.  In June 2022 the residue size test was changed to be relative to 
+%            the distance to the approximation set Z.
 
 function [r, pol, res, zer, z, f, w] = ...
     cleanup(r, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
 % Remove spurious pole-zero pairs.
-
+keyboard
 % Find negligible residues:
-ii = find(abs(res) < cleanup_tol * norm(F, inf));
+if any(F)
+   geometric_mean_of_absF = exp(mean(log(abs(F(F~=0)))));
+else
+   geometric_mean_of_absF = 0;
+end
+Zdistances = NaN(size(pol));
+for j = 1:length(Zdistances);
+   Zdistances(j) = min(abs(pol(j)-Z));
+end
+ii = find(abs(res)./Zdistances < cleanup_tol * geometric_mean_of_absF);
 ni = length(ii);
 if ( ni == 0 )
     % Nothing to do.
