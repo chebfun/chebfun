@@ -406,7 +406,7 @@ end % End of PARSEINPUT().
 function [r, pol, res, zer, z, f, w] = ...
     cleanup(r, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
 % Remove spurious pole-zero pairs.
-keyboard
+
 % Find negligible residues:
 if any(F)
    geometric_mean_of_absF = exp(mean(log(abs(F(F~=0)))));
