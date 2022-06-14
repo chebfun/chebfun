@@ -10,7 +10,7 @@ function [x, w, v] = lobpts(n, alp, bet)
 %  scaled so that max(abs(V)) = 1.
 %
 %  [...] = LOBPTS(N, ALP, BET) is similar, but for the Gauss-Jacobi-Lobatto
-%  nodes and weights. Here ALP and BET should be scalars > -1/2.
+%  nodes and weights. Here ALP and BET should be scalars > -1.
 %
 %  In each case, N should be an integer greater than or equal to 2.
 %

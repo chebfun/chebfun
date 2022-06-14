@@ -10,7 +10,7 @@ function [x, w, v] = radaupts(n, alp, bet)
 %  so that max(abs(V)) = 1.
 %
 %  [...] = RADUAPTS(N, ALP, BET) is similar, but for the Gauss-Jacobi-Radau
-%  nodes and weights. Here ALP and BET should be scalars > -1/2.
+%  nodes and weights. Here ALP and BET should be scalars > -1.
 %
 %  In each case, N should be a positive integer.
 %
@@ -65,7 +65,7 @@ if ( alp == 0 && bet == 0 )
 else
     % See Walter Gautschi, "Gauss–Radau formulae for Jacobi and Laguerre
     % weight functions", Mathematics and Computers in Simulation, (2000).
-    w = [2^(alp+bet+1)*beta(alp+1,n)*beta(bet+n,alp+1)*(alp+1), wi];
+    w = [2^(alp+bet+1)*beta(bet+1,n)*beta(alp+n,bet+1)*(bet+1), wi];
 end
 
 %% Barycentric weights:
