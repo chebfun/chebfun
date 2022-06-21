@@ -1,52 +1,62 @@
-function cf3f = constructor(cf3f, f, varargin)
+function f = chebfun3f(f, op, pref, dom, vectorize)
+%CHEBFUN3F  alternative CHEBFUN3 constructor.
+%   Given a function OP of three variables, this code represents it as a
+%   CHEBFUN3 object. A CHEBFUN3 object is a low-rank representation
+%   expressing a function as a trilinear product of a discrete core tensor
+%   and three quasimatrices consisting of univariate functions.
+%
+%   The CHEBFUN3F algorithm for constructing a CHEBFUN3 object has the
+%   potential to require fewer function evaluations compared to the default
+%   constructor. CHEBFUN3F has three phases:
+%
+%   PHASE 1: The first phase attempts to identify fibers on a coarse grid,
+%   which approximate the span of the tensor of function evaluations in the
+%   corresponding mode. Note that this phase uses random initializations
+%   when identifying the fibers.
+%
+%   PHASE 2: The second phase attempts to resolve the corresponding
+%   fibers by sampling along the fibers until the Chebyshev coefficients of
+%   the fibers fall below machine epsilon.
+%
+%   PHASE 3: The third phase attempts to construct factor matrices and a
+%   core tensor approximating the evaluation tensor on a fine grid. The
+%   columns of the factor matrices are then converted into CHEBFUN objects.
+%
+%  The Chebfun3f algorithm is fully described in:
+%
+%  S. Dolgov, D. Kressner, C. Stroessner, Functional Tucker approximation
+%  using Chebyshev interpolation,
+%  SIAM J. Sci. Comput., 43 (2021), A2190-A2210.
+%
+% See also CHEBFUN3, CHEBFUN2, CHEBFUN3T and CHEBFUN3V.
 
-% Parse the input
-pref             = chebfunpref();
-dom = [-1, 1, -1, 1, -1, 1];
-for k = 1:length(varargin)
-    if strcmpi(varargin{k}, 'eps')
-        pref.cheb3Prefs.chebfun3eps = varargin{k+1};
-    end
-    if ( numel(varargin{k}) == 6 ) % domain is specified.
-        dom = varargin{k};
-    end
-end
+% Copyright 2022 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-% Set Chebfun parameters:
+% Set preferences:
 tech             = pref.tech();
 prefStruct       = pref.cheb3Prefs;
 tpref            = tech.techPref;
 grid             = tpref.minSamples;
-maxSample        = tpref.maxLength;     % max polynomialDeg
+maxSample        = tpref.maxLength;     % max polynomialDeg (not implemented)
 maxSamplePhase1  = 363;                 % max coarseResolution (not implemented)
 maxRank          = prefStruct.maxRank;  % max rank (not implemented)
 pseudoLevel      = prefStruct.chebfun3eps;
 passSampleTest   = prefStruct.sampleTest;
-maxRestarts      = 10;
+maxRestarts      = 10;                  % TODO can be removed when max polyDeg and maxRank are implemented properly
 
-
-% Check if fast vectorized evaluations are possible
-try
-    A = f(1:2,1:2,1:2);
-    vectorize = 1;
-    if isscalar(A)
-        f = @(x,y,z) f(x,y,z) + 0*x + 0*y + 0*z; %ensure vectorization
-    end
-catch
-    vectorize = 0;
-end
-
-% Initialize
+% Initialize:
 n                = [grid, grid, grid];  %coarseResolution
 m                = n;                   %fineResolution
 r                = [6,6,6];             %rank
-tol              = pseudoLevel;
+absTol              = pseudoLevel;
 chebX            = @(i,n) dom(1) + ((-cos((i-1).*pi/(n-1))) + 1)*(dom(2)-dom(1))/2 ;
 chebY            = @(i,n) dom(3) + ((-cos((i-1).*pi/(n-1))) + 1)*(dom(4)-dom(3))/2 ;
 chebZ            = @(i,n) dom(5) + ((-cos((i-1).*pi/(n-1))) + 1)*(dom(6)-dom(5))/2 ;
 reffun           = @(n) floor(sqrt(2)^(floor(2*log2(n)) + 1)) + 1;
 restarts         = 0;
-cf3f.domain      = dom;
+f.domain         = dom;
+
 
 %% Main Loop
 happy = 0;
@@ -59,7 +69,7 @@ while ~happy
         K = initializeIndexRandomly(r(3), n(3));
         
         % Handle to evaluate tensor entries of T_c
-        ff = @(i,j,k) f(chebX(i,n(1)),chebY(j,n(2)),chebZ(k,n(3)));
+        ff = @(i,j,k) op(chebX(i,n(1)),chebY(j,n(2)),chebZ(k,n(3)));
         
         for iterations = 1:2
             happyPhase1 = 1;
@@ -67,8 +77,8 @@ while ~happy
             % ACA 1
             T1 = evalTensor(1:n(1),J,K,ff,vectorize);
             T1 = reshape(T1,n(1),r(2)*r(3));
-            [~, tol] = getTol(T1, pseudoLevel, tol,dom(2)-dom(1));
-            [Uc, ~, ~, I,I2] = ACA(T1, tol, n(1));
+            [~, absTol] = getTol(T1, pseudoLevel, absTol,dom(2)-dom(1));
+            [Uc, ~, ~, I,I2] = ACA(T1, absTol, n(1));
             r(1) = size(I,2);
             JT1 = J;
             KT1 = K;
@@ -76,8 +86,8 @@ while ~happy
             % ACA 2
             T2 = evalTensor(I,1:n(2),K,ff,vectorize);
             T2 = reshape(permute(T2,[2,1,3]),n(2),r(1)*r(3));
-            [~, tol] = getTol(T2, pseudoLevel, tol,dom(4)-dom(3));
-            [Vc, ~, ~, J, J2] = ACA(T2, tol, n(2));
+            [~, absTol] = getTol(T2, pseudoLevel, absTol,dom(4)-dom(3));
+            [Vc, ~, ~, J, J2] = ACA(T2, absTol, n(2));
             r(2) = size(J,2);
             KT2 = K;
             IT2 = I;
@@ -85,8 +95,8 @@ while ~happy
             % ACA 3
             T3 = evalTensor(I,J,1:n(3), ff,vectorize);
             T3 = reshape(permute(T3,[3,1,2]),n(3),r(1)*r(2));
-            [reltol, tol] = getTol(T3, pseudoLevel, tol,dom(6)-dom(5));
-            [Wc, ~, ~, K, K2] = ACA(T3, tol, n(3));
+            [relTol, absTol] = getTol(T3, pseudoLevel, absTol,dom(6)-dom(5));
+            [Wc, ~, ~, K, K2] = ACA(T3, absTol, n(3));
             r(3) = size(K,2);
             IT3 = I;
             JT3 = J;
@@ -124,13 +134,13 @@ while ~happy
     
     % Catch the rank zero function:
     if size(I,1) == 0 || size(J,1) == 0 || size(K,1) == 0
-        cf3f.cols = chebfun(zeros([n(1),1]), [dom(1),dom(2)], pref);
-        cf3f.rows = chebfun(zeros([n(2),1]), [dom(3),dom(4)], pref);
-        cf3f.tubes = chebfun(zeros([n(3),1]), [dom(5),dom(6)], pref);
-        cf3f.core = 0;
+        f.cols = chebfun(zeros([n(1),1]), [dom(1),dom(2)], pref);
+        f.rows = chebfun(zeros([n(2),1]), [dom(3),dom(4)], pref);
+        f.tubes = chebfun(zeros([n(3),1]), [dom(5),dom(6)], pref);
+        f.core = 0;
     else
         %% Refine
-        pref.chebfuneps = reltol;
+        pref.chebfuneps = relTol;
         m = n;
         
         % Check if further refinement is necessary
@@ -164,7 +174,7 @@ while ~happy
         % Add function evaluations and check again
         while ~resolvedU || ~resolvedV || ~resolvedW
             % function handle to evaluate T_f
-            ff = @(i,j,k) f(chebX(i,m(1)),chebY(j,m(2)),chebZ(k,m(3)));
+            ff = @(i,j,k) op(chebX(i,m(1)),chebY(j,m(2)),chebZ(k,m(3)));
             
             % Map the indices from T_c to T_f
             refFactor = [0, 0, 0];
@@ -302,42 +312,43 @@ while ~happy
             end
         end
         
-        [~, tol] = getTol(Uf, pseudoLevel, tol, dom(2)-dom(1));
-        [~, tol] = getTol(Vf, pseudoLevel, tol, dom(4)-dom(3));
-        [~, tol] = getTol(Wf, pseudoLevel, tol, dom(6)-dom(5));
+        [~, absTol] = getTol(Uf, pseudoLevel, absTol, dom(2)-dom(1));
+        [~, absTol] = getTol(Vf, pseudoLevel, absTol, dom(4)-dom(3));
+        [~, absTol] = getTol(Wf, pseudoLevel, absTol, dom(6)-dom(5));
         
         %% Phase 3
         
         % Compute factor matrices
-        [Q1,R1] = qr(Uf,0);
+        [Q1,~] = qr(Uf,0);
         I = DEIM(Q1);
-
-        [Q2,R2] = qr(Vf,0);
+        
+        [Q2,~] = qr(Vf,0);
         J = DEIM(Q2);
-
-        [Q3,R3] = qr(Wf,0);
+        
+        [Q3,~] = qr(Wf,0);
         K = DEIM(Q3);
         
-        % with diagonal scaling
+        % Introduce a diagonal scaling to ensure the coefficients decay to machine precision
         D1 = diag(eps./max(min(abs(chebfun(Q1).coeffs)),eps));
         D2 = diag(eps./max(min(abs(chebfun(Q2).coeffs)),eps));
         D3 = diag(eps./max(min(abs(chebfun(Q3).coeffs)),eps));
-        cf3f.cols = chebfun(Q1*D1, [dom(1),dom(2)], pref);
-        cf3f.rows = chebfun(Q2*D2, [dom(3),dom(4)], pref);
-        cf3f.tubes = chebfun(Q3*D3, [dom(5),dom(6)], pref);
-        cf3f.core = invtprod(invtprod(evalTensor(I,J,K, ff,vectorize),Q1(I,:),Q2(J,:),Q3(K,:)),D1,D2,D3);
+        f.cols = chebfun(Q1*D1, [dom(1),dom(2)], pref);
+        f.rows = chebfun(Q2*D2, [dom(3),dom(4)], pref);
+        f.tubes = chebfun(Q3*D3, [dom(5),dom(6)], pref);
+        f.core = invtprod(invtprod(evalTensor(I,J,K, ff,vectorize),Q1(I,:),Q2(J,:),Q3(K,:)),D1,D2,D3);
         
-        % chebfun simplification
-        cf3f.cols = simplify(cf3f.cols, pref.chebfuneps, 'globaltol');
-        cf3f.rows = simplify(cf3f.rows, pref.chebfuneps, 'globaltol');
-        cf3f.tubes = simplify(cf3f.tubes, pref.chebfuneps, 'globaltol');
+        % Simplification
+        f.cols = simplify(f.cols, pref.chebfuneps, 'globaltol');
+        f.rows = simplify(f.rows, pref.chebfuneps, 'globaltol');
+        f.tubes = simplify(f.tubes, pref.chebfuneps, 'globaltol');
         
     end
     
-    % Sample Test
+    % Sample test
     if ( passSampleTest && restarts <= maxRestarts )
-        cf3fhandle = @(x,y,z) cf3f.feval(x,y,z);
-        happy = sampleTest(f, cf3fhandle, tol, dom);
+        % Wrap the op with evaluate in case the 'vectorize' flag is on:
+        sampleOP = @(x,y,z) evaluate( op, x, y, z, vectorize);
+        happy = sampleTest(f, sampleOP, absTol, vectorize);
     else
         happy = 1;
     end
@@ -355,8 +366,7 @@ while ~happy
         n(3) = floor(sqrt(2)^(floor(2*log2(n(3))) + 1)) + 1;
         restarts = restarts + 1;
         
-        % Ensure r is large enougth for
-        % (1,r,r) functions
+        % Ensure r is large enougth for (1,r,r) functions
         if r(1) > 1 || r(2) > 1 || r(2) > 1
             if r(1) < 3
                 r(3) = max(6,2*r(3));
@@ -370,7 +380,7 @@ while ~happy
             end
         end
         
-        % very low-rank functions
+        % Ensure r is large enougth very low-rank functions
         r(1) = max(r(1),3);
         r(2) = max(r(2),3);
         r(3) = max(r(3),3);
@@ -378,29 +388,34 @@ while ~happy
 end
 end
 
-%% TODO replace this function by the functionality in Chebfun
-function F = Vals2ChebCoeffsMat(n)
-% maps function evaluations at n Chebyshev nodes to Chebyshev coefficients
-if n < 2
-    warning('n too small')
-end
-F = zeros(n);
-cheb = @(i,n) cos((i-1).*pi/(n-1));
-xx = cheb(1:n,n);
-T = @(i,x) cos((i-1)*acos(x));
-for i = 1:n
-    
-    F(i,:) = T(i,xx);
-    
-end
-F(:,1) = F(:,1)/2;
-F(1,:) = F(1,:)/2;
-F(:,n) = F(:,n)/2;
-F(n,:) = F(n,:)/2;
-F = (2/(n-1)).*F;
-end
-
 %% Additional Functions
+
+%% Evaluate the tensor ff at indices specified by I,J,K
+function T = evalTensor(I, J, K, ff,vectorize)
+if vectorize == 1 % we can use the efficient evaluations
+    ff = @(x,y,z) ff(x,y,z) + 0*x + 0*y + 0*z;
+    n = [numel(I),numel(J),numel(K)];
+    x = zeros([n(1),1,1]);
+    x(:,1,1) = I;
+    X = repmat(x,1,n(2),n(3));
+    y = zeros([1,n(2),1]);
+    y(1,:,1) = J;
+    Y = repmat(y,n(1),1,n(3));
+    z = zeros([1,1,n(3)]);
+    z(1,1,:) = K;
+    Z = repmat(z,n(1),n(2),1);
+    T = ff(X,Y,Z);
+else % we need for loops as f is not vectorizable
+    T = zeros(size(I,2),size(J,2),size(K,2));
+    for i = 1:size(I,2)
+        for j =1:size(J,2)
+            for k = 1:size(K,2)
+                T(i,j,k) = ff(I(i),J(j),K(k));
+            end
+        end
+    end
+end
+end
 
 %% Adaptive Cross Approximation with full pivoting
 function [Ac, At, Ar, rowInd, colInd] = ACA(A, tol, maxIter)
@@ -432,7 +447,7 @@ Ar = Aoriginal(rowInd,:)';
 At = Aoriginal(rowInd,colInd);
 end
 
-%% Discrete Empirical Interpolation 
+%% Discrete Empirical Interpolation
 function indices = DEIM(U)
 indices = [];
 [~, I] = max(abs(U(:,1)));
@@ -468,7 +483,7 @@ absTol = max(max(domDiff.*gradNorms), vscale) * relTol;
 absTol = max([absTol, tolOld, pseudoLevel]);
 end
 
-%% Random initialization of indices by drawing one index in each subintervall of equal length
+%% Random initialization of indices by drawing one index in each of r subintervalls of equal length
 function X = initializeIndexRandomly(r, maxVal)
 box = floor(maxVal/r);
 X = [];
@@ -494,4 +509,42 @@ m = [size(U,1),size(V,1),size(W,1)];
 X = reshape(U\reshape(X,[n(1),n(2)*n(3)]),[m(1),n(2),n(3)]);
 X = permute(reshape(V\reshape(permute(X,[2,1,3]),[n(2),m(1)*n(3)]),[m(2),m(1),n(3)]),[2,1,3]);
 X = permute(reshape(W\reshape(permute(X,[3,2,1]),[n(3),m(2)*m(1)]),[m(3),m(2),m(1)]),[3,2,1]);
+end
+
+%% Evaluation function for the function handle in the sample test
+function vals = evaluate(oper, xx, yy, zz, flag)
+% EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
+% turned on.
+if ( flag ==1 )
+    if ( isvector(xx) && isvector(yy) && isvector(zz) )
+        vals = zeros(size(xx));
+        if ( size(xx, 1) == 1 && size(xx, 2) > 1 )
+            % Turn rows into columns so that the next for loop works
+            % properly.
+            xx = xx.';
+            yy = yy.';
+            zz = zz.';
+        end
+        for ii = 1: size(xx, 1)
+            vals(ii) = oper(xx(ii, 1) , yy(ii, 1), zz(ii, 1));
+        end
+    else
+        vals = zeros(size(xx, 1), size(yy, 2), size(zz, 3));
+        for ii = 1:size(xx, 1)
+            for jj = 1:size(yy, 2)
+                for kk = 1:size(zz, 3)
+                    vals(ii, jj, kk) = feval(oper, xx( ii, 1, 1), ...
+                        yy(1, jj, 1 ), zz(1, 1, kk));
+                end
+            end
+        end
+    end
+else % i.e., if (flag == 0)
+    vals = feval(oper, xx, yy, zz);  % Tensor or vector of values at cheb3 pts.
+    if ( size(vals) ~= size(xx) )
+        % Necessary especially when a CHEBFUN2 is made out of a CHEBFUN3,
+        % e.g. in CHEBFUN3/STD.
+        vals = vals.';
+    end
+end
 end

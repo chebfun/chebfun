@@ -484,6 +484,9 @@ classdef chebfunpref < chebpref
                 prefList.cheb3Prefs.maxRank');
             fprintf([padString('        sampleTest:') '%d\n'], ...
                 prefList.cheb3Prefs.sampleTest');
+            fprintf([padString('        constructor:') '%s\n'], ...
+                prefList.cheb3Prefs.constructor');
+
             
             
             techStr = func2str(tech);
@@ -734,6 +737,7 @@ classdef chebfunpref < chebpref
                 factoryPrefs.cheb2Prefs.sampleTest = 1;
                 
             factoryPrefs.cheb3Prefs = struct(); 
+                factoryPrefs.cheb3Prefs.constructor = 'default';
                 factoryPrefs.cheb3Prefs.chebfun3eps = eps;
                 factoryPrefs.cheb3Prefs.maxRank = 128;   
                 factoryPrefs.cheb3Prefs.sampleTest = 1;

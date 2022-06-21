@@ -277,8 +277,12 @@ methods (Access = public)
     varargout = coeffs3(f, varargin);
 end
 
-methods
+methods (Access = private, Static = true)  
+    % Alternative constructor for CHEBFUN3 objects.
+    f = chebfun3f(f,op, pref, dom, vectorize);   
+end
     
+methods
     % Unary plus for a CHEBFUN3.
     out = uplus(f);
     

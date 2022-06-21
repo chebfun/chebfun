@@ -61,6 +61,12 @@ elseif ( isa(op, 'double') )   % CHEBFUN3( DOUBLE )
     return
 end
 
+% Use alternative chebfun3f constructor:
+if ( strcmpi(prefStruct.constructor, 'chebfun3f') )
+    f = chebfun3.chebfun3f(f, op, pref, dom, vectorize);
+    return
+end
+
 %% Dimension clustering
 if ( isempty(fiberDim) )
     fiberDim = dimCluster(op, dom, vectorize, pref);
@@ -883,6 +889,8 @@ for k = 1:length(varargin)
         pref.tech = @trigtech;
     elseif strcmpi(varargin{k}, 'eps')
         pref.cheb3Prefs.chebfun3eps = varargin{k+1};
+    elseif strcmpi(varargin{k}, 'chebfun3f')
+        pref.cheb3Prefs.constructor = 'chebfun3f';
     elseif strcmpi(varargin{k}, 'rank') % rank is specified.
         fixedRank = varargin{k+1};
     elseif ( isnumeric(varargin{k}) )
