@@ -41,9 +41,9 @@ grid             = tpref.minSamples;
 maxSample        = tpref.maxLength;     % max polynomialDeg (not implemented)
 maxSamplePhase1  = 363;                 % max coarseResolution (not implemented)
 maxRank          = prefStruct.maxRank;  % max rank (not implemented)
+maxRestarts      = 10;                  % max restarts after the sample test
 pseudoLevel      = prefStruct.chebfun3eps;
 passSampleTest   = prefStruct.sampleTest;
-maxRestarts      = 10;                  % TODO can be removed when max polyDeg and maxRank are implemented properly
 
 % Initialize:
 n                = [grid, grid, grid];  %coarseResolution
@@ -390,10 +390,11 @@ end
 
 %% Additional Functions
 
-%% Evaluate the tensor ff at indices specified by I,J,K
+%% 
 function T = evalTensor(I, J, K, ff,vectorize)
-if vectorize == 1 % we can use the efficient evaluations
-    ff = @(x,y,z) ff(x,y,z) + 0*x + 0*y + 0*z;
+% Evaluate the tensor ff at indices specified by I,J,K
+
+if vectorize == 0 % we can use the efficient evaluations
     n = [numel(I),numel(J),numel(K)];
     x = zeros([n(1),1,1]);
     x(:,1,1) = I;
@@ -417,8 +418,10 @@ else % we need for loops as f is not vectorizable
 end
 end
 
-%% Adaptive Cross Approximation with full pivoting
+%%
 function [Ac, At, Ar, rowInd, colInd] = ACA(A, tol, maxIter)
+% Adaptive Cross Approximation with full pivoting
+
 Ac = [];
 Ar = [];
 At = [];
@@ -447,8 +450,10 @@ Ar = Aoriginal(rowInd,:)';
 At = Aoriginal(rowInd,colInd);
 end
 
-%% Discrete Empirical Interpolation
+%% 
 function indices = DEIM(U)
+% Discrete Empirical Interpolation
+
 indices = [];
 [~, I] = max(abs(U(:,1)));
 indices = [indices,I];
@@ -460,15 +465,19 @@ for l = 2:size(U,2)
 end
 end
 
-%% Create temporary chebtech2 object
+%% 
 function ct2 = createCT2(W,data)
+% Create temporary chebtech2 object
+
 data.vscale = max(abs(W(:)));
 ct2 = chebtech2(W, data);
 ct2.coeffs = sum(abs(ct2.coeffs), 2);
 end
 
-%% Get suitable tolerances as in chebfun3 (see https://github.com/chebfun/chebfun/issues/1491)
+%% 
 function [relTol, absTol] = getTol(M, pseudoLevel, tolOld,domDiff)
+% Get suitable tolerances as in chebfun3 (see https://github.com/chebfun/chebfun/issues/1491)
+
 relTol = 2*size(M,1)^(4/5) * pseudoLevel;
 vscale = max(abs(M(:)));
 cheb = @(i,n) -cos((i-1).*pi/(n-1));
@@ -483,8 +492,10 @@ absTol = max(max(domDiff.*gradNorms), vscale) * relTol;
 absTol = max([absTol, tolOld, pseudoLevel]);
 end
 
-%% Random initialization of indices by drawing one index in each of r subintervalls of equal length
+%%
 function X = initializeIndexRandomly(r, maxVal)
+%  Random initialization of indices by drawing one index in each of r subintervalls of equal length
+
 box = floor(maxVal/r);
 X = [];
 for i = 1:r
@@ -493,25 +504,18 @@ for i = 1:r
 end
 end
 
-%% Evaluate X x_1 U x_2 V x_3 W
-function X = tprod(X,U,V,W)
-n = size(X);
-m = [size(U,1),size(V,1),size(W,1)];
-X = reshape(U*reshape(X,[n(1),n(2)*n(3)]),[m(1),n(2),n(3)]);
-X = permute(reshape(V*reshape(permute(X,[2,1,3]),[n(2),m(1)*n(3)]),[m(2),m(1),n(3)]),[2,1,3]);
-X = permute(reshape(W*reshape(permute(X,[3,2,1]),[n(3),m(2)*m(1)]),[m(3),m(2),m(1)]),[3,2,1]);
-end
-
-%% Evaluate X x_1 inv(U) x_2 inv(V) x_3 inv(W) using backslash
+%% 
 function X = invtprod(X,U,V,W)
-n = size(X);
+% Evaluate X times_1 inv(U) times_2 inv(V) times_3 inv(W) using backslash
+
+n = [size(X,1),size(X,2),size(X,3)];
 m = [size(U,1),size(V,1),size(W,1)];
 X = reshape(U\reshape(X,[n(1),n(2)*n(3)]),[m(1),n(2),n(3)]);
 X = permute(reshape(V\reshape(permute(X,[2,1,3]),[n(2),m(1)*n(3)]),[m(2),m(1),n(3)]),[2,1,3]);
 X = permute(reshape(W\reshape(permute(X,[3,2,1]),[n(3),m(2)*m(1)]),[m(3),m(2),m(1)]),[3,2,1]);
 end
 
-%% Evaluation function for the function handle in the sample test
+%% 
 function vals = evaluate(oper, xx, yy, zz, flag)
 % EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
 % turned on.
