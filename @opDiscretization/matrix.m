@@ -25,8 +25,14 @@ end
 
 % Check subinterval compatibility of domain and dimension.
 if ( (length(disc.domain) - 1) ~= length(disc.dimension) )
-    error('CHEBFUN:OPDISCRETIZATION:matrix:subIntDim', ...
-        'Must specify one dimension value for each subinterval.')
+    if ( length(disc.dimension == 1 ) )
+        dim = disc.dimension;
+        dom = disc.domain;
+        disc.dimension = repmat(dim,1,length(dom)-1);
+    else
+        error('CHEBFUN:OPDISCRETIZATION:matrix:subIntDim', ...
+            'Must specify one dimension value for each subinterval.')
+    end
 end
 
 if ( nargout > 1 && ~isa(disc.source, 'linop') )

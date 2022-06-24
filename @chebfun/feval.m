@@ -40,6 +40,12 @@ if ( isa(F, 'function_handle') )
     return
 end
 
+% Deal with FEVAL(CHEBFUN, CHEBFUN) type calls.
+if ( isa(x, 'chebfun') )
+    out = compose(x, F);
+    return
+end
+
 %% LEFT / RIGHT / END VALUES:
 % Support for feval(f, 'left') and feval(f, 'end'), etc.
 if ( ischar(x) )
