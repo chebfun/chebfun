@@ -1,6 +1,6 @@
-function [x, w, v] = radaupts(n, varargin)
-%RADAUPTS   Gauss-Legendre-Radau quadrature nodes and weights.
-%  RADAUPTS(N) returns N Legendre-Radau points X in (-1,1).
+function [x, w, v] = radaupts(n, alp, bet)
+%RADAUPTS   Gauss-Jacobi-Radau quadrature nodes and weights.
+%  RADAUPTS(N) returns N Legendre-Radau points X in [-1,1).
 %
 %  [X, W] = RADAUPTS(N) returns also a row vector W of weights for
 %  Gauss-Legendre-Lobatto quadrature.
@@ -9,9 +9,12 @@ function [x, w, v] = radaupts(n, varargin)
 %  the barycentric formula corresponding to the points X. The weights are scaled
 %  so that max(abs(V)) = 1.
 %
+%  [...] = RADUAPTS(N, ALP, BET) is similar, but for the Gauss-Jacobi-Radau
+%  nodes and weights. Here ALP and BET should be scalars > -1.
+%
 %  In each case, N should be a positive integer.
 %
-% See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, LOBPTS.
+% See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, JACPOLY, LOBPTS.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -36,32 +39,39 @@ function [x, w, v] = radaupts(n, varargin)
 
 % TODO: Scaled domains?
 
+if ( nargin < 3 )
+    % Default to Gauss-Legendre-Lobatto:
+    alp = 0; bet = 0;
+end
+
 %% Trivial cases:
 if ( n == 1 )
     x = -1;
-    w = 2;
+    w = 2^(1+alp+bet)*beta(1+alp,1+bet);
     v = 1;
-    return
-elseif ( n == 1 )
-    x = [-1, 1/3];
-    w = [.5 ; 1.5];
-    v = [-1 ; 1];
     return
 end
 
 %% Call JACPTS():
-[x, w, v] = jacpts(n - 1, 0, 1, varargin{:});
+[xi, w, v] = jacpts(n-1, alp, bet+1);
 
 %% Nodes:
-x = [-1 ; x];
+x = [-1 ; xi];
 
 %% Quadrature weights:
-w = [2/n^2, w./(1 + x(2:end).')];
+wi = w./(1 + xi.');
+if ( alp == 0 && bet == 0 )
+    w = [2/n^2, wi];
+else
+    % See Walter Gautschi, "Gauss–Radau formulae for Jacobi and Laguerre
+    % weight functions", Mathematics and Computers in Simulation, (2000).
+    w = [2^(alp+bet+1)*beta(bet+1,n)*beta(alp+n,bet+1)*(bet+1), wi];
+end
 
 %% Barycentric weights:
-v = v./(1 + x(2:end));
+v = v./(1 + xi);
 v = v/max(abs(v));
-v1 = -abs(sum(x(2:end).*v));
+v1 = -sum(v);
 v = [v1 ; v];
 
 end
