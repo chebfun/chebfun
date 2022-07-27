@@ -152,6 +152,8 @@ zj = [];
 fj = [];
 C = [];
 errvec = [];
+P = 1; 
+G = [];
 R = mean(F);
 
 % AAA iteration:
@@ -165,25 +167,22 @@ for m = 1:mmax
     % Compute weights:
     Sf = diag(fj);                      % Right scaling matrix.
     A = SF*C - C*Sf;                    % Loewner matrix.
-    % Add value(s) at infinity to least-squares problem 
-    Jv = J;
-    if ~isempty([finfP,finfM]) 
-        if strcmp(form,'odd')
-            if ~isempty(finfP)
-                A = [A; (finfP - fj.').*exp(-1i*zj.'/2)];
-                Jv = [Jv, size(A,1)];
-            end
-            if ~isempty(finfM)
-                A = [A; (finfM - fj.').*exp(+1i*zj.'/2)];
-                Jv = [Jv, size(A,1)];
-            end
-        elseif strcmp(form,'even')
-        A = [A; (finfP-fj.')]; 
-        Jv = [Jv, size(A,1)];
-        end
+
+    % Setup constraints at imaginary infinity
+    if ~isempty([finfP finfM]) && m > 2 % Apply constraints for m > 2 
+        if strcmp(form,'even')          % Even approximant
+            G = finfP-fj;
+        else                            % Odd approximant
+            Gp = []; Gm = [];
+            if ~isempty(finfP); Gp = (finfP-fj).*exp(-1i*zj/2); end
+            if ~isempty(finfM); Gm = (finfM-fj).*exp(+1i*zj/2); end
+            G = [Gp Gm];
+        end        
+        P = null(G.');                  % Orthogonal projection onto constraint set     
     end
-    [~, ~, V] = svd(A(Jv,:), 0); % Reduced SVD. Includes the bottom
-    wj = V(:,m);                        % weight vector = min sing vector
+
+    [~, ~, V] = svd(A(J,:)*P, 0);       % Reduced SVD
+    wj = P*V(:,end); wj = wj/norm(wj);  % weight vector = min sing vector
     % Rational approximant on Z:
     N = C*(wj.*fj);                     % Numerator
     D = C*wj;                           % Denominator
