@@ -193,7 +193,6 @@ for m = 1:mmax
     % Error in the sample points and at infinity:
     err = F - R;
     if isempty([finfP,finfM])
-    maxerr = norm(1, inf);
     else
         if strcmp(form,'odd')
             if ~isempty(finfP)
