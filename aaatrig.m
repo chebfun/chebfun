@@ -168,8 +168,8 @@ for m = 1:mmax
     Sf = diag(fj);                      % Right scaling matrix.
     A = SF*C - C*Sf;                    % Loewner matrix.
 
-    % Setup constraints at imaginary infinity
-    if ~isempty([finfP finfM]) && m > 2 % Apply constraints for m > 2 
+    % Setup linearized constraints at imaginary infinity
+    if ~isempty([finfP finfM]) && m > 2 % Apply linearized constraints for m > 2 
         if strcmp(form,'even')          % Even approximant
             G = finfP-fj;
         else                            % Odd approximant
@@ -191,22 +191,6 @@ for m = 1:mmax
     
     % Error in the sample points and at infinity:
     err = F - R;
-    if isempty([finfP,finfM])
-    else
-        if strcmp(form,'odd')
-            if ~isempty(finfP)
-            errInfP = finfP - (fj.'.*exp(-1i*zj.'/2)*wj)./(exp(-1i*zj.'/2)*wj); % error at +1i*infinity
-            err = [err; errInfP];
-            end
-            if ~isempty(finfM)
-            errInfM = finfM - (fj.'.*exp(+1i*zj.'/2)*wj)./(exp(+1i*zj.'/2)*wj); % error at -1i*infinity
-            err = [err; errInfM];
-            end
-        elseif strcmp(form,'even')
-            errInf = finfP - fj.'*wj./sum(wj); % error at +/-1i*infinity
-            err = [err; errInf];
-        end
-    end
     maxerr = norm(err,inf);
     errvec = [errvec; maxerr];
     % Check if converged:
