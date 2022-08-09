@@ -235,9 +235,20 @@ r = @(zz) reval(zz, zj, fj, wj);
 % Compute poles, residues and zeros:
 [pol, res, zer] = prz(zj, fj, wj);
 
-if ( cleanup_flag & nlawson == 0)       % Remove Froissart doublets
+if ( cleanup_flag == 1 && nlawson == 0)       % Remove Froissart doublets
     [r, pol, res, zer, zj, fj, wj] = ...
         cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
+elseif ( cleanup_flag == 2 && nlawson == 0)   % Alternative cleanup.  For the
+                                              % moment this is an undocumented
+                                              % feature, pending further
+                                              % investigation.
+    a.zj = zj; a.fj = fj; a.wj = wj;
+    a.Z = Z; a.F = F;
+    a.cleanup_tol = max(cleanup_tol, eps);
+    c = cleanup2(a);
+    zj = c.zj; fj = c.fj; wj = c.wj;
+    r = @(zz) reval(zz, zj, fj, wj);
+    [pol, res, zer] = prz(zj, fj, wj);
 end
 
 end % of AAA()
@@ -343,6 +354,8 @@ while ( ~isempty(varargin) )
     elseif ( strncmpi(varargin{1}, 'cleanup', 7) )
         if ( strncmpi(varargin{2}, 'off', 3) || ( varargin{2} == 0 ) )
             cleanup_flag = 0;
+        elseif ( varargin{2} == 2 )     % Alternative cleanup
+            cleanup_flag = 2;
         end
         varargin([1, 2]) = [];
         
@@ -350,7 +363,6 @@ while ( ~isempty(varargin) )
         error('CHEBFUN:aaa:UnknownArg', 'Argument unknown.')
     end
 end
-
 
 % Deal with Z and F:
 if ( ~exist('Z', 'var') && isfloat(F) )
@@ -397,7 +409,7 @@ if ~mmax_flag & (nlawson == Inf)
     nlawson = 0;               
 end
 
-end % End of PARSEINPUT().
+end % End of PARSEINPUTS().
 
 
 %% Cleanup.  In June 2022 the residue size test was changed to be relative to 
@@ -462,6 +474,105 @@ r = @(zz) reval(zz, z, f, w);
 
 end % End of CLEANUP().
 
+function c = cleanup2(a)
+% Alternative cleanup procedure to remove spurious pole-zero pairs.
+% This considers pole-zero distances.  Stefano Costa, August 2022.
+
+z = a.zj; f = a.fj; w = a.wj;
+[pol, res, zer] = prz(z, f, w);
+
+cleanup_tol = a.cleanup_tol;
+
+niter = 0;
+while(true)
+    niter = niter+1;
+    Z = a.Z; F = a.F;
+    ii = [];
+    for jj = 1:length(pol)
+        dz = min(abs(zer-pol(jj))); if isempty(dz), dz = 1e100; end
+        dS = abs(Z-pol(jj));
+        ds = min(dS);
+        if any(F)
+            q = 4*pi*abs(F).*dS;
+            Q = mean(q);                % Arithmetic mean
+        else
+            Q = 0;
+        end
+        R = 8*cleanup_tol*Q/(4*pi);    % Equivalent residue value
+        
+        % Conditions to expunge poles
+        % Expunge if either minimum distance is zero
+        if (ds==0) || (dz==0)
+            ii = [ii; jj];
+        % Expunge if Z is a real interval
+        elseif isreal(Z) && (abs(imag(pol(jj)))<eps) && ...
+            (pol(jj)>=min(Z)) && (pol(jj)<=max(Z))
+            ii = [ii; jj];
+        % Expunge if Z is the unit disk
+        elseif all(abs(Z)==1) && (abs(abs(pol(jj))-1)<eps)
+            ii = [ii; jj];
+        % Expunge if distance to closest zero is below tolerance
+        elseif (dz/ds<1) && (dz<cleanup_tol)
+            ii = [ii; jj];
+        % Expunge if a nearby zero exists and residue is below the
+        % equivalent value R. Two choices for real and complex F
+        elseif ((dz/ds)<sqrt(cleanup_tol))
+            if ( ~any(imag(F)) && (abs(real(res(jj))) < R) )
+                ii = [ii; jj];
+            elseif (abs(res(jj)) < R)
+                ii = [ii; jj];
+            end
+        end
+    end
+    ii = unique(ii);
+
+    ni = length(ii);
+    if ( ni == 0 )
+        % Nothing to do.
+        break;
+    elseif ( ni == 1 )
+        warning('CHEBFUN:aaa:Froissart',...
+            ['1 Froissart doublet, niter = ', int2str(niter)]);
+    else
+        warning('CHEBFUN:aaa:Froissart',...
+            [int2str(ni) ' Froissart doublets, niter = ' int2str(niter)]);
+    end
+
+    % For each spurious pole find and remove closest support point:
+    for j = 1:ni
+        azp = abs(z-pol(ii(j)));
+        jj = find(azp == min(azp),1);
+        
+        % Remove support point(s):
+        z(jj) = [];
+        f(jj) = [];
+    end
+    
+    % Remove support points z from sample set:
+    for jj = 1:length(z)
+        F(Z == z(jj)) = [];
+        Z(Z == z(jj)) = [];
+    end
+    m = length(z);
+    M = length(Z);
+    
+    % Build Loewner matrix:
+    SF = spdiags(F, 0, M, M);
+    Sf = diag(f);
+    C = 1./bsxfun(@minus, Z, z.');      % Cauchy matrix.
+    A = SF*C - C*Sf;                    % Loewner matrix.
+    
+    % Solve least-squares problem to obtain weights:
+    [~, ~, V] = svd(A, 0);
+    w = V(:,m);
+    
+    % Compute poles, residues and zeros:
+    [pol, res, zer] = prz(z, f, w);
+end % End of while loop
+
+c.zj = z; c.fj = f; c.wj = w;
+
+end  % End of CLEANUP2().
 
 %% Automated choice of sample set
 
