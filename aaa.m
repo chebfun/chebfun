@@ -475,7 +475,7 @@ r = @(zz) reval(zz, z, f, w);
 end % End of CLEANUP().
 
 function c = cleanup2(a)
-% Alternative cleanup procedure to remove spurious pole-zero pairs.
+%% Alternative cleanup procedure to remove spurious pole-zero pairs.
 % This considers pole-zero distances.  Stefano Costa, August 2022.
 
 z = a.zj; f = a.fj; w = a.wj;
@@ -506,13 +506,13 @@ while(true)
             ii = [ii; jj];
         % Expunge if Z is a real interval
         elseif isreal(Z) && (abs(imag(pol(jj)))<eps) && ...
-            (pol(jj)>=min(Z)) && (pol(jj)<=max(Z))
+            (real(pol(jj))>=min(Z)) && (real(pol(jj))<=max(Z))
             ii = [ii; jj];
         % Expunge if Z is the unit disk
         elseif all(abs(Z)==1) && (abs(abs(pol(jj))-1)<eps)
             ii = [ii; jj];
-        % Expunge if distance to closest zero is below tolerance
-        elseif (dz/ds<1) && (dz<cleanup_tol)
+        % Expunge if distance to closest zero is undetectable
+        elseif (dz/ds<1) && (dz<max(cleanup_tol^2,eps))
             ii = [ii; jj];
         % Expunge if a nearby zero exists and residue is below the
         % equivalent value R. Two choices for real and complex F
