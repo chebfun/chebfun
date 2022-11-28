@@ -1,8 +1,8 @@
 function E = compose(disc, y)
-%FEVAL   Evaluation functional for CHEBCOLLOC.
-%   FEVAL(DISC, LOC, DIRN) returns a functional that evaluates the Chebyshev
-%   polynomial represented by a COLLOC discretization at the given point LOC as
-%   approached from the direction DIRN (either +1 or -1).
+%FEVAL   Composition functional for CHEBCOLLOC.
+%   COMPOSE(DISC, Y) returns an operator that composes the Chebyshev
+%   polynomial represented by a COLLOC discretization with the given
+%   function Y at the appropriate discretisation points.
 %
 % See also CHEBCOLLOC.FEVAL
 

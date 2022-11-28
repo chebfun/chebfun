@@ -1,10 +1,10 @@
 function E = compose(disc, y)
-%FEVAL   Evaluation functional for CHEBCOLLOC.
-%   FEVAL(DISC, LOC, DIRN) returns a functional that evaluates the Chebyshev
-%   polynomial represented by a COLLOC discretization at the given point LOC as
-%   approached from the direction DIRN (either +1 or -1).
+%COMPOSE   COMPOSITION functional for TRIGCOLLOC.
+%   COMPOSE(DISC, Y) returns an operator that composes the trigonometric
+%   polynomial represented by a COLLOC discretization with the given
+%   function Y at the appropriate discretisation points.
 %
-% See also CHEBCOLLOC.FEVAL
+% See also TRIGCOLLOC.FEVAL
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
