@@ -63,7 +63,7 @@ dom = N.domain;
 % Construct the zero function on N.DOMAIN to linearize around if no U was
 % passed.
 if ( nargin < 2 || isempty(u) )
-    if ( strcmp(N.bc, 'periodic') )
+    if ( strcmp(N.bc, 'periodic') && numel(dom) == 2 )
         zeroFun = chebfun(0, dom, 'periodic'); 
     else
         zeroFun = chebfun(0, dom); 

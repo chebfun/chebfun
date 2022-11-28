@@ -86,7 +86,7 @@ dom = N.domain;
 % Create an initial guess if none is passed.
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
-    if ( strcmp(N.bc, 'periodic') )
+    if ( strcmp(N.bc, 'periodic') && numel(dom) == 2 )
         zeroFun = chebfun(0, dom, 'periodic'); 
     else
         zeroFun = chebfun(0, dom); 
