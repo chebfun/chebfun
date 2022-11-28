@@ -86,7 +86,12 @@ dom = N.domain;
 % Create an initial guess if none is passed.
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
-    zeroFun = chebfun(0, dom); 
+    if ( strcmp(N.bc, 'periodic') )
+        zeroFun = chebfun(0, dom, 'periodic'); 
+    else
+        zeroFun = chebfun(0, dom); 
+    end
+
     % Convert to a CHEBMATRIX of correct dimensions:
     u0 = cell(nVars, 1);
     for k = 1:nVars
