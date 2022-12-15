@@ -15,8 +15,15 @@ switch index(1).type
     case '.'
         
         % Allow access to any of the properties of S:
-        varargout = {S.(idx)};
-        
+        out = S.(idx);
+
+        % Recurse on SUBSREF:
+        if ( numel(index) > 1)
+            out = subsref(out, index(2:end));
+        end
+
+        varargout = {out};
+
     case '()'
         
         % Evaluate the operator, i.e., wrapper for SPINOPERATOR/FEVAL:
