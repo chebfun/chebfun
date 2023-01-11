@@ -7,7 +7,7 @@ function out = poly(f, n)
 %   For numerical work, the Chebyshev polynomial coefficients returned by
 %   CHEBCOEFFS() are more useful.
 %
-% See also CHEBCOEFFS.
+% See also CHEBCOEFFS, DOMAIN/POLY.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
