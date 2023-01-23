@@ -1,7 +1,7 @@
 function f = sum( f, dim )
 %SUM   Definite Integration of a DISKFUN.
-%   G = sum(F,DIM) where DIM is 1 or 2 integrates only over theta 
-%   (angular direction) or r (radial direction) respectively,
+%   G = sum(F,DIM) where DIM is 1 or 2 integrates only over r
+%   (radial direction) or theta (angular direction) respectively,
 %   and returns as its output a chebfun in the remaining variable.
 %
 %   G = sum(F) is the same as sum(F,1)
