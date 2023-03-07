@@ -114,40 +114,36 @@ M = length(Z);
 % Relative tolerance:
 reltol = tol * norm(F, inf);
 
-% Left scaling matrix:
-SF = spdiags(F, 0, M, M);
-
 % Initialization for AAA iteration:
-J = 1:M;
+J = logical(ones(M, 1));
 zj = [];
 fj = [];
+A = [];
 C = [];
 errvec = [];
-R = mean(F);
+R = F - mean(F); % residual
 
 % AAA iteration:
 for m = 1:mmax
     % Select next support point where error is largest:
-    [~, jj] = max(abs(F - R));          % Select next support point.
+    [~, jj] = max(abs(R));              % Select next support point.
     zj = [zj; Z(jj)];                   % Update support points.
     fj = [fj; F(jj)];                   % Update data values.
-    J(J == jj) = [];                    % Update index vector.
+    J(jj) = 0;                          % Update index vector.
     C = [C 1./(Z - Z(jj))];             % Next column of Cauchy matrix.
+    A = [A (F - F(jj))./(Z - Z(jj))];   % Next column of Loewner matrix.
     
     % Compute weights:
-    Sf = diag(fj);                      % Right scaling matrix.
-    A = SF*C - C*Sf;                    % Loewner matrix.
-    [~, ~, V] = svd(A(J,:), 0);         % Reduced SVD.
+    [~, ~, V] = svd(A(J, :), 0);        % Reduced SVD.
     wj = V(:,m);                        % weight vector = min sing vector
     
-    % Rational approximant on Z:
-    N = C*(wj.*fj);                     % Numerator
-    D = C*wj;                           % Denominator
-    R = F;
-    R(J) = N(J)./D(J);
+    % Residual for rational approximant on Z:
+    Wj = repmat(wj.', M, 1);
+    R = sum(A .* Wj, 2) ./ sum(C .* Wj, 2);
+    R(~J) = 0;
     
     % Error in the sample points:
-    maxerr = norm(F - R, inf);
+    maxerr = norm(R, inf);
     errvec = [errvec; maxerr];
     
     % Check if converged:
@@ -155,7 +151,7 @@ for m = 1:mmax
         break
     end
 end
-maxerrAAA = maxerr;                     % error at end of AAA 
+maxerrAAA = maxerr;                      % error at end of AAA 
 
 % When M == 2, one weight is zero and r is constant.
 % To obtain a good approximation, interpolate in both sample points.
@@ -459,10 +455,8 @@ m = length(z);
 M = length(Z);
 
 % Build Loewner matrix:
-SF = spdiags(F, 0, M, M);
-Sf = diag(f);
 C = 1./bsxfun(@minus, Z, z.');      % Cauchy matrix.
-A = SF*C - C*Sf;                    % Loewner matrix.
+A = bsxfun(@minus, F, f.').*C;      % Loewner matrix.
 
 % Solve least-squares problem to obtain weights:
 [~, ~, V] = svd(A, 0);
