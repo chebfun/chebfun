@@ -63,7 +63,15 @@ end
 
 % Use alternative chebfun3f constructor:
 if ( strcmpi(prefStruct.constructor, 'chebfun3f') )
+    if isa(tech,'trigtech')
+        error('CHEBFUN:CHEBFUN3:constructor:chebfun3f', ...
+            'The chebfun3f constructor is not compatible with the trig flag.');
+    end
     f = chebfun3.chebfun3f(f, op, pref, dom, vectorize);
+    if ( fixedRank )
+        % Simplify the rank if requested.
+        f = fixTheRank(f , fixedRank);
+    end
     return
 end
 

@@ -327,14 +327,12 @@ while ~happy
         [K, QWK] = DEIM(QW);
 
         % Simplification:
-        % (Take a linear combination of the columns = faster)
         lenU = standardChop(chebvals2chebcoeffs(sum(Uf,2)), pref.chebfuneps);
         lenV = standardChop(chebvals2chebcoeffs(sum(Vf,2)), pref.chebfuneps);
         lenW = standardChop(chebvals2chebcoeffs(sum(Wf,2)), pref.chebfuneps);
-%         % (Full simplify = slower)
-%         lenU = length(simplify(chebfun(Uf, [dom(1),dom(2)], pref), pref.chebfuneps));
-%         lenV = length(simplify(chebfun(Vf, [dom(3),dom(4)], pref), pref.chebfuneps));
-%         lenW = length(simplify(chebfun(Wf, [dom(5),dom(6)], pref), pref.chebfuneps));
+        lenU = max(lenU,size(Uf,2));
+        lenV = max(lenV,size(Vf,2));
+        lenW = max(lenW,size(Wf,2));
 
         % Convert to coefficients and simplify:
         QU = chebvals2chebcoeffs(QU); QU = QU(1:lenU,:);
@@ -417,7 +415,11 @@ if ( vectorize == 0 ) % we can use the efficient evaluations
     z = zeros([1,1,n(3)]);
     z(1,1,:) = K;
     Z = repmat(z,n(1),n(2),1);
-    T = ff(X,Y,Z);
+    if numel(X) > 0
+        T = ff(X,Y,Z);
+    else
+        T = []; 
+    end
 else % we need for loops as f is not vectorizable
     T = zeros(size(I,2),size(J,2),size(K,2));
     for i = 1:size(I,2)
