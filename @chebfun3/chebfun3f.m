@@ -57,7 +57,6 @@ reffun           = @(n) floor(sqrt(2)^(floor(2*log2(n)) + 1)) + 1;
 restarts         = 0;
 f.domain         = dom;
 
-
 if isa(tech,'trigtech')
     %use equispace points instead
     chebX = @(i,n) dom(1) +  (i-1)/(n) *(dom(2)-dom(1));
