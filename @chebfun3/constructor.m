@@ -62,11 +62,8 @@ elseif ( isa(op, 'double') )   % CHEBFUN3( DOUBLE )
 end
 
 % Use alternative chebfun3f constructor:
+prefStruct.constructor = 'chebfun3f'; %TEMPORARY
 if ( strcmpi(prefStruct.constructor, 'chebfun3f') )
-    if isa(tech,'trigtech')
-        error('CHEBFUN:CHEBFUN3:constructor:chebfun3f', ...
-            'The chebfun3f constructor is not compatible with the trig flag.');
-    end
     f = chebfun3.chebfun3f(f, op, pref, dom, vectorize);
     if ( fixedRank )
         % Simplify the rank if requested.
