@@ -35,7 +35,12 @@ pass(7) = norm(feval(f, c1, c2, c3) - f(c1, c2, c3)) < tol;
 
 % GET properties
 f = chebfun3(@(x,y,z) x);
+<<<<<<< Updated upstream
 pass(8) = norm(f.cols - chebfun(@(x) x) ) < tol;
+=======
+%pass(8) = norm(f.cols - chebfun(@(x) x) ) < tol; %this test will never pass with chebfun3f: a scalar multiple can be moved from the factor matrix to the core tensor
+pass(8) = norm((f.core .* f.rows .* f.tubes)*f.cols - chebfun(@(x) x) ) < tol; 
+>>>>>>> Stashed changes
 
 pass(9) = norm(f.domain - [-1 1 -1 1 -1 1] ) < tol;
 

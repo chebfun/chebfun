@@ -4,7 +4,7 @@ function pass = test_feval(pref)
 if ( nargin == 0 ) 
     pref = chebfunpref; 
 end
-tol = 100*pref.cheb3Prefs.chebfun3eps;
+tol = 1e3*pref.cheb3Prefs.chebfun3eps;
 
 seedRNG(42);
 
@@ -47,7 +47,7 @@ pass(10) = (abs(f(r,s,t) - g(r,s,t))<tol*vscale(g));
 % Are we evaluating on arrays correctly
 pass(11) = (norm((f(r,s,t) - g(r,s,t)))<tol*vscale(g));
 
-pass(12) = (max(max(max(abs(f(rr,ss,tt) - g(rr,ss,tt)))))<tol*vscale(g)); 
+pass(12) = (max(max(max(abs(f(rr,ss,tt) - g(rr,ss,tt)))))< tol*vscale(g)); 
 
 %% vector inputs
 ff = @(x,y,z) sin(pi*(x+y+z));

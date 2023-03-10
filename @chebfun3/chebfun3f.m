@@ -325,6 +325,7 @@ while ~happy
         [J, QVJ] = DEIM(QV);
         [QW,~] = qr(Wf,0);
         [K, QWK] = DEIM(QW);
+<<<<<<< Updated upstream
 
         % Simplification:
         lenU = standardChop(chebvals2chebcoeffs(sum(Uf,2)), pref.chebfuneps);
@@ -351,6 +352,98 @@ while ~happy
         f.tubes = chebfun(QW*DW, [dom(5),dom(6)], 'coeffs', pref);
         f.core  = invtprod(invtprod(evalTensor(I,J,K,ff,vectorize), ...
             QUI,QVJ,QWK),DU,DV,DW);       
+=======
+        
+        % BH: How about avoiding any simplification here?
+        % Simplification
+        %{
+        if isa(tech,'trigtech')
+            lenU = size(QU,1);
+            lenV = size(QV,1);
+            lenW = size(QW,1);
+            
+            %TODO simplification for 'trig' functions is not implemented so far
+            % BH: Do we really need this here? I added simplification
+            % in line 398-400 instead. OK?
+            %lenU = standardChop(trigtech.vals2coeffs(sum(Uf,2)), pref.chebfuneps);
+            %lenV = standardChop(trigtech.vals2coeffs(sum(Vf,2)), pref.chebfuneps);
+            %lenW = standardChop(trigtech.vals2coeffs(sum(Wf,2)), pref.chebfuneps);
+            
+            %lenU = length(simplify(chebfun(sum(Uf,2), 'trig'), pref.chebfuneps));
+            %lenV = length(simplify(chebfun(sum(Vf,2), 'trig'), pref.chebfuneps));
+            %lenW = length(simplify(chebfun(sum(Wf,2), 'trig'), pref.chebfuneps));
+
+        else
+            lenU = standardChop(chebvals2chebcoeffs(sum(Uf,2)), pref.chebfuneps);
+            lenV = standardChop(chebvals2chebcoeffs(sum(Vf,2)), pref.chebfuneps);
+            lenW = standardChop(chebvals2chebcoeffs(sum(Wf,2)), pref.chebfuneps);
+        end
+        lenU = max(lenU,size(Uf,2));
+        lenV = max(lenV,size(Vf,2));
+        lenW = max(lenW,size(Wf,2));
+        %}
+
+
+        %{
+
+        % Convert to coefficients and simplify
+        % BH: Do we really need this conversion here?
+        if isa(tech,'trigtech')
+            QU = tech.vals2coeffs(QU);
+            QV = tech.vals2coeffs(QV);
+            QW = tech.vals2coeffs(QW);
+        else
+            QU = chebvals2chebcoeffs(QU);
+            QV = chebvals2chebcoeffs(QV);
+            QW = chebvals2chebcoeffs(QW);
+            %QU = QU(1:lenU,:); % BH: How about postponing simplification
+            %to the very end and avoid any scaling of the factor matrices?
+            %QV = QV(1:lenV,:);
+            %QW = QW(1:lenW,:);
+        end
+
+        %{
+        if isa(tech,'trigtech')
+            %f.cols  = chebfun(QU, [dom(1),dom(2)], 'coeffs', pref);
+            %f.rows  = chebfun(QV, [dom(3),dom(4)], 'coeffs', pref);
+            %f.tubes = chebfun(QW, [dom(5),dom(6)], 'coeffs', pref);
+            f.cols  = simplify(chebfun(QU, [dom(1),dom(2)], 'coeffs', pref));
+            f.rows  = simplify(chebfun(QV, [dom(3),dom(4)], 'coeffs', pref));
+            f.tubes = simplify(chebfun(QW, [dom(5),dom(6)], 'coeffs', pref));
+            f.core  = invtprod(evalTensor(I,J,K,ff,vectorize), ...
+                QUI,QVJ,QWK);
+        else
+%             % Introduce a diagonal scaling to ensure the coefficients decay to
+%             % machine precision:
+%             DU = diag(eps./max(min(abs(QU)),eps));
+%             DV = diag(eps./max(min(abs(QV)),eps));
+%             DW = diag(eps./max(min(abs(QW)),eps));
+%             % Construct the outputs:
+%             f.cols  = chebfun(QU*DU, [dom(1),dom(2)], 'coeffs', pref);
+%             f.rows  = chebfun(QV*DV, [dom(3),dom(4)], 'coeffs', pref);
+%             f.tubes = chebfun(QW*DW, [dom(5),dom(6)], 'coeffs', pref);
+%             f.core  = invtprod(invtprod(evalTensor(I,J,K,ff,vectorize), ...
+%                 QUI,QVJ,QWK),DU,DV,DW);
+
+            % BH: Construct the outputs:
+            f.cols  = simplify(chebfun(QU, [dom(1),dom(2)], 'coeffs', pref));
+            f.rows  = simplify(chebfun(QV, [dom(3),dom(4)], 'coeffs', pref));
+            f.tubes = simplify(chebfun(QW, [dom(5),dom(6)], 'coeffs', pref));
+            f.core  = invtprod(evalTensor(I,J,K,ff,vectorize), ...
+                QUI,QVJ,QWK);
+        end
+        %}
+
+        f.cols  = simplify(chebfun(QU, [dom(1),dom(2)], 'coeffs', pref));
+        f.rows  = simplify(chebfun(QV, [dom(3),dom(4)], 'coeffs', pref));
+        f.tubes = simplify(chebfun(QW, [dom(5),dom(6)], 'coeffs', pref));
+        f.core  = invtprod(evalTensor(I,J,K,ff,vectorize), QUI,QVJ,QWK);
+        %}
+        f.cols  = simplify(chebfun(QU, [dom(1),dom(2)], pref));
+        f.rows  = simplify(chebfun(QV, [dom(3),dom(4)], pref));
+        f.tubes = simplify(chebfun(QW, [dom(5),dom(6)], pref));
+        f.core  = invtprod(evalTensor(I,J,K,ff,vectorize), QUI,QVJ,QWK);
+>>>>>>> Stashed changes
         
     end
     
