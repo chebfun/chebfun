@@ -351,10 +351,7 @@ while ~happy
         
         % Simplification
         if isa(tech,'trigtech')
-            %TODO simplification for 'trig' functions is not implemented so far
-            lenU = size(QU,1);
-            lenV = size(QV,1);
-            lenW = size(QW,1);
+            [~,~,~, lenU, lenV, lenW] = happinessCheck3(sum(Uf,2), sum(Vf,2), sum(Wf,2), dom, pref, tech);
         else
             lenU = standardChop(chebvals2chebcoeffs(sum(Uf,2)), pref.chebfuneps);
             lenV = standardChop(chebvals2chebcoeffs(sum(Vf,2)), pref.chebfuneps);
@@ -378,8 +375,6 @@ while ~happy
             QW = QW(1:lenW,:);
         end
 
-        
-        
         if isa(tech,'trigtech')
             f.cols  = chebfun(QU, [dom(1),dom(2)], 'coeffs', pref);
             f.rows  = chebfun(QV, [dom(3),dom(4)], 'coeffs', pref);
@@ -399,7 +394,6 @@ while ~happy
             f.core  = invtprod(invtprod(evalTensor(I,J,K,ff,vectorize), ...
                 QUI,QVJ,QWK),DU,DV,DW);
         end
-        
         
     end
     
@@ -531,16 +525,7 @@ end
 end
 
 %%
-function ct2 = createCT2(W,data)
-% Create temporary chebtech2 object
-
-data.vscale = max(abs(W(:)));
-ct2 = chebtech2(W, data);
-ct2.coeffs = sum(abs(ct2.coeffs), 2);
-end
-
-%%
-function [resolvedU, resolvedV, resolvedW] = happinessCheck3(U, V, W, dom, pref, tech)
+function [resolvedU, resolvedV, resolvedW, cutoffU, cutoffV, cutoffW] = happinessCheck3(U, V, W, dom, pref, tech)
 resolvedU = 1; resolvedV = 1; resolvedW = 1;
 % Happiness-check
 if numel(U) > 0
@@ -549,7 +534,7 @@ if numel(U) > 0
     fiber1Data.vscale = vsclU;
     UChebtech = tech.make(U, fiber1Data);
     UChebtech.coeffs = sum(abs(UChebtech.coeffs), 2);
-    resolvedU  = happinessCheck(UChebtech, [], ...
+    [resolvedU,cutoffU]  = happinessCheck(UChebtech, [], ...
         UChebtech.coeffs, [], pref);
 end
 if numel(V) > 0
@@ -558,7 +543,7 @@ if numel(V) > 0
     fiber2Data.vscale = vsclV;
     VChebtech = tech.make(V, fiber2Data);
     VChebtech.coeffs = sum(abs(VChebtech.coeffs), 2);
-    resolvedV  = happinessCheck(VChebtech, [], ...
+    [resolvedV,cutoffV]  = happinessCheck(VChebtech, [], ...
         VChebtech.coeffs, [], pref);
 end
 if numel(W) > 0
@@ -567,7 +552,7 @@ if numel(W) > 0
     fiber3Data.vscale = vsclW;
     WChebtech = tech.make(W, fiber3Data);
     WChebtech.coeffs = sum(abs(WChebtech.coeffs), 2);
-    resolvedW = happinessCheck(WChebtech, [], ...
+    [resolvedW,cutoffW] = happinessCheck(WChebtech, [], ...
         WChebtech.coeffs, [], pref);
 end
 end
