@@ -83,40 +83,41 @@ pass(19) = abs(res(ii)-1) < 1e-10;
 ii = find(abs(pol-(-1))<1e-8);
 pass(20) = abs(res(ii)+(1+1i)) < 1e-10;
 
-% Make sure Lawson matches minimax:
+% Make sure Lawson matches minimax and degree differs from mmax
 x = chebfun('x'); f = exp(x);
 xx = linspace(-1,1);
 [p,q,r] = minimax(f,3,3); err_minimax = norm(f(xx) - r(xx),inf);
-r = aaa(f,'mmax',4); err_aaa = norm(f(xx) - r(xx),inf);
+r = aaa(f,'degree',3); err_aaa = norm(f(xx) - r(xx),inf);
 pass(21) = (err_aaa/err_minimax < 1.1);
+r = aaa(f,'mmax',4); err_aaa = norm(f(xx) - r(xx),inf);
+pass(22) = (err_aaa/err_minimax > 1.1);
 
 % Make sure Lawson bails out if unsuccessful because of machine precision
 xx = linspace(-1,1);
 r = aaa(@tanh,xx); err1 = norm(tanh(xx) - r(xx),inf);
 r = aaa(@tanh,xx,'mmax',40); err2 = norm(tanh(xx) - r(xx),inf);
-pass(22) = abs(err2/err1 - 1) < 1.01; 
+pass(23) = abs(err2/err1 - 1) < 1.01; 
 
 % Make sure Lawson bails out if unsuccessful because of symmetry
 Z = exp(2i*pi*(1:500)'/500); F = log(2-Z.^4); n = 15;
 r = aaa(F,Z,'mmax',n+1,'lawson',0); err1 = norm(F - r(Z),inf);
 r = aaa(F,Z,'mmax',n+1); err2 = norm(F - r(Z),inf);
-pass(23) = abs(err2/err1 - 1) < 1.01; 
+pass(24) = abs(err2/err1 - 1) < 1.01; 
 
 % Make sure Lawson bails out if unsuccessful because of troublesome poles
 Za = chebpts(1000,[-3 -1]); Zb = chebpts(1000,[1,3]); Z = [Za; Zb];
 F = [sign(Za); sign(Zb)]; n = 12; 
 r = aaa(F,Z,'mmax',n+1,'lawson',0); err1 = norm(F - r(Z),inf);
 r = aaa(F,Z,'mmax',n+1); err2 = norm(F - r(Z),inf);
-pass(24) = abs(err2/err1 - 1) < 1.01; 
+pass(25) = abs(err2/err1 - 1) < 1.01; 
 
 % Degree option 
 Z = linspace(-1, 1, 1000);
 F = exp(Z);
 [r, pol] = aaa(F, Z, 'degree', 3);
 [r2, pol2] = aaa(F, Z, 'mmax', 4);
-pass(25) = (numel(pol) == 3);
-pass(26) = (numel(pol2) == 3);
-pass(27) = (norm(r(Z)-r2(Z)) < 1e-10);
+pass(26) = (numel(pol) == 3);
+pass(27) = (numel(pol2) == 3);
 
 warning('on', 'CHEBFUN:aaa:Froissart');
 

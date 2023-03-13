@@ -2,8 +2,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %AAA   AAA and AAA-Lawson (near-minimax) real or complex rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
-%   or as a function handle or a chebfun.  R = AAA(F, Z, 'degree', N) computes
-%   the minimax approximation of degree N (i.e., rational type (N,N)).
+%   or as a function handle or a chebfun.  R = AAA(F, Z, 'degree', N) attempts
+%   to compute the minimax approximation of degree N (i.e., rational type (N,N)).
 %
 %   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles POL, residues RES,
 %   and zeros ZER of R.
@@ -20,12 +20,12 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'degree', N: maximal degree (default N = 99). 
-%      Output rational approximant will be at most of type (N,N). 
-%      Identical to 'mmax', N+1. 
-%      By default, this will turn on Lawson iteration: see next paragraph. 
+%       Output rational approximant will be at most of type (N,N). 
+%       Like 'mmax', N+1, except that Lawson is turned on by default.
+%       By default, this will turn on Lawson iteration: see next paragraph. 
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
 %       (default MMAX = 100). R will be of degree MMAX-1. 
-%       Identical to 'degree', MMAX-1. Also turns on Lawson iteration. 
+%       Like 'degree', MMAX-1, except Lawson is not turned on by default.
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
@@ -37,15 +37,14 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %       to bring approximation closer to minimax; specifying NLAWSON = 0 
 %       ensures there is no Lawson iteration.  See next paragraph.
 %
-%   If 'degree' or equivalently 'mmax' is specified and 'lawson' is not, then
-%   AAA attempts to find a minimax approximant of degree N by Lawson iteration.
-%   This will generally be successful only if the minimax error is well
-%   above machine precision, and is more reliable for complex problems than
-%   real ones.  If 'degree' and 'lawson' are both specified, then exactly
-%   NLAWSON Lawson steps are taken (so NLAWSON = 0 corresponds to AAA
-%   approximation with no Lawson iteration).  The final weight vector WT of
-%   the Lawson iteration is available with 
-%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
+%   If 'degree' is specified and 'lawson' is not, then AAA attempts to find
+%   a minimax approximant of degree N by Lawson iteration.  This will generally
+%   be successful only if the minimax error is well above machine precision,
+%   and is more reliable for complex problems than real ones.  If 'degree'
+%   and 'lawson' are both specified, then exactly NLAWSON Lawson steps are
+%   taken (so NLAWSON = 0 corresponds to AAA approximation with no Lawson
+%   iteration).  The final weight vector WT of the Lawson iteration is available
+%   with [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
 %
 %   Note that R may have fewer than N poles and zeros.  This may happen,
 %   for example, if N is too large, or if F is even and N is odd, or if F is
@@ -90,13 +89,14 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 
 
 % Parse inputs:
-[F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, nlawson] ...
-    = parseInputs(F, varargin{:});
+[F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, nlawson, ...
+    degree_flag, degree] = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
     [r, pol, res, zer, zj, fj, wj, errvec] = ...
-        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson);
+        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, ...
+            nlawson, degree_flag, degree);
     return
 end
 
@@ -257,7 +257,7 @@ end % of AAA()
 %% parse Inputs:
 
 function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
-    needZ, mmax_flag, nlawson] = parseInputs(F, varargin)
+    needZ, mmax_flag, nlawson, degree_flag, degree] = parseInputs(F, varargin)
 % Input parsing for AAA.
 
 % Check if F is empty:
@@ -283,6 +283,7 @@ end
 % Set defaults for other parameters:
 tol = 1e-13;         % Relative tolerance.
 mmax = 100;          % Maximum number of terms.
+degree = NaN;        % Specified degree.
 cleanup_tol = 1e-13; % Cleanup tolerance.
 nlawson = Inf;       % number of Lawson steps (Inf means adaptive)
 % Domain:
@@ -293,6 +294,7 @@ else
 end
 cleanup_flag = 1;   % Cleanup on.
 mmax_flag = 0;      % Checks if mmax manually specified.
+degree_flag = 0;    % Checks if degree specified.
 cleanup_set = 0;    % Checks if cleanup_tol manually specified.
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
@@ -310,8 +312,10 @@ while ( ~isempty(varargin) )
             if ( mmax_flag == 1 ) && ( mmax ~= varargin{2}+1 )
                 error('CHEBFUN:aaa:degmmaxmismatch', ' mmax must equal degree+1.')
             end            
-            mmax = varargin{2}+1;
-            mmax_flag = 1;
+            degree = varargin{2};
+            mmax = degree + 1;
+            mmax_flag = 1; 
+            degree_flag = 1;
         end
         varargin([1, 2]) = [];
         
@@ -405,7 +409,7 @@ else
     M = length(Z);
 end
 
-if ~mmax_flag & (nlawson == Inf)
+if ~degree_flag & (nlawson == Inf)
     nlawson = 0;               
 end
 
@@ -577,8 +581,8 @@ end  % End of CLEANUP2().
 %% Automated choice of sample set
 
 function [r, pol, res, zer, zj, fj, wj, errvec] = ...
-    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson)
-%
+    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, nlawson, ...
+        degree_flag, degree)
 
 % Flag if function has been resolved:
 isResolved = 0;
@@ -588,9 +592,15 @@ for n = 5:14
     % Sample points:
     % Next line enables us to do pretty well near poles
     Z = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), 1 + 2^n).';
-    [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
-        'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, 'lawson', nlawson);
-    
+    if degree_flag
+       [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
+          'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, ...
+          'lawson', nlawson, 'degree', degree);
+    else
+       [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
+          'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, ...
+          'lawson', nlawson);
+    end
     % Test if rational approximant is accurate:
     reltol = tol * norm(F(Z), inf);
     
@@ -600,7 +610,6 @@ for n = 5:14
     Zrefined = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), ...
         round(1.5 * (1 + 2^(n+1)))).';
     err(2,1) = norm(F(Zrefined) - r(Zrefined), inf);
-    
     if ( all(err < reltol) )
         % Final check that the function is resolved, inspired by sampleTest().
         % Pseudo random sample points in [-1, 1]:
