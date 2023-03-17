@@ -30,7 +30,7 @@ pass(7) = ( min(abs(zer)) < tol );
 pass(8) = ( min(abs(pol - 0.5)) < tol );
 pass(9) = ( min(abs(res)) > 1e-13 );        % Test for spurious poles.
 
-% Case |Z| = 2: needs special treatment.
+% Case length(Z) = 2: needs special treatment.
 Z = [0, 1];
 F = [1, 2];
 r = aaa(F, Z);
@@ -118,6 +118,12 @@ F = exp(Z);
 [r2, pol2] = aaa(F, Z, 'mmax', 4);
 pass(26) = (numel(pol) == 3);
 pass(27) = (numel(pol2) == 3);
+
+% Bug reported by Williams Johns in issue 2423
+X = [1 2 3];
+F = [1 0 0];
+r = aaa(F,X);
+pass(28) = (norm(F-r(X)) == 0);
 
 warning('on', 'CHEBFUN:aaa:Froissart');
 
