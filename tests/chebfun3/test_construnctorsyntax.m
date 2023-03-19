@@ -81,7 +81,7 @@ pass(13) = all(g.domain == [-2 1 -2 1 -2 1]);
 pass(14) = 1;
 try
     % Construction using different constructors:
-    chebfun3(f,'classic')
+    chebfun3(f,'classic');
     
     chebfun3(f,'chebfun3f');
 catch
