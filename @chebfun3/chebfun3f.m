@@ -1,5 +1,5 @@
 function f = chebfun3f(f, op, pref, dom, vectorize)
-%CHEBFUN3F  Alternative CHEBFUN3 constructor.
+%CHEBFUN3F  Default CHEBFUN3 constructor.
 %   Given a function OP of three variables, this code represents it as a
 %   CHEBFUN3 object. A CHEBFUN3 object is a low-rank representation
 %   expressing a function as a trilinear product of a discrete core tensor
@@ -56,7 +56,6 @@ chebZ            = @(i,n) dom(5) + ((-cos((i-1).*pi/(n-1))) + 1)*(dom(6)-dom(5))
 reffun           = @(n) floor(sqrt(2)^(floor(2*log2(n)) + 1)) + 1;
 restarts         = 0;
 f.domain         = dom;
-
 
 if isa(tech,'trigtech')
     %use equispace points instead
@@ -349,51 +348,17 @@ while ~happy
         [QW,~] = qr(Wf,0);
         [K, QWK] = DEIM(QW);
         
-        % Simplification
-        if isa(tech,'trigtech')
-            [~,~,~, lenU, lenV, lenW] = happinessCheck3(sum(Uf,2), sum(Vf,2), sum(Wf,2), dom, pref, tech);
-        else
-            lenU = standardChop(chebvals2chebcoeffs(sum(Uf,2)), pref.chebfuneps);
-            lenV = standardChop(chebvals2chebcoeffs(sum(Vf,2)), pref.chebfuneps);
-            lenW = standardChop(chebvals2chebcoeffs(sum(Wf,2)), pref.chebfuneps);
-        end
-        lenU = max(lenU,size(Uf,2));
-        lenV = max(lenV,size(Vf,2));
-        lenW = max(lenW,size(Wf,2));
-        
-        % Convert to coefficients and simplify
-        if isa(tech,'trigtech')
-            QU = tech.vals2coeffs(QU);
-            QV = tech.vals2coeffs(QV);
-            QW = tech.vals2coeffs(QW);
-        else
-            QU = chebvals2chebcoeffs(QU);
-            QV = chebvals2chebcoeffs(QV);
-            QW = chebvals2chebcoeffs(QW);
-            QU = QU(1:lenU,:);
-            QV = QV(1:lenV,:);
-            QW = QW(1:lenW,:);
-        end
-
-        if isa(tech,'trigtech')
-            f.cols  = chebfun(QU, [dom(1),dom(2)], 'coeffs', pref);
-            f.rows  = chebfun(QV, [dom(3),dom(4)], 'coeffs', pref);
-            f.tubes = chebfun(QW, [dom(5),dom(6)], 'coeffs', pref);
-            f.core  = invtprod(evalTensor(I,J,K,ff,vectorize), ...
-                QUI,QVJ,QWK);
-        else
-            % Introduce a diagonal scaling to ensure the coefficients decay to
-            % machine precision:
-            DU = diag(eps./max(min(abs(QU)),eps));
-            DV = diag(eps./max(min(abs(QV)),eps));
-            DW = diag(eps./max(min(abs(QW)),eps));
-            % Construct the outputs:
-            f.cols  = chebfun(QU*DU, [dom(1),dom(2)], 'coeffs', pref);
-            f.rows  = chebfun(QV*DV, [dom(3),dom(4)], 'coeffs', pref);
-            f.tubes = chebfun(QW*DW, [dom(5),dom(6)], 'coeffs', pref);
-            f.core  = invtprod(invtprod(evalTensor(I,J,K,ff,vectorize), ...
-                QUI,QVJ,QWK),DU,DV,DW);
-        end
+        % Scaling to ensure the factor matrices contain decaying coefficients
+        tmpCore  = invtprod(evalTensor(I,J,K,ff,vectorize), QUI,QVJ,QWK);
+        colScaling = max(abs(tmpCore),[],[2,3]);
+        rowScaling = max(abs(tmpCore),[],[1,3]);
+        tubeScaling = squeeze(max(abs(tmpCore),[],[1,2]));
+           
+        % Store chebfun3 object
+        f.cols  = simplify(chebfun(QU*diag(colScaling), [dom(1),dom(2)], pref));
+        f.rows  = simplify(chebfun(QV*diag(rowScaling), [dom(3),dom(4)], pref));
+        f.tubes = simplify(chebfun(QW*diag(tubeScaling), [dom(5),dom(6)], pref));
+        f.core  = invtprod(tmpCore,diag(colScaling),diag(rowScaling),diag(tubeScaling));
         
     end
     
@@ -525,7 +490,16 @@ end
 end
 
 %%
-function [resolvedU, resolvedV, resolvedW, cutoffU, cutoffV, cutoffW] = happinessCheck3(U, V, W, dom, pref, tech)
+function ct2 = createCT2(W,data)
+% Create temporary chebtech2 object
+
+data.vscale = max(abs(W(:)));
+ct2 = chebtech2(W, data);
+ct2.coeffs = sum(abs(ct2.coeffs), 2);
+end
+
+%%
+function [resolvedU, resolvedV, resolvedW] = happinessCheck3(U, V, W, dom, pref, tech)
 resolvedU = 1; resolvedV = 1; resolvedW = 1;
 % Happiness-check
 if numel(U) > 0
@@ -534,7 +508,7 @@ if numel(U) > 0
     fiber1Data.vscale = vsclU;
     UChebtech = tech.make(U, fiber1Data);
     UChebtech.coeffs = sum(abs(UChebtech.coeffs), 2);
-    [resolvedU,cutoffU]  = happinessCheck(UChebtech, [], ...
+    resolvedU  = happinessCheck(UChebtech, [], ...
         UChebtech.coeffs, [], pref);
 end
 if numel(V) > 0
@@ -543,7 +517,7 @@ if numel(V) > 0
     fiber2Data.vscale = vsclV;
     VChebtech = tech.make(V, fiber2Data);
     VChebtech.coeffs = sum(abs(VChebtech.coeffs), 2);
-    [resolvedV,cutoffV]  = happinessCheck(VChebtech, [], ...
+    resolvedV  = happinessCheck(VChebtech, [], ...
         VChebtech.coeffs, [], pref);
 end
 if numel(W) > 0
@@ -552,7 +526,7 @@ if numel(W) > 0
     fiber3Data.vscale = vsclW;
     WChebtech = tech.make(W, fiber3Data);
     WChebtech.coeffs = sum(abs(WChebtech.coeffs), 2);
-    [resolvedW,cutoffW] = happinessCheck(WChebtech, [], ...
+    resolvedW = happinessCheck(WChebtech, [], ...
         WChebtech.coeffs, [], pref);
 end
 end
