@@ -167,17 +167,6 @@ for m = 1:mmax
 end
 maxerrAAA = maxerr;                     % error at end of AAA 
 
-% When M == 2, one weight is zero and r is constant.
-% To obtain a good approximation, interpolate in both sample points.
-if ( M == 2 )
-    zj = Z;
-    fj = F;
-    wj = [1; -1];       % Only pole at infinity.
-    wj = wj/norm(wj);   % Impose norm(w) = 1 for consistency.
-    errvec(2) = 0;
-    maxerrAAA = 0;
-end
-
 % We now enter Lawson iteration: barycentric IRLS = iteratively reweighted
 % least-squares if 'lawson' is specified with NLAWSON > 0 or 'mmax' is
 % specified and 'lawson' is not.  In the latter case the number of steps
