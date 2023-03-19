@@ -278,8 +278,14 @@ methods (Access = public)
 end
 
 methods (Access = private, Static = true)  
-    % Alternative constructor for CHEBFUN3 objects.
-    f = chebfun3f(f,op, pref, dom, vectorize);   
+    % Classical constructor for CHEBFUN3 objects
+    f = chebfun3classic(f, op, pref, dom, vectorize, fiberDim)
+    
+    % Constructor for CHEBFUN3 objects of tensor inputs.
+    f = chebfun3double(f, op, dom, pref, isEqui)
+    
+    % Default constructor for CHEBFUN3 objects.
+    f = chebfun3f(f, op, pref, dom, vectorize);   
 end
     
 methods

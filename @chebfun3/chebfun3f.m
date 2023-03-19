@@ -30,7 +30,7 @@ function f = chebfun3f(f, op, pref, dom, vectorize)
 %
 % See also CHEBFUN3, CHEBFUN2, CHEBFUN3T and CHEBFUN3V.
 
-% Copyright 2022 by The University of Oxford and The Chebfun Developers.
+% Copyright 2023 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set preferences:
@@ -416,8 +416,6 @@ while ~happy
 end
 end
 
-%% Additional Functions
-
 %%
 function T = evalTensor(I, J, K, ff,vectorize)
 % Evaluate the tensor ff at indices specified by I,J,K
@@ -539,6 +537,7 @@ if numel(W) > 0
     resolvedW = happinessCheck(WChebtech, [], ...
         WChebtech.coeffs, [], pref);
 end
+
 end
 
 %%
