@@ -43,6 +43,8 @@ maxRank = prefStruct.maxRank;
 pseudoLevel = prefStruct.chebfun3eps;
 passSampleTest = prefStruct.sampleTest;
 
+prefStruct.constructor = 'chebfun3f';
+
 % The 'equi' flag can be used only with numeric data:
 if ( isEqui && ~isa(op, 'double') )
     error('CHEBFUN:CHEBFUN3:constructor:equi', ...

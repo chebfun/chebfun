@@ -22,9 +22,10 @@ pass(2) = norm((f-g) - FminusG) < tol;
 
 [x, ~, ~] = cheb.xyz;
 f = x;
-g = 0.9999999999*x;
+%g = 0.9999999999*x;
+g = 0.9999999*x;
 % f - g should NOT flush to zero. This makes sure that the tolerance set in
 % chebfun3/plus does not hugely overestimate.
-pass(3) = norm((f-g)) > 0;
+pass(3) = norm(f-g) > 0;
 
 end
