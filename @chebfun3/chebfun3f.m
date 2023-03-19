@@ -83,6 +83,16 @@ while ~happy
             
             % ACA 1
             T1 = evalTensor(1:n(1),J,K,ff,vectorize);
+            
+            % Does the function blow up or evaluate to NaN?:
+            if ( isinf(max(abs(T1(:)))) )
+                error('CHEBFUN:CHEBFUN3:chebfun3f:inf', ...
+                    'Function returned INF when evaluated');
+            elseif ( any(isnan(T1(:))) )
+                error('CHEBFUN:CHEBFUN3:chebfun3f:nan', ...
+                    'Function returned NaN when evaluated');
+            end
+  
             T1 = reshape(T1,n(1),r(2)*r(3));
             [~, absTol] = getTol(T1, pseudoLevel, absTol,dom(2)-dom(1),tech);
             [Uc, ~, ~, I,I2] = ACA(T1, absTol, n(1));

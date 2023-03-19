@@ -737,7 +737,7 @@ classdef chebfunpref < chebpref
                 factoryPrefs.cheb2Prefs.sampleTest = 1;
                 
             factoryPrefs.cheb3Prefs = struct(); 
-                factoryPrefs.cheb3Prefs.constructor = 'default';
+                factoryPrefs.cheb3Prefs.constructor = 'chebfun3f';
                 factoryPrefs.cheb3Prefs.chebfun3eps = eps;
                 factoryPrefs.cheb3Prefs.maxRank = 128;   
                 factoryPrefs.cheb3Prefs.sampleTest = 1;
