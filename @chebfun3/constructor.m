@@ -61,10 +61,6 @@ elseif ( isa(op, 'double') )   % CHEBFUN3( DOUBLE )
     return
 end
 
-% Use alternative chebfun3f constructor:
-
-prefStruct.constructor = 'chebfun3f'; %TEMPORARY
-
 if ( strcmpi(prefStruct.constructor, 'chebfun3f') )
     f = chebfun3.chebfun3f(f, op, pref, dom, vectorize);
     if ( fixedRank )
