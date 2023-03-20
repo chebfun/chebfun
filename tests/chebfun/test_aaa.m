@@ -30,15 +30,12 @@ pass(7) = ( min(abs(zer)) < tol );
 pass(8) = ( min(abs(pol - 0.5)) < tol );
 pass(9) = ( min(abs(res)) > 1e-13 );        % Test for spurious poles.
 
-% Two very short cases.
+% Case length(Z) = 2: needs special treatment.
 Z = [0, 1];
 F = [1, 2];
 r = aaa(F, Z);
 pass(10) = ( norm(F - r(Z), inf) < tol );
-Z = [0, 1, 2];
-F = [1, 0, 0];
-r = aaa(F, Z);
-pass(11) = ( norm(F - r(Z), inf) < tol );
+pass(11) = ( r(inf) == -inf );
 
 % Check for exact scale-invariance
 Z = linspace(0.3,1.5);

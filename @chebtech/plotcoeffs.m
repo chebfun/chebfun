@@ -87,7 +87,7 @@ end
 % Plot the coefficients:
 if isnan(ms)
     NN = length(xx);
-    ms = 3.5 + 50/sqrt(NN+8);
+    ms = 2.5 + 50/sqrt(NN+8);
 end
 linetype_specified = ( mod(length(args),2) == 1 );
 if linetype_specified
