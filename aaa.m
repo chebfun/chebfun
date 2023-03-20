@@ -21,10 +21,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'degree', N: maximal degree (default N = 99). 
 %       Output rational approximant will be at most of type (N,N). 
-%       Like 'mmax', N+1, except that Lawson is turned on by default.
-%       By default, this will turn on Lawson iteration: see next paragraph. 
+%       Like 'mmax', N+1, except that Lawson is turned on by default: see below.
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
-%       (default MMAX = 100). R will be of degree MMAX-1. 
+%       (default MMAX = 100). R will be of degree at most MMAX-1. 
 %       Like 'degree', MMAX-1, except Lawson is not turned on by default.
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
@@ -111,62 +110,62 @@ F = F(toKeep); Z = Z(toKeep);
 
 M = length(Z);
 
-% Relative tolerance:
-reltol = tol * norm(F, inf);
+% Absolute tolerance:
+abstol = tol * norm(F, inf);
 
 % Left scaling matrix:
 SF = spdiags(F, 0, M, M);
 
 % Initialization for AAA iteration:
-J = 1:M;
+J = (1:M)';
 zj = [];
 fj = [];
 C = [];
 errvec = [];
-R = mean(F);
+R = mean(F)*ones(size(J));
 
 % AAA iteration:
 for m = 1:mmax
     % Select next support point where error is largest:
-    [~, jj] = max(abs(F - R));          % Select next support point.
-    zj = [zj; Z(jj)];                   % Update support points.
-    fj = [fj; F(jj)];                   % Update data values.
-    J(J == jj) = [];                    % Update index vector.
-    C = [C 1./(Z - Z(jj))];             % Next column of Cauchy matrix.
+    [~, jj] = max(abs(F(J) - R(J)));    % Select next support point
+    zj = [zj; Z(J(jj))];                % Update support points
+    fj = [fj; F(J(jj))];                % Update data values
+    C = [C 1./(Z - Z(J(jj)))];          % Next column of Cauchy matrix
+    J(jj) = [];                         % Update index vector
     
     % Compute weights:
-    Sf = diag(fj);                      % Right scaling matrix.
-    A = SF*C - C*Sf;                    % Loewner matrix.
-    [~, ~, V] = svd(A(J,:), 0);         % Reduced SVD.
-    wj = V(:,m);                        % weight vector = min sing vector
+    Sf = diag(fj);                      % Right scaling matrix
+    A = SF*C - C*Sf;                    % Loewner matrix
+    if length(J) >= m                   % The usual tall-skinny case
+        [~, S, V] = svd(A(J,:), 0);     % Reduced SVD
+        s = diag(S);
+        mm = find( s == min(s) );       % Treat case of multiple min sing val
+        nm = length(mm);
+        wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
+    else
+        V = null(A(J,:));               % Case with fewer rows than columns
+        nm = size(V,2);                 %    ... maybe even 0 rows
+        wj = V*ones(nm,1)/sqrt(nm);     % Aim for non-sparse wt vector
+    end
     
-    % Rational approximant on Z:
-    N = C*(wj.*fj);                     % Numerator
-    D = C*wj;                           % Denominator
-    R = F;
-    R(J) = N(J)./D(J);
+    % Compute rational approximant on Z:
+    i0 = find(wj~=0);                   % Omit columns with wj = 0
+    N = C(:,i0)*(wj(i0).*fj(i0));       % Numerator
+    D = C(:,i0)*wj(i0);                 % Denominator
+    R = N./D;
+    Dinf = isinf(D);
+    R(Dinf) = F(Dinf);                  % Support pts with wj ~= 0, hence interpolation
     
-    % Error in the sample points:
+    % Error over all the sample points:
     maxerr = norm(F - R, inf);
     errvec = [errvec; maxerr];
     
     % Check if converged:
-    if ( maxerr <= reltol )
+    if ( maxerr <= abstol )
         break
     end
 end
 maxerrAAA = maxerr;                     % error at end of AAA 
-
-% When M == 2, one weight is zero and r is constant.
-% To obtain a good approximation, interpolate in both sample points.
-if ( M == 2 )
-    zj = Z;
-    fj = F;
-    wj = [1; -1];       % Only pole at infinity.
-    wj = wj/norm(wj);   % Impose norm(w) = 1 for consistency.
-    errvec(2) = 0;
-    maxerrAAA = 0;
-end
 
 % We now enter Lawson iteration: barycentric IRLS = iteratively reweighted
 % least-squares if 'lawson' is specified with NLAWSON > 0 or 'mmax' is
@@ -198,7 +197,7 @@ if ( nlawson > 0 )      % Lawson iteration
         stepno = stepno + 1;
         wt = wt_new;
         W = spdiags(sqrt(wt),0,M,M);
-        [U,S,V] = svd(W*A,0);
+        [~,~,V] = svd(W*A,0);
         c = V(:,end);
         denom = zeros(M,1); num = zeros(M,1);
         for j = 1:nj
@@ -602,7 +601,7 @@ for n = 5:14
           'lawson', nlawson);
     end
     % Test if rational approximant is accurate:
-    reltol = tol * norm(F(Z), inf);
+    abstol = tol * norm(F(Z), inf);
     
     % On Z(n):
     err(1,1) = norm(F(Z) - r(Z), inf);
@@ -610,14 +609,14 @@ for n = 5:14
     Zrefined = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), ...
         round(1.5 * (1 + 2^(n+1)))).';
     err(2,1) = norm(F(Zrefined) - r(Zrefined), inf);
-    if ( all(err < reltol) )
+    if ( all(err < abstol) )
         % Final check that the function is resolved, inspired by sampleTest().
         % Pseudo random sample points in [-1, 1]:
         xeval = [-0.357998918959666; 0.036785641195074];
         % Scale to dom:
         xeval = (dom(2) - dom(1))/2 * xeval + (dom(2) + dom(1))/2;
         
-        if ( norm(F(xeval) - r(xeval), inf) < reltol )
+        if ( norm(F(xeval) - r(xeval), inf) < abstol )
             isResolved = 1;
             break
         end
