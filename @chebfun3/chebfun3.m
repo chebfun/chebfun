@@ -53,7 +53,7 @@ classdef chebfun3
 %
 %   cheb.gallery3
 %
-%   f1 = chebfun3('tanh(sqrt(3*x))');   rank(f1), g1 = grad(f1); g1(0,0,0)
+%   f1 = chebfun3('tanh(sqrt(3)*x)');   rank(f1), g1 = grad(f1); g1(0,0,0)
 %   f2 = chebfun3('tanh(x+y+z)'); rank(f2), g2 = grad(f2); g2(0,0,0)
 %
 %   Chebfun3 is based on:
