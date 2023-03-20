@@ -6,7 +6,7 @@ classdef chebfun3
 %   CHEBFUN3(F) constructs a CHEBFUN3 object representing the function F on
 %   [-1, 1] x [-1, 1] x [-1, 1]. 
 %
-%   The input F may be one of the following three:
+%   The input F may be any of the following:
 %   i)   A function handle like @(x,y,z) x.*y + cos(x).*z
 %   ii)  A string like 'cos(x) + sin(x.*y.*z)'
 %   iii) A discrete tensor corresponding to values of a function at points 
@@ -21,8 +21,8 @@ classdef chebfun3
 %   where the function F is defined. A, B, C, D, E and G must all be finite.
 %
 %   CHEBFUN3(F, [m n p]) returns a representation of a trivariate 
-%   polynomial of length (m, n, p), i.e., with degree (m-1) in x, degree 
-%   (n-1) in y and degree (p-1) in z. The polynomial is compressed in low 
+%   polynomial of length (m, n, p), i.e., with degree m-1 in x, degree 
+%   n-1 in y and degree p-1 in z. The polynomial is compressed in low 
 %   trilinear rank form and the trilinear rank (rx, ry, rz) is still 
 %   determined adaptively.
 %
@@ -44,6 +44,30 @@ classdef chebfun3
 % 
 %   CHEBFUN3(F, 'coeffs') returns a CHEBFUN3 in which the coefficients of
 %   the Chebyshev expansion are the entries of the discrete tensor F.
+%
+%  Examples:
+%
+%   f = chebfun3(@(x,y,z) exp(-(x.^2 + y.^2 + z.^2))); isosurface(f)
+%
+%   f = chebfun3('sin(10*pi*x).^2 + sin(10*x.*y.*z)'); sum3(f)
+%
+%   cheb.gallery3
+%
+%   f1 = chebfun3('tanh(3*x)');   rank(f1), g1 = grad(f1); g1(0,0,0)
+%   f2 = chebfun3('tanh(x+y+z)'); rank(f2), g2 = grad(f2); g2(0,0,0)
+%
+%   Chebfun3 is based on:
+%
+%   [1] B. Hashemi and L. N. Trefethen, Chebfun in three dimensions, SIAM
+%   J. Sci. Comput., 39 (2017), C341-C363.
+%
+%   [2] S. Dolgov, D. Kressner, and C. Stroessner, Functional Tucker 
+%   approximation using Chebyshev interpolation, SIAM J. Sci. Comput.,
+%   43 (2021), A2190-A2210.
+%
+%   By default since March 2023, chebfun3 objects are constructed as described
+%   in [2].  The original constructor described in [1] can be invoked with
+%   CHEBFUN3(F, 'classic').
 %
 % See also CHEBFUN3V and CHEBFUN3T.
 
@@ -278,7 +302,7 @@ methods (Access = public)
 end
 
 methods (Access = private, Static = true)  
-    % Classical constructor for CHEBFUN3 objects
+    % Classic constructor for CHEBFUN3 objects
     f = chebfun3classic(f, op, pref, dom, vectorize, fiberDim)
     
     % Constructor for CHEBFUN3 objects of tensor inputs.
