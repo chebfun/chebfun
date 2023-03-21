@@ -34,13 +34,16 @@ elseif ( F.nComponents == 3 )
     LVals = sample(diff1, m, m, m) + sample(diff2, m, m, m) + ...
         sample(diff3, m, m, m);
     LVscale = max(abs(LVals(:)));
-    kappa = sum(vscales)/LVscale;
-    pref = chebfunpref().cheb3Prefs;
-    eps = pref.chebfun3eps;
-    tol = eps*kappa;
-    f = chebfun3(@(x,y,z) feval(diff1, x, y, z) + feval(diff2, x, y, z) + ...
-        feval(diff3, x, y, z) , Fc{1}.domain, 'eps', tol);
-    
+    if sum(vscales) == 0
+        f = chebfun3(0);
+    else
+        kappa = sum(vscales)/LVscale;
+        pref = chebfunpref().cheb3Prefs;
+        eps = pref.chebfun3eps;
+        tol = eps*kappa;
+        f = chebfun3(@(x,y,z) feval(diff1, x, y, z) + feval(diff2, x, y, z) + ...
+           feval(diff3, x, y, z) , Fc{1}.domain, 'eps', tol);
+    end
 else
     error('CHEBFUN:CHEBFUN3V:divergence:notSupported', ...
         'Two or three components are needed.')
