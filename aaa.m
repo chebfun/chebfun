@@ -53,6 +53,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   Z = LINSPACE(-1, 1, LENGTH(F)).  If F is a function handle, AAA attempts
 %   to resolve F on [-1,1] by default.
 %
+%   This standalone code works in GNU Octave as well as MATLAB.
+%
 % Examples:
 %   r = aaa(@exp); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
 %
@@ -132,10 +134,12 @@ for m = 1:mmax
         mm = find( s == min(s) );          % Treat case of multiple min sing val
         nm = length(mm);
         wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
-    else
-        V = null(A(J,:));                  % Case with fewer rows than columns
-        nm = size(V,2);                    %        ... maybe even 0 rows
+    elseif length(J) >= 1
+        V = null(A(J,:));                  % Fewer rows than columns
+        nm = size(V,2);                    
         wj = V*ones(nm,1)/sqrt(nm);        % Aim for non-sparse wt vector
+    else
+        wj = ones(m,1)/sqrt(m);            % No rows at all (needed for Octave)
     end
     
     % Compute rational approximant:
