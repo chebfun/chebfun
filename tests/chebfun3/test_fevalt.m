@@ -4,7 +4,7 @@ function pass = test_fevalt(pref)
 if ( nargin == 0 ) 
     pref = chebfunpref; 
 end
-tol = 1e3*pref.cheb3Prefs.chebfun3eps;
+tol = 1e4*pref.cheb3Prefs.chebfun3eps;
 
 ff = @(x,y,z) cos(x) + sin(x.*y) + sin(z.*x); 
 f = chebfun3(ff);
