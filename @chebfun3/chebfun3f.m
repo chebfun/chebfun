@@ -225,7 +225,7 @@ while ~happy
             if ( ~resolvedU )
                 Uold = Uf;
                 [Ij,Ik] = ind2sub([size(Jr,2),size(Kr,2)],I2);
-                if ( vectorize == 1 )
+                if ( vectorize == 0 )
                     nn = [floor(m(1)/2),size(I2,2)];
                     x = zeros([nn(1),1]);
                     x(:,1) = 2:2:m(1);
@@ -267,7 +267,7 @@ while ~happy
             if ( ~resolvedV )
                 Vold = Vf;
                 [Ji,Jk] = ind2sub([size(Ir,2),size(Kr,2)],J2);
-                if vectorize == 1
+                if vectorize == 0
                     nn = [floor(m(2)/2),size(J2,2)];
                     y = zeros([nn(1),1]);
                     y(:,1) = 2:2:m(2);
@@ -308,7 +308,7 @@ while ~happy
             if ( ~resolvedW )
                 Wold = Wf;
                 [Ki,Kj] = ind2sub([size(Ir,2),size(Jr,2)],K2);
-                if vectorize == 1
+                if vectorize == 0
                     nn = [floor(m(3)/2),size(K2,2)];
                     z = zeros([nn(1),1]);
                     z(:,1) = 2:2:m(3);
