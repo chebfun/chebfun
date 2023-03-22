@@ -278,6 +278,17 @@ while ~happy
                     z(1,:) = Kr(Jk);
                     Z = repmat(z,nn(1),1);
                     Vf(2:2:m(2),1:nn(2)) = ff(X,Y,Z);
+                    
+                    %% Bug when running test_imag (the following values are not equal, but they should be equal)
+                    v2 = ff(X,Y,Z); v2 = v2(1,1)
+                    v3 = ff(X(1,1),Y(1,1),Z(1,1))
+                    XX = chebX(X,m(1));
+                    YY = chebY(Y,m(2));
+                    ZZ = chebZ(Z,m(3));
+                    v4 = op(XX,YY,ZZ); v4 = v4(1,1)
+                    v5 = op(XX(1,1),YY(1,1),ZZ(1,1))
+                    %%
+                    
                     Vf(1:2:m(2),1:nn(2)) = Vold;
                 else
                     Vf = zeros([m(2),size(J2,2)]);
