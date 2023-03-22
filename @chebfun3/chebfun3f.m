@@ -72,8 +72,8 @@ while ~happy
     %% Phase 1
     happyPhase1 = 0;
     while ( ~happyPhase1 )
-        J = initializeIndexRandomly(r(2), n(2));
-        K = initializeIndexRandomly(r(3), n(3));
+        J = initializeIndexRandomly(r(2), n(2), restarts);
+        K = initializeIndexRandomly(r(3), n(3), restarts);
         
         % Handle to evaluate tensor entries of T_c
         ff = @(i,j,k) op(chebX(i,n(1)),chebY(j,n(2)),chebZ(k,n(3)));
@@ -564,14 +564,14 @@ absTol = max([absTol, tolOld, pseudoLevel]);
 end
 
 %%
-function X = initializeIndexRandomly(r, maxVal)
+function X = initializeIndexRandomly(r, maxVal, restarts)
 %  Random initialization of indices by drawing one index in each of r
 %  subintervals of equal length
 
 box = floor(maxVal/r);
 X = [];
 rngprev = rng();
-rng(16051821);             % pseudorandom
+rng(16051821+restarts,'twister');             % pseudorandom
 for i = 1:r
     val = i*box + randi(box,1);
     X = [X,val];
