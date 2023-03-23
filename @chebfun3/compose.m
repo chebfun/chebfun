@@ -78,7 +78,7 @@ elseif ( ( nargin == 2 ) && ( nargin(op) == 1 ) )
         pref.tech = get(f.rows(:,1).funs{1}, 'tech');
     end
     
-    f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain, pref, 'vectorize');
+    f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain, pref);
     
 elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
     % OP has two input variables.
