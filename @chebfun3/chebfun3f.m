@@ -64,7 +64,6 @@ if isa(tech,'trigtech')
     chebZ = @(i,n) dom(5) +  (i-1)/(n) *(dom(6)-dom(5));
 end
 
-
 %% Main Loop
 happy = 0;
 while ~happy
@@ -225,7 +224,7 @@ while ~happy
             if ( ~resolvedU )
                 Uold = Uf;
                 [Ij,Ik] = ind2sub([size(Jr,2),size(Kr,2)],I2);
-                if ( vectorize == 1 )
+                if ( vectorize == 0 )
                     nn = [floor(m(1)/2),size(I2,2)];
                     x = zeros([nn(1),1]);
                     x(:,1) = 2:2:m(1);
@@ -267,7 +266,7 @@ while ~happy
             if ( ~resolvedV )
                 Vold = Vf;
                 [Ji,Jk] = ind2sub([size(Ir,2),size(Kr,2)],J2);
-                if vectorize == 1
+                if ( vectorize == 0 )
                     nn = [floor(m(2)/2),size(J2,2)];
                     y = zeros([nn(1),1]);
                     y(:,1) = 2:2:m(2);
@@ -308,7 +307,7 @@ while ~happy
             if ( ~resolvedW )
                 Wold = Wf;
                 [Ki,Kj] = ind2sub([size(Ir,2),size(Jr,2)],K2);
-                if vectorize == 1
+                if ( vectorize == 0 )
                     nn = [floor(m(3)/2),size(K2,2)];
                     z = zeros([nn(1),1]);
                     z(:,1) = 2:2:m(3);
@@ -344,6 +343,7 @@ while ~happy
             end
         end
         
+        
         [~, absTol] = getTol(Uf, pseudoLevel, absTol, dom(2)-dom(1),tech);
         [~, absTol] = getTol(Vf, pseudoLevel, absTol, dom(4)-dom(3),tech);
         [~, absTol] = getTol(Wf, pseudoLevel, absTol, dom(6)-dom(5),tech);
@@ -368,6 +368,9 @@ while ~happy
         f.cols  = simplify(chebfun(QU*diag(colScaling), [dom(1),dom(2)], pref));
         f.rows  = simplify(chebfun(QV*diag(rowScaling), [dom(3),dom(4)], pref));
         f.tubes = simplify(chebfun(QW*diag(tubeScaling), [dom(5),dom(6)], pref));
+        f.cols = simplify(f.cols, pref.chebfuneps, 'globaltol');
+        f.rows = simplify(f.rows, pref.chebfuneps, 'globaltol');
+        f.tubes = simplify(f.tubes, pref.chebfuneps, 'globaltol');
         f.core  = invtprod(tmpCore,diag(colScaling),diag(rowScaling),diag(tubeScaling));
         
     end
