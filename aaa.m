@@ -608,9 +608,6 @@ end % End of AAA_AUTOZ.
 function [pol, res, zer] = prz(zj, fj, wj)
 %   Compute poles, residues, and zeros of rational fun in barycentric form.
 
-% Developer note: This is a duplication of chebfun/prz.m, implemented
-% locally here to make AAA standalone.
-
 % Compute poles via generalized eigenvalue problem:
 m = length(wj);
 B = eye(m+1);
@@ -634,9 +631,6 @@ end % End of PRZ.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   REVAL   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function r = reval(zz, zj, fj, wj)
 %   Construct function handle to evaluate rational function in barycentric form.
-
-% Developer note: This is a duplication of chebfun/reval.m, implemented
-% locally here to make AAA standalone.
 
 zv = zz(:);                         % vectorize zz if necessary
 CC = 1./(zv-zj.');                  % Cauchy matrix
