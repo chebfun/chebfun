@@ -1,13 +1,12 @@
 function pass = test_aaa(pref)
-% Test for aaa().  Many new tests added August 2019.
+% Test for aaa.  This has been written to be independent of Chebfun.  
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    tol = 1e4*eps;
 end
-tol = 1e4*pref.chebfuneps;
 
-warning('off', 'CHEBFUN:aaa:Froissart');
+warning('off', 'AAA:Froissart');
 
 Z = linspace(-1, 1, 1000);
 F = exp(Z);
@@ -54,7 +53,7 @@ r = aaa(@gamma);
 pass(14) = ( abs(r(1.5) - gamma(1.5)) < 1e-3 );
 
 %
-rng(0); Z = randn(10000,1)+3i*randn(10000,1);
+Z = randn(10000,1)+3i*randn(10000,1);
 f = @(z) log(5-z)./(1+z.^2);
 r = aaa(f(Z),Z);
 pass(15) = ( abs(r(0) - f(0)) < tol );
@@ -87,9 +86,9 @@ ii = find(abs(pol-(-1))<1e-8);
 pass(20) = abs(res(ii)+(1+1i)) < 1e-10;
 
 % Make sure Lawson matches minimax and degree differs from mmax
-x = chebfun('x'); f = exp(x);
+f = @(x) exp(x);
 xx = linspace(-1,1);
-[p,q,r] = minimax(f,3,3); err_minimax = norm(f(xx) - r(xx),inf);
+err_minimax = 1.550669058714149e-7;
 r = aaa(f,'degree',3); err_aaa = norm(f(xx) - r(xx),inf);
 pass(21) = (err_aaa/err_minimax < 1.1);
 r = aaa(f,'mmax',4); err_aaa = norm(f(xx) - r(xx),inf);
@@ -108,7 +107,7 @@ r = aaa(F,Z,'mmax',n+1); err2 = norm(F - r(Z),inf);
 pass(24) = abs(err2/err1 - 1) < 1.01; 
 
 % Make sure Lawson bails out if unsuccessful because of troublesome poles
-Za = chebpts(1000,[-3 -1]); Zb = chebpts(1000,[1,3]); Z = [Za; Zb];
+Za = linspace(-3,-1,1000)'; Zb = linspace(1,3,1000)'; Z = [Za; Zb];
 F = [sign(Za); sign(Zb)]; n = 12; 
 r = aaa(F,Z,'mmax',n+1,'lawson',0); err1 = norm(F - r(Z),inf);
 r = aaa(F,Z,'mmax',n+1); err2 = norm(F - r(Z),inf);
@@ -128,6 +127,6 @@ F = [1 0 0];
 r = aaa(F,X);
 pass(28) = (norm(F-r(X)) == 0);
 
-warning('on', 'CHEBFUN:aaa:Froissart');
+warning('on', 'AAA:Froissart');
 
 end
