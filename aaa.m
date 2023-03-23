@@ -1,5 +1,4 @@
 function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
-
 %AAA   AAA and AAA-Lawson (near-minimax) real or complex rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
@@ -109,7 +108,7 @@ F = F(toKeep); Z = Z(toKeep);
 
 % Initialization for AAA iteration:
 M = length(Z);
-abstol = tol * norm(F, inf);               % Absolute tolerance
+abstol = tol*norm(F, inf);                 % Absolute tolerance
 SF = spdiags(F, 0, M, M);                  % Left scaling matrix
 J = (1:M)';
 zj = []; fj = []; C = [];
@@ -124,17 +123,17 @@ for m = 1:mmax
     fj = [fj; F(J(jj))];                   % Update data values
     C = [C 1./(Z - Z(J(jj)))];             % Next column of Cauchy matrix
     J(jj) = [];                            % Update index vector
-    
-    % Compute weights:
     Sf = diag(fj);                         % Right scaling matrix
     A = SF*C - C*Sf;                       % Loewner matrix
-    if length(J) >= m                      % The usual tall-skinny case
+
+    % Compute weights:
+    if ( length(J) >= m )                  % The usual tall-skinny case
         [~, S, V] = svd(A(J,:), 0);        % Reduced SVD
         s = diag(S);
         mm = find( s == min(s) );          % Treat case of multiple min sing val
         nm = length(mm);
         wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
-    elseif length(J) >= 1
+    elseif ( length(J) >= 1 )
         V = null(A(J,:));                  % Fewer rows than columns
         nm = size(V,2);                    
         wj = V*ones(nm,1)/sqrt(nm);        % Aim for non-sparse wt vector
@@ -183,9 +182,9 @@ if ( nlawson > 0 )                         % Lawson iteration
         A(i,2*j) = F(i);
     end
     stepno = 0;
-    while ( (nlawson < inf) & (stepno < nlawson) ) |...
-          ( (nlawson == inf) & (stepno < 20) ) |...
-          ( (nlawson == inf) & (maxerr/maxerrold < .999) & (stepno < 1000) ) 
+    while ( (nlawson < inf) && (stepno < nlawson) ) || ...
+          ( (nlawson == inf) && (stepno < 20) ) || ...
+          ( (nlawson == inf) && (maxerr/maxerrold < .999) && (stepno < 1000) ) 
         stepno = stepno + 1;
         wt = wt_new;
         W = spdiags(sqrt(wt),0,M,M);
@@ -209,7 +208,7 @@ if ( nlawson > 0 )                         % Lawson iteration
     wj = c(2:2:end);
     fj = -c(1:2:end)./wj;
     % If Lawson has not reduced the error, return to pre-Lawson values.
-    if (maxerr > maxerrAAA) & (nlawson == Inf)
+    if ( (maxerr > maxerrAAA) && (nlawson == Inf) )
         wj = wj0; fj = fj0; 
     end
 end
@@ -222,10 +221,10 @@ zj(I) = []; wj(I) = []; fj(I) = [];
 r = @(zz) reval(zz, zj, fj, wj);
 [pol, res, zer] = prz(zj, fj, wj);
 
-if ( cleanup_flag == 1 && nlawson == 0)       % Remove Froissart doublets
+if ( cleanup_flag == 1 && nlawson == 0 )      % Remove Froissart doublets
     [r, pol, res, zer, zj, fj, wj] = ...
         cleanup(r, pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
-elseif ( cleanup_flag == 2 && nlawson == 0)   % Alternative cleanup.  Currently
+elseif ( cleanup_flag == 2 && nlawson == 0 )  % Alternative cleanup.  Currently
     a.zj = zj; a.fj = fj; a.wj = wj;          % an undocumented feature,
     a.Z = Z; a.F = F;                         % pending further investigation.
     a.cleanup_tol = max(cleanup_tol, eps);
@@ -281,7 +280,7 @@ while ( ~isempty(varargin) )   % Check if parameters have been provided
     if ( strncmpi(varargin{1}, 'tol', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             tol = varargin{2};
-            if ~cleanup_set & tol > 0   % If not set, set cleanup_tol to tol
+            if ( ~cleanup_set && tol > 0 ) % If not set, set cleanup_tol to tol
               cleanup_tol = tol;
             end
         end
@@ -389,7 +388,7 @@ else
     M = length(Z);
 end
 
-if ~degree_flag & (nlawson == Inf)
+if ( ~degree_flag && (nlawson == Inf) )
     nlawson = 0;               
 end
 
@@ -407,7 +406,7 @@ else
     geometric_mean_of_absF = 0;
 end
 Zdistances = NaN(size(pol));
-for j = 1:length(Zdistances);
+for j = 1:length(Zdistances)
     Zdistances(j) = min(abs(pol(j)-Z));
 end
 ii = find(abs(res)./Zdistances < cleanup_tol * geometric_mean_of_absF);
@@ -611,6 +610,9 @@ end % End of AAA_AUTOZ.
 function [pol, res, zer] = prz(zj, fj, wj)
 %   Compute poles, residues, and zeros of rational fun in barycentric form.
 
+% Developer note: This is a duplication of chebfun/prz.m, implemented
+% locally here to make AAA standalone.
+
 % Compute poles via generalized eigenvalue problem:
 m = length(wj);
 B = eye(m+1);
@@ -620,7 +622,7 @@ pol = eig(E, B);
 pol = pol(~isinf(pol));
 
 % Compute residues via formula for res of quotient of analytic functions:
-N = @(t)(1./(t-zj.')) * (fj.*wj);
+N = @(t) (1./(t-zj.')) * (fj.*wj);
 Ddiff = @(t) -((1./(t-zj.')).^2) * wj;
 res = N(pol)./Ddiff(pol);
 
@@ -634,6 +636,9 @@ end % End of PRZ.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   REVAL   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function r = reval(zz, zj, fj, wj)
 %   Construct function handle to evaluate rational function in barycentric form.
+
+% Developer note: This is a duplication of chebfun/reval.m, implemented
+% locally here to make AAA standalone.
 
 zv = zz(:);                         % vectorize zz if necessary
 CC = 1./(zv-zj.');                  % Cauchy matrix
