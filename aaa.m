@@ -109,9 +109,8 @@ F = F(toKeep); Z = Z(toKeep);
 % Initialization for AAA iteration:
 M = length(Z);
 abstol = tol*norm(F, inf);                 % Absolute tolerance
-SF = spdiags(F, 0, M, M);                  % Left scaling matrix
 J = (1:M)';
-zj = []; fj = []; C = [];
+zj = []; fj = []; C = []; A = [];
 errvec = [];
 R = mean(F)*ones(size(J));
 
@@ -123,8 +122,7 @@ for m = 1:mmax
     fj = [fj; F(J(jj))];                   % Update data values
     C = [C 1./(Z - Z(J(jj)))];             % Next column of Cauchy matrix
     J(jj) = [];                            % Update index vector
-    Sf = diag(fj);                         % Right scaling matrix
-    A = SF*C - C*Sf;                       % Loewner matrix
+    A = [A, (F-fj(end)).*C(:,end)];        % Update Loewner matrix
 
     % Compute weights:
     if ( length(J) >= m )                  % The usual tall-skinny case
