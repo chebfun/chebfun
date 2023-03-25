@@ -45,4 +45,11 @@ g = f + f;
 pass(8) = rank(g) == rank(f);
 pass(9) = abs(vscale(g) - 2e100)/2e100 < 2e-2;
 
+% Does plus works fine with objects of different tech?
+ff = @(x,y,z) sin(pi*x).*cos(pi*(x+y));
+f = chebfun3(ff);
+g = chebfun3(ff,'trig');
+fmg = f - g;
+pass(10) = norm(fmg) < tol;
+
 end
