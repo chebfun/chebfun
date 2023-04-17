@@ -52,6 +52,8 @@ end
 
 % Construct the Chebyshev coefficients:
 N = max(n) + 1;
+% c = eye(N); % c = c(:,n+1); % Replaced by the below. See Issue #2438.
+% Code below does the same as above without forming the NxN identity matrix.
 M = numel(n);
 c = zeros(N, M);
 c(n+1,:) = eye(M);
