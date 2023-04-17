@@ -52,8 +52,9 @@ end
 
 % Construct the Chebyshev coefficients:
 N = max(n) + 1;
-c = eye(N);
-c = c(:,n+1);
+M = numel(n);
+c = zeros(N, M);
+c(n+1,:) = eye(M);
 
 % 2nd-kind polynomials:
 if ( kind == 2 )

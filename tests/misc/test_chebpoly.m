@@ -25,5 +25,22 @@ U1x = feval(U1, x);
 U2 = sin(acos(x)*(n+1))./sin(acos(x)*(1+0*n));
 err = U2 - U1x;
 pass(2) = norm(err(:), inf) < tol;
-    
+
+% Check a couple of mins and maxes
+T = chebpoly(27);
+pass(3) = abs(max(T)-1) < tol;
+
+% Check a couple of mins and maxes
+T = chebpoly(44);
+pass(4) = abs(min(T)+1) < tol;
+
+% And a little quasimatrix
+T = chebpoly([7:8]);
+v = T*[1;1];
+pass(5) = abs(v(-1)) < tol;
+
+% Make sure big degrees work
+T = chebpoly(1e5);
+pass(6) = abs(T(1)-1) < tol;
+
 end
