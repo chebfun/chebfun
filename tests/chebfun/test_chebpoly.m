@@ -72,4 +72,13 @@ pass(8) = norm(err(:), inf) < 1e2*vscale(f)*eps;
 
 warning(warnState);
 
+% Test on very high degree polynomials (#2438)
+try 
+    chebpoly(1e5);
+    pass(9) = true;
+catch
+    pass(9) = false;
+end
+    
+
 end
