@@ -127,6 +127,15 @@ F = [1 0 0];
 r = aaa(F,X);
 pass(28) = (norm(F-r(X)) == 0);
 
+% Test vertical scaling
+X = linspace(-1,1);
+scl = 1e100;
+F = scl*exp(X); r = aaa(F,X); pass(29) = (1e13*norm(F-r(X),inf)<=scl);
+r = aaa(F,X,'degree',4,'lawson',20); pass(30) = (1e8*norm(F-r(X),inf)<=scl);
+scl = 1/scl;
+F = scl*exp(X); r = aaa(F,X); pass(31) = (1e13*norm(F-r(X),inf)<=scl);
+r = aaa(F,X,'degree',4,'lawson',20); pass(32) = (1e8*norm(F-r(X),inf)<=scl);
+
 warning('on', 'AAA:Froissart');
 
 end
