@@ -29,7 +29,9 @@ function varargout = chebpade(F, m, n, varargin)
 
 % TODO:  Handle quasimatrices/array-valued CHEBFUNs.
 
-% TODO:  References?
+%   Reference:
+%   [1] Keith O. Geddes, Block structure in the Chebyshev–Padé table, SIAM J.
+%   Numer. Anal. 18 (1981) 844-861.
 
 % Parse the inputs.
 if ( nargin == 2 )     % CHEBPADE(F, M)
