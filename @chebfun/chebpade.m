@@ -32,6 +32,10 @@ function varargout = chebpade(F, m, n, varargin)
 %   Reference:
 %   [1] Keith O. Geddes, Block structure in the Chebyshev–Padé table, SIAM J.
 %   Numer. Anal. 18 (1981) 844-861.
+%
+%   [2] Hans J. Maehly, Rational approximation for transcendental functions, 
+%   Proceedings of the International Conference on Information Processing,
+%   UNESCO Butterword, London, 1960.
 
 % Parse the inputs.
 if ( nargin == 2 )     % CHEBPADE(F, M)
