@@ -77,7 +77,8 @@ if trig    % periodic case: finite Fourier-Wiener series.
 
 else       % nonperiodic case: call periodic case and restrict
 
-    dom2 = dom(1) + [0 1.2*diff(dom)];
+    dx = max(0.2,2*lambda/diff(dom));
+    dom2 = dom(1) + [0 (1+dx)*diff(dom)];
     m = round(diff(dom)/lambda);
 
     if lambda == inf
