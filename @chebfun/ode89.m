@@ -1,10 +1,10 @@
 function varargout = ode89(varargin)
-%ODE89   Solve stiff differential equations and DAEs. Output a CHEBFUN.
+%ODE89   Solve non-stiff differential equations. Output a CHEBFUN.
 %   Y = CHEBFUN.ODE89(ODEFUN, D, ...) applies the standard ODE89 method to
 %   solve an initial-value problem on the domain D. The result is then converted
 %   to a piecewise-defined CHEBFUN with one column per solution component.
 %
-%   CHEBFUN.ODE89 has the same calling sequence as Matlab's standard ODE45. 
+%   CHEBFUN.ODE89 has the same calling sequence as Matlab's standard ODE89.
 %
 %   One can also write [T, Y] = ODE89(...), in which case T is a linear CHEBFUN
 %   on the domain D.

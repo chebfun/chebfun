@@ -1,5 +1,5 @@
 function varargout = ode113(varargin)
-%ODE113   Solve stiff differential equations and DAEs. Output a CHEBFUN.
+%ODE113   Solve non-stiff differential equations. Output a CHEBFUN.
 %   Y = CHEBFUN.ODE113(ODEFUN, D, ...) applies the standard ODE113 method to
 %   solve an initial-value problem on the domain D. The result is then converted
 %   to a piecewise-defined CHEBFUN with one column per solution component.
