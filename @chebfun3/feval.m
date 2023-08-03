@@ -113,14 +113,14 @@ if ( (m == 1) && (n>1) ) % Row vector instead of column vector
     zVec = zVec.';
 end
 
-outVec = zeros(size(xVec));
 colsVals = f.cols(xVec); % So, colsVals(:,j) = feval(f.cols(:,j),xVec).
 rowsVals = f.rows(yVec);
 tubesVals = f.tubes(zVec);
-for i = 1:size(xVec, 1) % TODO: How to vectorize this?
-    outVec(i) = chebfun3.txm(chebfun3.txm(chebfun3.txm(f.core,...
-        colsVals(i,:), 1), rowsVals(i,:), 2), tubesVals(i,:), 3);
-end
+
+txm1 = chebfun3.txm(f.core, colsVals, 1);
+txm2 = pagemtimes(permute(txm1, [3 2 1]), permute(rowsVals, [2 3 1]));
+txm3 = sum(txm2 .* permute(tubesVals, [2 3 1]), 1);
+outVec = reshape(txm3, size(xVec));
 
 if ( (m == 1) && (n > 1) )
     outVec = outVec.';
