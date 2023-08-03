@@ -13,21 +13,9 @@ numFuns = numel(f.funs);
 
 %% Collect information about the exponents:
 
-% Preallocation:
-exps = zeros(numFuns, 2);
-
 % Loop over each FUN:
 for j = 1:numFuns
-    infoJ = dispData(f.funs{j});
-    if ( ~isempty(infoJ) )
-        numInfo = numel(infoJ);
-        for k = 1:numInfo
-            infoJK = infoJ{k};
-            if ( strcmpi('exponents', infoJK.name) )
-                exps(j,:) = infoJK.data;
-            end
-        end
-    end
+    info{j} = dispData(f.funs{j});
 end
 
 %% Organize the output which will be passed to DISPLAY:
@@ -35,18 +23,38 @@ end
 % Preallocate the extra information:
 name = ' ';
 data = cell(j,1);
-    
-% So far, the only extra information is exponents:
-if ( any( exps(:) ) )
-    name = '  endpoint exponents';
-    for j = 1:numFuns
-        data{j} = ['        ' '[' num2str(exps(j,1), '%2.2g') '      ' ...
-            num2str(exps(j,2), '%2.2g') ']' '  '];
+
+% Loop through each fun, look for duplicate names. Insert space if no duplicates.
+for j = 1:numFuns
+    for k = 1:numel(info{j})
+        if ( ~isfield(info{j}(k), 'name')), continue, end
+        namejk = info{j}(k).name;
+        datajk = info{j}(k).data;
+        name = [name, namejk];
+        z = repmat(' ', size(datajk));
+        for l = 1:(j-1)
+            data{l,1} = [data{l,1}, z];
+        end
+        data{j,1} = [data{j,1}, datajk];
+        for l = (j+1):numFuns
+            isz = true;
+            if ( ~isempty(info{l}) )
+                for m = 1:numel(info{l})
+                    if ( strcmp(namejk, info{l}(m).name) )
+                        data{l,1} = [data{l,1}, info{l}(m).data];
+                        isz = false;
+                        info{l}(m) = [];
+                        break
+                    end
+                end
+            end
+            if ( isz )
+                data{l,1} = [data{l,1}, z];
+            end
+        end
     end
-elseif ( ~isempty(infoJ) )
-    name = infoJ{1}.name;
 end
 
-% More information for F can be appended to INFO:
+% More information for F can be appended to DATA:
 
 end
