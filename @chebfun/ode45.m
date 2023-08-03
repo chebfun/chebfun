@@ -1,5 +1,5 @@
 function varargout = ode45(varargin)
-%ODE45   Solve stiff differential equations and DAEs. Output a CHEBFUN.
+%ODE45   Solve non-stiff differential equations. Output a CHEBFUN.
 %   Y = CHEBFUN.ODE45(ODEFUN, D, ...) applies the standard ODE45 method to
 %   solve an initial-value problem on the domain D. The result is then converted
 %   to a piecewise-defined CHEBFUN with one column per solution component.
@@ -20,7 +20,7 @@ function varargout = ode45(varargin)
 %   y = chebfun.ode45(@vdp1, [0, 20], [2 ; 0]); % Solve Van der Pol problem
 %   roots(y(:, 1) - 1);                         % Find when y = 1
 %
-% See also ODESET, ODE113, ODE15S,
+% See also ODESET, ODE113, ODE15S, ODE78, ODE89.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
