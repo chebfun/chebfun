@@ -12,7 +12,7 @@ function B = bernoulli(N)
 
 x = chebfun('x', [0,1]);
 
-% Initalize the constant 1 as the first Bernoulli polynomial.
+% Initialize the constant 1 as the first Bernoulli polynomial.
 B = 0*x + 1;
 % Compute the requested polynomials.
 for j = 1:N

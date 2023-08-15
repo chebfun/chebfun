@@ -12,7 +12,7 @@ tol = 1e-8;
 % Domain.
 dom = [-pi pi];
 
-% Define the rhs, and the intial guess.
+% Define the rhs, and the initial guess.
 f = chebfun(@(x) cos(2*x), dom);
 u0 = f;
 
@@ -37,7 +37,7 @@ pass(1) = norm(u - v, inf) < tol;
 %% Test the TRIGCOLLOC class. FIRST ORDER: 
 %  u' - u*cos(u) = cos(x), on [-pi pi].
 
-% Set up domain, rhs f, and intial guesses u0 and v0.
+% Set up domain, rhs f, and initial guesses u0 and v0.
 dom = [-pi pi];
 f = chebfun(@(x) cos(x), dom);
 u0 = f;
@@ -57,7 +57,7 @@ pass(4) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 %% Test the TRIGCOLLOC class. SECOND ORDER: 
 %  u'' - u^2*cos(u) = cos(x), on [-pi pi].
 
-% Set up domain, rhs f, and intial guesses u0 and v0.
+% Set up domain, rhs f, and initial guesses u0 and v0.
 dom = [-pi pi];
 f = chebfun(@(x) cos(x), dom);
 u0 = f;
@@ -78,7 +78,7 @@ pass(8) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 %% Test the TRIGSPEC class. SECOND ORDER: 
 %  u'' - u^2*cos(u) = cos(x), on [-pi pi].
 
-% Set up domain, rhs f, and intial guesses u0 and v0.
+% Set up domain, rhs f, and initial guesses u0 and v0.
 dom = [-pi pi];
 f = chebfun(@(x) cos(x), dom);
 u0 = f;

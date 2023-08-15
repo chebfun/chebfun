@@ -1,6 +1,6 @@
 function varargout = xyz
-%XYZ   Three chebfun3 obejcts of the identity on [-1, 1, -1, 1, -1, 1].
-%   CHEB.XYZ is shorthand for the expressions 
+%XYZ   Three chebfun3 objects of the identity on [-1, 1, -1, 1, -1, 1].
+%   CHEB.XYZ is shorthand for the expressions
 %   X = CHEBFUN3(@(X,Y,Z) X),
 %   Y = CHEBFUN3(@(X,Y,Z) Y), and
 %   Z = CHEBFUN3(@(X,Y,Z) Z).

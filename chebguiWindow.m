@@ -90,7 +90,7 @@ function chebguiWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % The default fontsize of the panels.
 handles.fontsizePanels = 12;
 
-% Initalize fonts in the CHEBGUI window:
+% Initialize fonts in the CHEBGUI window:
 chebguiController.initalizeFields(handles);
 
 % Choose default command line output for chebguiWindow

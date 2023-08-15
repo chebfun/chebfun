@@ -50,7 +50,7 @@ elseif ( isa(f, 'trigtech') && isa(g, 'trigtech') )  % TRIGTECH + TRIGTECH.
     
     % We will simply add the values together then compute the coefficients
     % of the result. This is probably not the most efficient means of
-    % determing the sum.
+    % determining the sum.
     nf = size(f.values, 1);
     ng = size(g.values, 1);
     if ( nf > ng )
