@@ -111,8 +111,7 @@ F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
 pass(18) = norm(F - FF) < 100*tol;
 
-% y and z are matrix inputs (meshgrid) and x is just a matrix of just one 
-% scalar
+% y and z are matrix inputs (meshgrid) and x is a matrix of just one scalar
 ff = @(x,y,z) sin(pi*(x+y+z));
 f = chebfun3(ff);
 zz = linspace(-1, 1, 100)';
@@ -144,8 +143,7 @@ F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
 pass(21) = norm(F - FF) < 100*tol;
 
-% y and z are matrix inputs (ndgrid) and x is just a matrix of just one 
-% scalar
+% y and z are matrix inputs (ndgrid) and x is a matrix of just one scalar
 ff = @(x,y,z) sin(pi*(x+y+z));
 f = chebfun3(ff);
 zz = linspace(-1, 1, 100)';
@@ -349,5 +347,17 @@ z = 0;
 vals = f(xx, yy, zz);
 pass(47) = all(size (xx) == size(vals));
 pass(48) = norm(ff(xx,yy,zz) - vals) < tol;
+
+%% Test from #2436: Ensure output is not transposed incorrectly.
+% Follows Test 20 above.
+ff = @(x,y,z) x;
+f = chebfun3(ff);
+xx = [-0.4 0.4; 
+      -0.4 0.4];
+yy = [-0.2 -0.2;
+       0.2  0.2];
+FF = ff(xx,0*xx,yy);
+F = f(xx,0*xx,yy); 
+pass(49) = norm(F - FF) < 100*tol;
 
 end
