@@ -617,8 +617,8 @@ pol = eig(E, B);
 pol = pol(~isinf(pol));
 
 % Compute residues via formula for res of quotient of analytic functions:
-N = @(t) (1./(t-zj.')) * (fj.*wj);
-Ddiff = @(t) -((1./(t-zj.')).^2) * wj;
+N = @(t) (1./bsxfun(@minus, t, zj.')) * (fj.*wj);
+Ddiff = @(t) -((1./bsxfun(@minus, t, zj.')).^2) * wj;
 res = N(pol)./Ddiff(pol);
 
 % Compute zeros via generalized eigenvalue problem:
@@ -633,7 +633,7 @@ function r = reval(zz, zj, fj, wj)
 %   Construct function handle to evaluate rational function in barycentric form.
 
 zv = zz(:);                         % vectorize zz if necessary
-CC = 1./(zv-zj.');                  % Cauchy matrix
+CC = 1./bsxfun(@minus, zv, zj.');   % Cauchy matrix
 r = (CC*(wj.*fj))./(CC*wj);         % vector of values
 
 % Deal with input inf: r(inf) = lim r(zz) = sum(w.*f) / sum(w):
