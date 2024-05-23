@@ -16,7 +16,7 @@ end
 % is added to spherefun, the following code below with coord = 0 or 
 % coord = 1 can be used.  This coord parameter should be an optional 
 % argument to the sphharm method.  For now we just always set coord to 0
-% since this cooresponds to the only domain currently supported in
+% since this corresponds to the only domain currently supported in
 % spherefun.
 coord = 0;
 
