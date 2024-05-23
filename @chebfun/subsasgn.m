@@ -19,7 +19,7 @@ function f = subsasgn(f, index, val)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Error checking. Particularly integer indicies and quasimatrix indexing.
+% TODO: Error checking. Particularly integer indices and quasimatrix indexing.
 
 % TODO: Document for array-valued CHEBFUN objects and quasimatrices.
 
