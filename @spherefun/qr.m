@@ -2,8 +2,8 @@ function varargout = qr(varargin)
 %QR Orthogonal-triangular decomposition of a SPHEREFUN. 
 % 
 % [Q, R] = QR( F ), where F is a separableApprox, produces an unitary column
-% quasimatrix Q and a upper-triangular row quasimatrix R so that F = Q * R. Thi
-% is computed by a continuous analogue of QR. 
+% quasimatrix Q and a upper-triangular row quasimatrix R so that F = Q * R.
+% Thi is computed by a continuous analogue of QR.
 %
 % [Q, R] = QR( F, 0 ) is the same as QR( F ). 
 %
