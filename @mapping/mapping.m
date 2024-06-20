@@ -111,6 +111,23 @@ classdef mapping
 %                 out = subsref(out, index(2:end));
 %             end
 %         end
+
+        function out = isequal(f, g)
+        %ISEQUAL  Check to see if two mappings are equal.
+            % Trivial mappings will be equal if their domain is the same.
+            dom = [-1 1];
+            fdom = f.For(dom);
+            gdom = g.For(dom);
+            % Assign infinite numbers to some pseudo-random number:
+            fdom(isinf(fdom)) = 0.794349011;
+            gdom(isinf(gdom)) = 0.794349011;
+            tol = 1e-13;
+            out = norm(fdom - gdom, inf)./norm([fdom, gdom]) < tol;
+        end
+        
+        function out = islinear(f)
+            out = all(isfinite(f.For([-1,1])));
+        end  
         
     end
     

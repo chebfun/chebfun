@@ -29,10 +29,15 @@ elseif ( ~isa(f, 'classicfun') )       % double * CLASSICFUN
     % Swap arguments for output variable:
     f = g;
     
-elseif ( isa(g, 'classicfun'))         % CLASSICFUN * CLASSICFUN
+elseif ( isa(g, 'classicfun') )        % CLASSICFUN * CLASSICFUN
     
-    % Multiply the ONEFUN objects of f and g together.
-    f.onefun = times(f.onefun, g.onefun, varargin{:});
+    if ( isequal(f.mapping, g.mapping) )
+        % Multiply the ONEFUN objects of f and g together.
+        f.onefun = times(f.onefun, g.onefun, varargin{:});
+    else
+        error('CHEBFUN:CLASSICFUN:times:mappings', ...
+        'Cannot multiply bndfuns with different mappings.')
+    end
     
 elseif ( isa(g, 'double') )     % CLASSICFUN * double
     
