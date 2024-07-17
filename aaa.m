@@ -33,6 +33,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
 %       to bring approximation closer to minimax.  Specifying NLAWSON = 0 
 %       ensures there is no Lawson iteration.  See next paragraph.
+%   - 'sign', 'on' or 1: turns on modification good for approximating sign functions
 %
 %   If 'degree' is specified and 'lawson' is not, AAA attempts to find a minimax
 %   approximant of degree N by AAA-Lawson iteration.  This will generally be
@@ -91,7 +92,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 
 % Parse inputs:
 [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, ...
-    nlawson, degree_flag, degree] = parseInputs(F, varargin{:});
+    nlawson, degree_flag, degree, sign_flag] = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
@@ -128,9 +129,17 @@ for m = 1:mmax
     if ( length(J) >= m )                  % The usual tall-skinny case
         [~, S, V] = svd(A(J,:), 0);        % Reduced SVD
         s = diag(S);
-        mm = find( s == min(s) );          % Treat case of multiple min sing val
-        nm = length(mm);
-        wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
+        if (sign_flag == 0)
+            mm = find( s == min(s) );          % Treat case of multiple min sing val
+            nm = length(mm);
+            wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
+        else
+            wj = V(:,end);
+            if min(s) > 0
+                wj = V*(1./s.^2);          % the 'sign' improvement
+                wj = wj/norm(wj);          % (see Trefethen memo Rat342, July 2024)
+            end
+        end
     elseif ( length(J) >= 1 )
         V = null(A(J,:));                  % Fewer rows than columns
         nm = size(V,2);                    
@@ -186,8 +195,12 @@ if ( nlawson > 0 )                         % Lawson iteration
         stepno = stepno + 1;
         wt = wt_new;
         W = spdiags(sqrt(wt),0,M,M);
-        [~,~,V] = svd(W*A,0);
+        [~,ss,V] = svd(W*A,0);
+        ss = diag(ss);
         c = V(:,end);
+        if (sign_flag == 1) && (min(ss) > 0)
+            c = V*(1./ss.^2); c = c/norm(c);       % the 'sign' improvement
+        end
         denom = zeros(M,1); num = zeros(M,1);
         for j = 1:nj
             denom = denom + c(2*j)./(Z-zj(j));
@@ -236,7 +249,7 @@ end % of AAA()
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   PARSEINPUTS   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
-    needZ, mmax_flag, nlawson, degree_flag, degree] = parseInputs(F, varargin)
+    needZ, mmax_flag, nlawson, degree_flag, degree, sign_flag] = parseInputs(F, varargin)
 
 % Check if F is empty:
 if ( isempty(F) )
@@ -274,6 +287,7 @@ cleanup_flag = 1;              % Cleanup on
 mmax_flag = 0;                 % Checks if mmax manually specified
 degree_flag = 0;               % Checks if degree specified
 cleanup_set = 0;               % Checks if cleanup_tol manually specified
+sign_flag = 0;                 % Classic AAA without improvement for sign functions
 while ( ~isempty(varargin) )   % Check if parameters have been provided
     if ( strncmpi(varargin{1}, 'tol', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
@@ -337,6 +351,12 @@ while ( ~isempty(varargin) )   % Check if parameters have been provided
             cleanup_flag = 0;
         elseif ( varargin{2} == 2 )     % Alternative cleanup
             cleanup_flag = 2;
+        end
+        varargin([1, 2]) = [];
+        
+    elseif ( strncmpi(varargin{1}, 'sign', 4) )
+        if ( strncmpi(varargin{2}, 'on', 2) || ( varargin{2} == 1 ) )
+            sign_flag = 1;
         end
         varargin([1, 2]) = [];
         
