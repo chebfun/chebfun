@@ -213,6 +213,9 @@ if ( nlawson > 0 )                         % Lawson iteration
         end
         err = F - R; abserr = abs(err);
         wt_new = wt.*abserr; wt_new = wt_new/norm(wt_new,inf);
+        if (sign_flag == 1) & (stepno > 5)
+           wt_new = (wt_new + wt)/2;       % experimental tweak added July 2024
+        end
         maxerrold = maxerr;
         maxerr = max(abserr);
     end
