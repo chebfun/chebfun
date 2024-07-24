@@ -3,7 +3,7 @@ function varargout = surf(f, varargin)
 %   SURF(F) plots F on the surface of a sphere.
 %
 %   SURF(..., 'GRID', S) plots F on the surface of a sphere and includes a
-%   grid with standard line properties specifed by the string S.
+%   grid with standard line properties specified by the string S.
 %
 %   SURF(..., 'PROJECTION', type) plots F using one of the following map
 %   projections specified by the string type:
@@ -192,10 +192,10 @@ end
 end
 
 function [xh,yh] = sph2map(type,lam,th)
-%SPH2MAP 2D map projection from standar spherical coordinates.
+%SPH2MAP 2D map projection from standard spherical coordinates.
 %
 % [XH,YH] = sph2map(TYPE,LAM,TH) maps points on the surface of the sphere
-%   represented in spherical coordiantes to points in the 2D coordinate
+%   represented in spherical coordinates to points in the 2D coordinate
 %   system defined by the type.  Options for type are
 %   'HAMMER'
 %   'ALBERS'

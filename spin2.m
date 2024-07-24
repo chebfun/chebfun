@@ -149,7 +149,7 @@ function [uout, tout] = spin2(varargin)
 %       SPINOPERATOR.SOLVEPDE(S, N, dt, pref)
 %
 % where S is a SPINOP2 object, N is the number of grid points in each direction, 
-% DT is the time-step and PREF is a SPINPREF2 oject.
+% DT is the time-step and PREF is a SPINPREF2 object.
 
 % CASE 1. U = SPIN2('GL'):
 if ( nargin == 1 ) 

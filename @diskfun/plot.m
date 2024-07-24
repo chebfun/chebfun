@@ -51,7 +51,7 @@ if ( ~isempty(varargin) )
         N = 100; % Used to generate solid disk as well as plot slicing lines
         th = trigpts(N, dom); th=[th; dom(2)];
         % If the plot is not being added to another then plot a unit circle
-        % so the disk is more easily discernable.
+        % so the disk is more easily discernible.
         if ( ~holdState )
             % Generate a unit disk
             N = 200;
