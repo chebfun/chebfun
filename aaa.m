@@ -33,6 +33,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
 %       to bring approximation closer to minimax.  Specifying NLAWSON = 0 
 %       ensures there is no Lawson iteration.  See next paragraph.
+%   - 'damping', DAMPRATIO: when running Lawson, apply a damping ratio at each
+%       step.  DAMPRATIO = 1 is standard; DAMPRATIO < 1 may be more robust.
 %   - 'sign', 'on' or 1: turns on modification good for approximating sign functions
 %
 %   If 'degree' is specified and 'lawson' is not, AAA attempts to find a minimax
@@ -92,7 +94,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 
 % Parse inputs:
 [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, ...
-    nlawson, degree_flag, degree, sign_flag] = parseInputs(F, varargin{:});
+    nlawson, dampratio, degree_flag, degree, sign_flag] ...
+    = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
@@ -211,13 +214,13 @@ if ( nlawson > 0 )                         % Lawson iteration
             [i,~] = find(Z==zj(j));        % support pt rows are special
             R(i) = -c(2*j-1)/c(2*j);
         end
-        err = F - R; abserr = abs(err);
-        wt_new = wt.*abserr; wt_new = wt_new/norm(wt_new,inf);
-        if (sign_flag == 1) & (stepno > 5)
-           wt_new = (wt_new + wt)/2;       % experimental tweak added July 2024
-        end
+        err = F - R;
+        abserr = abs(err);
         maxerrold = maxerr;
         maxerr = max(abserr);
+        relerr = abserr/maxerr;
+        wt_new = wt.*((1-dampratio) + dampratio*relerr);
+        wt_new = wt_new/norm(wt_new,inf);
     end
     wj = c(2:2:end);
     fj = -c(1:2:end)./wj;
@@ -252,7 +255,8 @@ end % of AAA()
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   PARSEINPUTS   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
-    needZ, mmax_flag, nlawson, degree_flag, degree, sign_flag] = parseInputs(F, varargin)
+    needZ, mmax_flag, nlawson, dampratio, degree_flag, degree, sign_flag] ...
+    = parseInputs(F, varargin)
 
 % Check if F is empty:
 if ( isempty(F) )
@@ -280,6 +284,7 @@ mmax = 100;                    % Maximum number of terms
 degree = NaN;                  % Specified degree
 cleanup_tol = 1e-13;           % Cleanup tolerance
 nlawson = Inf;                 % Number of Lawson steps (Inf means adaptive)
+dampratio = 1;                 % Lawson damping ratio (1 means normal)
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -327,6 +332,10 @@ while ( ~isempty(varargin) )   % Check if parameters have been provided
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             nlawson = varargin{2};
         end
+        varargin([1, 2]) = [];
+
+    elseif ( strncmpi(varargin{1}, 'damping', 6) )
+        dampratio = varargin{2};
         varargin([1, 2]) = [];
         
     elseif ( strncmpi(varargin{1}, 'dom', 3) )
