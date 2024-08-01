@@ -131,12 +131,17 @@ X = chebpts(200); F = max(X,0);
 deg = 4;
 r = aaa(F,X,'degree',4,'lawson',100,'damping',0.2);
 err = norm(F-r(X),inf); pass(29) = abs(err-.006) < .002;
-r = aaa(F,X,'degree',4,'lawson',100,'damping',0.2,'sign',1);
+r = aaa(F,X,'degree',4,'lawson',100,'damping',0.5,'sign',1);
 err = norm(F-r(X),inf); pass(30) = abs(err-.006) < .002;
 
 X = chebpts(1000,[0 10]); F = 1./(1+exp(50./(X-2)));   % Fermi-Dirac
 r = aaa(F,X,'degree',12,'lawson',100,'damping',0.85,'sign',1);
-err = norm(F-r(X),inf), pass(31) = abs(err-.000317) < .0001;
+err = norm(F-r(X),inf); pass(31) = abs(err-.000317) < .0001;
+
+f = @(x) max(x,0);
+r = aaa(f,'degree',8,'damping',.5,'lawson',200);
+xx = linspace(-1,1,300);
+err = norm(f(xx)-r(xx),inf); pass(32) = abs(err-.0006) < .001;
 
 warning('on', 'AAA:Froissart');
 

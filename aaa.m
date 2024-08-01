@@ -101,7 +101,7 @@ if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
     [r, pol, res, zer, zj, fj, wj, errvec] = ...
         aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, ...
-            nlawson, degree_flag, degree);
+            nlawson, dampratio, degree_flag, degree, sign_flag);
     return
 end
 
@@ -586,7 +586,7 @@ end  % End of CLEANUP2.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   AAA_AUTOZ   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [r, pol, res, zer, zj, fj, wj, errvec] = ...
     aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, ...
-               nlawson, degree_flag, degree)
+               nlawson, dampratio, degree_flag, degree, sign_flag)
 % Automated choice of sample set
 
 % Flag if function has been resolved:
@@ -600,11 +600,12 @@ for n = 5:14
     if degree_flag
        [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
           'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, ...
-          'lawson', nlawson, 'degree', degree);
+          'lawson', nlawson, 'sign', sign_flag, 'damping', dampratio, ...
+          'degree', degree);
     else
        [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
           'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, ...
-          'lawson', nlawson);
+          'lawson', nlawson, 'sign', sign_flag, 'damping', dampratio);
     end
     % Test if rational approximant is accurate:
     abstol = tol * norm(F(Z), inf);
