@@ -1,0 +1,704 @@
+function [c,p,rss,r2] = clsap(xj, f, n, varargin)
+%%  CLSAP   Classical least squares approximation problem
+%   
+%   [C] = CLSAP(XJ, F, N) computes the coefficients from the polynomial of
+%   least squares of degree N in Gram basis given the equidistant data
+%   F(XJ) in the interval [-1+1/NUP, 1-1/NUP], where NUP is a large number,
+%   NUP>>N.
+% 
+%   The polynomial is:
+%      C(1)*G_N(x) + C(2)*G_{N-1}(x) +...+ C(N)*G_1(x) + C(N+1)*G_0(x),
+%      where G_K is the orthonormal Gram polynomial of degree K and
+%      parameter NUP.
+%   
+%   CLSAP(XJ, F, N, EXPLICIT_F) allows the user furnishes the string
+%   EXPLICIT_F with the function F of a variable x. It is highly
+%   recommended when F is explicitly known.
+%
+%   [C] = CLSAP(XJ, F, N, 'MON') also computes the coefficients from the
+%   polynomial in monomial basis in the matrix C, where the first row
+%   contains the coefficients in Gram basis, and the second one contains
+%   the coefficients in monomial basis, both in descending order of degree. 
+%
+%   CLSAP(XJ, F, N, EXPLICIT_F, 'MON') or CLSAP(XJ, F, N, 'MON', EXPLICIT_F)
+%   produces:
+%           CLSAP(XJ, F, N, EXPLICIT_F) and CLSAP(XJ, F, N, 'MON').
+%
+%   [C,P] = CLSAP(XJ, F, N) returns also a vector P with the polynomial
+%   evaluated at the points XJ.
+%
+%   [C,P,RSS] = CLSAP(XJ, F, N) returns also the residual sum of squares
+%   RSS.
+%
+%   [C,P,RSS,R2] = CLSAP(XJ, F, N) returns also the coefficient of
+%   determination R2.
+%
+%       
+%   Calls GRAMPTS, REC.
+%
+% 
+%   Copyright 2022 by Dimitar K. Dimitrov and Lourenco L. Peixoto
+%   and The Chebfun Developers.
+%
+%   All rights reserved.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   CLSAP implemented by Lourenco L. Peixoto, 2022 - see [1-3].
+%
+%   Basic references:
+%   
+%       [1] I. Area, D. K. Dimitrov, E. Godoy, and V. Paschoa, "Approximate
+%   calculation of sums I: Bounds for the zeros of Gram polynomials", SIAM
+%   J. Numer. Anal., 2014.
+%
+%       [2] I. Area, D. K. Dimitrov, E. Godoy, and V. Paschoa, "Approximate
+%   calculation of sums II: Gaussian type quadrature", SIAM J. Numer.
+%   Anal., 2016.
+%   
+%       [3] D. K. Dimitrov and L. L. Peixoto, "An efficient algorithm for
+%   the classical least squares approximation", SIAM J. Sci. Comput., 2020.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% standard parameters:
+base = 'gram';
+explicit_f = [];
+flag = [];
+
+if (nargin > 3)
+    if (nargin > 4)
+        if ~strcmpi(varargin{1},'mon')
+            % clsap(xj, f, n, 'explicit_f', 'mon')
+            base = 'mon';
+            explicit_f = varargin{1};
+        else
+            % clsap(xj, f, n, 'mon', 'explicit_f')
+            base = 'mon';
+            explicit_f = varargin{2};
+        end
+    else
+        if ~strcmpi(varargin{1},'mon')
+            % clsap(xj, f, n, 'explicit_f')
+            explicit_f = varargin{1};
+        else
+            % clsap(xj, f, n, 'mon')
+            base = 'mon';
+        end
+    end
+end
+
+% number of data:
+nup = length(xj);
+
+% check the mesh-points:
+if ( xj(1)~=-1+1/nup || xj(end)~=1-1/nup )
+    error('The mesh-points must be in interval [-1+1/NUP, 1-1/NUP], NUP>>N.')
+end
+
+m_max = floor(2.5*sqrt(nup));
+m0 = m_max;
+
+% number of nodes for the quadrature:
+m = min(100,m0);
+
+% accuracy required for quadrature:
+if ( isempty(explicit_f) )
+    % noisy data:
+    rm_max = 5e-5;
+else
+    % smooth data:
+    flag = 1;
+    rm_max = 1e-15;
+end
+
+
+% check the accuracy:
+% computes F in the zeros of the Gram polynomial of degree M-5:
+[g,w] = grampts(m-5,nup);
+[fg] = eval_f(f, g, nup, explicit_f); 
+
+% quadrature to sum(f^2)/NUP with M-5 points:
+q0 = w*transpose(fg.^2);
+
+% computes F in the zeros of the Gram polynomial of degree M:
+[g,w] = grampts(m,nup);
+[fg] = eval_f(f, g, nup, explicit_f); 
+
+% quadrature to sum(f^2)/NUP with M points:
+q1 = w*transpose(fg.^2);
+
+% accuracy of quadrature to sum(f^2)/nup with M nodes:
+if (q1 > 1)
+    rm = abs(q1-q0)/q1;
+else
+    rm = abs(q1-q0);
+end
+
+% computes the Fourier coefficients:
+if (rm <= rm_max) % computes by quadrature:
+    
+    % evaluates the Gram polynomials of degree 0,...,N with parameter NUP at
+    % the zeros of the Gram polynomial of degree m:
+    [~,MG] = rec(n,nup,transpose(g)); % MG is a (N+1)-by-M matrix
+
+    % the vector with the inner products <F,G_k>, k=0,...,N, ie, the vector
+    % with the Fourier coefficients:
+    a = w.*fg*transpose(MG);
+    
+elseif (flag == 1) % increase M when the explicit function is furnished:
+    % step:
+    step = 10*floor(log10(nup));
+
+    % increase M:
+    m = m+step;
+
+    while ( rm > rm_max && m <= m_max )
+        q0 = q1;
+
+        % check the accuracy:
+        % computes F in the zeros of the Gram polynomial of degree M:
+        [g,w] = grampts(m,nup);
+        [fg] = eval_f(f, g, nup, explicit_f); 
+
+        % quadrature to sum(f^2)/NUP with M points:
+        q1 = w*transpose(fg.^2);
+
+        % accuracy of quadrature to sum(f^2)/NUP with M nodes:
+        if (q1 > 1)
+            rm = abs(q1-q0)/q1;
+        else
+            rm = abs(q1-q0);
+        end
+
+        % increase M:
+        m = m+step;
+    end
+    if (m > m_max)
+        warning('clsap: Data very noisy. Precision in quadrature is %f.', rm)
+    end
+    
+    % uses the quadrature:
+
+    % evaluates the Gram polynomials of degree 0,...,N with parameter NUP at
+    % the zeros of the Gram polynomial of degree M:
+    [~,MG] = rec(n,nup,transpose(g)); % MG is a (N+1)-by-M matrix
+
+    % the vector with the inner products <F,G_k>, k=0,...,N, ie, the vector
+    % with the Fourier coefficients:
+    a = w.*fg*transpose(MG);
+
+else % data are very noisy (computes by summation):
+    cte = sqrt(3*nup^2/(nup^2-1));
+
+    % parity of NUP:
+    nup_p = mod(nup,2); 
+
+    % only non negative mesh-points:
+    z = xj(floor(nup/2)+1:nup);
+
+    % polynomial of degree 0:
+    g1 = ones(1,length(z)); 
+
+    % polynomial of degree 1:
+    g = cte*z;
+
+    % reflect the values:
+    if (nup_p) % odd nup
+        g1x = [flip(g1), g1(2:end)];
+        gx =  [-flip(g), g(2:end)];
+    else % even nup
+        g1x = [flip(g1), g1];
+        gx = [-flip(g), g];
+    end
+
+    f = transpose(f);
+
+    % prealocating:
+    a = zeros(1,n+1);
+
+    % Fourier coefficients a_0 and a_1:
+    a(1) = g1x*f;
+    a(2) = gx*f;
+
+    k=1:n;
+    alpha = sqrt(nup^2*(k.^2-.25)./(k.^2.*(nup^2-k.^2)));
+    for k=2:n
+        % initialise for polynomial:
+        g2 = g1; g1 = g; 
+        % polynomial of degree k:
+        g = 2*alpha(k)*z.*g1 - alpha(k)/alpha(k-1).*g2; 
+
+        % reflect the values:
+        if (nup_p) % odd nup
+            gx =  [(-1)^k*flip(g), g(2:end)];
+        else  % even nup
+            gx = [(-1)^k*flip(g), g];
+        end
+
+        % Fourier coefficient a_k:
+        a(k+1) = gx*f;
+    end
+    
+    % Fourier coefficients:
+    a = a/nup;
+    
+    q1 = (transpose(f)*f)/nup;
+    rm = 1e-15;
+end
+
+
+epsilon = (5*(rm + 2*eps))^2;
+
+% find the null Fourier coefficients:
+if (rm <= rm_max)
+    lima = a.^2/q1;
+    v = find(lima<=epsilon);
+    a(v) = zeros(1,numel(v));
+end
+
+% coefficients in descending order of degree:
+% c(1)*G_n(x) + c(2)*G_{n-1}(x) +...+ c(n)*G_1(x) + c(n+1)*G_0(x):
+c = flip(a); 
+
+% monomial basis:
+if strcmp(base,'mon')
+    cm = monomial(n,nup,a); % monomial basis
+    c = [c; cm]; % first row contains Gram basis, the second one contains 
+    % the monomial ones. Both in descending order of degree.
+end
+    
+
+% Optionally evaluate the polynomial and compute RSS and R2:
+if nargout>1 % polynomial at mesh-points:
+    v = find(a~=0,1,'last'); % use the precise degree
+    if nup >= 2e4 % Horner's method is faster 
+        [m1,~] = size(c);
+        if m1 == 1
+            cm = monomial(n,nup,a); % monomial basis
+            c = [c; cm];
+        end
+        p = polyval(c(2,:),xj); % Horner's method
+    else
+        p = clenshaw(v-1,nup,a(1:v),xj); % Clenshaw's algorithm
+    end
+    if nargout>2 % the RSS:
+        rss = sum((f-p).^2);
+        if nargout>3 % the coefficient of determination R2:
+            r2 = 1 - rss / ( sum(f.^2) - (sum(f))^2/nup );
+        end
+    end
+end
+
+
+end
+
+
+function [c] = monomial(n,nup,a)
+% Computes the coefficients in monomial basis.
+
+% the matrix with the coefficients from all polynomials of degree 0,...,N:
+B = coefmatrix_full(n,nup);
+
+% the coefficients in monomial basis:
+c = sum(transpose(a).*B,1);
+
+c = flip(c);
+
+end
+
+function [fg] = eval_f(f, g, nup, explicit_f)
+%     EVAL_F evaluate F in the points G. It uses linear interpolant when
+%     the function is unknown. 
+
+% evaluate f(g):
+if ischar(explicit_f)
+    % eval_f(f, g, nup, explicit_f)
+    x=g;
+    fg = transpose(eval(explicit_f));
+else
+    % eval_f(f, g, nup, []) 
+    fg = linear_interp(f,g,nup);
+end
+    
+
+end
+        
+
+function [fg] = linear_interp(f,g,nup)
+% approximate the data F(G) using linear interpolant between the mesh
+% points, where x_t < G < x_{t+1}, t=0,...,NUP-2.
+
+% identify every zero G between the mesh points:
+t = transpose(floor(.5*nup*(g+1-1/nup)));
+
+x0 = -1+(1+2*t)/nup; x1 = x0+2/nup; % abscissas
+y0 = f(t+1); y1 = f(t+2);           % F(x0), F(x1)
+a1 = (y1-y0)./(x1-x0);              % linear coefficient
+a0 = y0-a1.*x0;                     % independent coefficient
+fg = a0+a1.*transpose(g);           % linear interpolant
+end
+
+
+
+
+function B = coefmatrix_full(max,nup)
+% Compute all coefficients from Gram polynomials of degree = 0,...,MAX
+
+% B is the square matrix of order MAX+1 with the coefficients of the
+% orthonormal Gram polynomials G_0, G_1, ..., G_MAX with parameter NUP.
+%
+%       | b_{0,0}     0         0       0   ...    0|
+%       | b_{1,0}  b_{1,1}      0       0   ...    0|
+%       | b_{2,0}  b_{2,1}   b_{2,2}    0   ...    0|
+%   B = |    .                                     .| 
+%       |    .                                     .| 
+%       |    .                                     .| 
+%       | b_{n,0}  b_{n,1}   b_{n,2}   ...   b_{n,n}|
+% 
+
+B = zeros(max+1);
+
+B(1,1) = 1;
+
+if (max>0)
+    k=1:max;
+    alp = sqrt(nup^2*(k.^2-.25)./(k.^2.*(nup^2-k.^2))); % alp(k)=alpha_{k-1}, 
+    % where alpha is a term in the REC of the orthonormal polynomials.
+    
+    B(2,2) = 2*alp(1);
+    
+    if (max>1)
+        B(3,3) = 2*alp(2)*B(2,2); B(3,1) = -alp(2)/alp(1);
+        for i=4:max+1
+            im1 = i-1;
+            im2 = im1-1;
+            B(i,i) = 2*alp(im1)*B(im1,im1);
+            for j=i-2:-2:2
+                B(i,j) = 2*alp(im1)*B(im1,j-1) - alp(im1)/alp(im2)*B(im2,j);
+            end
+            B(i,1) = -alp(im1)/alp(im2)*B(im2,1);
+        end
+    end
+end
+
+end
+
+
+
+function s = clenshaw(n,nup,d,x)
+% Clenshaw's algorithm to the Gram orthonormal polynomial.
+
+% S = CLENSHAW(N,NUP,D,X) returns the summation:
+%
+%   D(1)*G_0(X) + D(2)*G_1(X) + ... + D(n+1)*G_n(X),
+% 
+% where G obeys the relation: G_k - a_k*G_{k-1} - b_k*G_{k-2} = 0, b_k~=0,
+% k=2,...,N.
+% 
+% G_k is the orthonormal Gram polynomial of degree k and parameter NUP. 
+%
+%
+% See (Deuflhard, 1976) and (Clenshaw, 1955).
+
+% computes alpha_0,...,alpha_{n-1}:
+k=1:n;
+alp = sqrt(nup^2*(k.^2-.25)./(k.^2.*(nup^2-k.^2))); 
+
+nt = length(x);
+G0 = ones(1,nt);
+
+if ( n > 1 )
+    % initialise:
+    u(n,1:nt) = d(n+1);
+    u(n-1,:) =  2*alp(n)*x.*u(n,:) + d(n); 
+
+    for k=n-1:-1:2
+        u(k-1,:) = 2*alp(k)*x.*u(k,:) - alp(k+1)/alp(k) *u(k+1,:) + d(k);  
+    end
+    
+    G1 = 2*alp(1)*x;
+    s = (d(1) - alp(2)/alp(1) * u(2,:)).*G0 + u(1,:).*G1;
+    
+elseif ( n > 0 ) % n=1
+   
+    G1 = 2*alp(1)*x;
+    s = d(1)*G0 + d(2).*G1;
+    
+else % n=0
+    s = d(1)*G0;
+    
+end
+
+end
+
+
+function [x,w] = grampts(m,nup)
+%%  GRAMPTS    Nodes and weights of Gaussian type quadrature for sums.
+%   
+%   [X] = GRAMPTS(M, NUP) returns the zeros X of the orthonormal Gram
+%   polynomial of degree M with parameter NUP.
+%
+%   [X, W] = GRAMPTS(M, NUP) returns both X and a row vector W of
+%   weights for the Gaussian type quadrature.
+%     
+%   Calls REC.
+%
+%   Copyright 2022 by Dimitar K. Dimitrov and Lourenco L. Peixoto
+%   and The Chebfun Developers.
+%
+%   All rights reserved.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   GRAMPTS implemented by Lourenco L. Peixoto, 2022 - see [1-3].
+%
+%   Basic references:
+%   
+%       [1] I. Area, D. K. Dimitrov, E. Godoy, and V. Paschoa, "Approximate
+%   calculation of sums I: Bounds for the zeros of Gram polynomials", SIAM
+%   J. Numer. Anal., 2014.
+%
+%       [2] I. Area, D. K. Dimitrov, E. Godoy, and V. Paschoa, "Approximate
+%   calculation of sums II: Gaussian type quadrature", SIAM J. Numer.
+%   Anal., 2016.
+%   
+%       [3] D. K. Dimitrov and L. L. Peixoto, "An efficient algorithm for
+%   the classical least squares approximation", SIAM J. Sci. Comput., 2020.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Check inputs:
+if ( m > floor(2.5*sqrt(nup)) )
+    warning('grampts: M = %i. M must be less than floor(2.5*sqrt(NUP)).', m)
+end
+
+% Deal with trivial cases:
+if (m<=3)
+    if (m<1)
+        error('grampts:inputs:m', 'First input should be a positive integer.');
+    end
+    if (m==1)
+        x = 0;
+        w = 1;
+        return
+    elseif (m==2) 
+        x = sqrt((nup^2-1)/(3*nup^2));
+        x = [-x x]';
+        w = [.5 .5];
+        return
+    else % m=3
+        x = sqrt((3*nup^2-7)/(5*nup^2));
+        x = [-x 0 x]';
+        w = 4/3*(nup^2-4)/(3*nup^2-7);
+        w = [.5*(1-w) w .5*(1-w)];
+        return
+    end
+end
+    
+ 
+ 
+%% Compute the zeros with WDDK method
+
+[x1] = transpose(forster_petras(m)); % initial approximations
+
+m_odd = (mod(m,2));
+if m_odd % m is odd number
+    x1(floor(m/2)+1) = 0;
+end
+
+dt = inf; 
+count = 0;
+maxit = 50;
+denom = zeros(1,m);
+
+% alpha_0,...,alpha_{M-1}:
+k=1:m;
+alpha = sqrt(nup^2*(k.^2-.25)./(k.^2.*(nup^2-k.^2))); 
+
+% compute the leading coefficient of the polynomial of degree M:
+coef_lead = 2^m*prod(alpha);
+
+% initialise:
+x = x1; 
+lim = 1-1/nup; % interval limit
+
+while (norm(dt,inf) > eps && count <= maxit)
+    g = rec(m,nup,x,alpha);  % evaluate the polynomial via recurrence formula
+    
+    % WDDK:
+    for k = 1:m
+        d = coef_lead;
+        for j = 1:m
+            if (k~=j)
+                d = d*(x(k)-x(j)); % denominator
+                if d==0 % underflow:
+                    error('Underflow in WDDK.')
+                end
+            end
+        end
+        denom(k) = d;
+    end
+    dt = g./denom;
+    x = x - dt;
+    
+    if (x(1) < -lim || x(end) > lim)
+        error('Nodes are out of range (-1+1/NUP, 1-1/NUP). The value M = %i is too large.', m)
+    end
+    
+    if (m_odd) % m is an odd number
+        x(floor(m/2)+1) = 0;
+    end
+    
+    count = count + 1; 
+end
+
+if (count == maxit+1 && norm(dt,inf) > eps)
+     warning('grampts: %i iterations in WDDK method. ', maxit)
+end
+
+
+
+%% Compute the weights
+
+% only non negative nodes:
+z = x(floor(m/2)+1:m);
+
+cte = sqrt(3*nup^2/(nup^2-1));
+g1 = ones(1,length(z)); g = cte*z;
+
+w = g1.^2 + g.^2;
+for k=2:m-1
+    % initialise for polynomial:
+    g2 = g1; g1 = g; 
+    % polynomial of degree k:
+    g = 2*alpha(k)*z.*g1 - alpha(k)/alpha(k-1).*g2; 
+    w = w + g.^2;
+end
+w = 1./w;
+
+% Reflect for symmetric values:
+if mod(m,2) 
+    w = [flip(w), w(2:end)];
+else
+    w = [flip(w), w];
+end
+
+x = transpose(x);
+
+end
+
+
+
+
+
+
+
+%% Compute initial approximations for the zeros of Gram pol. of degree M
+function [x] = forster_petras(m)
+% X = FORSTER_PETRAS(M) returns the approximations in Forster and Petras
+% (1993, Theorem 1) for the zeros of Legendre polynomial.
+if m==1
+    x=0;
+    s=1;
+else
+    if ( mod(m,2) )
+        s = 1; % odd m
+    else
+        s = 0; % even m
+    end
+    k = ((m+s)/2:-1:1).';
+    
+    theta = (k-.25)/(m+.5)*pi;
+    x0 = cos(theta);
+    cos2 = x0.*x0;
+    % Sharp initial guess (Forster and Petras, 1993):
+    x = cos( theta + .25/(2*(m+.5)^2)*(1-(6+.25*(9-2*cos2))./(12*(m+.5)^2*...
+    (1-cos2))).*cot(theta) );
+end
+x = [-x(end:-1:1+s) ; x]; % reflect negative zeros
+
+end
+
+
+
+function [g,MG] = rec(n,nup,x,varargin)
+%%  REC Recurrence relation for orthonormal Gram polynomials
+%
+%   [G] = REC(N,NUP,X) returns the orthonormal Gram polynomial of degree N
+%   and parameter NUP evaluated at vector X.
+%
+%   [G,MG] = REC(N,NUP,X) also returns the (N+1)-by-size(X) matrix MG with
+%   the Gram polynomials of degrees 0,1,...,N evaluated on X. Its first row
+%   contains the polynomial of degree 0, the second row contains the
+%   polynomial of degree 1 etc. Its first column are the polynomials on
+%   X_1, the second column are the polynomials on X_2 etc.
+%
+%   REC(N,NUP,X,ALPHA) allows the user furnishes the vector with the
+%   parameters of the recurrence relation:
+%       ALPHA = alpha_0,...,alpha_{n-1} 
+%
+%
+%   Copyright 2022 by Dimitar K. Dimitrov and Lourenco L. Peixoto
+%   and The Chebfun Developers.
+%
+%   All rights reserved.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   REC implemented by Lourenco L. Peixoto, 2022 - see [1-3].
+%
+%   Basic references:
+%   
+%       [1] I. Area, D. K. Dimitrov, E. Godoy, and V. Paschoa, "Approximate
+%   calculation of sums I: Bounds for the zeros of Gram polynomials", SIAM
+%   J. Numer. Anal., 2014.
+%
+%       [2] I. Area, D. K. Dimitrov, E. Godoy, and V. Paschoa, "Approximate
+%   calculation of sums II: Gaussian type quadrature", SIAM J. Numer.
+%   Anal., 2016.
+%   
+%       [3] D. K. Dimitrov and L. L. Peixoto, "An efficient algorithm for
+%   the classical least squares approximation", SIAM J. Sci. Comput., 2020.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+comp = length(x);
+
+if n==0
+    g = ones(1,comp);
+    if (nargout == 2)
+        MG = g;
+    end
+elseif n==1
+    cte = sqrt(3*nup^2/(nup^2-1));
+    g = cte*x;
+    if (nargout == 2)
+        MG = [ones(1,comp); g];
+    end
+else % n>=2
+    cte = sqrt(3*nup^2/(nup^2-1));
+    g1 = ones(1,comp); g = cte*x;
+    
+    if ( nargin == 4 )
+        alpha = varargin{1};
+    else
+        k=1:n;
+        alpha = sqrt(nup^2*(k.^2-.25)./(k.^2.*(nup^2-k.^2)));
+    end
+
+    if (nargout == 1)
+        for k=2:n
+            g2 = g1; g1 = g; % initialise for polynomial
+            g = 2*alpha(k)*x.*g1 - alpha(k)/alpha(k-1).*g2; % polynomial
+        end
+    else % stores all the polynomials of degree 0,...,n:
+        MG = ones(n+1,comp); % preallocating
+        MG(2,:) = g; % polynomial of degree 1
+        for k=2:n
+            % initialise for polynomial:
+            g2 = g1; g1 = g; 
+            % polynomial of degree k:
+            g = 2*alpha(k)*x.*g1 - alpha(k)/alpha(k-1).*g2; 
+            % polynomial of degree k:
+            MG(k+1,:) = g; 
+        end
+    end
+end
+
+end
