@@ -8,6 +8,12 @@ function F = mult(disc, f)
 
 v = toValues(disc, f);
 N = length(v);
-F = spdiags(v, 0, N, N);
+pref = cheboppref;
+if ( pref.sparse )
+    F = spdiags(v, 0, N, N);
+else
+    F = diag(v);
+end
+
 
 end

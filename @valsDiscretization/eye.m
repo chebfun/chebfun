@@ -5,6 +5,11 @@ function I = eye(disc)
 % See http://www.chebfun.org/ for Chebfun information.
 
 n = disc.dimension;
-I = speye(sum(n));
+pref = cheboppref;
+if ( pref.sparse )
+    I = speye(sum(n));
+else
+    I = eye(sum(n));
+end
 
 end
