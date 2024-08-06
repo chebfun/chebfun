@@ -5,6 +5,6 @@ function I = eye(disc)
 % See http://www.chebfun.org/ for Chebfun information.
 
 n = disc.dimension;
-I = eye(sum(n));
+I = speye(sum(n));
 
 end

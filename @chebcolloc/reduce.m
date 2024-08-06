@@ -32,7 +32,7 @@ for k = 1:size(A, 2)
 end
 
 % Convert cell arrays to matrices:
-P = blkdiag(P{:});
+P = blkdiag(sparse([]), P{:});
 PA = cell2mat(PA);
 % PS = cell2mat(PS);
 PS = P;
@@ -62,7 +62,7 @@ for k = 1:numInt
     P{k} = barymat(xOut, xIn, baryWt, tOut, tIn, 1);
 end
 % Convert the projection matrices P into a blockdiagonal matrix.
-P = blkdiag(P{:});
+P = blkdiag(sparse([]), P{:});
 
 % Project each of the entries of A:
 PA = cell(size(A));

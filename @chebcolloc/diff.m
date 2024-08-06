@@ -11,7 +11,7 @@ function D = diff(disc, m)
 
 if ( m == 0 )
     % Trivial case:
-    D = eye(sum(disc.dimension));
+    D = speye(sum(disc.dimension));
     
 else
     % Find the diagonal blocks.
@@ -38,7 +38,8 @@ else
     end
     
     % Assemble!
-    D = blkdiag(blocks{:});
+    D = blkdiag(sparse([]),blocks{:});
+    % D = blkdiag(blocks{:});
 end
 
 end
