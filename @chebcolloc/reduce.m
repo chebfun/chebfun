@@ -88,7 +88,7 @@ PA = cell2mat(PA);
 if ( (m == 0) && (size(A{1}, 2) < sum(n)) )
     % We don't want to project scalars.
     if ( pref.sparse )
-        P = seye(size(A, 2));
+        P = speye(size(A, 2));
     else
         P = eye(size(A, 2));
     end

@@ -9,11 +9,9 @@ function Z = zeros(disc)
 n = disc.dimension;
 pref = cheboppref;
 if ( pref.sparse )
-    Z = sparse(sum(n));
+    Z = sparse(sum(n),sum(n));
 else
     Z = zeros(sum(n));
 end
-
-
 
 end
