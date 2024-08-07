@@ -8,10 +8,6 @@ function [v, disc] = mldivide(disc, A, b)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% if ( issparse(A) )
-%     v = A\b;
-% else
-
 if ( isFactored(disc) )
     
     % Use the existing factorization. 
@@ -31,6 +27,5 @@ end
 % Solve the system:
 sb = s.*b;
 v = U \ ( L \ sb(p) );
-% end
 
 end
