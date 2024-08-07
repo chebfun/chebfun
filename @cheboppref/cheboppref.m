@@ -483,7 +483,7 @@ classdef cheboppref < chebpref
             factoryPrefs.maxIter = 25;
             factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
-            factoryPrefs.sparse = flase;
+            factoryPrefs.sparse = false;
             factoryPrefs.vectorize = true;
         end
         
