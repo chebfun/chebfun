@@ -88,6 +88,7 @@ if ( ( max(diffOrd) > 0 ) && ( ~isempty(left) ) )
         end
         for m = 0:diffOrd(var)-1    % up to this variable's diff. order
             for k = 1:length(left)  % for each point
+                B(j,:) = Z;
                 B(j,var) = C{m+1, k}; % right/left difference in mth deriv.
                 j = j+1;
             end
@@ -96,7 +97,6 @@ if ( ( max(diffOrd) > 0 ) && ( ~isempty(left) ) )
     cont = cont.append(B, zeros(size(B,1),1));
 
 end
-
 L.continuity = cont;
 
 end

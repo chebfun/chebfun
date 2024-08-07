@@ -49,8 +49,7 @@ else
     end
 
     % Assemble!
-    % D = blkdiag(blocks{:}); % <-- Lots of overhead here.
-    D = matlab.internal.math.blkdiag(blocks{:});
+    D = blkdiag(blocks{:});
 end
 
 end
