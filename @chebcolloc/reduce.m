@@ -71,8 +71,7 @@ if ( pref.sparse )
 end
 
 % Convert the projection matrices P into a blockdiagonal matrix.
-% P = blkdiag(P{:});
-P = matlab.internal.math.blkdiag(P{:});
+P = blkdiag(P{:});
 
 % Project each of the entries of A:
 PA = cell(size(A));
