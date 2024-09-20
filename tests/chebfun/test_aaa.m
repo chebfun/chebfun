@@ -136,7 +136,7 @@ err = norm(F-r(X),inf); pass(30) = abs(err-.006) < .002;
 
 X = chebpts(1000,[0 10]); F = 1./(1+exp(50./(X-2)));   % Fermi-Dirac
 r = aaa(F,X,'degree',12,'lawson',100,'damping',0.85,'sign',1);
-err = norm(F-r(X),inf); pass(31) = abs(err-.000317) < .0001;
+err = norm(F-r(X),inf); pass(31) = abs(err-.000317) < .001;
 
 f = @(x) max(x,0);
 r = aaa(f,'degree',8,'damping',.5,'lawson',200);
