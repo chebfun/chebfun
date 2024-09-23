@@ -35,18 +35,21 @@ function varargout = chebtest(varargin)
 %   Similarly, if all tests pass in all directories the total execution time is
 %   returned at the end of the test:
 %   | All tests passed in 6.213s.
-%   If not, then a list of the failed tests is reported:
+%   If not, then a list of the failed tests is reported with information about 
+%   the specific tests that passed and failed:
 %   | The following tests failed or crashed:
-%   |    chebtech2/test_chebpts
-%   |    adchebfun/test_erf
+%   |    chebtech2/test_chebpts ... 1 1 0 1
+%   |    adchebfun/test_erf     ... crashed
 %
-%   RESULTS = CHEBTEST returns an N-by-3 cell-array with one row per test and 
+%   RESULTS = CHEBTEST returns an N-by-4 cell-array with one row per test and 
 %   columns:
 %     (1) directory name, a string.     Example: 'chebtech2'
 %     (2) test name, a string.          Example: 'test_chebpts'
 %     (3) duration OR error flag. A value >0 indicates success and is equal to
 %         the execution time of the test in seconds, while -1 == failure and
 %         -2 == crash.
+%     (4) pass. A string array indicating which test passed or failed.
+%         Example: '1 0 1 1'.
 %
 %   CHEBTEST(..., '--log') will write the results of the tests as returned in 
 %   RESULTS above to the file "chebtest-YYYYMMDDHHMMSS.log" in the current 
@@ -163,10 +166,26 @@ else
     if ( ~quietMode )
         indx = find(durations < 0);
         fprintf('The following tests failed or crashed:\n');
+        % For making the output string align nicely:
+        maxLength = 0;
+        name_testfile = cell(0,1);
         for k = indx(:)'
             loc = fullfile(testsDir, allResults{k,1});
-            fprintf('   %s\n', printTestFilename(allResults{k,1:2}, loc))
+            name_testfile{k} = printTestFilename(allResults{k,1:2}, loc);
+            maxLength = max(maxLength, length(name_testfile{k}));
         end
+        for k = indx(:)'
+            ws = repmat(' ', 1, maxLength - length(name_testfile{k}) - 1); % Whitespace.
+            % crashed message
+            if durations(k) == -2
+                fprintf('   %s %s... %s\n', name_testfile{k}, ws, 'crashed')
+            % failed message
+            else 
+                fprintf('   %s %s... %s\n', name_testfile{k}, ws, allResults{k,4})
+            end
+        end
+        
+        %fprintf('  Test #%3.3d: %s ...%s', k, link, ws);       % Print to screen.
     end
 
 end
@@ -227,6 +246,10 @@ errorMessages = {'FAILED', 'CRASHED'};
 warnState = warning('off', 'CHEBFUN:CHEBFUN:vertcat:join');
 warning('off', 'CHEBFUN:CHEBOP2:chebop2:experimental')
 
+% Dump all the test data into a cell array to pass back to the CHEBTEST
+% function. This data is what is written to a .CSV file if logging is on.
+testResults = cell(numFiles,4);
+
 % Attempt to run all of the tests:
 try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
     
@@ -234,20 +257,23 @@ try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
     for k = 1:numFiles
         % Next file to test: (.m extension is removed).
         testFile = testFiles{k}(1:end-2);
+        [durations(k), testResults{k,4}] = runTest(testFile);
         
         if ( quietMode )
             % --quiet mode
-            durations(k) = runTest(testFile);
             if ( durations(k) < 0 )
                 printTestInfo(testDir, testFile, k, maxLength);
                 message = errorMessages{-durations(k)};
+                % failed message
+                if durations(k) == -1
+                    message = [message, '   ', testResults{k,4}];
+                end
                 fprintf([message '\n']);
             end
             
         else
             % --verbose mode
             printTestInfo(testDir, testFile, k, maxLength);
-            durations(k) = runTest(testFile);
             if ( durations(k) > 0 )
                 % Success message.
                 message = sprintf('passed in %.4fs', durations(k));
@@ -284,9 +310,7 @@ end
 % Restore the current working directory and return:
 cd(currDir);
 
-% Dump all the test data into a cell array to pass back to the CHEBTEST
-% function. This data is what is written to a .CSV file if logging is on.
-testResults = cell(numFiles,3);
+% Write the test data into the cell array.
 for k = 1:numFiles
     testResults{k,1} = testDir;               % directory name
     testResults{k,2} = testFiles{k}(1:end-2); % test file name
@@ -345,7 +369,7 @@ end
 end
 
 
-function duration = runTest(testFile)
+function [duration, pass] = runTest(testFile)
 %RUNTEST Runs the given test file.
 %   DURATION = RUNTEST(TESTFILE) executes the file TESTFILE.
 %   TESTFILE should return a vector or matrix of logical values. 
@@ -369,19 +393,21 @@ close all
 % Attempt to run the test:
 try
     tstart = tic();
-    pass = feval(testFile);
+    pass = double(feval(testFile));
+    pass = pass(:)';
     duration = toc(tstart);
 
-    pass = all(pass(:));
-    if ( ~pass )
+    if ( ~all(pass) )
         % The test failed, so return FAILED flag.
         duration = -1;
     end
+    
+    pass = num2str(pass);
 
 catch ME %#ok<NASGU>
     % We crashed. This is bad. Return CRASHED flag.
     duration = -2;
-    
+    pass = '0';
     % But we _don't_ want to throw an error.
     %rethrow(ME)
 end
@@ -397,14 +423,15 @@ end
 
 function writeToLog(filename, data)
 %WRITETOLOG   Writes the contents of a cell-array to a file as CSV.
-%   WRITETOLOG(FN, DATA) writes the contents of the N-by-3 cell-array DATA to
-%   the file FN. The cell-array DATA must have three columns:
+%   WRITETOLOG(FN, DATA) writes the contents of the N-by-4 cell-array DATA to
+%   the file FN. The cell-array DATA must have four columns:
 %     (1) Directory name, a string.     Example: 'chebtech2'
 %     (2) Test name, a string.          Example: 'test_chebpts'
 %     (3) Duration in seconds OR error flag. A value >0 indicates success,
 %         while -1 == failure and -2 == crash.
+%     (4) Pass, an array. It indicates which test passed ('1') or failed ('0').
 
-columnTitles = {'dir_name', 'test_name', 'duration'};
+columnTitles = {'dir_name', 'test_name', 'duration', 'pass'};
 data = data';
 
 fid = fopen(filename, 'w+');
@@ -412,8 +439,8 @@ if ( fid < 0 )
     warning('CHEBFUN:chebtest:writePermission', ...
         'Unable to write to file %s', filename);
 else
-    fprintf(fid, '%s,%s,%s\n', columnTitles{:});
-    fprintf(fid, '%s,%s,%f\n', data{:});
+    fprintf(fid, '%s,%s,%s,%s\n', columnTitles{:});
+    fprintf(fid, '%s,%s,%f,%s\n', data{:});
     fclose(fid);
 end
 
