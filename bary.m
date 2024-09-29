@@ -71,7 +71,7 @@ end
 
 % The main loop:
 if ( numel(x) < 4*length(xk) )  % Loop over evaluation points
-    % Note: The value "4" here was detemined experimentally.
+    % Note: The value "4" here was determined experimentally.
 
     % Initialise return value:
     fx = zeros(size(x, 1), m);

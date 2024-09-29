@@ -179,7 +179,7 @@ end
 function v = DownJacobiConversion(v, a, b)
 %DOWNJACOBICONVERSION   Convert Jacobi (alpha,beta+1) -> (alpha,beta).
 %   DOWNJACOBICONVERSION(V, A, B) converts coefficients in a Jacobi P^(A,B+1)
-%   basis to coefficients in a Jacobi P^(A,B) basis in O(lengt(V)) operations.
+%   basis to coefficients in a Jacobi P^(A,B) basis in O(length(V)) operations.
 
 % Inversion of UPJACOBICONVERSION, invert upper-triangular and bidiagonal
 % matrix fast.

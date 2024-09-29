@@ -113,7 +113,7 @@ function d = diffCot(t,n) % Returns the n-th derivative of Cot evaluated at t
 x = tan(t + pi/2);
 Psz = [size(x), max(n)+1];
 nDim = numel(Psz); % Define the final dimension for summation
-P = zeros(Psz); % Initialize derivativ
+P = zeros(Psz); % Initialize derivative
 
 % Define indices for summations
 inds1 = repmat({':'},nDim,1);

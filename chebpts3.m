@@ -24,7 +24,7 @@ if ( nargin > 3 )
    if ( ~all(size(dom) == [1 6]) )
         error('CHEBFUN:chebpts3:domain', 'Unrecognised domain.');
    end
-else  % Default to the canoncial domain.
+else  % Default to the canonical domain.
     dom = [-1, 1, -1, 1, -1, 1];
 end
 

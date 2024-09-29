@@ -556,7 +556,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 r = mat2cell(r);
             end
             
-            % Initalise a variable for the derivative of the deflated operator:
+            % Initialise a variable for the derivative of the deflated operator:
             defDeriv = 0;
             
             % Compute the norms between the function and the roots. At the same
@@ -869,7 +869,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %GET   Access properties of ADCHEBFUN objects.
             %   P = GET(F, PROP) returns the property P specified in the string
             %   PROP from the CHEBFUN F. Valid entries for the string PROP are:
-            %       'DOMAIN'     -   The domain of definintion of F.
+            %       'DOMAIN'     -   The domain of definition of F.
             %       'FUNC'       -   The chebfun/scalar part of F.
             %       'JACOBIAN'   -   The derivative of F w.r.t. the seeding
             %                        variable.
@@ -1094,7 +1094,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
             % in the 2-norm case, in particular for 2-norm squared. Perhaps we
-            % want a specical 2-norm squared method?
+            % want a special 2-norm squared method?
             if ( ( nargin == 1 ) || strcmp(varargin{1}, 'fro') || ...
                 (varargin{1} == 2) )
                 % Linearity information
@@ -1360,7 +1360,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % derivative field of U:
                 u.jacobian = chebmatrix( blocks );
                 
-                % Initalise linearity information. The output is linear in all
+                % Initialise linearity information. The output is linear in all
                 % variables.
                 u.linearity = ones(1, m);
                 

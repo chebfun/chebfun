@@ -27,7 +27,7 @@ pass(6) = isequal(get(G{2}.funs{1}, 'tech'), tech);
 pass(7) = norm(F{1} - G{1}, inf) < tol;
 pass(8) = norm(F{2} - G{2}, inf) < tol;
 
-%% TEST WITH MIXED OBJETCS.
+%% TEST WITH MIXED OBJECTS.
 f1 = 1;
 f2 = chebfun(@(x) cos(10*x), [0 2*pi], 'trig');
 f3 = chebfun(@(x) sin(10*x), [0 2*pi]);

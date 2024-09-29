@@ -289,7 +289,7 @@ end
 
 
 function D = rectdiff1(m, n)
-%RECTDIFF1  Explicit constrcution of 1st-order rectangular differentiation  
+%RECTDIFF1  Explicit construction of 1st-order rectangular differentiation
 %matrix mapping from 1st-kind grid.
 
 % mapping-from grid (angles):
@@ -332,7 +332,7 @@ end
 end
 
 function D = rectdiff2(m, n)
-%RECTDIFF2  Explicit constrcution of 1st-order rectangular differentiation   
+%RECTDIFF2  Explicit construction of 1st-order rectangular differentiation
 %matrix mapping from a 2nd-kind grid.
 
 nm1 = n - 1;                    % For convenience.

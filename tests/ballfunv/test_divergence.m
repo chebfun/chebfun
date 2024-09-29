@@ -1,4 +1,4 @@
-function pass = test_divergence( pref ) 
+function pass = test_divergence( pref )
 
 % Grab some preferences
 if ( nargin == 0 )
@@ -15,7 +15,7 @@ f = divergence(V);
 exact = ballfun(@(r,lam,th)3, 'spherical');
 pass(1) = norm(f-exact)  <tol;
 
-% Exemple 2: check divergence theorem
+% Example 2: check divergence theorem
 v = ballfunv(@(x,y,z)sin(x), @(x,y,z)x.*z, @(x,y,z)cos(z));
 lhs = sum3(div(v));
 rhs = sum2(dot(v(1,:,:, 'spherical'), spherefunv.unormal));
