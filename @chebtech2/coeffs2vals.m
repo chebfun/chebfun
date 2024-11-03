@@ -45,7 +45,7 @@ isOdd = max(abs(coeffs(1:2:end,:)),[],1) == 0;
 coeffs(2:n-1,:) = coeffs(2:n-1,:)/2;
 
 % Mirror the coefficients (to fake a DCT using an FFT):
-tmp = [ coeffs ; coeffs(n-1:-1:2,:) ];
+tmp = full([ coeffs ; coeffs(n-1:-1:2,:) ]);
 
 if ( isreal(coeffs) )
     % Real-valued case:

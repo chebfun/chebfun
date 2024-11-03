@@ -157,6 +157,15 @@ classdef cheboppref < chebpref
 %   paused and the plots are shown until the user presses a button. If plotting
 %   = 'off', no plots are shown during the Newton iteration.
 %
+%   sparse                       - Should a sparse discretiation be used?
+%      [false]
+%      true
+%
+%     If true then a sparse matrix representation of the discretisation
+%     will be used even in collocation discretisations. This is useful in
+%     the case where the solution is represented over a significant number
+%     of piecewise intervals.
+%
 %   vectorize                   - Automatic vectorization of anon. functions
 %     [true]
 %     false
@@ -301,6 +310,8 @@ classdef cheboppref < chebpref
                 prefList.minDimension);
             fprintf([padString('    plotting:') '%s\n'], ...
                 prefList.plotting);
+            fprintf([padString('    sparse:') '%d\n'], ...
+                prefList.sparse);
             fprintf([padString('    vectorize:') '%i\n'], ...
                 prefList.vectorize);
        end
@@ -472,6 +483,7 @@ classdef cheboppref < chebpref
             factoryPrefs.maxIter = 25;
             factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
+            factoryPrefs.sparse = false;
             factoryPrefs.vectorize = true;
         end
         
