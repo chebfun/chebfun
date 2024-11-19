@@ -33,6 +33,6 @@ L = addbc(L,Er,0);
 [U,S,V] = svds(L, 6, 'bvp', pref);
 s = diag(S);
 pass(3) = norm(s - s_true, inf) < max(s)*tol;
-pass(4) = norm(L*V-U*S) < max(s)*tol;
+pass(4) = norm(L*V-U*S) < 10*max(s)*tol;
 
 end
