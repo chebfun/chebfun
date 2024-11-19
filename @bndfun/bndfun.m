@@ -93,10 +93,18 @@ classdef bndfun < classicfun
             data.hscale = data.hscale / diff(data.domain);
 
             % Remap the OP to be a function on [-1, 1].
-            linmap = bndfun.createMap(data.domain);
-            if ( isa(op, 'function_handle') && ~all(data.domain == [-1, 1]) ...
-                    && ~isnumeric(op) )
-                op = @(x) op(linmap.For(x));
+            if ( isfield(data, 'map') )
+                map = data.map;
+                if ( isa(map, 'function_handle') )
+                    map = map(data.domain);   
+                end
+                trivialMap = false;
+            else
+                map = bndfun.createMap(data.domain);
+                trivialMap = all(data.domain == [-1, 1]);
+            end
+            if ( isa(op, 'function_handle') && ~trivialMap && ~isnumeric(op) )
+                op = @(x) op(map.For(x));
             end
 
             % Call the ONEFUN constructor:
@@ -104,8 +112,9 @@ classdef bndfun < classicfun
 
             % Add the domain and mapping:
             obj.domain = data.domain;
-            obj.mapping = linmap;
+            obj.mapping = map;
         end
+        
     end       
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
