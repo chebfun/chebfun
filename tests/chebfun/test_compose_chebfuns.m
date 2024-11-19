@@ -183,6 +183,13 @@ G = chebfun3v(@(x,y,z) x.^2 + y.^2, @(x,y,z) z);
 H = G(F);
 pass(30) = isPeriodicTech(H);
 
+%% Test composition of periodic chebfuns outside their domain.
+dom = [-pi pi];
+t = chebfun('t', dom);
+F = chebfun(@(t) exp(sin(t)), dom, 'trig');
+G = compose(2*t, F);
+H = chebfun(@(t) exp(sin(2*t)), dom, 'trig');
+pass(31) = norm(G - H) < 100 * eps;
 
 end
 
