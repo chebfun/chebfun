@@ -214,7 +214,13 @@ else
 
     % Remainder piece: (between fl and a+d)
     remainderWidth = d + a - finishLocation; % b+d-fl-(b-a)
-    if ( remainderWidth > 0 )
+    domfk = b + [-remainderWidth, 0];               % Domain of fk
+    domfk(1) = max(domfk(1), f.domain(1));          % Ensure domfk is a
+    domfk(end) = min(domfk(end), f.domain(end));    %  valid subdomain
+    domgk = [finishLocation, d + a] - b;            % Domain of gk
+    domgk(1) = max(domgk(1), g.domain(1));          % Ensure domgk is a
+    domgk(end) = min(domgk(end), g.domain(end));    %  valid subdomain
+    if ( max(diff(domfk), diff(domgk)) > eps)
         ind = finishLocation <= x;           % Discard D and E
 
         % B: (Coeffs were computed above)
@@ -223,15 +229,9 @@ else
         y(ind) = tmp;                        % Store
 
         % C: 
-        domfk = b + [-remainderWidth, 0];               % Domain of fk
-        domfk(1) = max(domfk(1), f.domain(1));          % Ensure domfk is a
-        domfk(end) = min(domfk(end), f.domain(end));    %  valid subdomain
         fk = restrict(f, domfk);                        % Restrict f
         fk = simplify(fk);                              % Simplify f
         fk_leg = cheb2leg(get(fk, 'coeffs'));           % Legendre coeffs
-        domgk = [finishLocation, d + a] - b;            % Domain of gk
-        domgk(1) = max(domgk(1), g.domain(1));          % Ensure domgk is a
-        domgk(end) = min(domgk(end), g.domain(end));    %  valid subdomain
         gk = restrict(g, domgk);                        % Restrict g
         gk = simplify(gk);                              % Simplify g
         gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
