@@ -9,10 +9,16 @@ function D = diff(disc, m)
 %  Copyright 2017 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
+pref = cheboppref;
+
 if ( m == 0 )
     % Trivial case:
-    D = eye(sum(disc.dimension));
-    
+    if ( pref.sparse )
+        D = speye(sum(disc.dimension));
+    else
+        D = eye(sum(disc.dimension));
+    end
+
 else
     % Find the diagonal blocks.
     
@@ -26,17 +32,22 @@ else
     nUnique = unique(n);
     
     % Create a discretization matrix for each unique discretization size:
-    Dn = cell(max(nUnique));
+    Dn = cell(max(nUnique),1);
     for nn = nUnique
         Dn{nn} = disc.diffmat(nn, m);
     end
-    
+    if ( pref.sparse ) % Sparsify
+        for nn = nUnique
+            Dn{nn} = sparse(Dn{nn});
+        end
+    end
+
     % Scale the blocks appropriately, based on each subinterval length:
-    blocks = cell(numIntervals);
+    blocks = cell(numIntervals,1);
     for k = 1:numIntervals
         blocks{k} = Dn{n(k)} * (2/lengths(k))^m;
     end
-    
+
     % Assemble!
     D = blkdiag(blocks{:});
 end

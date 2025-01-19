@@ -61,8 +61,18 @@ for k = 1:numInt
 %     P{k} = barymat(xOut, xIn, baryWt);
     P{k} = barymat(xOut, xIn, baryWt, tOut, tIn, 1);
 end
+
+pref = cheboppref;
+if ( pref.sparse )
+    % Sparsify:
+    for k = 1:numInt
+        P{k} = sparse(P{k});
+    end
+end
+
 % Convert the projection matrices P into a blockdiagonal matrix.
-P = blkdiag(P{:});
+% P = blkdiag(P{:});
+P = matlab.internal.math.blkdiag(P{:});
 
 % Project each of the entries of A:
 PA = cell(size(A));
@@ -77,7 +87,11 @@ PA = cell2mat(PA);
 
 if ( (m == 0) && (size(A{1}, 2) < sum(n)) )
     % We don't want to project scalars.
-    P = eye(size(A, 2));
+    if ( pref.sparse )
+        P = speye(size(A, 2));
+    else
+        P = eye(size(A, 2));
+    end
 end
 
 end

@@ -72,7 +72,7 @@ B = 0;
 % operator of a sufficient rank.
 dimCounter = 0;
 dimCounterMax = 5;
-while ( rank(B) < size(B, 1) && dimCounter < dimCounterMax )
+while ( rank(full(B)) < size(B, 1) && dimCounter < dimCounterMax )
     
     % Create a discretization:
     disc = discType(L, dim);
