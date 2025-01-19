@@ -4,7 +4,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-% Store current globlal state.
+% Store current global state.
 p = chebfunpref();
 chebfunpref.setDefaults('factory')
 

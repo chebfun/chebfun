@@ -19,7 +19,7 @@ if ( n == 0 )
     return
 elseif ( n == 1 && nargin < 2 )
     error('CHEBFUN:CHEBFUN:lagrange:nodomain', ...
-        'Domain must be specfied when X is a scalar.')
+        'Domain must be specified when X is a scalar.')
 end
 
 % Check for uniqueness:

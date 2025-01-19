@@ -16,7 +16,7 @@ f = restrict(f, [-0.5 0.5]);
 pass(1) = isempty(f);
 
 %%
-% Check behvaior for non-subinterval inputs.
+% Check behaviour for non-subinterval inputs.
 f = testclass.make(@(x) sin(2*pi*x), [], pref);
 g = restrict(f, [-1 1]);
 pass(2) = isequal(f, g);

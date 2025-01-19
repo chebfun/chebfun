@@ -4,7 +4,7 @@ function varargout = waterfall(varargin)
 %   "waterfall" plot of an array-valued CHEBFUN or quasimatrix. Unlike the
 %   standard Matlab WATERFALL method, CHEBFUN/WATERFALL does not fill in the
 %   column planes with opaque whitespace or connect edges to zero. Instead,
-%   horizontal slices are connected by a semi-transparent egde.
+%   horizontal slices are connected by a semi-transparent edge.
 %
 %   Additional plotting options can also be passed, for example WATERFALL(U, T,
 %   'linewidth', 2). Additional options include 'EdgeColor', 'EdgeAlpha',

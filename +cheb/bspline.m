@@ -1,7 +1,7 @@
 function B = bspline(m)
 %BSPLINE   B-splines as chebfuns.
 %   BSPLINE(M) returns the first M B-splines, starting from a constant value 1
-%   on [-1/2,1/2]. Each sucessive B-spline is smoother by one derivative and
+%   on [-1/2,1/2]. Each successive B-spline is smoother by one derivative and
 %   supported on an interval larger by 1/2 in each direction.
 %
 %   The returned result is a chebmatrix.

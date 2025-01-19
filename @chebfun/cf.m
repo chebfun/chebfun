@@ -42,7 +42,7 @@ function [p, q, r, s] = cf(f, m, n, M)
 %       approximation by the Caratheodory-Fejer method", SIAM J. Numer. Anal. 19
 %       (1982), 358-371.
 %
-%   [2] L. N. Trefethen and M. H. Gutknecht, "The Caratheodory-Fejer method fpr
+%   [2] L. N. Trefethen and M. H. Gutknecht, "The Caratheodory-Fejer method for
 %       real rational approximation", SIAM J. Numer. Anal. 20 (1983), 420-436.
 %
 % See also AAA, CHEBPADE, MINIMAX, PADEAPPROX, RATINTERP.

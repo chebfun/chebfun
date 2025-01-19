@@ -12,7 +12,7 @@ tol = 2e-10;
 % Define the domain.
 dom = [-pi pi];
 
-% Define the rhs, and the intial guesses.
+% Define the rhs, and the initial guesses.
 f = [ chebfun(0, dom) ; chebfun(@(x) cos(x), dom) ];
 u0 = f;
 

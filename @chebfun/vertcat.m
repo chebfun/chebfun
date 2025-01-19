@@ -4,7 +4,7 @@ function out = vertcat(varargin)
 %
 %   VERTCAT(F1, F2, ...) of row CHEBFUNs F1, F2, ... produces a quasimatrix.
 %
-% See alos HORZCAT, CAT, CHEBMATRIX, QUASIMATRIX.
+% See also HORZCAT, CAT, CHEBMATRIX, QUASIMATRIX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -83,7 +83,7 @@ switch lower(name)
         clrmap = flipud(jet);
         viewAngle = [-35 8];
         
-    % Two diametrically oposed vortices taken from
+    % Two diametrically opposed vortices taken from
     % R. D. Nair, J. Cote, A. Staniforth, Cascade interpolation for 
     % semi-Lagrangian advection over the sphere, Quart. J. Roy. Meteor. 
     % Soc. 125 (1999) 1445-1468
@@ -166,7 +166,7 @@ switch lower(name)
         fa = @(x,y,z) 1 + x.^8 + exp(2*y.^3) + exp(2*z.^2) + 10*x.*y.*z;
         f = spherefun(fa);
         
-    % A Guassian random function on the sphere suggested by Dmitry Belyaev
+    % A Gaussian random function on the sphere suggested by Dmitry Belyaev
     % at Oxford.
     case 'randn'
         % Compute a random spherefun
