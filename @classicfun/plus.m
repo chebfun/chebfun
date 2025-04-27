@@ -34,9 +34,14 @@ else % CLASSICFUN + CLASSICFUN
     
     % Domains and mappings are assumed to match. Hence, we just need to add the
     % ONEFUNs:
-    f.onefun = f.onefun + g.onefun;
+    
+    if ( isequal(f.mapping, g.mapping) )
+        f.onefun = f.onefun + g.onefun;
+    else
+        error('CHEBFUN:CLASSICFUN:plus:mappings', ...
+        'Cannot add bndfuns with different mappings.')
+    end
       
 end
 
 end
-

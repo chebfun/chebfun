@@ -47,14 +47,10 @@ end
 % Call MAT2CELL of the ONEFUN:
 oneFuns = mat2cell(f.onefun, M, N);
 
-% Create a cell for storing the new CLASSICFUN objects:
-g = cell(1, numel(N));
-
-% Append the data to the new entries in the cell:
-for k = 1:numel(N)
-    % Create a new CLASSICFUN from the ONEFUN and the domain:
-    data.domain = f.domain;
-    g{k} = f.make(oneFuns{k}, data);
+% Copy the CLASSICFUN N times and replace the onefuns:
+g = repmat({f}, 1, N(1));
+for k = 1:N
+    g{k}.onefun = oneFuns{k};
 end
 
 end
