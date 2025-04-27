@@ -6,10 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install MATLAB
-        uses: matlab-actions/setup-matlab@v0
+        uses: matlab-actions/setup-matlab@v2
       - name: Run commands
-        uses: matlab-actions/run-command@v0
+        uses: matlab-actions/run-command@v2
         with:
           command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
