@@ -144,34 +144,38 @@ xx = linspace(-1,1,300);
 err = norm(f(xx)-r(xx),inf); pass(32) = abs(err-.0006) < .001;
 
 Z = linspace(-1,1,100); F = exp(Z);
-[r, pol, res, zer, zj, fj, wj, errvec, wt, rp] = aaa(F, Z);
-err = norm(F-rp(Z),inf); pass(33) = abs(err) < 1e-12;
-
-Z = linspace(-1,1,100); F = exp(Z);
-[r, pol, res, zer, zj, fj, wj, errvec, wt, rp] = aaa(F, Z, 'deriv_deg', 1);
-err = norm(F-rp(Z),inf); pass(34) = abs(err) < 1e-12;
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(F-r{2}(Z),inf); pass(33) = abs(err) < 1e-12;
 
 Z = linspace(-1,1,100); F = sin(Z);
-[r, pol, res, zer, zj, fj, wj, errvec, wt, rp] = aaa(F, Z, 'deriv_deg', 4);
-pass(35) = iscell(rp) && isequal(size(rp), [1, 4]);
+r = aaa(F, Z, 'deriv_deg', 4);
+pass(34) = iscell(r) && isequal(size(r), [1, 5]);
 
 Z = linspace(-1,1,100); F = sin(Z);
-[r, pol, res, zer, zj, fj, wj, errvec, wt, rp] = aaa(F, Z, 'deriv_deg', 4);
-err = norm(F-rp{4}(Z),inf);
-pass(36) = abs(err) < 1e-7;
+r = aaa(F, Z, 'deriv_deg', 4);
+err = norm(F-r{5}(Z),inf);
+pass(35) = abs(err) < 1e-7;
 
 Z = linspace(-1,1,100); F = Z.^3;
-[r, pol, res, zer, zj, fj, wj, errvec, wt, rp] = aaa(F, Z, 'deriv_deg', 4);
-err = norm(3*Z.^2-rp{1}(Z),inf);
-pass(37) = abs(err) < 1e-12;
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(3*Z.^2-r{2}(Z),inf);
+pass(36) = abs(err) < 1e-12;
 
 Z = linspace(-1,1,100); F = 1e-100*exp(Z);
-[r, pol, res, zer, zj, fj, wj, errvec, wt, rp] = aaa(F, Z);
-err = norm(F-rp(Z),inf); pass(38) = abs(err) < 1e-112;
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(F-r{2}(Z),inf); pass(37) = abs(err) < 1e-112;
 
 Z = linspace(-1e100,1e100,100); F = exp(1e-100*Z);
-[r, pol, res, zer, zj, fj, wj, errvec, wt, rp] = aaa(F, Z);
-err = norm(1e-100*F-rp(Z),inf); pass(39) = abs(err) < 1e-112;
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(1e-100*F-r{2}(Z),inf); pass(38) = abs(err) < 1e-112;
+
+Z = exp(2i*pi*(0:99)/100); F = sqrt(2-Z);
+rr = aaa(F, Z, 'degree', 6, 'deriv_deg', 1);
+r = rr{1};
+err = abs( norm(F-r(Z),inf) - 1.19e-11 ); pass(39) = abs(err) < 1e-12;
+rp = rr{2};
+rp(1)
+pass(40) = abs(rp(1)+0.5) < 1e-6;
 
 warning('on', 'AAA:Froissart');
 

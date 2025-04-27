@@ -4,9 +4,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   data F on the set of sample points Z.  F may be given by its values at Z,
 %   or as a function handle or chebfun.  R = AAA(F, Z, 'degree', N) attempts to
 %   compute the minimax approximation of degree N (i.e., rational type (N,N)).
-%   If 'deriv_deg=k' is specified, R will be a k+1 element cell array containing
-%   the rational approximant and the first k derivatives (as function
-%   handles).
+%   If 'deriv_deg', k is specified, R will be a k+1 element cell array containing
+%   the rational approximant and its first k derivatives (as function handles).
 %
 %   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles, residues, and zeros
 %   of R.
