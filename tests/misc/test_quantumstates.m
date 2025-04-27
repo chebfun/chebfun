@@ -33,4 +33,10 @@ op = @(u) -h^2*diff(u,2) + repmat(V, 1, n).*u;
 % Did quantumstates() return eigenfunctions and eigenvalues?
 err = norm( op(efuns) - efuns*evals );
 pass(2) = err < 5e-8;
+
+% A periodic problem:
+V = chebfun('sin(pi*x/2)^2','trig');
+e = quantumstates(V,'noplot');
+pass(3) = abs(e(3)-.68934055) < 1e-3;
+
 end
