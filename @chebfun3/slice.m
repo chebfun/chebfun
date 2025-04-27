@@ -60,7 +60,7 @@ if ( nargin == 2 && strcmp(varargin, 'noslider'))
         h = slice(xx, yy, zz, angle(-v), xslice, yslice, zslice); 
         set(h, 'EdgeColor','none')
         caxis([-pi pi]),
-        colormap('hsv')
+        colormap(gca, 'hsv')
         axis('equal') 
     end
     str = sprintf('Three slices: x = %2.1g, y = %2.1g, z = %2.1g', ...
@@ -88,7 +88,7 @@ elseif ( nargin == 4 )
         h = slice(xx, yy, zz, angle(-v), xslice, yslice, zslice); 
         set(h, 'EdgeColor','none')
         caxis([-pi pi]),
-        colormap('hsv')
+        colormap(gca, 'hsv')
         axis('equal')         
     end    
     if ( ~holdState )
@@ -157,7 +157,7 @@ else
     hh = slice(xx, yy, zz, angle(-v), xslice, yslice, zslice); 
     set(hh, 'EdgeColor','none')
     caxis([-pi pi]),
-    colormap('hsv')
+    colormap(gca, 'hsv')
     axis('equal')     
 end
 
@@ -238,7 +238,7 @@ else
         xslice, yslice, zslice); 
     set(handles.slice, 'EdgeColor','none')
     caxis([-pi pi]),
-    colormap('hsv')
+    colormap(gca, 'hsv')
     axis('equal')
 end
 title(titText)
@@ -276,7 +276,7 @@ else
         xslice, yslice, zslice); 
     set(handles.slice, 'EdgeColor','none')
     caxis([-pi pi]),
-    colormap('hsv')
+    colormap(gca, 'hsv')
     axis('equal')    
 end
 title(titText)
@@ -314,7 +314,7 @@ else
         xslice, yslice, zslice); 
     set(handles.slice, 'EdgeColor','none')
     caxis([-pi pi]),
-    colormap('hsv')
+    colormap(gca, 'hsv')
     axis('equal')    
 end
 title(titText)
