@@ -1,9 +1,11 @@
-function [r, pol, res, zer, zj, fj, wj, errvec, wt, deriv] = aaa(F, varargin)
+function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %AAA   AAA and AAA-Lawson (near-minimax) real or complex rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
 %   or as a function handle or chebfun.  R = AAA(F, Z, 'degree', N) attempts to
 %   compute the minimax approximation of degree N (i.e., rational type (N,N)).
+%   If 'deriv_deg', k is specified, R will be a k+1 element cell array containing
+%   the rational approximant and its first k derivatives (as function handles).
 %
 %   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles, residues, and zeros
 %   of R.
@@ -15,11 +17,6 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, deriv] = aaa(F, varargin)
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the vector
 %   of errors ||f-r||_infty in successive iterative steps of AAA.  Note that the
 %   rational degrees are not 1,...,length(ERRVEC) but 0,...,length(ERRVEC)-1.
-%
-%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT, DERIV] = AAA(F, Z) also
-%   returns a function handle for the derivative of R. If derivatives of degree 
-%   up to k are required, specify 'deriv_deg', k, and then the output DERIV 
-%   will be a cell array of derivatives of orders 1 to k.
 %   
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
@@ -41,7 +38,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, deriv] = aaa(F, varargin)
 %   - 'damping', DAMPRATIO: when running Lawson, apply a damping ratio at each
 %       step.  DAMPRATIO = 1 is standard; DAMPRATIO < 1 may be more robust.
 %   - 'sign', 'on' or 1: turns on modification good for approximating sign functions
-%   - 'deriv_deg', k: maximal degree of returned derivatives (default k = 1)
+%   - 'deriv_deg', k: maximal degree of returned derivatives (default k = 0)
 %
 %   If 'degree' is specified and 'lawson' is not, AAA attempts to find a minimax
 %   approximant of degree N by AAA-Lawson iteration.  This will generally be
@@ -85,8 +82,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, deriv] = aaa(F, varargin)
 %   r = aaa(G,Z,'degree',3); plot(G-r(Z)), axis equal, hold off
 %
 %   Z = linspace(-1,1,100); F = Z.^3;
-%   [r,~,~,~,~,~,~,~,~,rprime] = aaa(F,Z);
-%   rprime(10)  
+%   r = aaa(F,Z,'deriv_deg', 1)
+%   r{2}(1)  
 %
 %   References on AAA and AAA-Lawson, respectively:
 %
@@ -262,15 +259,13 @@ elseif ( cleanup_flag == 2 && nlawson == 0 )  % Alternative cleanup.  Currently
 end
 
 % Compute derivatives, if requested by the user
-if ( nargout >= 10 )
-    if ( deriv_deg == 1 )
-        deriv = @(x) diffbary(x, zj, fj, wj, deriv_deg);
-    else
-        deriv = cell(1, deriv_deg);
-        for k = 1:deriv_deg
-            deriv{k} = @(x) diffbary(x, zj, fj, wj, k);
-        end
+if ( deriv_deg >= 1 )
+    r_output = cell(1, deriv_deg+1);
+    r_output{1} = r;
+    for k = 1:deriv_deg
+        r_output{k+1} = @(x) diffbary(x, zj, fj, wj, k);
     end
+    r = r_output;
 end
 
 end % of AAA()
@@ -307,7 +302,7 @@ degree = NaN;                  % Specified degree
 cleanup_tol = 1e-13;           % Cleanup tolerance
 nlawson = Inf;                 % Number of Lawson steps (Inf means adaptive)
 dampratio = 1;                 % Lawson damping ratio (1 means normal)
-deriv_deg = 1;                 % desired degree of the derivatives
+deriv_deg = 0;                 % desired degree of the derivatives
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
