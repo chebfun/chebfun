@@ -19,7 +19,7 @@ if ( isempty( f ) )
 end
 
 % Convert f to a chebfun2 on a larger domain so that we can properly
-% pick up roots that go accross -pi to pi in lambda.  This will allow us 
+% pick up roots that go across -pi to pi in lambda.  This will allow us
 % to account for the inherent periodicity of the sphere.
 rts = roots@separableApprox( chebfun2(f,[-pi-2*pi/100 pi 0 pi]) );
 

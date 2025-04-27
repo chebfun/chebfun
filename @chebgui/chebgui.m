@@ -112,7 +112,7 @@ classdef chebgui
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         type = '';          % Type of chebgui (bvp, pde, or eig)
-        domain = '';        % Spacial domain (may contain breakpoints)
+        domain = '';        % Spatial domain (may contain breakpoints)
         DE = '';            % Differential equation, or rhs in u_t = ... for PDEs
         LBC = '';           % Left BCs
         RBC = '';           % Right BCs

@@ -50,7 +50,7 @@ classdef trigdouble < chebdouble
             % Interval scaling. (Note: trigtech.diffmat is defined on [0, 2*pi))
             c = 2/diff(u.domain);
             
-            % Muliplying by the kth-order differentiation matrix:
+            % Multiplying by the kth-order differentiation matrix:
             u.values = c^k*(D{k}*u.values);
             
             % Update the difforder:
@@ -81,7 +81,7 @@ classdef trigdouble < chebdouble
                 W{N} = c*trigtech.quadwts(N);
             end
             
-            % Find the sum by muliplying by the weights vector:
+            % Find the sum by multiplying by the weights vector:
             I = W{N}*u.values;
             
         end

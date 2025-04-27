@@ -59,7 +59,7 @@ for k = 1:N
     p = p.*(x - v(k));
 end
 
-% Contruct the CHEBFUN:
+% Construct the CHEBFUN:
 f = chebfun(p, d, 'tech', @chebtech2);
 
 end

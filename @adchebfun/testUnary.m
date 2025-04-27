@@ -1,6 +1,6 @@
 function pass = testUnary(funcList, tol)
 %TESTUNARY  Test that ADCHEBFUN is doing the correct thing for values,
-%   derivatives and lineary information. Used for most unary operators (e.g.
+%   derivatives and linearity information. Used for most unary operators (e.g.
 %   sin, cos, exp, ...).
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 

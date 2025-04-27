@@ -8,7 +8,7 @@ function w = baryWeights(x)
 
 % [TODO]: Should this live in the trunk?
 
-% Check inout dimension:
+% Check input dimension:
 [n, m] = size(x);
 if ( m > 1 )
     if ( n > 1 )
