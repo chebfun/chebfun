@@ -8,9 +8,16 @@ function display(X)
 %   statement that results in a CHEBFUN2V.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information. 
+% See http://www.chebfun.org/ for Chebfun information.
 
-if ( isequal(get(0, 'FormatSpacing'), 'compact') )
+if is_octave()
+    [fmt, spacing] = format();
+    compact = strcmp(spacing, 'compact');
+else
+    compact = strcmp(get(0, 'FormatSpacing'), 'compact');
+end
+
+if ( compact )
 	disp([inputname(1), ' =']);
 	disp(X);
 else

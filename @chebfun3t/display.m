@@ -4,7 +4,14 @@ function display(F)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isequal(get(0, 'FormatSpacing'), 'compact') )
+if is_octave()
+    [fmt, spacing] = format();
+    loose = strcmp(spacing, 'loose');
+else
+    loose = strcmp(get(0, 'FormatSpacing'), 'loose');
+end
+
+if ( ~ loose )
 	disp([inputname(1), ' =']);
 else
 	disp(' ');
@@ -12,7 +19,6 @@ else
 	disp(' ');
 end
 
-loose = strcmp( get(0, 'FormatSpacing'), 'loose');
 
 % Get display style and remove trivial empty CHEBFUN3 case.
 if ( isempty(F) )

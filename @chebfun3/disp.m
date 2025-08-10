@@ -1,12 +1,17 @@
 function disp(F)
 %DISP   Display a CHEBFUN3 to the command line.
-% 
+%
 % See also CHEBFUN3/DISPLAY.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-loose = strcmp( get(0, 'FormatSpacing'), 'loose');
+if is_octave()
+    [fmt, spacing] = format();
+    loose = strcmp(spacing, 'loose');
+else
+    loose = strcmp(get(0, 'FormatSpacing'), 'loose');
+end
 
 % Get display style and remove trivial empty CHEBFUN3 case.
 if ( isempty(F) )
