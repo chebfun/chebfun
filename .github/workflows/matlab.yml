@@ -9,6 +9,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Install MATLAB
         uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2021a
       - name: Run commands
         uses: matlab-actions/run-command@v2
         with:
