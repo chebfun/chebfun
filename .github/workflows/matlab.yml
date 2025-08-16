@@ -32,3 +32,18 @@ jobs:
         uses: matlab-actions/run-command@v2
         with:
           command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
+
+  r2021b-matlab-no-toolbox-chebtest:
+    name: R2021b Matlab no toolboxes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install MATLAB
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2021b
+      - name: Run commands
+        uses: matlab-actions/run-command@v2
+        with:
+          command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
