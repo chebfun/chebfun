@@ -122,7 +122,7 @@ classdef chebgui
         init = '';          % Initial guess/condition for nonlin BVPs/PDEs
         tol = '5e-13';      % Solution tolerance
 
-        % This initalises the OPTIONS struct for CHEBGUI. It containts a list of
+        % This initialises the OPTIONS struct for CHEBGUI. It contains a list of
         % miscellaneous options for when solving problems with CHEBGUI, namely:
         %   damping:        Whether the Newton iteration is to be damped or not.
         %   grid:           Show grids on plots in CHEBGUI.

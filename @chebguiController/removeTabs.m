@@ -4,7 +4,7 @@ function str = removeTabs(str)
 
 % Loop over the STR input (might be a cell-array):
 for k = 1:numel(str)
-    % Initalise the index:
+    % Initialise the index:
     idx = 1;
     % Current string we're looking at
     strk = str{k};

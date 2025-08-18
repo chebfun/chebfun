@@ -1,6 +1,6 @@
 function t = blockClasses(L)
 %BLOCKCLASSES Class of each block in the chebmatrix.
-%   Returns a cell arrray. 
+%   Returns a cell array.
 
 %  Copyright 2017 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

@@ -9,7 +9,7 @@ function f = simplify(f, varargin)
 %   accordingly. Note that unlike the 2D case, where truncation by SVD gives 
 %   optimal low rank approximation, this is not necessarily true in dimensions 
 %   higher than 2. However, this usually gives a good approximation to the best
-%   tensor of the correpsonding rank.
+%   tensor of the corresponding rank.
 %
 % See also CHEBFUN3/HOSVD.
 

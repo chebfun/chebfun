@@ -3,7 +3,7 @@ function varargout = gradient(f)
 %   [FX, FY, FZ] = GRAD(F) returns the gradient of the CHEBFUN3 object F, 
 %   where
 %   FX is the partial derivative of F in the first variable,
-%   FY is the partial derivative of F in the second varaiable, and 
+%   FY is the partial derivative of F in the second variable, and
 %   FZ is the partial derivative of F in the third variable.
 %
 %   G = GRAD(F) returns a CHEBFUN3V object which represents

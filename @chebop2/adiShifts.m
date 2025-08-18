@@ -12,7 +12,7 @@ A = det([-a*alp a 1; -b b 1 ; c c 1]);         % Determinant formulae for Mobius
 B = det([-a*alp -alp a; -b -1 b ; c 1 c]);
 C = det([-alp a 1; -1 b 1 ; 1 c 1]);
 D = det([-a*alp -alp 1; -b -1 1; c 1 1]);
-T = @(z) (A*z+B)./(C*z+D);                     % Mobius transfom
+T = @(z) (A*z+B)./(C*z+D);                     % Mobius transform
 J = ceil( log(16*gam)*log(4/tol)/pi^2 );       % Number of ADI iterations
 if ( alp > 1e7 )
     K = (2*log(2)+log(alp)) + (-1+2*log(2)+log(alp))/alp^2/4;

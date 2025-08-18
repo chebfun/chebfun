@@ -46,7 +46,7 @@ elseif ( strcmpi(x, ':') && strcmpi(y, ':') && strcmpi(z, ':') )   % f(:, :, :)
     % Simply return the CHEBFUN3 object itself.
     out = f;
 
-% Developer Note: The following ugly permutaions are necessary to keep 
+% Developer Note: The following ugly permutations are necessary to keep
 % consistent with Chebfun2 constructor.
 elseif ( isnumeric(x) && strcmpi(y, ':') &&  strcmpi(z, ':') ) % f(x, :, :)
     % Make evaluation points a vector.

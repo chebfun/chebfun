@@ -15,7 +15,7 @@ function D = diffmat(n, p)
 % References for the rectangular differentiation matrices:
 %
 % J.A.C. Weideman and S.C. Reddy, A MATLAB differentiation matrix suite, ACM
-% Transcations on Mathematical Software, Vol. 26, No. 4, Page 465--519, 2000. 
+% Transactions on Mathematical Software, Vol. 26, No. 4, Page 465--519, 2000.
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
