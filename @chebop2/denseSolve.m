@@ -190,7 +190,7 @@ end
 
 % TODO: For now, this only allows N = a*u_{xx} + b*u_{yy} with a = b = 1.
 %       The fast Poisson solver can probably handle any constants a, b, though.
-% [m, n] = size(op); % See above.
+[m, n] = size(op); % See above.
 res = m>=3 && n>=3 && size(find(op),1)==2 && op(3,1)==1 && op(1,3)==1;
 
 end
