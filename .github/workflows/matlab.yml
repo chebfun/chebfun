@@ -48,7 +48,7 @@ jobs:
         with:
           command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
 
- r2025a-matlab-chebtest:
+  r2025a-matlab-chebtest:
     name: R2025a Matlab chebtest
     runs-on: ubuntu-latest
     steps:
