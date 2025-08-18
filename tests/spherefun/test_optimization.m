@@ -54,16 +54,21 @@ pass = err < tol;
 %% Check double wrapping is hidden:
 j = length(pass);
 
+if ( isempty(ver('optim')) )
+  % increase tolerance for last few tests if we don't have fmincon
+  tol = 1000*tol
+end
+
 f = spherefun(@(x,y,z) exp(x));
 [m,loc] = max2(f)
-if ( isempty(ver('optim')) )
-  % increase tolerance for last tests if we don't have fmincon
-  tol = 100*tol;
-end
-pass(j+1) = abs(loc(1) - 0) < tol
+exact = [0 pi/2];
+loc - exact
+pass(j+1) = norm(loc - exact) < tol
 
 f = spherefun(@(x,y,z) exp(x));
 [m,loc] = min2(f)
-pass(j+2) = abs(loc(1) - 0) < tol
+exact = [0 -pi/2]
+loc - exact
+pass(j+2) = norm(loc - exact) < tol
 
 end
