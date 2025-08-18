@@ -33,7 +33,7 @@ pass(2) = ( norm(Q*R - F.rows) < tol );
 % Check CDR
 [C, D, R] = cdr(F);
 % Make D positive:
-for k = 1:size(D)
+for k = 1:size(D,1)
     if ( D(k, k) < 0 )
         D(k, k) = -D(k, k);
         C(:, k) = -C(:,k);

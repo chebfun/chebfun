@@ -176,6 +176,12 @@ op = N.coeffs;
 if ( iscell(op) )
     try
         op = cell2mat(op);
+        % TODO: This intent here seems to be that the operation above will 
+        % fail is N is not a Poisson operator. However, it fails quietly in
+        % in R2025a, causing a crash in [m, n] = size(op); below. As a quick 
+        % fix I move that call to size() here, so that the error will still
+        % be caught. However, this process should be improved.
+        [m, n] = size(op);
     catch
         res = false;
         return
@@ -184,7 +190,7 @@ end
 
 % TODO: For now, this only allows N = a*u_{xx} + b*u_{yy} with a = b = 1.
 %       The fast Poisson solver can probably handle any constants a, b, though.
-[m, n] = size(op);
+% [m, n] = size(op); % See above.
 res = m>=3 && n>=3 && size(find(op),1)==2 && op(3,1)==1 && op(1,3)==1;
 
 end
