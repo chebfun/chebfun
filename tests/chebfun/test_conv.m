@@ -87,7 +87,7 @@ tol = 10*max(get(f, 'vscale')*eps, ...
 pass(8) = norm(h1 - h2, inf) < tol;
 
 %% Testing Delta function convolution
-% Delta funciton reproduces the function under convolution:
+% Delta function reproduces the function under convolution:
 f = chebfun({@(x) sin(x), @(x) cos(x), @(x) sin(4*x.^2)}, [-2, -1, 0, 1] );
 x = chebfun('x', [-2, 1] );
 d = dirac(x);

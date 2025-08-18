@@ -90,7 +90,7 @@ exact = chebfun(@(x) 1/2*cos(x) + 1/2*sin(x), dom, 'periodic');
 pass(5) = norm(u - exact, inf) < tol;
 pass(6) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
-%% Test the TRIGCOLLOC class. FIRST ORDER AND VARIABLES COEFFICIENTS: 
+%% Test the TRIGCOLLOC class. FIRST ORDER AND VARIABLE COEFFICIENTS:
 %  u' + (1+cos(x))u = cos(2x), on [-2*pi 2*pi].
 
 % Set domain, c, and rhs f.
@@ -138,7 +138,7 @@ b = chebfun(@(x) sin(cos(2*x)), dom, 'periodic');
 c = chebfun(@(x) exp(cos(x)), dom);
 f = chebfun(@(x) cos(x), dom);
 
-% Set chebop. The variale coefficients have been constructed outside the
+% Set chebop. The variable coefficients have been constructed outside the
 % chebop, some with 'periodic', some without it.
 L = chebop(@(u) a.*diff(u, 2) + b.*diff(u) + c.*u, dom);
 L.bc = 'periodic';
@@ -259,7 +259,7 @@ b = chebfun(@(x) sin(cos(2*x)), dom, 'periodic');
 c = chebfun(@(x) exp(cos(x)), dom);
 f = chebfun(@(x) cos(x), dom);
 
-% Set chebop. The variale coefficients have been constructed outside the
+% Set chebop. The variable coefficients have been constructed outside the
 % chebop, some with 'periodic', some without it.
 L = chebop(@(u) a.*diff(u, 2) + b.*diff(u) + c.*u, dom);
 L.bc = 'periodic';

@@ -99,7 +99,7 @@ end
 function vals = fastSphereEval(f, lambda, theta)
 %FASTSPHEREEVAL     Fast evaluation of a spherefun
 %   VALS = FASTSPHEREEVAL(F, LAMBDA, THETA) evaluates the spherefun F at the
-%   points (LAMBDA, THETA), where LAMBDA is longitude, with -pi<=LAMBA<=pi, and
+%   points (LAMBDA, THETA), where LAMBDA is longitude, with -pi<=LAMBDA<=pi, and
 %   THETA is co-latitude, with 0<=THETA<=PI. Returns the values of F at these
 %   points in the array VALS.
 %

@@ -46,7 +46,7 @@ function [PA, P, PS] = reduceOne(disc, A, S, m, n)
 
 % Projection matrix for US removes the last m coeffs:
 P = speye(sum(n));
-v = []; % Row indicies which are to be removed by projection.
+v = []; % Row indices which are to be removed by projection.
 nn = cumsum([0 n]);
 for k = 1:disc.numIntervals
     v = [v nn(k) + n(k) - (0:m-1)];
