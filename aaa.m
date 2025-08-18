@@ -137,9 +137,7 @@ for m = 1:mmax
 
     % Compute weights:
     if ( length(J) >= m )                  % The usual tall-skinny case
-%       [~, S, V] = svd(A(J,:), 0);        % Reduced SVD - replaced 8/24 by the following
-        tmp = qr(A(J,:), 0);               % Reduced SVD, with factor-of-2 speedup
-        [~, S, V] = svd(tmp, 0);           %    from Lawson-Hanson-Chan trick
+        [~, S, V] = svd(A(J,:), 0);        % Reduced SVD
         s = diag(S);
         if (sign_flag == 0)
             mm = find( s == min(s) );          % Treat case of multiple min sing val
@@ -676,7 +674,6 @@ pol = eig(E, B);
 pol = pol(~isinf(pol));
 
 % Compute residues via formula for res of quotient of analytic functions:
-
 N = @(t) (1./(t-zj.')) * (fj.*wj);
 Ddiff = @(t) -((1./(t-zj.')).^2) * wj;
 res = N(pol)./Ddiff(pol);
