@@ -1,4 +1,10 @@
-name: chebfun Tests
+# This file specifies the "GitHub Actions" CI workflows related to running
+# the testsuite on various versions of Matlab.
+# It is expected that those versions will change over time, but the general
+# idea is to at the very least, to ensure Chebfun works on some older version
+# of Matlab, as well as the most recent version(s) of Matlab.
+
+name: Matlab tests
 
 on:
   push:
