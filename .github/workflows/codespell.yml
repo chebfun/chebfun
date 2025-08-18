@@ -19,7 +19,7 @@ jobs:
   codespell:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: codespell-project/actions-codespell@v2
         with:
           ignore_words_file: .codespell-ignorewords
@@ -28,5 +28,5 @@ jobs:
           check_hidden: true
           # list of files/dirs to skip
           skip: ""
-          # eventually, errors would be better but lots of fixes needed first
+          # eventually, errors might be better if you'd like the CI to fail
           only_warn: 1
