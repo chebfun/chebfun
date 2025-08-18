@@ -48,22 +48,22 @@ jobs:
         with:
           command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
 
-#  r2025a-matlab-chebtest:
-#     name: R2025a Matlab chebtest
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Check out repository
-#         uses: actions/checkout@v5
-#       - name: Install MATLAB
-#         uses: matlab-actions/setup-matlab@v2
-#         with:
-#           release: R2025a
-#           products: Optimization_Toolbox
-#       - name: Run commands
-#         uses: matlab-actions/run-command@v2
-#         with:
-#           command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
-#
+ r2025a-matlab-chebtest:
+    name: R2025a Matlab chebtest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Install MATLAB
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2025a
+          products: Optimization_Toolbox
+      - name: Run commands
+        uses: matlab-actions/run-command@v2
+        with:
+          command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
+
 #  # This job tracks the latest Matlab, which might be the same as above but this
 #  # one will automatically test against 2025b when it comes out.
 #  latest-matlab-chebtest:
