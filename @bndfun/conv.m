@@ -28,7 +28,7 @@ function h = conv(f, g)
 % In the following, it is assumed that the length of the domain of g is greater
 % than the length of the domain of f. If this is not the case, then simply
 % compute h = conv(g, f), which is equivalent. We assume f and g are polynomials
-% of degree M and N, resepectively. If f and g are piecewise-defined, one can
+% of degree M and N, respectively. If f and g are piecewise-defined, one can
 % use the bilinearity of convolution and convolve each each the FUNs
 % individually.
 %
@@ -69,7 +69,7 @@ function h = conv(f, g)
 %  a+c fl a+d     b+d
 %
 % Rather than make a BNDFUN corresponding to the each of the patches, we
-% instead evaluate directly on a corresonding Chebyshev grid of appropriate
+% instead evaluate directly on a corresponding Chebyshev grid of appropriate
 % size, which turns out to be far more efficient. 
 %
 % Total complexity: O( R*(m*n + n*n) + m*m )
@@ -118,7 +118,7 @@ coeffsConvCost = numPatches*((M+N)*N);
 quadConvCost = (M+N)^3;
 if ( numPatches > 1 && coeffsConvCost > quadConvCost )
     h_left = conv(f, restrict(g, c+[0, b-a]));     % Left triangle
-    h_right = conv(f, restrict(g, d-[(b-a) 0]));   % Right tirangle
+    h_right = conv(f, restrict(g, d-[(b-a) 0]));   % Right triangle
     % Middle:
     [t, w] = legpts(ceil( (M+N+5)/2 ), [a,b]);     % Legendre grid, if (M+N+5)/2 is non-integer then increase
     [tt, xx] = meshgrid(t,x);                      % Cheb/Leg grid to evaluate g
@@ -293,7 +293,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [gammaL, gammaR] = easyConv(alpha, beta)
-% Convolution using Legendre expansions and the analoguous convolution theorem.
+% Convolution using Legendre expansions and the analogous convolution theorem.
 % See Hale and Townsend, "An algorithm for the convolution of Legendre series",
 % SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages A1207-A1220, 2014.
 

@@ -68,7 +68,7 @@ v = bsxfun(@times, (0:N-1).' + .5, v);        % Scaling
 end
 
 function c = ndct_transpose(f)
-%NDCT_TRANSPOSE  Evalute transpose of the NDCT operator.
+%NDCT_TRANSPOSE  Evaluate transpose of the NDCT operator.
 %   See NDCT in DLT.M.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

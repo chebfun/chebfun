@@ -137,7 +137,7 @@ tspan = S.tspan;
 TF = tspan(end);
 timesteps = timesteps/TF; % Relative time-steps
 
-% Plot Accuarcy vs time-step:
+% Plot Accuracy vs time-step:
 figure, subplot(1, 2, 1)
 labels = cell(nSchemes, 1);
 for l = 1:nSchemes
@@ -161,7 +161,7 @@ set(gca, 'fontsize', 16), axis([left right down up])
 xlabel('Relative time-step'), ylabel(sprintf('Relative error at t = %.3f', TF))
 legend(labels, 'Location', 'NorthWest')
 
-% Plot Accuarcy vs computer time:
+% Plot Accuracy vs computer time:
 subplot(1, 2, 2)
 for l = 1:nSchemes
     if ( l > 1 )

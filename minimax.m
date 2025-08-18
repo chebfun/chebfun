@@ -232,7 +232,7 @@ function xk = cfInit(f, fHandle, m, n)
             pqh = @(x) feval(p, x)./feval(q, x);
             [xk, ~, ~, flag] = exchange([], 0, 2, f, fHandle, p, pqh, ...
                                         m+n+2, n);
-        catch ME  % an error occured when calling cf (ignore it)
+        catch ME  % an error occurred when calling cf (ignore it)
             flag = 0;
         end
     end
@@ -1319,7 +1319,7 @@ function xk = findReference(f,fHandle,r,m,n,z)
     xk = findExtrema(f,fHandle, r, sort(z,'ascend'));
     
     % Deal with length(xk) not equal to the desired m+n+2.
-    if length(xk) > m+n+2 % Reduce reference pts becuse too many found. 
+    if length(xk) > m+n+2 % Reduce reference pts because too many found.
    
         xkdiff = diff(xk);                        
         [~,ix] = sort(xkdiff,'descend'); % Take those with largest gaps.

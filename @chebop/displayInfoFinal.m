@@ -13,7 +13,7 @@ function displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
 %   U:              Solution of the nonlinear BVP.
 %   DELTA:          Final Newton correction
 %   ITERNO:         Total number of iterations needed.
-%   ERRESTDE:       Estimate of the error of the solution of the differntial eq.
+%   ERRESTDE:       Estimate of the error of the solution of the differential eq.
 %   ERRESTBC:       Estimate of the error of satisfying the boundary conditions.
 %   DISPLAYFIG:     Handle to a Matlab figure for plotting.
 %   DISPLAYTIMER:   A tic/toc timer for controlling pauses.

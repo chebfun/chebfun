@@ -1326,7 +1326,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     % Initialize as an OPERATORBLOCK
                     u.jacobian = operatorBlock.eye(dom);
                 else
-                    % Initalize as a CHEBFUN
+                    % Initialize as a CHEBFUN
                     u.jacobian = chebfun(1, dom);
                 end
 

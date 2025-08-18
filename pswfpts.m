@@ -128,7 +128,7 @@ function [x,w] = pswfggq(N, c, x)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: The modified Newton method is very sensitive to the
-% intial guess. Some remedies are suggested in [1], but here we just choose
+% initial guess. Some remedies are suggested in [1], but here we just choose
 % what we hope is a good guess and cross our fingers. It seems to work well
 % for smallish N and C.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

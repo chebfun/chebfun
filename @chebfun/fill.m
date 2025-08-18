@@ -37,7 +37,7 @@ while ( k < (length(varargin) - 1) )
         end
         % Call plotData():
         data = plotData(varargin{k}, varargin{k+1});
-        % Remove NaNs (arrising from interior breakpoints):
+        % Remove NaNs (arising from interior breakpoints):
         idx = ~any(isnan(data.xLine), 2);
         varargin(k:k+1) = {data.xLine(idx,:), data.yLine(idx,:)};
         k = k + 1;

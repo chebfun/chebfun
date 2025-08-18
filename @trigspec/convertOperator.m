@@ -17,7 +17,7 @@ function [M, S] = convertOperator(disc, item)
     M = matrix(valsDisc);
     S = [];
     
-    % Convert operator to and frmo coefficient space:
+    % Convert operator to and from coefficient space:
     M = tech.vals2coeffs(tech.coeffs2vals(M.').');
 
     % Try to make M sparse

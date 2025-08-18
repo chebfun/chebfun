@@ -3,7 +3,7 @@ function f = toFunctionOut(disc, values, cutoff)
 %   TOFUNCTIONIN(DISC, VALUES, CUTOFF) converts the values of a 
 %   CHEBCOLLOC1-discretized function to a CHEBFUN. If CUTOFF is
 %   specified the resulting CHEBFUN will have length CUTOFF. If DISC.DOMAIN 
-%   has breakpoints, the input should have cell arrrays corresponding 
+%   has breakpoints, the input should have cell arrays corresponding 
 %   to smooth pieces.
 %
 %   If VALUES is matrix valued, the output is an array-valued CHEBFUN, where
