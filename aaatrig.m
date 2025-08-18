@@ -92,7 +92,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %   [3] Peter J. Baddoo, "The AAAtrig algorithm for rational approximation 
 %   of periodic functions", SIAM J. Sci. Comp. (2021).
 %
-% See also AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
+% See also DIFFBARYTRIG, AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -478,6 +478,8 @@ end % End of PARSEINPUT().
 
 function [r, pol, res, zer, z, f, w] = ...
     cleanuptrig(r, form, finfP, finfM, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
+%disp('entering cleanuptrig')  %%%LNT
+min(abs(res))  %%%LNT
 % Remove spurious pole-zero pairs.
 
 % Find negligible residues:
@@ -486,14 +488,17 @@ if any(F)
 else
    geometric_mean_of_absF = 0;
 end
+%geometric_mean_of_absF    %%% LNT
 Zdistances = NaN(size(pol));
 for j = 1:length(Zdistances);
    Zdistances(j) = min(abs(pol(j)-Z));
 end
 ii = find(abs(res)./Zdistances < cleanup_tol * geometric_mean_of_absF);
+ii = find(abs(res)./Zdistances < cleanup_tol) ; %% LNT
 ni = length(ii);
 if ( ni == 0 )
     % Nothing to do.
+%disp(' nothing to do')  %%% LNT
     return
 elseif ( ni == 1 )
     warning('CHEBFUN:aaatrig:Froissart','1 Froissart doublet');
