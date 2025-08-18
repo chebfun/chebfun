@@ -116,7 +116,7 @@ while ( 1 )
     [ishappy, cutoff] = happinessCheck(f, op, values, data, pref);
         
     if ( ishappy ) % We're happy! :)
-        % disard unwanted coefficients
+        % discard unwanted coefficients
         f = prolong(f,cutoff);  
         break
     end

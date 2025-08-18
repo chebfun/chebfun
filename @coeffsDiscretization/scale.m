@@ -8,7 +8,7 @@ function scl = scale(disc, uFun)
 % This command was created because LINOP/EXPM wants an estimate for
 % the vertical scale of a function but due to encapsulation does not know
 % if a vector in LINOP/EXPM represents values or coefficients. SCALE allows 
-% the resposibility to be on the underlying DISC method. 
+% the responsibility to be on the underlying DISC method.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

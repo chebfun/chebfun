@@ -38,7 +38,7 @@ function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = discretize(N, f, m, n, flag
 %      odd modes decouple in 2nd variable. 
 %
 % Returns RHS with degrees of freedom removed and bb which stores
-% elminated boundary conditions, gg eliminated boundary rows.
+% eliminated boundary conditions, gg eliminated boundary rows.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -323,7 +323,7 @@ end
 end
 
 function [B, G, P] = canonicalBC(B, G)
-%CANONICALBC   Form a linear combintation of the boundary conditions 
+%CANONICALBC   Form a linear combination of the boundary conditions
 %so that they can be used for imposing on the PDE. 
 
 P = nonsingularPermute(B);
