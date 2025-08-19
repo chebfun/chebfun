@@ -27,7 +27,6 @@ yy = yy + .1*randn(size(yy));
 f = gpr(xx,yy,'noise',.1);
 pass(4) = std(f(xx)-yy) < .25;
 
-
 % Test horizontal scale (small interval):
 xx = 2e-100*xx-1e-100;
 yy = randn(10,1);
@@ -60,7 +59,8 @@ f = gpr(xx,yy);
 disp('Blind debugging') % Delete me
 f(xx) % Delete me
 yy % Delete me
-err = norm((f(xx) - yy)./yy,Inf);
+(f(xx) - yy)./yy
+err = norm((f(xx) - yy)./yy,Inf)
 pass(10) = err < 1e-10;
 
 % Test vertical scale (big function):
