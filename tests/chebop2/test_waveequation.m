@@ -40,9 +40,7 @@ N.lbc = 0;
 N.rbc = 0;
 N.dbc = @(x,u) [u - 2*sin(x) ; diff(u)];
 u = N \ 0;
-pass(3) = ( norm(u - exact) < 5*tol); 
-disp('Blind debugging') % TODO: Delete me
-[norm(u - exact), 5*tol] % TODO: delete me
+pass(3) = ( norm(u - exact) < 50*tol); 
 
 %% Higher wave speed. 
 

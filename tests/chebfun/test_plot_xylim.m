@@ -42,7 +42,6 @@ pass1(length(pass1) + 1) = (norm(0.62*[-1 1] - yl) > 0.05 );
 [norm(0.62*[-1 1] - yl),  0.05] % TODO: Delete me
 pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
 hold off
-return
 
 %% Unbounded functions
 
