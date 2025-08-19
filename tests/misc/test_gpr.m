@@ -60,7 +60,8 @@ pass(9) = err < 1e-10;
 f = gpr(xx,yy);
 err = norm((f(xx) - yy)./yy,Inf);
 pass(10) = err < 1e-10;
-
+disp('Blind debugging') % TODO: Delete me
+[err, 1e-10]
 
 % Test vertical scale (big function):
 x = (1:5).^2; y = sin(x);

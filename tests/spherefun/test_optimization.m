@@ -66,5 +66,6 @@ pass(j+1) = abs(loc(1) - 0) < tol;
 f = spherefun(@(x,y,z) exp(x));
 [m,loc] = min2(f);
 pass(j+2) = abs(loc(1) - 0) < tol;
-
+disp('Blind debugging') % TODO: Delete me
+[abs(loc(1) - 0), tol]
 end

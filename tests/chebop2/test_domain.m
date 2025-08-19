@@ -18,6 +18,8 @@ N.lbc = 0;
 u = N \ 0; 
 
 pass(1) = ( norm( u(:,d(3)) - N.dbc.' ) < tol); 
+disp('Blind debugging test_domain') % TODO: Delete me
+[norm( u(:,d(3)) - N.dbc.' ), tol] % TODO: delete me
 pass(2) = ( norm( u(:,d(4)) - N.ubc.' ) < tol); 
 pass(3) = ( norm( u(d(1),:) - N.lbc ) < tol); 
 pass(4) = ( norm( u(d(2),:) - N.rbc ) < tol); 

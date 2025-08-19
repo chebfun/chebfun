@@ -17,10 +17,13 @@ pass1(length(pass1) + 1) = ( norm(dom1 - get(gca,'xlim')) < tol);
 plot(0.62*sin(x))
 yl = get(gca, 'ylim');
 pass1(length(pass1) + 1) = ( norm(0.62 - yl(2)) > 0.05);
+disp('Blind debugging test_plot_xylim') % TODO: Delete me
+[norm(0.62 - yl(2)) 0.05] % TODO: Delete me
 
 plot(0.62*[sin(x) 0*x -sin(x)])
 yl = get(gca, 'ylim');
 pass1(length(pass1) + 1) = ( norm(0.62*[-1 1] - yl) > 0.05);
+[norm(0.62*[-1 1] - yl), .05]  % TODO: Delete me
 pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
 
 plot(sin(x))
@@ -36,8 +39,10 @@ hold on
 plot(-.62*sin(x))
 yl = get(gca,'ylim');
 pass1(length(pass1) + 1) = (norm(0.62*[-1 1] - yl) > 0.05 );
+[norm(0.62*[-1 1] - yl),  0.05] % TODO: Delete me
 pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
 hold off
+return
 
 %% Unbounded functions
 
