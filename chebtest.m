@@ -168,8 +168,8 @@ else
         fprintf('The following tests failed or crashed:\n');
         for k = indx(:)'
             loc = fullfile(testsDir, allResults{k,1});
-            fprintf('   %s %s\n', printTestFilename(allResults{k,1:2}, loc), ...
-                errorMessages{-durations(k)})
+            fprintf('   %s %s %s\n', printTestFilename(allResults{k,1:2}, loc), ...
+                errorMessages{-durations(k)}, allResults{k,4})
         end
     end
 
@@ -224,7 +224,7 @@ maxLength = max(cellfun(@length, testFiles));
 % Allocate pass and timing variables:
 numFiles  = numel(testFiles);
 durations = zeros(numFiles, 1);
-fails = cell(numFiles,1);
+fails = cell(numFiles,1); failsStr = cell(numFiles,1);
 errorMessages = {'FAILED', 'CRASHED'};
 
 % TODO: Eventually this should be removed.
@@ -257,10 +257,10 @@ try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
                 % Success message.
                 message = sprintf('passed in %.4fs', durations(k));
             elseif ( durations(k) == -1 ) % FAIL
-                % Print failing subtests
-                fails{k} = strrep(int2str(fails{k}), '  ', ',');
+                % Print failing subtests string
+                failsStr{k} = ['{' strrep(int2str(fails{k}), '  ', ',')  '}'];
                 % Error flags are negative indices.
-                message = [errorMessages{-durations(k)}, ' {' fails{k} '}'];
+                message = [errorMessages{-durations(k)}, ' ' , failsStr{k}];
             else % CRASH
                 message = [errorMessages{-durations(k)}];
             end
@@ -295,11 +295,13 @@ cd(currDir);
 
 % Dump all the test data into a cell array to pass back to the CHEBTEST
 % function. This data is what is written to a .CSV file if logging is on.
+% TODO: This would be better as a struct.
 testResults = cell(numFiles,3);
 for k = 1:numFiles
     testResults{k,1} = testDir;               % directory name
     testResults{k,2} = testFiles{k}(1:end-2); % test file name
     testResults{k,3} = durations(k);          % duration / error flag
+    testResults{k,4} = failsStr{k};           % failing subtests (string)
 end
 
 end
