@@ -286,7 +286,7 @@ end
 end
 
 function B = unconstrainedMatrixEquation(ODE, jj, n, order, dom)
-% Construct the unconstrained Matix Equation. Adding in the constraints later.
+% Construct the unconstrained Matrix Equation. Adding in the constraints later.
 
 B = spalloc(n, n, 3*n);
 for kk = 1:size(ODE, 1)

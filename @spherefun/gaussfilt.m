@@ -9,7 +9,7 @@ function g = gaussfilt(f, sig)
 %   which corresponds to filtering at a spatial scale of 1 degree.
 %   
 %   The filter is equivalent to running the diffusion equation on the unit 
-%   sphere to time t=0.5*SIG^2 with a diffusion coefficent set to 1 and
+%   sphere to time t=0.5*SIG^2 with a diffusion coefficient set to 1 and
 %   the initial condition being F. 
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.

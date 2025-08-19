@@ -205,7 +205,7 @@ classdef spinoperator
         % Returns the spatial dimension:
         dim = getDimension(S)
         
-        % Returns a grid correspoding to a SPINOPRERATOR object:
+        % Returns a grid corresponding to a SPINOPRERATOR object:
         grid = getGrid(S, N, dom)
         
         % Returns the adequate SPINPREFERENCE object:

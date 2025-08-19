@@ -1,7 +1,7 @@
 function str = parSimp(str)
 %PARSIMP   Remove unnecessary parentheses from string inputs.
-%   STROUT = PARSIMP(STRIN) returns the string STROUT, obtained by doing some
-%   basic simplifications of the string STRIN, attempting to remove unnecessary
+%   STROUT = PARSIMP(STR) returns the string STROUT, obtained by doing some
+%   basic simplifications of the string STR, attempting to remove unnecessary
 %   parenthesis, zeros, and consecutive +/- pairs.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 

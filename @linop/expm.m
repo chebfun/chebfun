@@ -58,7 +58,7 @@ if ( isa(discType, 'function_handle') )
     
     dimVals( dimVals < length(u0) ) = [];
     
-    % Apply the discretiztion dimension on all pieces:
+    % Apply the discretization dimension on all pieces:
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
 else
     % A discretization is given:

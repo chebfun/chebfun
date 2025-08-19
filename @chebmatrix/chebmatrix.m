@@ -411,9 +411,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                 end
             end
             
-            % Convert additional inouts to arrays of cells (i.e., just .blocks).
+            % Convert additional inputs to arrays of cells (i.e., just .blocks).
             varargin = cellfun(@(v) v.blocks, varargin, 'UniformOutput', false);
-                  
+
             if ( ~uniOut )
                 A.blocks = cellfun(op, A.blocks, varargin{:}, ...
                     'UniformOutput', false);

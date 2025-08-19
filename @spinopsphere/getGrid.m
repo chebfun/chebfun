@@ -1,5 +1,5 @@
 function grid = getGrid(~, N, dom)
-%GETGRID   Returns a grid correspoding to a SPINOPSPHERE object.
+%GETGRID   Returns a grid corresponding to a SPINOPSPHERE object.
 %
 % See also SPINOPSPHERE.
 

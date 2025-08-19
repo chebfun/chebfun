@@ -13,7 +13,7 @@ function f = circshift(h, alpha)
 
 % This is what we want to do.  However, we can do it much master by
 % drilling down to the trigtechs representing the rows.  If one is worried
-% about encapsulation then use this commented out code segement and remove
+% about encapsulation then use this commented-out code segment and remove
 % the code starting at the if.
 % h = diskfun(@(t, r) feval(h, t-alpha, r, 'polar'), 'polar'); %rotate by alpha
 

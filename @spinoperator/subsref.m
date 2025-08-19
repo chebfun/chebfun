@@ -1,6 +1,6 @@
 function varargout = subsref(S, index)
 %SUBSREF    Evaluate a SPINOPERATOR or reference its fields.
-%   S(U) is equaivalent to FEVAL(S, U).
+%   S(U) is equivalent to FEVAL(S, U).
 %     
 %   S.PROP returns the property PROP of S.
 %

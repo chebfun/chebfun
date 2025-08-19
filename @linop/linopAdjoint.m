@@ -305,7 +305,7 @@ else
   B = (endVals'\fU')';
   if ( rank(B) ~= nbcs )
     error('CHEBFUN:LINOP:adjoint:boundaryconditions', ...
-    'Boundary condtions of L are not linearly independent.');
+    'Boundary conditions of L are not linearly independent.');
   end
 
   % attempt to simplify rows of B

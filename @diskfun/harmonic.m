@@ -85,7 +85,7 @@ end
 end
 
 % The old way of constructing cylindrical harmonics was to wrap this code
-% in an annonymous function, but that was slow.  We are keeping this code
+% in an anonymous function, but that was slow.  We are keeping this code
 % here for historical purposes.
 % function Z = cylindricalharmonic(theta, r, L, m, type)
 % %CYLINDRICALHARMONIC   Construct function handle for cylindrical harmonic.

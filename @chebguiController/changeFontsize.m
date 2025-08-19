@@ -15,7 +15,7 @@ end
 % Get the field names in CHEBGUI:
 names = fieldnames(handles);
 
-% Find all the elements whos font size we want to change:
+% Find all the elements whose font size we want to change:
 textLocs = strfind(names, 'text_');
 inputLocs = strfind(names, 'input_');
 buttonLocs = strfind(names, 'button_');

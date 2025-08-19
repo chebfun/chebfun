@@ -10,7 +10,7 @@ function u = helmholtz( f, K, bc, m, n )
 %   U(1,theta) = @(theta) BC(theta). The solution is returned as a 
 %   diskfun object. (N must be even.)
 %
-%   U = HEMLHOLTZ(F,K, BC, M, N) is the same as HELMHOLTZ(F, K,BC, N) but uses a
+%   U = HELMHOLTZ(F,K, BC, M, N) is the same as HELMHOLTZ(F, K,BC, N) but uses a
 %   discretization size of M x N. (N must be even.)
 %
 %   F may be a function handle in polar coordinates, a diskfun, or a matrix 

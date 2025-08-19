@@ -53,7 +53,7 @@ if ( isa(discType, 'function_handle') )
     discA = discType(A);
     % Set the allowed discretisation lengths:
     dimVals = discA.dimensionValues(prefs);
-    % Update the discretiztion dimension on unhappy pieces:
+    % Update the discretization dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
 else
     % A discretization is given:
@@ -82,7 +82,7 @@ isFun = isFunVariable(A);
 
 % Linear combination coefficients for convergence test. The convergence of the
 % combination is the same as the worst constituent function. The nontrivial
-% coefficents are to make accidental cancellations extremely unlikely.
+% coefficients are to make accidental cancellations extremely unlikely.
 coeff = @(n) 1./(2*(1:n).');
 
 for dim = dimVals
@@ -102,7 +102,7 @@ for dim = dimVals
     if ( all(isDone) )
         break
     else
-        % Update the discretiztion dimension on unhappy pieces:
+        % Update the discretization dimension on unhappy pieces:
         discA.dimension(~isDone) = dim;
     end
 
