@@ -56,8 +56,10 @@ f = gpr(xx,yy,'L',.1);
 err = norm((f(xx) - yy)./yy,Inf);
 pass(9) = err < 1e-10;
 
-
 f = gpr(xx,yy);
+disp('Blind debugging') % Delete me
+f(xx) % Delete me
+yy % Delete me
 err = norm((f(xx) - yy)./yy,Inf);
 pass(10) = err < 1e-10;
 
@@ -92,7 +94,6 @@ fsmall = gpr(xsmall,y);
 xx = linspace(1,25);
 err = norm(f(xx)-fsmall(xx/S));
 pass(14) = err < 5e-14;
-
 
 % Test periodic version of the code:
 N = 40;
