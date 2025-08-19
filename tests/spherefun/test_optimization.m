@@ -65,9 +65,7 @@ pass(j+1) = abs(loc(1) - 0) < tol;
 
 f = spherefun(@(x,y,z) exp(x));
 [m,loc] = min2(f);
-pass(j+2) = abs(loc(1) - 0) < tol;
-disp('Blind debugging') % TODO: Delete me
-loc
-f(loc(1), loc(2))
-[abs(loc(1) - 0), tol]
+pass(j+2) = abs(mod(loc(1),pi) - 0) < tol;
+pass(j+3) = abs(m-0.367879441171442) < 1e-6;
+
 end
