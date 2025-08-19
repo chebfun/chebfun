@@ -12,8 +12,8 @@ function fx = trigBary(x, fvals, xk, dom)
 %   [F_1(X), F_2(X), ...], where size(F_k(X)) = size(X) for each k.
 %
 % REFERENCES:
-%   [1] Berrut, Jean-Paul. "Baryzentrische Formeln zur trigonometrischen 
-%   Interpolation (I)." Zeitschrift für angewandte Mathematik und Physik 
+%   [1] Berrut, Jean-Paul. "Baryzentrische Formeln zur trigonometrischen
+%   Interpolation (I)." Zeitschrift fÃ¼r angewandte Mathematik und Physik
 %   ZAMP 35.1 (1984): 91-105.
 % 
 %   [2] Henrici, Peter. "Barycentric formulas for interpolating trigonometric 
