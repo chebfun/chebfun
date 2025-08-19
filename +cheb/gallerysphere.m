@@ -256,7 +256,7 @@ else
 end
 
 view(viewAngle);
-colormap(clrmap);
+colormap(gca, clrmap);
 
 % Set the color axis if required.
 if ( ~isempty(clraxis) )

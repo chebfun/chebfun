@@ -98,7 +98,7 @@ while (d ~= 0), % until quit
     
     clf
     plot(f)
-    colormap hsv, alpha(.2)
+    colormap(gca, hsv), alpha(.2)
     hold on
     s = linspace(res*(1-len), 0, len) + 1i*eps;
     hs1 = plot3(real(s(1:end-1)), imag(s(1:end-1)), ...
