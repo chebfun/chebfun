@@ -18,11 +18,13 @@ function varargout = chebtest(varargin)
 %
 %   CHEBTEST will time each of the tests, and print the time for each test
 %   that passes. If any of the values returned by a test m-file are logical
-%   false (or zero) then the test is deemed to have 'failed'. If a test
-%   results in an error being thrown it is reported as 'crashed'. Therefore,
-%   an output from CHEBTEST might take the form:
+%   false (or zero) then the test is deemed to have 'failed'. In this case,
+%   the number in the braces following the 'FAILED' text indicates which entry 
+%   in the matrix of logical values (and hence which subtest) failed. If a
+%   test results in an error being thrown it is reported as 'crashed'.
+%   Therefore, an output from CHEBTEST might take the form:
 %   | Test #001: chebtech1/test_alias.m ...          passed in 0.0094s
-%   | Test #002: chebtech1/test_bary.m ...           FAILED
+%   | Test #002: chebtech1/test_bary.m ...           FAILED {1,7}
 %   | Test #003: chebtech1/test_cell2mat.m ...       CRASHED
 %   | ...
 %
@@ -161,11 +163,13 @@ else
     % Note that we don't display this in quiet mode, as the failed tests are
     % already easily seen.
     if ( ~quietMode )
+        errorMessages = {'FAILED', 'CRASHED'};
         indx = find(durations < 0);
         fprintf('The following tests failed or crashed:\n');
         for k = indx(:)'
             loc = fullfile(testsDir, allResults{k,1});
-            fprintf('   %s\n', printTestFilename(allResults{k,1:2}, loc))
+            fprintf('   %s %s\n', printTestFilename(allResults{k,1:2}, loc), ...
+                errorMessages{-durations(k)})
         end
     end
 
@@ -220,6 +224,7 @@ maxLength = max(cellfun(@length, testFiles));
 % Allocate pass and timing variables:
 numFiles  = numel(testFiles);
 durations = zeros(numFiles, 1);
+fails = cell(numFiles,1);
 errorMessages = {'FAILED', 'CRASHED'};
 
 % TODO: Eventually this should be removed.
@@ -247,13 +252,17 @@ try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
         else
             % --verbose mode
             printTestInfo(testDir, testFile, k, maxLength);
-            durations(k) = runTest(testFile);
+            [durations(k), fails{k}] = runTest(testFile);
             if ( durations(k) > 0 )
                 % Success message.
                 message = sprintf('passed in %.4fs', durations(k));
-            else
+            elseif ( durations(k) == -1 ) % FAIL
+                % Print failing subtests
+                fails{k} = strrep(int2str(fails{k}), '  ', ',');
                 % Error flags are negative indices.
-                message = errorMessages{-durations(k)};
+                message = [errorMessages{-durations(k)}, ' {' fails{k} '}'];
+            else % CRASH
+                message = [errorMessages{-durations(k)}];
             end
             fprintf([message '\n']);
 
@@ -345,17 +354,18 @@ end
 end
 
 
-function duration = runTest(testFile)
+function [duration, fail] = runTest(testFile)
 %RUNTEST Runs the given test file.
-%   DURATION = RUNTEST(TESTFILE) executes the file TESTFILE.
+%   [DURATION, FAIL] = RUNTEST(TESTFILE) executes the file TESTFILE.
 %   TESTFILE should return a vector or matrix of logical values. 
 %
 %   If each of these are logical true (or 1) then the test passes and RUNTEST
 %   returns DURATION as a double > 0 corresponding to the time it took the test
-%   to execute in seconds.
+%   to execute in seconds anf FAIL returns empty.
 %
-%   If any of the entries returned by TESTFILE are logcial false (or 0), then
-%   DURATION = -1.
+%   If any of the entries returned by TESTFILE are logical false (or 0), then
+%   DURATION = -1 and FAIL contains an integer list of those entries which
+%   returned false.
 %
 %   If executing TESTFILE crashes, this is caught in a try-catch statement, and
 %   RUNTTEST returns DURATION = -2.
@@ -366,17 +376,21 @@ prefState2 = cheboppref();
 % Close any open windows:
 close all
 
+% Store failing subtests:
+fail = [];
+
 % Attempt to run the test:
 try
     tstart = tic();
     pass = feval(testFile);
     duration = toc(tstart);
 
-    pass = all(pass(:));
-    if ( ~pass )
+    if ( ~all(pass(:)) )
         % The test failed, so return FAILED flag.
         duration = -1;
+        fail = find(~pass);
     end
+
 
 catch ME %#ok<NASGU>
     % We crashed. This is bad. Return CRASHED flag.
