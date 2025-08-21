@@ -69,7 +69,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 %   It is a Matlab requirement to specify exactly which classes are inferior to
 %   a given class. One might think that writing "InferiorClasses = {?smoothfun}"
 %   should be OK but it turns out that subclasses do not inherit the attribute
-%   of being inferior and all inferior clases/subclasses should be mentioned 
+%   of being inferior and all inferior classes/subclasses should be mentioned
 %   explicitly.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

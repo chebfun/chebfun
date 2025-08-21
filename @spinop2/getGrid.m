@@ -1,5 +1,5 @@
 function grid = getGrid(~, N, dom)
-%GETGRID   Returns a grid correspoding to a SPINOP2 object.
+%GETGRID   Returns a grid corresponding to a SPINOP2 object.
 %
 % See also SPINOP2.
 

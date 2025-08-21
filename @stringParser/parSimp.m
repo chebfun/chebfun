@@ -96,7 +96,7 @@ rightParsLoc = pairsLoc(:, 2);
         opVec1 = ( opVec == 1 );
         dOV = ~[abs(diff(opVec1)) 1] & opVec1; % Find adjacent opVec == 1's
         pm = find(dOV, 1); % Get the first
-        if ( ~isempty(pm) ) % If +/- pair exists, remove the first occurence
+        if ( ~isempty(pm) ) % If +/- pair exists, remove the first occurrence
             if ( str(pm) == str(pm+1) )
                 str(pm) = '+';
             else
