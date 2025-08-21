@@ -103,14 +103,16 @@ if ~isempty(x)
         K = (opts.sigma^2)*exp(-1/(2*opts.lenScale^2)*r.^2) + ...
             opts.sigmaY^2*eye(n);
     end
+    K
     % compute the Cholesky decomposition of K
     if opts.sigmaY == 0
         L = chol(K+1e-15*scalingFactor^2*n*eye(n), 'lower');
     else
         L = chol(K+opts.sigmaY^2*eye(n), 'lower');
     end
+    L
     % coefficients of the radial basis function expansion of the mean
-    alpha = L'\(L\y);
+    alpha = L'\(L\y)
 
     % constuct a Chebfun approximation for the posterior distribution mean
     if opts.trig && ~opts.sigmaY
@@ -120,6 +122,7 @@ if ~isempty(x)
         f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, ...
             'eps', 1e-12,'splitting','on');
     end
+    f
                         
     % compute the predictive variance based on a large sample set
     sampleSize = min(20*n,2000);
@@ -148,7 +151,7 @@ if ~isempty(x)
 
     v = L\(Ks');
                             
-    fvar = spdiags(Kss - v'*v, 0);
+    fvar = spdiags(Kss - v'*v, 0)
     fvar = chebfun(fvar,opts.dom);
     
 else % no data points given

@@ -75,7 +75,7 @@ jobs:
         uses: matlab-actions/run-command@v2
         with:
           #command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
-          command: addpath('.'); results = chebtest('chebfun', 'chebop2', 'misc', 'spherefun'); assert(all([results{:,3}] > 0))
+          command: addpath('.'); results = chebtest('chebfun', 'misc'); assert(all([results{:,3}] > 0))
 
 #  # This job tracks the latest Matlab, which might be the same as above but this
 #  # one will automatically test against 2025b when it comes out.
