@@ -56,11 +56,7 @@ err = norm((f(xx) - yy)./yy,Inf);
 pass(9) = err < 1e-10;
 
 f = gpr(xx,yy);
-disp('Blind debugging') % Delete me
-f(xx) % Delete me
-yy % Delete me
-(f(xx) - yy)./yy
-err = norm((f(xx) - yy)./yy,Inf)
+err = norm((f(xx) - yy)./yy,Inf);
 pass(10) = err < 1e-10;
 
 % Test vertical scale (big function):

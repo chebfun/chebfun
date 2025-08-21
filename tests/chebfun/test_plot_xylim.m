@@ -15,8 +15,6 @@ plot(x)
 pass1(length(pass1) + 1) = ( norm(dom1 - get(gca,'xlim')) < tol);
 
 h = plot(0.62*sin(x));
-disp('Blind debugging test_plot_xylim') % TODO: Delete me
-get(h) % TODO: Delete me
 yl = get(gca, 'ylim');
 pass1(length(pass1) + 1) = ( norm(0.62 - yl(2)) > 0.05);
 
