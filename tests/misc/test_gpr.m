@@ -56,9 +56,6 @@ yy = 1e100*sin(3*xx).*exp(xx);
 % pass(9) = err < 1e-10;
 
 f = gpr(xx,yy);
-f(xx)
-(f(xx) - yy)
-(f(xx) - yy)./yy
 err = norm((f(xx) - yy)./yy,Inf);
 pass = err < 1e-10;
 
