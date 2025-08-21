@@ -92,11 +92,9 @@ end
 % instance eq. (2.31) from [1])
 
 if ~isempty(x)
-
-    x, y
     
     n = length(x);
-    r = repmat(x,1,n) - repmat(x',n,1);
+    r = repmat(x,1,n) - repmat(x',n,1)
     if opts.trig
         K = opts.sigma^2*exp(-2/(opts.lenScale^2) * ...
                 sin(pi/(opts.dom(end)-opts.dom(1))*r).^2) + ...
@@ -104,7 +102,11 @@ if ~isempty(x)
     else
         K = (opts.sigma^2)*exp(-1/(2*opts.lenScale^2)*r.^2) + ...
             opts.sigmaY^2*eye(n);
+        exp(-1/(2*opts.lenScale^2)*r.^2)
     end
+    opts.lenScale
+    (opts.sigma)
+    opts.sigmaY
     K
     % compute the Cholesky decomposition of K
     if opts.sigmaY == 0
