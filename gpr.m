@@ -94,7 +94,7 @@ end
 if ~isempty(x)
     
     n = length(x);
-    r = repmat(x,1,n) - repmat(x',n,1)
+    r = repmat(x,1,n) - repmat(x',n,1);
     if opts.trig
         K = opts.sigma^2*exp(-2/(opts.lenScale^2) * ...
                 sin(pi/(opts.dom(end)-opts.dom(1))*r).^2) + ...
@@ -102,12 +102,7 @@ if ~isempty(x)
     else
         K = (opts.sigma^2)*exp(-1/(2*opts.lenScale^2)*r.^2) + ...
             opts.sigmaY^2*eye(n);
-        exp(-1/(2*opts.lenScale^2)*r.^2)
     end
-    opts.lenScale
-    (opts.sigma)
-    opts.sigmaY
-    K
     % compute the Cholesky decomposition of K
     if opts.sigmaY == 0
         L = chol(K+1e-15*scalingFactor^2*n*eye(n), 'lower');
@@ -312,7 +307,7 @@ if ~opts.lenScale % hyperparameters not specified
         end
     end
     f = chebfun(@(z) logML(z,x,y,opts),searchDom, ...
-        'eps',1e-6,'splitting','on');
+        'eps',1e-6,'splitting','on')
     [~, opts.lenScale] = max(f);
 end
 
