@@ -174,7 +174,6 @@ rr = aaa(F, Z, 'degree', 6, 'deriv_deg', 1);
 r = rr{1};
 err = abs( norm(F-r(Z),inf) - 1.19e-11 ); pass(39) = abs(err) < 1e-12;
 rp = rr{2};
-rp(1)
 pass(40) = abs(rp(1)+0.5) < 1e-6;
 
 warning('on', 'AAA:Froissart');
