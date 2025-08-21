@@ -310,7 +310,8 @@ if ~opts.lenScale % hyperparameters not specified
     f = chebfun(@(z) logML(z,x,y,opts),searchDom, ...
         'eps',1e-6,'splitting','on')
     f.values{1}
-    [mxf, opts.lenScale] = max(f)
+    [~, opts.lenScale] = max(f);
+    [a,b] = minandmax(f.funs{1}.onefun)
 end
 
 end
