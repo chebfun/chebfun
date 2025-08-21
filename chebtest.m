@@ -132,7 +132,7 @@ cd(testsDir);
 
 % Initialise storage for which directories pass and the time they take.
 numDirs = length(testDirNames);
-allResults = cell(0, 3);
+allResults = cell(0, 4);
 
 % Loop over the test directories and run the tests in each one.
 for k = 1:numDirs
@@ -363,7 +363,7 @@ function [duration, fail] = runTest(testFile)
 %
 %   If each of these are logical true (or 1) then the test passes and RUNTEST
 %   returns DURATION as a double > 0 corresponding to the time it took the test
-%   to execute in seconds anf FAIL returns empty.
+%   to execute in seconds and FAIL returns empty.
 %
 %   If any of the entries returned by TESTFILE are logical false (or 0), then
 %   DURATION = -1 and FAIL contains an integer list of those entries which
