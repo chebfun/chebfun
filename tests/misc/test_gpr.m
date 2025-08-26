@@ -55,10 +55,9 @@ f = gpr(xx,yy,'L',.1);
 err = norm((f(xx) - yy)./yy,Inf);
 pass(9) = err < 1e-10;
 
-% f = gpr(xx,yy);
-% err = norm((f(xx) - yy)./yy,Inf);
+f = gpr(xx,yy);
+err = norm((f(xx) - yy)./yy,Inf);
 % pass(10) = err < 1e-10; 
-
 % NH 08/2025. This test fails on the GitHub CI for R2025a. See Issue #2470.
 % Since I cannot reproduce the bug offline, it is difficult to fix. 
 % In the interest of time/sanity, we have dramatically loosened the tolerance.
