@@ -306,7 +306,6 @@ if ~opts.lenScale % hyperparameters not specified
             fdom2 = fdomnew;
         end
     end
-    format long
     f = chebfun(@(z) logML(z,x,y,opts),searchDom, ...
         'eps',1e-6,'splitting','on');
     [~, opts.lenScale] = max(f);
