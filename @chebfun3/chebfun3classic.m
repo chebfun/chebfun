@@ -536,11 +536,11 @@ function [col, pivotVals, row, pivotLoc, ifail2D] = chebfun2ACA(op, ...
 % Perform GE with complete pivoting:
 
 if ( factor ~= 0 )
-    % FACTOR in the 3D steps is either 0 (in case of constructionFromDoubles) 
-    % or 2sqrt(2) otherwise. For 2D steps however, we are happy with 
+    % FACTOR in the 3D steps is either 0 (in case of constructFromDouble)
+    % or 2sqrt(2) otherwise. For 2D steps however, we are happy with
     % FACTOR = 0 or 2 as in Chebfun2. This IF conditional, makes it
-    % possible to rewrite FACTOR in 2D steps, but at the same time keeping 
-    % it zero fro constructionFromDoubles.
+    % possible to rewrite FACTOR in 2D steps, but at the same time keeping
+    % it zero for constructFromDouble.
     factor = 2;
 end
 [pivotVals, pivotLoc, row, col, ifail2D] = completeACA2D(op, tol, factor); 
