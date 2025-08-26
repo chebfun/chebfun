@@ -333,9 +333,9 @@ else
   compMR = cell(nout, nin);
   for ii = 1:nout
       for jj = 1:nin
-          bloc = L.blocks{ii,jj};
-          compML{ii,jj} = compmat(dom(1), toCoeff(bloc));
-          compMR{ii,jj} = compmat(dom(2), toCoeff(bloc));
+          b = L.blocks{ii,jj};
+          compML{ii,jj} = compmat(dom(1), toCoeff(b));
+          compMR{ii,jj} = compmat(dom(2), toCoeff(b));
       end
   end
   compM = blkdiag(-cell2mat(compML), cell2mat(compMR));
