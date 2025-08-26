@@ -5,7 +5,7 @@ function [M, S] = instantiate(disc)
 %   array if DISC.SOURCE has more than one component.
 %
 %   [M, S] = INSTANTIATE(DISC) retusn a second output, S, which is a cell array
-%   containing the dscrete form of the conversion operator for each block
+%   containing the discrete form of the conversion operator for each block
 %   of DISC.SOURCE. Only used by ULTRAS class.
 %
 %   DISC.SOURCE may be one or a cell array of:
