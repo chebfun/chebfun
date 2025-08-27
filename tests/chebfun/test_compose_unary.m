@@ -28,11 +28,11 @@ pass(4) = test_one_compose_unary(@(x) abs(x + 0.2) + abs(x - 0.3), ...
     [-1 -0.2 0.3 1], @(x) cos(x.^2), pref);
 
 % Non-smooth operator with smooth function, splitting disabled.
-warnstate = warning('off');
+warnstate = warning('off'); lw = lastwarn;
 test_one_compose_unary(@(x) sin(10*(x - 0.1)), [-1 1], @abs, pref);
 [warnmsg, warnid] = lastwarn();
 pass(5) = strcmp(warnid, 'CHEBFUN:CHEBFUN:compose:resolve');
-warning(warnstate);
+warning(warnstate); lastwarn(lw);
 
 % Non-smooth operator with smooth function, splitting enabled.
 pass(6) = test_one_compose_unary(@(x) sin(10*(x - 0.1)), [-1 1], @abs, ...

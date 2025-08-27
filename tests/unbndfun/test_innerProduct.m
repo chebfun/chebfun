@@ -36,9 +36,9 @@ opg = @(x) exp(-x);
 pref = chebfunpref();
 f = unbndfun(opf, struct('domain', dom, 'exponents', [0 1]), pref);
 g = unbndfun(opg, struct('domain', dom));
-warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay'); lw = lastwarn;
 I = innerProduct(f, g);
-warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay'); lastwarn(lw)
 IExact = 2*exp(-1);
 err = abs(I - IExact);
 pass(2) = err < 2e8*max(eps*get(f,'vscale'), ...

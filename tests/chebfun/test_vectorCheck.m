@@ -4,7 +4,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-warnState = warning();
+warnState = warning(); lw = lastwarn;
 warning('off', 'CHEBFUN:CHEBFUN:vectorcheck:vectorize');
 warning('off', 'CHEBFUN:CHEBFUN:vectorcheck:transpose');
     
@@ -59,11 +59,11 @@ try
     g = chebfun(@(x) x./cos(x), pref);
     pass(11) = norm(f - g) == 0;
     
-    warning(warnState);
+    warning(warnState); lastwarn(lw);
     
 catch ME
     
-    warning(warnState);
+    warning(warnState); lastwarn(lw);
     rethrow(ME);
     
 end

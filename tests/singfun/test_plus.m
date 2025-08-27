@@ -76,7 +76,7 @@ pass(14) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
 % Check that plus handles "small" results appropriately in the case of a
 % non-integer exponent difference.
-warnState = warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
+warnState = warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff'); lw = lastwarn;
 
 pref_fixed = pref;
 pref_fixed.fixedLength = 256;
@@ -87,7 +87,7 @@ g = singfun(op, [], pref_fixed);
 h = f - g;
 pass(15) = get(h, 'ishappy') && (length(h) < 1024);
 
-warning(warnState);
+warning(warnState); lastwarn(lw);
 
 end
 

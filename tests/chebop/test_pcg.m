@@ -6,6 +6,7 @@ if ( nargin == 0 )
     pref = cheboppref;
 end
 tol = 1e2*pref.bvpTol;
+lw = lastwarn;
 
 %% Example 1: (-u_xx=f, bc=0, mean(f)==0)
 a = @(x) 1;
@@ -128,8 +129,11 @@ v = pcg(N, f);
 
 pass(7) = ( norm(u - v) < tol );
 
-if ( all(pass) == 1 )
-    pass = 1;
+%%
+
+[~, lwnew_ID] = lastwarn;
+if ( strcmp(lwnew_ID, 'MATLAB:rankDeficientMatrix'))
+    lastwarn(lw);
 end
 
 end
