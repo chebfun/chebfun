@@ -174,7 +174,7 @@ for m = 1:mmax
                 wj = wj/norm(wj);          % (see Trefethen memo Rat342, July 2024)
             end
         end
-            wj = diag(colvecA)\wj;         % transform back diag scaling
+            wj = wj./colvecA;         % transform back diag scaling         % transform back diag scaling
             wj = wj/norm(wj);
         end
 
