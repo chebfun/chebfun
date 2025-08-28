@@ -13,12 +13,12 @@ end
 %
 %    V(x) = 1.5 for x in [-.2,.3],  0 otherwise.
 %
-% We seek eigenmodes of the steady-state ShrÃ¶dinger equation associated
+% We seek eigenmodes of the steady-state Schrödinger equation associated
 % with this potential, specifically, functions u(x) satisfying
 %
 %     -0.007u"(x) + V(x)*u(x) = lam*u(x),    u(-1) = u(1) = 0.
 %
-% for some constant lam. 
+% for some constant lam.
 
 x = chebfun(@(x) x);
 V = 1.5*(abs(x-0.05) < 0.25);

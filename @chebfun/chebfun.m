@@ -385,6 +385,12 @@ classdef chebfun
         
         % ODE45 with CHEBFUN output.
         [t, y] = ode45(varargin);
+
+        % ODE78 with CHEBFUN output.
+        [t, y] = ode78(varargin);
+
+        % ODE89 with CHEBFUN output.
+        [t, y] = ode89(varargin);        
         
         % Cubic Hermite interpolation:
         f = pchip(x, y, method);

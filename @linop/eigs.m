@@ -432,14 +432,13 @@ function idx = filter(idx, V, k, disc)
 
 % TODO: Explain this in more detail.
 
-N = disc.dimension;
+N = min(disc.dimension);
 k = min(k, N);
 
 % Propose to keep these modes.
 queue = 1:min(k, length(idx));
 keeper = false(size(idx));
 keeper(queue) = true;
-
 % Grab some indices
 tenPercent = ceil(N/10); % We are the 10%
 iif10 = 1:tenPercent;    % Indices of first 10%

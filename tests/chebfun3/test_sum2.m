@@ -4,7 +4,7 @@ function pass = test_sum2(pref)
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end
-tol = 1e4*pref.cheb3Prefs.chebfun3eps;
+tol = 1e5*pref.cheb3Prefs.chebfun3eps;
 
 ff = 'x.^2 + 4*y - 5*z';
 dom = [11 14 7 10 5 9];

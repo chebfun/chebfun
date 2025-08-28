@@ -192,7 +192,9 @@ if ( isempty(xk) ) % no initial reference is given by the user
         	error('CHEBFUN:CHEBFUN:minimax:failure', ...
                ['MINIMAX failed to produce the best approximant. ' ...
                 'If the accuracy is close to machine precision, ' ...
-                'try reducing the degree.'])
+                'it may be that what you''ve asked for is unachievable ' ...
+                'in floating-point arithmetic. In such a case, try ' ...
+                'reducing the degree to get a clean best approximant.'])
         end
     end
 else  % the user has also given a starting reference
@@ -1110,6 +1112,22 @@ if dialogFlag
     end 
     qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
     pvals = nodex.*feval(N,x);
+    % If certain Chebyshev points map to support points, inf values will
+    % get propagated, so we need to handle them separately
+    for ii = 1:length(xsupport)
+        for jj = 1:length(x)
+            if x(jj) == xsupport(ii)
+                nodei = 1.0;
+                for kk = 1:length(xsupport)
+                    if ~(kk == ii)
+                        nodei = nodei * (x(jj) - xsupport(kk)); 
+                    end
+                end
+                qvals(jj) = -nodei*wD(ii);
+                pvals(jj) = nodei*wN(ii);
+            end
+        end
+    end
  
     p = chebfun(pvals,f.domain([1,end]));
     q = chebfun(qvals,f.domain([1,end]));
