@@ -176,6 +176,12 @@ err = abs( norm(F-r(Z),inf) - 1.19e-11 ); pass(39) = abs(err) < 1e-12;
 rp = rr{2};
 pass(40) = abs(rp(1)+0.5) < 1e-6;
 
+Z = linspace(-1,1,100); F = Z + 1./(Z-1.5);
+[r,pol,res] = aaa(F, Z); % residual computation check
+[~,ii] = min(abs(pol-1.5));
+err = res(ii)-1;
+pass(41) = abs(err) < 1e-8;
+
 warning('on', 'AAA:Froissart');
 
 end

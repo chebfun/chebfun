@@ -268,6 +268,14 @@ if ( deriv_deg >= 1 )
     r = r_output;
 end
 
+% Compute more accurate residues, if nargout > 2:
+if ( nargout > 2 )
+    deg = max(0, length(zer)-length(pol) );
+    A = [Z.^(0:deg) 1./(Z-pol.')];
+    c = A\F;
+    res = c(deg+2:end);
+end
+
 end % of AAA()
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   PARSEINPUTS   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -674,6 +682,8 @@ pol = eig(E, B);
 pol = pol(~isinf(pol));
 
 % Compute residues via formula for res of quotient of analytic functions:
+% (This is not always accurate and starting in 2025 is overwritten in
+% the calling function by a least-squares computation of residues.)
 N = @(t) (1./(t-zj.')) * (fj.*wj);
 Ddiff = @(t) -((1./(t-zj.')).^2) * wj;
 res = N(pol)./Ddiff(pol);
