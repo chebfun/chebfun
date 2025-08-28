@@ -3,7 +3,7 @@ function varargout = qr(varargin)
 % 
 % [Q, R] = QR( F ), where F is a separableApprox, produces an unitary column
 % quasimatrix Q and a upper-triangular row quasimatrix R so that F = Q * R.
-% Thi is computed by a continuous analogue of QR.
+% This is computed by a continuous analogue of QR.
 %
 % [Q, R] = QR( F, 0 ) is the same as QR( F ). 
 %
