@@ -137,7 +137,8 @@ for m = 1:mmax
 
     % Compute weights:
     if ( length(J) >= m )                  % The usual tall-skinny case
-        [~, S, V] = svd(A(J,:), 0);        % Reduced SVD
+        if cond(A(J,:)) < 3/eps            % The usual, not too ill-cond case
+        [~, S, V] = svd(A(J,:), 0);        % Reduced SVD; classically wj = V(:,end);
         s = diag(S);
         if (sign_flag == 0)
             mm = find( s == min(s) );          % Treat case of multiple min sing val
@@ -150,6 +151,27 @@ for m = 1:mmax
                 wj = wj/norm(wj);          % (see Trefethen memo Rat342, July 2024)
             end
         end
+
+        else % ill-cond; diag scaling to improve conditioning (due to Fei Xue)
+            colvecA = vecnorm(A(J,:))';
+            [~, S, V] = svd(A(J,:)/diag(colvecA), 0);
+            s = diag(S);
+
+        if (sign_flag == 0)
+            mm = find( s == min(s) );          % Treat case of multiple min sing val
+            nm = length(mm);
+            wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
+        else
+            wj = V(:,end);
+            if min(s) > 0
+                wj = V*(1./s.^2);          % the 'sign' improvement (Wilber-Trefethen 25)
+                wj = wj/norm(wj);          % (see Trefethen memo Rat342, July 2024)
+            end
+        end
+            wj = diag(colvecA)\wj;         % transform back diag scaling
+            wj = wj/norm(wj);
+        end
+
     elseif ( length(J) >= 1 )
         V = null(A(J,:));                  % Fewer rows than columns
         nm = size(V,2);                    

@@ -182,6 +182,12 @@ Z = linspace(-1,1,100); F = Z + 1./(Z-1.5);
 err = res(ii)-1;
 pass(41) = abs(err) < 1e-8;
 
+Z = logspace(-15,0,300)'; F = Z.^(1/2); 
+r = aaa(F, Z); % this test checks diag scaling is working
+ZZ = logspace(-15,0,500)';
+err = norm(r(ZZ)-sqrt(ZZ),inf);
+pass(42) = err < 1e-8;
+
 warning('on', 'AAA:Froissart');
 
 end
