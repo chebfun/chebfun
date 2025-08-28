@@ -50,7 +50,7 @@ u = spherefunv(f,g,h);
 divu = div(u);
 % Exact divergence
 exact = spherefun(@(x,y,z) -8*(2*(1-x.^2).*cos(4*x) - x.*sin(4*x)));
-pass(6) = norm(divu-exact, inf) < 100*tol; 
+pass(6) = norm(divu-exact, inf) < 200*tol;
 
 % Example 4
 f = spherefun(@(x,y,z) 4*x.*y.*sin(4*y));

@@ -12,7 +12,7 @@ function f = join(varargin)
 %   The number of columns (or rows) in F1, F2, ... must be the same, else an
 %   error is thrown.
 %
-% See also HORZCAT, VERTCAT.
+% See also HORZCAT, VERTCAT, NEWDOMAIN.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

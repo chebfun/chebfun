@@ -21,17 +21,17 @@ L = chebop(@(x,u,v) diff(u) + v);
 LL = linop(L); LLB = LL.blocks;
 % Should expect both the first block to be an OPERATORBLOCK, the second to be a
 % chebfun.
-pass(3) = isa(LLB{1}, 'operatorBlock') && isa(LLB{2}, 'chebfun'); 
+pass(3) = isa(LLB{1}, 'operatorBlock') && isa(LLB{2}, 'chebfun');
 %% Example 4:
 L = chebop(@(x,u,v) u + diff(v));
 LL = linop(L); LLB = LL.blocks;
 % Here, we should expect both the first block to be an OPERATORBLOCK, the second
 % to be a chebfun.
-pass(4) = isa(LLB{1}, 'chebfun') && isa(LLB{2}, 'operatorBlock'); 
+pass(4) = isa(LLB{1}, 'chebfun') && isa(LLB{2}, 'operatorBlock');
 %% Example 5:
 L = chebop(@(x,u,v) diff(u) + diff(v));
 LL = linop(L); LLB = LL.blocks;
-% Here, we should expect both blocks to be an ç.
+% Here, we should expect both blocks to be an OPERATORBLOCK.
 pass(5) = isa(LLB{1}, 'operatorBlock') && isa(LLB{2}, 'operatorBlock');
 %% Example 6:
 L = chebop(@(x,u,v) [u + diff(v); diff(u) + v]);

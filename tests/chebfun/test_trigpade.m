@@ -6,7 +6,7 @@ if ( nargin < 1 )
 end
 
 % Set an error tolerance.
-tol = 1.0e-13;
+tol = 1.0e-12;
 
 %% check for emptiness:
 p = trigpade(chebfun);

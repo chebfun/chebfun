@@ -16,14 +16,14 @@ function varargout = constructODEsol(solver, odefun, tspan, uinit, varargin)
 %   option, 'restartSolver', which if set to TRUE, will restart the ODE solver
 %   at every breakpoint encountered. This is the default behaviour
 %
-% See also ODESET, ODE113, ODE15s, ODE45.
+% See also ODESET, ODE113, ODE15s, ODE45, ODE78, ODE89.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 
 % By default, we want to restart the solver at breakpoints to catch behaviour
-% that only happens at small intervals (cf.�#1512). This can be overwritten by
+% that only happens at small intervals (cf.#1512). This can be overwritten by
 % passing a 'restartSolver' option for the ODESET options structure passed to
 % this method.
 if ( (nargin > 4) && isfield(varargin{1}, 'restartSolver') )
