@@ -1,5 +1,5 @@
 function varargout = chebguiEdit(varargin)
-%CHEBGUIEDIT   CHEBGUI edittor.
+%CHEBGUIEDIT   CHEBGUI editor.
 %   A CHEBGUIEDIT figure gets created when a user right-clicks the input fields
 %   of the CHEBGUI figure. It is not intended for use in any other context.
 

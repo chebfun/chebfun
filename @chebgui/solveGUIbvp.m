@@ -110,7 +110,7 @@ end
 options = setupODEoptions(handles.guifile, expInfo);
 
 
-% Various things we only need to think about when in the GUI, changes GUI compenents.
+% Various things we only need to think about when in the GUI, changes GUI components.
 if ( guiMode )
     set(handles.iter_list, 'String', '');
     set(handles.iter_text, 'Visible', 'On');

@@ -368,7 +368,7 @@ input_GUESS_Callback(hObject, handles);
 end
 
 function input_domain_Callback(hObject, handles)
-% Called when the spacial domain input has been changed.
+% Called when the spatial domain input has been changed.
 
 % Get the input, and checks it validity.
 in = get(hObject, 'String');

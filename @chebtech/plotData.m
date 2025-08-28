@@ -65,13 +65,13 @@ elseif ( isa(g, 'chebtech') )
     % Also return the grid points used.
     % Grid data for f:
     data.fGrid.xLine = f.chebpts(npts);
-    % Use the maximum of the lenghts of f, g and h to match the number of
+    % Use the maximum of the lengths of f, g and h to match the number of
     % values returned:
     data.fGrid.xPoints = f.chebpts(len);
     
     % Grid data for g:
     data.gGrid.xLine = g.chebpts(npts);
-    % Use the maximum of the lenghts of f, g and h to match the number of
+    % Use the maximum of the lengths of f, g and h to match the number of
     % values returned:    
     data.gGrid.xPoints = g.chebpts(len);
     
@@ -96,7 +96,7 @@ elseif ( isa(g, 'chebtech') )
         
         % Grid data for h:
         data.hGrid.xLine = h.chebpts(npts);
-        % Use the maximum of the lenghts of f, g and h to match the number of
+        % Use the maximum of the lengths of f, g and h to match the number of
         % values returned:
         data.hGrid.xPoints = h.chebpts(len);
         

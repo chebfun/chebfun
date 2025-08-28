@@ -62,7 +62,7 @@ if ( dim == 1 )
     
 elseif ( dim == 2 )
     
-    % When the third argument is 2, i.e. dim = 2, we compute the cumlative sum
+    % When the third argument is 2, i.e. dim = 2, we compute the cumulative sum
     % over columns, in which case, no rescale is needed.
     
     f.onefun = cumsum(f.onefun, dim);

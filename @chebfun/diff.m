@@ -156,7 +156,7 @@ f.pointValues = pointValues;
         deltaMag = zeros(numFuns + 1, numCols);
         % Loop through the funs:
         for l = 1:(numFuns - 1)
-            % Extract the jump vlaues between two funs:
+            % Extract the jump values between two funs:
             jmp = get(funs{l+1}, 'lval') - get(funs{l}, 'rval');
             % Assign these jumps to the deltaMag matrix:
             if ( any(abs(jmp) > deltaTol ) )

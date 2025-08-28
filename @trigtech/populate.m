@@ -111,7 +111,7 @@ f.ishappy = ishappy;
 % Force the values to be real if the imaginary part is zero
 f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Output. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( ishappy )
     % We're done, and can return.

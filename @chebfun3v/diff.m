@@ -3,12 +3,12 @@ function F = diff(F, k, dim)
 %   DIFF(F) is the derivative of components of F along the first variable.
 %
 %   DIFF(F, K) is the Kth derivative of each component of F along the first
-%   variabel.
+%   variable.
 %
 %   DIFF(F, K, DIM) is the Kth derivative of F along the dimension DIM.
 %   DIM = 1 (default) is the derivative in the 1st input variable.
 %   DIM = 2 is the derivative in the 2nd variable.
-%   DIM = 3 is the derivative in the 3rd varialbe.
+%   DIM = 3 is the derivative in the 3rd variable.
 %
 %   DIFF(F, [K1 K2], [DIM1 DIM2]) means K1-th derivative of F in dimension
 %   DIM1 and K2-th derivative in dimension DIM2. DIM1 and DIM2 can be 1, 2 

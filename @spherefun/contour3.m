@@ -1,7 +1,7 @@
 function varargout = contour3( f, varargin )
 %CONTOUR3   3-D contour plot of a SPHEREFUN.
 %   CONTOUR3(F) is a contour plot of F treating the values of F as heights
-%   above the sphere, analagous to SURF(F, 'projection', 'bumpy'). A
+%   above the sphere, analogous to SURF(F, 'projection', 'bumpy'). A
 %   contour plot shows the level curves of F for some values V. The values
 %   V are chosen automatically.
 %

@@ -89,12 +89,12 @@ else
 end
 end
 
-function u = PTequation(f) 
-% PTEQUATION Solve the equations to compute the poloidal-toroidal 
-% decompositon of a BALLFUNV
-%   PTEQUATION(f, varargin) is the solution to the equation 
-%   sin^2(theta)Delta_S u = f with the condition that the 0th Fourier mode  
-%   in lambda and theta is 0. 
+function u = PTequation(f)
+% PTEQUATION Solve the equations to compute the poloidal-toroidal
+% decomposition of a BALLFUNV
+%   PTEQUATION(f, varargin) is the solution to the equation
+%   sin^2(theta)Delta_S u = f with the condition that the 0th Fourier mode
+%   in lambda and theta is 0.
 
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

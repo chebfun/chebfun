@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: FSFAP
+# Copyright 2024 by The University of Oxford and The Chebfun Developers.
+# See http://www.chebfun.org/ for Chebfun information.
+#
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
+
+# List of words that codespell should not complain about
+
+breal
+fo
+exacty
+numer
+htmp
+myu
+ans
+imbedded
+alph
+varn
+tru
+assignin
+indx
+nd
+nIn
+nin
+domIn
+TE
+siz
+notH
+fpt
+trun
+prefixIn
+PREFIXIN
+tripel
+dout
+ot

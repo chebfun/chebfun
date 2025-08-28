@@ -2,7 +2,7 @@ function div = divergence(F)
 %DIVERGENCE   Numerical surface divergence of a SPHEREFUNV. 
 %   D = DIVERGENCE(F) returns the numerical surface divergence of the
 %   SPHEREFUNV. This operations only makes mathematical sense for F that
-%   are tanget to the sphere.
+%   are tangent to the sphere.
 %
 % See also SPHEREFUNV/DIV, SPHEREFUN/GRAD, SPHEREFUNV/CURL, SPHEREFUNV/VORTICITY.
 

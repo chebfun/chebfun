@@ -6,7 +6,7 @@ function a = all(f)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check the piont values first (as this is trivial):
+% Check the point values first (as this is trivial):
 tol = vscale(f)*eps;
 a = all(abs(f.pointValues) > tol);
 

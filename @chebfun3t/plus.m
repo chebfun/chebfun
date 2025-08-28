@@ -1,5 +1,5 @@
 function f = plus(f, g)
-%PLUS   Addition of two CHEBFUN3T obejects.
+%PLUS   Addition of two CHEBFUN3T objects.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,7 +1,7 @@
 function varargout = vscale(varargin)
 %VSCALE   Vertical scale of a SPHEREFUN.
 % 
-% VSCL = VSCALE(F) returns the vertial scale of a SPHEREFUN as determined
+% VSCL = VSCALE(F) returns the vertical scale of a SPHEREFUN as determined
 % by evaluating on a coarse tensor-product grid. 
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.

@@ -1,5 +1,5 @@
 function f = simplify(f, varargin)
-%SIMPLIFY  Simplifys a DELTAFUN object F.
+%SIMPLIFY  Simplifies a DELTAFUN object F.
 %   F = SIMPLIFY(F) simplifies the FUNPART and removes any trivial delta
 %   functions from the delta fun F. Preferences can be passed via VARARGIN.
 %

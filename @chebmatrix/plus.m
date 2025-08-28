@@ -50,7 +50,7 @@ if (  (m ~= mB ) || (n ~= nB) )
         'Operands must have the same size.')
 end
 
-% Initalize a cell for addition.
+% Initialize a cell for addition.
 C = cell(m, n);
 % Loop through the blocks of A and B.
 for i = 1:m

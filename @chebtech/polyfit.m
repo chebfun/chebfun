@@ -23,7 +23,7 @@ end
 
 if ( n <= length(f) )
     
-    % Extract Chebyshev coeficients of y:
+    % Extract Chebyshev coefficients of y:
     c_cheb = f.coeffs;
     % Convert to Legendre coefficients:
     c_leg = cheb2leg(c_cheb);

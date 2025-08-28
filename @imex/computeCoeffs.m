@@ -21,7 +21,7 @@ function schemeCoeffs = computeCoeffs(K, dt, Lap, ~, S)
 % SCHEMECOEFFS.PRECOND   -> a preconditioner that makes systems with the above
 %                           LU factors solvable in linear time
 %
-% For more informations, see [1].
+% For more information, see [1].
 %
 % [1] H. Montanelli and Y. Nakatsukasa, Fourth-order time-stepping for stiff
 % PDEs on the sphere, submitted (2017).
@@ -56,7 +56,7 @@ if ( isa(S, 'spinopsphere') == 1 )
     %       u_t = A*lap(u) + Nu(u,v),
     %       v_t = B*lap(v) + Nv(u,v),
     %
-    %   which can be rewriten as
+    %   which can be rewritten as
     %
     %       |u|      |A*lap      | |u|   |Nu(u,v)|
     %       |v|_t  = |      B*lap| |v| + |Nv(u,v)|,
@@ -83,7 +83,7 @@ elseif ( strcmpi(K.scheme, 'imexbdf4') == 1 )
     lufactors{2, 1} = U;   
 end
 
-% Output coeficients:
+% Output coefficients:
 schemeCoeffs.linmat = Lap;
 schemeCoeffs.lufactors = lufactors;
 

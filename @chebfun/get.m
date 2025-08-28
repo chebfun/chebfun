@@ -205,7 +205,7 @@ function out = getSimpleNumericLocalProp(f, prop, simpLevel)
 %     the result can be unambiguously interpreted.  See
 %     CANCONVERT2DCELLARRAYTONUMERIC.
 %
-%   The reason this funciton exists is that simple numeric local properties can
+%   The reason this function exists is that simple numeric local properties can
 %   be extracted from array-valued CHEBFUNs without needing to convert them to
 %   quasimatrices first, which can potentially save a lot in computational
 %   overhead costs.

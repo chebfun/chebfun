@@ -258,7 +258,7 @@ function bcNorm = normBCres(N, u, x, diffOrder, pref)
 %   NORMBCRES(N, U, X, DIFFORDER, PREF) returns the combined Frobenius norm of N.lbc(U),
 %   N.rbc(U), and N.bc(X, U).
 
-% [TODO]: This might be useful elsewehere (i.e. chebop/linearize), do we want to
+% [TODO]: This might be useful elsewhere (i.e. chebop/linearize), do we want to
 % move this into a separate file?
 
 % Initialize:

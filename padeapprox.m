@@ -6,7 +6,7 @@ function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol, r, N)
 %   K >= M+N, and if F is a function handle, the function must be analytic by
 %   default in a neighborhood of the unit disc, since the coefficients are
 %   computed via FFT; alternatively one can adjust the radius for this
-%   computation as inidcated below.  M and N are the desired numerator and
+%   computation as indicated below.  M and N are the desired numerator and
 %   denominator degrees, respectively, and must be nonnegative.  The optional
 %   TOL argument specifies the relative tolerance; if omitted, it defaults to
 %   1e-14.  Set TOL to 0 to turn off robustness.  The output is a function

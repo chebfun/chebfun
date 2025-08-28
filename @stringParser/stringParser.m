@@ -73,7 +73,7 @@ classdef stringParser
     methods( Access = public, Static = true, Hidden = true )
         
         % Get rid of unnecessary parenthesis in infix format strings
-        strOut = parSimp(strIn)
+        strOut = parSimp(str)
         
     end
     

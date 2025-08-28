@@ -398,7 +398,7 @@ fc = fa;
 
 % Set mFlag and delta:
 mFlag = true(size(x)); % <-- Stores previous decision state.
-delt = eps;
+delta = eps;
 
 % Initialise these too:
 s = a;
@@ -427,9 +427,9 @@ while ( (norm(fs, inf) > eps) && ...
           ( b <= (3*a+b)/4 & (s < b | s > (3*a+b)/4) ) | ...     % condition 1b
           ( mFlag  & abs(s-b) >= abs(b-c)/2 ) | ...              % condition 2
           ( ~mFlag & abs(s-b) >= abs(c-d)/2 ) | ...              % condition 3
-          ( mFlag  & abs(b-c) < delt ) | ...                     % condition 4
-          ( ~mFlag & abs(c-d) < delt ) | ...                     % condition 5
-          ( abs(b-a) < delt );
+          ( mFlag  & abs(b-c) < delta ) | ...                     % condition 4
+          ( ~mFlag & abs(c-d) < delta ) | ...                     % condition 5
+          ( abs(b-a) < delta );
     s(idx) = s_bi(idx);   % Take the bisection step.
     mFlag = idx;  % <-- Stores previous decision state.
     

@@ -8,7 +8,7 @@ tol = 10*pref.cheb3Prefs.chebfun3eps;
 
 % Example from Page 233 of: 
 % Hackbusch, Tensor Spaces and Numerical Tensor Calculus, Springer, 2012.
-% Make also sure that singular values are represeted as columns, not rows.
+% Make also sure that singular values are represented as columns, not rows.
 f = chebfun3(@(x,y,z) x.*z + x.^2.*y, [0, 1, 0, 1, 0, 1]);
 sv = hosvd(f);
 exactsv1 = [sqrt((109/720)+(sqrt(46)/45)); sqrt((109/720)-(sqrt(46)/45))];

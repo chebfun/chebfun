@@ -24,7 +24,7 @@ function varargout = str2anon(str, problemType, fieldType)
 %    indVarNames:    A cell array of strings, with entries equal to the
 %                    independent variables that appear in the input string,
 %                    i.e., r, t or x.
-%    varNames:       A cell arry of strings, with entries equal to the names of
+%    varNames:       A cell array of strings, with entries equal to the names of
 %                    the dependent variables that appear in the problem, e.g., 
 %                    u, v, w, ...
 %    pdeVarNames:    A cell array of strings, with entries equal to the names of
@@ -124,7 +124,7 @@ elseif ( strcmp(problemType, 'eig') )
                 cellstr(repmat('NUM', length(eigvarLoc), 1));
         end
 
-        % Change it to infix form and remove uneccessary parenthesis.
+        % Change it to infix form and remove unnecessary parenthesis.
         infixOutLambda = stringParser.pref2inf(prefixOutLambda);
         anFunLambda = stringParser.parSimp(infixOutLambda);
     end

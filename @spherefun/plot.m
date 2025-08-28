@@ -55,7 +55,7 @@ if ( ~isempty(varargin) )
         end
         
         % If the plot is not being added to another then plot a solid 
-        % sphere so the lines are more easily discernable.
+        % sphere so the lines are more easily discernible.
         if ( ~holdState )
             % Generate a unit sphere.
             [XX,YY,ZZ] = sphere(101);

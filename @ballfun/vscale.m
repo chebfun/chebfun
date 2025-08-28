@@ -1,8 +1,8 @@
 function V = vscale( F )
 %VSCALE   Vertical scale of a BALLFUN.
-% 
-% VSCL = VSCALE(F) returns the vertial scale of a BALLFUN as determined
-% by evaluating on a coarse tensor-product grid. 
+%
+% VSCL = VSCALE(F) returns the vertical scale of a BALLFUN as determined
+% by evaluating on a coarse tensor-product grid.
 
 % Copyright 2019 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

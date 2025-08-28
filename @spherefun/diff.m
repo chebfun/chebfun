@@ -146,7 +146,7 @@ if ( dim == 1 ) || ( dim == 2)
     f2.idxMinus = temp;
 
     % Compression plus may not preserve the expansion properties we want,
-    % i.e. the odd/even parity properites. So we sample f1 and f2
+    % i.e. the odd/even parity properties. So we sample f1 and f2
     % separately and add their values together to construct a spherefun
     % from their samples.
     % [TODO]: Fix this so everything is done in coefficient space, 

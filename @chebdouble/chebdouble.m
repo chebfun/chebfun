@@ -78,7 +78,7 @@ classdef (InferiorClasses = {?chebfun}) chebdouble
             % Interval scaling
             c = 2/diff(u.domain);     
             
-            % Muliplying by the kth-order differentiation matrix
+            % Multiplying by the kth-order differentiation matrix
             u.values = c^k*(D{k}*u.values);
             
             % Update the difforder:
@@ -150,7 +150,7 @@ classdef (InferiorClasses = {?chebfun}) chebdouble
                 W{N} = c*chebtech2.quadwts(N);
             end
             
-            % Find the sum by muliplying by the weights vector:
+            % Find the sum by multiplying by the weights vector:
             I = W{N}*u;
         end
         

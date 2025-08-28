@@ -1,6 +1,6 @@
 function D = diff(A, m)
 %DIFF    Differentiation operator for ultraspherical spectral method
-%   D = DIFF(A, m) returns a differentiation operator for the ultrapsherical
+%   D = DIFF(A, m) returns a differentiation operator for the ultraspherical
 %   spectral method that represents the mth derivative.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.

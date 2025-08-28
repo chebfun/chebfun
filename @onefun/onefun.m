@@ -217,7 +217,7 @@ classdef onefun % (Abstract)
         % ONEFUN multiplication.
         f = times(f, g, varargin)
         
-        % ONEFUN obects are not transposable.
+        % ONEFUN objects are not transposable.
         f = transpose(f)
 
         % Unary minus of a ONEFUN.

@@ -207,7 +207,7 @@ while ( ( infNorm > tol ) && ( iter < width / factor) ...
     % last variable from the first two. The point is that the function 
     % handle has already been permuted outside this subroutine and 
     % therefore the tensor A here contains values of the permuted function.
-    % In this sense, here we are in essense separating the variable chosen 
+    % In this sense, here we are in essence separating the variable chosen
     % by the dimension clustering step, and not necessarily the last 
     % variable z.
     

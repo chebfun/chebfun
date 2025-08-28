@@ -49,7 +49,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followpath(N, lam0, varargin)
 % The outputs are
 %   U   : An array-valued CHEBFUN that contains all computed functions on the
 %         solution curve.
-%   LAM : A vector containing all values of the parameter LAMBA computed on the
+%   LAM : A vector containing all values of the parameter LAMBDA computed on the
 %         solution curve, so that the ith element of LAM corresponds to the ith
 %         column of U.
 %
@@ -132,7 +132,7 @@ plotting = false;           % By default, don't plot anything during the run
 printing = false;           % By default, don't print anything during the run
 direction = 1;              % By default, go in positive direction
 stepmax = .5;               % Maximum steplength
-stepmin = 1e-4;             % Mininum steplength
+stepmin = 1e-4;             % Minimum steplength
 stepinit = [];              % Initial steplength
 maxstepno = 25;             % Maximum number of steps taken
 stopfun = @(u, lambda) 0;   % Default stopfun that always evaluates to false
@@ -347,7 +347,7 @@ while ( counter < maxstepno )
         uinit = uold + sl*t;
         laminit = lamold + sl*tau;
         
-        % Have we reached the mininum steplength approved?
+        % Have we reached the minimum steplength approved?
         if ( sl < stepmin )
             disp('FAILED: sl < stepmin')
             break

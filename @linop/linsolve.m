@@ -154,7 +154,7 @@ for dim = [dimVals inf]
     if ( all(isDone) || isinf(dim) )
         break
     else
-        % Update the discretiztion dimension on unhappy pieces:
+        % Update the discretization dimension on unhappy pieces:
         disc.dimension(~isDone) = dim;
     end
     

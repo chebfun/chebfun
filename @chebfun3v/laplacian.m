@@ -17,7 +17,7 @@ end
 
 L = F;  % Initialise the output to get right domain.
 
-% Call scalar Laplacian for each compoment:
+% Call scalar Laplacian for each component:
 for jj = 1:L.nComponents
     L.components{jj} = laplacian(L.components{jj});
 end

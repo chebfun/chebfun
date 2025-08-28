@@ -7,7 +7,7 @@ classdef trigtech < smoothfun % (Abstract)
 %
 % Constructor inputs:
 %   TRIGTECH(OP) constructs a TRIGTECH object from the function handle OP. OP
-%   should be vectorized (i.e., accept a vector input) and ouput a vector of the
+%   should be vectorized (i.e., accept a vector input) and output a vector of the
 %   same length. TRIGTECH objects allow for array-valued construction (i.e., of
 %   array-valued function), in which case OP should accept a vector of length N
 %   and return a matrix of size NxM, where M is number of columns of the multi

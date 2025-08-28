@@ -21,7 +21,7 @@ for n = 1:2
     pass(n, 1) = isempty(f);
 
     %%
-    % Check behvaior for non-subinterval inputs.
+    % Check behavior for non-subinterval inputs.
     f = testclass.make(@(x) sin(x), [], pref);
     g = restrict(f, [-1 1]);
     pass(n, 2) = isequal(f, g);

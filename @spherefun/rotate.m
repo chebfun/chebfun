@@ -2,7 +2,7 @@ function f = rotate(f, phi, theta, psi, method)
 %ROTATE   Rotates a SPHEREFUN using Euler angles
 %   Y = ROTATE(F, PHI, THETA, PSI) rotates F using Euler angles phi, theta, 
 %   and psi with the ZXZ convention:  Rotate first about the z-axis by an
-%   angle phi, then about the (orginal) x-axis by an angle 0<=theta<=pi, 
+%   angle phi, then about the (original) x-axis by an angle 0<=theta<=pi,
 %   then about new z-axis by an angle psi. 
 %
 %   Y = ROTATE(F, PHI, THETA, PSI, METHOD) is the same as 
@@ -71,7 +71,7 @@ if ( strcmpi(method, 'nufft') )     % NUFFT evaluation using 2D NUFFT
     g = real( fastSphereEval(f, lam, th) );
     f = spherefun( g );
     
-elseif ( strcmpi(method, 'feval') ) % FEVAL evalutation using Horner
+elseif ( strcmpi(method, 'feval') ) % FEVAL evaluation using Horner
    
     g = feval(f, lam, th);
     f = spherefun( g );

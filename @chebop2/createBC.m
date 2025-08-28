@@ -5,7 +5,7 @@ function bc = createBC(bcArg, ends)
 %   BC = CREATEBC(BCARG, ENDS) usually constructs a CHEBFUN for the
 %   homogeneous part of the boundary conditions. If the linear constraint
 %   is sufficiently compliciated then this command gives up and passes
-%   resposibility to the solver. 
+%   responsibility to the solver.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

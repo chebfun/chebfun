@@ -47,7 +47,7 @@ Scon = S.constraint;
 % Derivative of augmented operator with the constraint at the bottom:
 S = linop([S;Jm]);
 
-% Reassign constraint. For the tangent problem, we always have homogenous
+% Reassign constraint. For the tangent problem, we always have homogeneous
 % conditions:
 Scon.values = 0*Scon.values;
 S.constraint = Scon;

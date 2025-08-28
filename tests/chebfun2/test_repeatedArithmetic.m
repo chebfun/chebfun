@@ -1,5 +1,5 @@
 function pass = test_repeatedArithmetic( pref )
-% In version 4 repeated arithmetric lost quite a bit of accurate. 
+% In version 4 repeated arithmetic lost quite a bit of accuracy.
 % With PLUS based on QR, we are in better shape. Test this. 
 
 if ( nargin < 1 ) 

@@ -52,7 +52,7 @@ if ( isempty(tree) )
     return
 end
 
-% Initalize a string to be returned:
+% Initialize a string to be returned:
 s = '';
 
 varString = tree.method;
@@ -98,7 +98,7 @@ else
         num2str(tree.diffOrder)) ];
 end
 
-% Add whitespace to the indentation string, to be used further in the recusion:
+% Add whitespace to the indentation string, to be used further in the recursion:
 indentStr = [ indentStr, '  ' ];
 
 % Print the remaining syntax tree recursively:

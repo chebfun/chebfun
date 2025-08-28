@@ -978,7 +978,7 @@ elseif ( all(fixedRank) )
         f.core = f.core(1:t1, :, :);
         r1 = t1; % New size of core
     elseif ( r1 < t1 )
-        % Pad cols with approprate number of zero cols:
+        % Pad cols with appropriate number of zero cols:
         zCols = chebfun(0, f.cols.domain);
         for jj = r1 : t1 - 1
             f.cols = [f.cols zCols];
@@ -997,7 +997,7 @@ elseif ( all(fixedRank) )
         f.core = f.core(:, 1:t2, :);
         r2 = t2; % New size of core
     elseif ( r2 < t2 )
-        % Pad rows with approprate number of zero rows:
+        % Pad rows with appropriate number of zero rows:
         zRows = chebfun(0, f.rows.domain);
         for jj = r2 : t2 - 1        
             f.rows = [f.rows zRows];
@@ -1015,7 +1015,7 @@ elseif ( all(fixedRank) )
         f.tubes = f.tubes(:, 1:t3);
         f.core = f.core(:, :, 1:t3);
     elseif ( r3 < t3 )
-        % Pad tubes with approprate number of zero tubes:
+        % Pad tubes with appropriate number of zero tubes:
         zTubes = chebfun(0, f.tubes.domain);
         for jj = r3 : t3 - 1
             f.tubes = [f.tubes zTubes];
@@ -1204,7 +1204,7 @@ while ( ( infNorm > tol ) && ( iter < width / factor) ...
     % last variable from the first two. The point is that the function 
     % handle has already been permuted outside this subroutine and 
     % therefore the tensor A here contains values of the permuted function.
-    % In this sense, here we are in essense separating the variable chosen 
+    % In this sense, here we are in essence separating the variable chosen
     % by the dimension clustering step, and not necessarily the last 
     % variable z.
     

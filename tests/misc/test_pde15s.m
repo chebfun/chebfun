@@ -231,7 +231,7 @@ opt = pdeset('eps', 1e-6, 'Ylim', pi/2*[-1 1], 'AbsTol', 1e-6, 'RelTol', 1e-6);
 [t, u, v] = pde23t(f, 0:.05:2, u, bc, opt);
 
 %% 
-%chebop-style synatx
+%chebop-style syntax
 
 close all
 x = chebfun('x');

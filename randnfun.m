@@ -57,7 +57,7 @@ if trig    % periodic case: finite Fourier-Wiener series.
            % the trigtech constructor expects with 'coeffs'.
            % The reordered index vector ii is introduced so that
            % the random coefficients are chosen in the order
-           % correponding to wave numbers 0, 1, -1, 2, -2, 3, ....
+           % corresponding to wave numbers 0, 1, -1, 2, -2, 3, ....
 
     L = diff(dom);
     m = floor(L/lambda);

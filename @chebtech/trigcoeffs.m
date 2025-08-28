@@ -1,6 +1,6 @@
 function out = trigcoeffs(f, N)
 %TRIGCOEFFS   Trigonometric coefficients of a CHEBTECH.
-%   C = TRIGCOEFFS(F) returns a column vector with the trignometric
+%   C = TRIGCOEFFS(F) returns a column vector with the trigonometric
 %   coefficients of F using complex-exponential form. Specifically for
 %   N = length(F):
 %   If N is odd
@@ -21,7 +21,7 @@ function out = trigcoeffs(f, N)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Is there a fast transfrom from Fourier to Chebyshev?
+% [TODO]: Is there a fast transform from Fourier to Chebyshev?
 
 if ( nargin == 1 )
     N = length(f);

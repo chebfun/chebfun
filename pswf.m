@@ -116,7 +116,7 @@ while ( ~ishappy )
     
 end
 
-% Extract required columns and unnormalise the Legendre coeffients:
+% Extract required columns and unnormalise the Legendre coefficients:
 V = bsxfun(@times, V(:,N+1), sqrt((0:M)'+1/2) );
 lam = lam(N+1);
 

@@ -215,7 +215,7 @@ q = e*a(1,:) + 2*(u.*co + v.*si);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer note: The code below implements the Clenshaw algortithm for
+% Developer note: The code below implements the Clenshaw algorithm for
 % summing a Fourier series (also called the Goertzel-Watt algorithm).  This
 % algorithm is about 1.5 times faster than the horner schemes implemented
 % above.  However, it is unstable when x is close to zero or +/- 1 (and the

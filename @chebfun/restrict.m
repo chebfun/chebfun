@@ -42,7 +42,7 @@ elseif ( isempty(newDomain) || numel(newDomain) == 1 )
     return
 end
 
-% Cast a periodic chebfun to a regualr chebfun:
+% Cast a periodic chebfun to a regular chebfun:
 if ( isPeriodicTech(f) )
     f = chebfun(f);
 end

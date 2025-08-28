@@ -397,7 +397,7 @@ while ~happy
         n(3) = floor(sqrt(2)^(floor(2*log2(n(3))) + 1)) + 1;
         restarts = restarts + 1;
         
-        % Ensure r is large enougth for (1,r,r) functions
+        % Ensure r is large enough for (1,r,r) functions
         if ( r(1) > 1 || r(2) > 1 || r(2) > 1 )
             if r(1) < 3
                 r(3) = max(6,2*r(3));
@@ -411,7 +411,7 @@ while ~happy
             end
         end
         
-        % Ensure r is large enougth very low-rank functions
+        % Ensure r is large enough very low-rank functions
         r(1) = max(r(1),3);
         r(2) = max(r(2),3);
         r(3) = max(r(3),3);

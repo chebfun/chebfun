@@ -30,7 +30,7 @@ isIVP =  ( ~isempty(N.lbc) && isempty(N.rbc) && isempty(N.bc) ) || ...
      ( isempty(N.lbc) && ~isempty(N.rbc) && isempty(N.bc) );
 
 % If we did not get preferences passed in, we need to create a cheboppref so
-% that we know wheter we want to solve the IVP via time-stepping or globally:
+% that we know whether we want to solve the IVP via time-stepping or globally:
 if ( nargin < 3 )
     pref = cheboppref();
 else
@@ -48,7 +48,7 @@ if ( isIVP && ~isempty(strfind(ivpSolver, 'chebfun.ode')) )
     % that start of solveivp otherwise.
     [varargout{1:nargout}] = solveivp(N, rhs, pref, varargin{:});
 else
-    % We have conditions in other fields, or we want to solve IVPs globablly,
+    % We have conditions in other fields, or we want to solve IVPs globally,
     % call CHEBOP/SOLVEBVP. However, here, we don't want to pass PREF if it
     % wasn't included in VARARGIN, as that'd mean we couldn't to an automatic
     % switch to Fourier methods in the periodic case (i.e. change the

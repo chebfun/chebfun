@@ -272,7 +272,7 @@ else
   endValsL = [];
   endValsR = [];
   E = eye(nin);
-  warning('off','all') % is there a better way to supress warnings
+  warning('off','all') % is there a better way to suppress warnings
   for ii = 1:nin
       % apply functionals to test basis
       bCol = [];
@@ -298,14 +298,14 @@ else
       endValsL = blkdiag(endValsL, Ul);
       endValsR = blkdiag(endValsR, Ur);
   end
-  warning('on','all') % is there a better way to supress warnings
+  warning('on','all') % is there a better way to suppress warnings
   endVals = [ endValsL; endValsR ];
 
   % solve system to get B
   B = (endVals'\fU')';
   if ( rank(B) ~= nbcs )
     error('CHEBFUN:LINOP:adjoint:boundaryconditions', ...
-    'Boundary condtions of L are not linearly independent.');
+    'Boundary conditions of L are not linearly independent.');
   end
 
   % attempt to simplify rows of B
@@ -333,9 +333,9 @@ else
   compMR = cell(nout, nin);
   for ii = 1:nout
       for jj = 1:nin
-          bloc = L.blocks{ii,jj};
-          compML{ii,jj} = compmat(dom(1), toCoeff(bloc));
-          compMR{ii,jj} = compmat(dom(2), toCoeff(bloc));
+          b = L.blocks{ii,jj};
+          compML{ii,jj} = compmat(dom(1), toCoeff(b));
+          compMR{ii,jj} = compmat(dom(2), toCoeff(b));
       end
   end
   compM = blkdiag(-cell2mat(compML), cell2mat(compMR));

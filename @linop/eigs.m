@@ -129,7 +129,7 @@ if ( isa(discType, 'function_handle') )
     % Set the allowed discretisation lengths:
     dimVals = discA.dimensionValues(prefs);
 
-    % Update the discretiztion dimension on unhappy pieces:
+    % Update the discretization dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
 else
     % A discretization is given:
@@ -234,7 +234,7 @@ end
 
 % Linear combination coefficients for convergence test. The convergence of the
 % combination is the same as the worst constituent function. The nontrivial
-% coefficents are to make accidental cancellations extremely unlikely.
+% coefficients are to make accidental cancellations extremely unlikely.
 coeff = 1./(2*(1:k)');
 for dim = [dimVals NaN]
     [V, D, P] = getEigenvalues(discA, discB, k, sigma);
@@ -252,7 +252,7 @@ for dim = [dimVals NaN]
     if ( all(isDone) )
         break
     elseif ( ~isnan(dim) )
-        % Update the discretiztion dimension on unhappy pieces:
+        % Update the discretization dimension on unhappy pieces:
         discA.dimension(~isDone) = dim;
     end
 
@@ -458,7 +458,7 @@ while ( ~isempty(queue) )
         for q = 1:numel(vcoeff{i})
             % TODO: The flipud below is required to make sure that the 
             % algorithm, designed for the old ordering of cheb-coeffs, continues
-            % to work. One can remove the following flipud but then carefull 
+            % to work. One can remove the following flipud but then careful
             % changes will be needed in this function.
             vcoeff{i}{q} = flipud(vcoeff{i}{q});
             newcoeff2 = vcoeff{i}{q}.*conj(vcoeff{i}{q});

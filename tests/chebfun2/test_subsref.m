@@ -63,7 +63,7 @@ h = g(F);
 h_true = chebfun3(@(x,y,z) x + y);
 pass(16) = ( norm(h - h_true) < tol );
 
-% Composition g(f) of a CHEBFUN2 g with a complex CHEBFUN2 f, interpeted as
+% Composition g(f) of a CHEBFUN2 g with a complex CHEBFUN2 f, interpreted as
 % [real(f); imag(f)].
 f = chebfun2(@(x,y) x + 1i*y);
 g = chebfun2(@(x,y) x + y);
@@ -71,7 +71,7 @@ h = g(f);
 h_true = g;
 pass(17) = ( norm(h - h_true) < tol );
 
-% Composition g(f) of a CHEBFUN2 g with a complex CHEBFUN3 f, interpeted as
+% Composition g(f) of a CHEBFUN2 g with a complex CHEBFUN3 f, interpreted as
 % [real(f); imag(f)].
 f = chebfun3(@(x,y,z) x + 1i*y);
 g = chebfun2(@(x,y) x + y);
@@ -79,7 +79,7 @@ h = g(f);
 h_true = chebfun3(@(x,y,z) x + y);
 pass(18) = ( norm(h - h_true) < tol );
 
-% Composition g(f) of a CHEBFUN2 g with a real CHEBFUN3 f, interpeted as
+% Composition g(f) of a CHEBFUN2 g with a real CHEBFUN3 f, interpreted as
 % [real(f); imag(f)].
 f = chebfun3(@(x,y,z) x);
 g = chebfun2(@(x,y) x + y);

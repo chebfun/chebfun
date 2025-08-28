@@ -99,7 +99,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     result(2) = norm(feval(g1, x) - g_exact(x), inf) < 100*vscale(g1)*eps;
 end
 
-% Test the subraction of two CHEBFUN objects F and G, specified by F_OP and
+% Test the subtraction of two CHEBFUN objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in the domains of F and G for testing samples.
 function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h1 = f - g;

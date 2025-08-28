@@ -168,7 +168,7 @@ r = zeros(lenA + lenB, 1);
 t = zeros(lenA + lenB, 1);
 
 while ( (m <= lenA) || (n <= lenB) )
-    % If one of the arrays is exausted, copy the second one into output:
+    % If one of the arrays is exhausted, copy the second one into output:
     if ( m > lenA )
         while ( n <= lenB )
             r(i) = rb(n);
@@ -189,7 +189,7 @@ while ( (m <= lenA) || (n <= lenB) )
         break
     end
     
-    % None of the arrays is exausted;
+    % None of the arrays is exhausted;
     if ( ra(m) < rb(n) )
         r(i) = ra(m);
         t(i) = 'a';
@@ -216,7 +216,7 @@ end
 
 function isc = iscont(F)
 %ISCONT   Continuity test for chebfuns.
-%   ISCONT(F) Returns logical ture if the CHEBFUN F is continuous on the closed
+%   ISCONT(F) Returns logical true if the CHEBFUN F is continuous on the closed
 %   interval defined by the domain of F and logical 0 otherwise.
 
 for k = 1:numel(F)

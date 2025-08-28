@@ -32,7 +32,7 @@ if ( N <= 0 )
     return
 end
 
-% [TODO]: Is there a fast transfrom from TRIGTECH to CHEBTECH?
+% [TODO]: Is there a fast transform from TRIGTECH to CHEBTECH?
 % Since f is a TRIGTECH it is assumed to be smooth and periodic on [-1,1].
 % Computing the chebyshev coefficients via innner products requires working with
 % non-periodic, but smooth functions on [-1,1]. The right representation for f

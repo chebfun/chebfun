@@ -1,6 +1,6 @@
 function F = diff(F, dim, n)
 %DIFF   Componentwise derivative of a SPHEREFUNV.
-%   DIFF(F) is the tangetial derivative of each component of F in
+%   DIFF(F) is the tangential derivative of each component of F in
 %   x-direction.
 %
 %   DIFF(F, DIM) is the first tangential derivative of F along the

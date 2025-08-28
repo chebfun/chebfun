@@ -110,7 +110,7 @@ end
 function g = quasiMat2cell(f, M, N)
 % MAT2CELL for a CHEBFUN array.
 
-% Get the correct indices fron the built-in MAT2CELL():
+% Get the correct indices from the built-in MAT2CELL():
 idx = mat2cell(1:numel(f), M, N);
 % Store these coluns in a CELL array:
 for k = numel(idx):-1:1
