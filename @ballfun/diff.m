@@ -70,7 +70,7 @@ function F = onediff(F, dim, Cart)
             %     F(:,:,k) = S01 \ ( DC1*F(:,:,k) ); 
             % end
             % In vectorized form this becomes: 
-            F = reshape( S01\(DC1*reshape(F, m, [])) , m, n, []);
+            F = reshape( full(S01\(DC1*reshape(F, m, []))) , m, n, []);
             
         % Matrix of derivative in the lambda direction
         elseif dim == 2  

@@ -45,7 +45,16 @@ else                                     % CHEBFUN3 + CHEBFUN3
         % number of the plus operation f + g, i.e., ||f|| + ||g|| / ||f+g||
         % We first compute a rough approximate vscale for f+g:
         m = 51; % size of sampling grid
-        hVals = sample(f, m, m, m) + sample(g, m, m, m);
+
+        % trigtech and chebtech sample at different points. The else-part of the following 
+        % statement ensures that f and g are sampled at the same points even if they have different techs.
+        if (~isPeriodicTech(f) && ~isPeriodicTech(g) ) || (isPeriodicTech(f) && isPeriodicTech(g) )
+            hVals = sample(f, m, m, m) + sample(g, m, m, m);
+        else 
+            [xxf, yyf, zzf] = chebpts3(m, m, m, f.domain);
+            [xxg, yyg, zzg] = chebpts3(m, m, m, g.domain);
+            hVals = feval(f, xxf, yyf, zzf) + feval(g, xxg, yyg, zzg);
+        end
         hVscale = max(abs(hVals(:)));
         vscaleFG = [vscale(f), vscale(g)];
         kappa = sum(vscaleFG)/hVscale;

@@ -41,19 +41,24 @@ if ( isa(op, 'chebfun') )
     
     nColumns = size(op, 2);
     if ( nColumns <= 3 )
-        % If f is periodic, then OP(f) should be periodic:
-        pref = chebfunpref;
-        if ( isPeriodicTech(f) )
-            pref.tech = get(f.rows(:,1).funs{1}, 'tech');
+        % If f is periodic in x or y, then OP(f) should inherit that:
+        funtype = 'cheb';
+        isTrig = [isPeriodicTech(f.rows), isPeriodicTech(f.cols)];
+        if ( isTrig(1) && isTrig(2) )
+            funtype = 'trig';
+        elseif ( isTrig(1) && ~isTrig(2) )
+            funtype = 'trigx';
+        elseif ( ~isTrig(1) && isTrig(2) )
+            funtype = 'trigy';
         end
         
         % Compute first entry:
         opcolumn = op(:,1);
-        F = chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain, pref);
+        F = chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain, funtype);
         % Add additional components:
         for jj = 2:nColumns
             opcolumn = op(:,jj);
-            F = [F; chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain, pref)];
+            F = [F; chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain, funtype)];
         end
         f = F;
         
@@ -71,30 +76,46 @@ elseif ( isa(op, 'chebfun2') || isa(op, 'chebfun2v') )
 elseif ( ( nargin == 2 ) && ( nargin(op) == 1 ) )
     % OP has one input variable.
     
-    % If f is periodic, then OP(f) should be periodic:
-    pref = chebfunpref;
-    if ( isPeriodicTech(f) )
-        pref.tech = get(f.rows(:,1).funs{1}, 'tech');
+    % If f is periodic in x or y, then OP(f) should inherit that:
+    funtype = 'cheb';
+    isTrig = [isPeriodicTech(f.rows), isPeriodicTech(f.cols)];
+    if ( isTrig(1) && isTrig(2) )
+        funtype = 'trig';
+    elseif ( isTrig(1) && ~isTrig(2) )
+        funtype = 'trigx';
+    elseif ( ~isTrig(1) && isTrig(2) )
+        funtype = 'trigy';
     end
     
     % Call constructor:
-    f = chebfun2(@(x,y) op(feval(f, x, y)), f.domain, pref);
+    f = chebfun2(@(x,y) op(feval(f, x, y)), f.domain, funtype);
     
 elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
     % OP has two input variables.
     
     g = varargin{1};
 
-    % OP(f,g) should be periodic if:
-    %  - f and g are periodic
-    %  - f is periodic, g is scalar
-    %  - f is scalar, g is periodic
-    pref = chebfunpref;
-    if ( (isa(f, 'chebfun2') && isPeriodicTech(f) && ...
-          isa(g, 'chebfun2') && isPeriodicTech(g))                || ...
-         (isa(f, 'chebfun2') && isPeriodicTech(f) && isscalar(g)) || ...
-         (isscalar(f) && isa(g, 'chebfun2') && isPeriodicTech(g)) )
-        pref.tech = @trigtech;
+    % OP(f,g) should be periodic in x or y if both f and g are periodic in
+    % that direction. Note that a scalar is periodic in both directions. 
+    funtype = 'cheb';
+    isTrigf = [false, false]; %whether f is trig in x and y
+    isTrigg = [false, false]; %whether g is trig in x and y
+    if ( isa(f, 'chebfun2') )
+        isTrigf = [isPeriodicTech(f.rows), isPeriodicTech(f.cols)];
+    elseif ( isscalar(f) )
+        isTrigf = [true, true];
+    end
+    if ( isa(g, 'chebfun2') )
+        isTrigg = [isPeriodicTech(g.rows), isPeriodicTech(g.cols)];
+    elseif ( isscalar(g) )
+        isTrigg = [true, true];
+    end
+    if ( isTrigf(1) && isTrigg(1) && isTrigf(2) && isTrigg(2))
+        funtype = 'trig';
+    elseif ( isTrigf(1) && isTrigg(1) )
+        funtype = 'trigx';
+    elseif ( isTrigf(2) && isTrigg(2) )
+        funtype = 'trigy';
     end
 
     if ( isa(g, 'double') )     % promote
@@ -105,8 +126,14 @@ elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
         f = chebfun2(f, g.domain);
     end
     
+    %Domain check
+    if ( ~domainCheck(f, g) )
+        error('CHEBFUN:CHEBFUN2:COMPOSE:DomainIncompatible', ...
+            'The CHEBFUN2 objects do not share the same domain')
+    end
+    
     % Call constructor:
-    f = chebfun2(@(x,y) op(feval(f, x, y), feval(g, x, y)), f.domain, pref);
+    f = chebfun2(@(x,y) op(feval(f, x, y), feval(g, x, y)), f.domain, funtype);
     
 else
     % Not sure what to do, error:
