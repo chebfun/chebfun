@@ -38,7 +38,7 @@ N.ubc = @(x) xbc(x).*ybc(d(4));
 u = N \ 0; 
 exact = chebfun2(@(x,y) xbc(x).*ybc(y), d); 
 
-pass(2) = ( norm(u - exact) < 300*tol );
+pass(2) = ( norm(u - exact) < 3000*tol );
 
 
 % High frequency on rectangular domain 

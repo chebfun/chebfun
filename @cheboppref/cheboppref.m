@@ -103,6 +103,8 @@ classdef cheboppref < chebpref
 %     ['ode113']
 %     'ode15s'
 %     'ode45'
+%     'ode78'
+%     'ode89'
 %     'values'
 %     'coeffs'
 %
@@ -538,15 +540,15 @@ classdef cheboppref < chebpref
         function val = parseIVPsolver(val)
         %PARSEIVPSOLVER   Allow different syntax for specifying the IVPsolver.
             
-            % Check whether we got pref.ivpSolver = @ode113/@ode45/@ode15s, that
+            % Check whether we got pref.ivpSolver = @ode113/@ode45/@ode15s/@ode78/@ode89, that
             % is, a function handle, but not the CHEBFUN overload of it.
             if ( isa(val, 'function_handle') && ...
-                    any(strcmpi(func2str(val), {'ode113', 'ode15s', 'ode45'})) )
+                    any(strcmpi(func2str(val), {'ode113', 'ode15s', 'ode45', 'ode78', 'ode89'})) )
                 val = eval(['@chebfun.', func2str(val)]);
                 
             % Check whether we got a string argument, e.g. 
             % pref.ivpSolver = 'ode113'.
-            elseif ( any(strcmpi(val, {'ode113', 'ode15s', 'ode45'})) )
+            elseif ( any(strcmpi(val, {'ode113', 'ode15s', 'ode45', 'ode78', 'ode89'})) )
                 val = eval(['@chebfun.', val]);
             end
         end

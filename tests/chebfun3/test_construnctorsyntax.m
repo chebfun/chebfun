@@ -78,4 +78,14 @@ g = chebfun3(ff, [-2 1 -2 1 -2 1], 'rank', [5 6 7]);
 pass(12) = rX_g < rX_f && rY_g < rY_f && rZ_g < rZ_f;
 pass(13) = all(g.domain == [-2 1 -2 1 -2 1]);
 
+pass(14) = 1;
+try
+    % Construction using different constructors:
+    chebfun3(f,'classic');
+    
+    chebfun3(f,'chebfun3f');
+catch
+    pass(14) = 0;
+end
+
 end

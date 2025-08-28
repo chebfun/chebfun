@@ -10,6 +10,8 @@ function [pol, res, zer] = prz(zj, fj, wj)
 % Copyright 2018 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+ix = find(wj==0); % indices w/ zero weights; to be removed to avoid spurious poles
+wj(ix) = []; fj(ix) = []; zj(ix) = [];
 m = length(wj);
 
 % Compute poles via generalized eigenvalue problem:

@@ -1,5 +1,5 @@
 function f = chebfun3f(f, op, pref, dom, vectorize)
-%CHEBFUN3F  Alternative CHEBFUN3 constructor.
+%CHEBFUN3F  Default CHEBFUN3 constructor.
 %   Given a function OP of three variables, this code represents it as a
 %   CHEBFUN3 object. A CHEBFUN3 object is a low-rank representation
 %   expressing a function as a trilinear product of a discrete core tensor
@@ -7,7 +7,7 @@ function f = chebfun3f(f, op, pref, dom, vectorize)
 %
 %   The CHEBFUN3F algorithm for constructing a CHEBFUN3 object has the
 %   potential to require fewer function evaluations compared to the default
-%   constructor. 
+%   constructor.
 %
 %   The CHEBFUN3F constructor has three phases:
 %
@@ -30,7 +30,7 @@ function f = chebfun3f(f, op, pref, dom, vectorize)
 %
 % See also CHEBFUN3, CHEBFUN2, CHEBFUN3T and CHEBFUN3V.
 
-% Copyright 2022 by The University of Oxford and The Chebfun Developers.
+% Copyright 2023 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set preferences:
@@ -57,6 +57,12 @@ reffun           = @(n) floor(sqrt(2)^(floor(2*log2(n)) + 1)) + 1;
 restarts         = 0;
 f.domain         = dom;
 
+if isa(tech,'trigtech')
+    %use equispace points instead
+    chebX = @(i,n) dom(1) +  (i-1)/(n) *(dom(2)-dom(1));
+    chebY = @(i,n) dom(3) +  (i-1)/(n) *(dom(4)-dom(3));
+    chebZ = @(i,n) dom(5) +  (i-1)/(n) *(dom(6)-dom(5));
+end
 
 %% Main Loop
 happy = 0;
@@ -65,8 +71,8 @@ while ~happy
     %% Phase 1
     happyPhase1 = 0;
     while ( ~happyPhase1 )
-        J = initializeIndexRandomly(r(2), n(2));
-        K = initializeIndexRandomly(r(3), n(3));
+        J = initializeIndexRandomly(r(2), n(2), restarts);
+        K = initializeIndexRandomly(r(3), n(3), restarts);
         
         % Handle to evaluate tensor entries of T_c
         ff = @(i,j,k) op(chebX(i,n(1)),chebY(j,n(2)),chebZ(k,n(3)));
@@ -76,8 +82,18 @@ while ~happy
             
             % ACA 1
             T1 = evalTensor(1:n(1),J,K,ff,vectorize);
+            
+            % Does the function blow up or evaluate to NaN?:
+            if ( isinf(max(abs(T1(:)))) )
+                error('CHEBFUN:CHEBFUN3:chebfun3f:inf', ...
+                    'Function returned INF when evaluated');
+            elseif ( any(isnan(T1(:))) )
+                error('CHEBFUN:CHEBFUN3:chebfun3f:nan', ...
+                    'Function returned NaN when evaluated');
+            end
+  
             T1 = reshape(T1,n(1),r(2)*r(3));
-            [~, absTol] = getTol(T1, pseudoLevel, absTol,dom(2)-dom(1));
+            [~, absTol] = getTol(T1, pseudoLevel, absTol,dom(2)-dom(1),tech);
             [Uc, ~, ~, I,I2] = ACA(T1, absTol, n(1));
             r(1) = size(I,2);
             JT1 = J;
@@ -86,7 +102,7 @@ while ~happy
             % ACA 2
             T2 = evalTensor(I,1:n(2),K,ff,vectorize);
             T2 = reshape(permute(T2,[2,1,3]),n(2),r(1)*r(3));
-            [~, absTol] = getTol(T2, pseudoLevel, absTol,dom(4)-dom(3));
+            [~, absTol] = getTol(T2, pseudoLevel, absTol,dom(4)-dom(3),tech);
             [Vc, ~, ~, J, J2] = ACA(T2, absTol, n(2));
             r(2) = size(J,2);
             KT2 = K;
@@ -95,7 +111,7 @@ while ~happy
             % ACA 3
             T3 = evalTensor(I,J,1:n(3), ff,vectorize);
             T3 = reshape(permute(T3,[3,1,2]),n(3),r(1)*r(2));
-            [relTol, absTol] = getTol(T3, pseudoLevel, absTol,dom(6)-dom(5));
+            [relTol, absTol] = getTol(T3, pseudoLevel, absTol,dom(6)-dom(5),tech);
             [Wc, ~, ~, K, K2] = ACA(T3, absTol, n(3));
             r(3) = size(K,2);
             IT3 = I;
@@ -144,31 +160,31 @@ while ~happy
         m = n;
         
         % Check if further refinement is necessary
-        %U
         Uf = Uc;
-        fiberData.hscale = norm(dom(1:2), inf);
-        ct2 = createCT2(Uf,fiberData);
-        resolvedU = happinessCheck(ct2, [], ct2.coeffs, [], pref);
-        if ( ~resolvedU )
-            m(1) = 2*m(1)-1;
-        end
-        
-        %V
         Vf = Vc;
-        fiberData.hscale = norm(dom(3:4), inf);
-        ct2 = createCT2(Vf, fiberData);
-        resolvedV = happinessCheck(ct2, [], ct2.coeffs, [], pref);
-        if ( ~resolvedV )
-            m(2) = 2*m(2)-1;
-        end
-        
-        % W
         Wf = Wc;
-        fiberData.hscale = norm(dom(5:6), inf);
-        ct2 = createCT2(Wf,fiberData);
-        resolvedW = happinessCheck(ct2, [], ct2.coeffs, [], pref);
+        [resolvedU, resolvedV, resolvedW] = happinessCheck3(Uf, Vf, Wf, dom, pref, tech);
+        
+        if ( ~resolvedU )
+            if isa(tech,'trigtech')
+                m(1) = 2*m(1);
+            else
+                m(1) = 2*m(1)-1;
+            end
+        end
+        if ( ~resolvedV )
+            if isa(tech,'trigtech')
+                m(2) = 2*m(2);
+            else
+                m(2) = 2*m(2)-1;
+            end
+        end
         if ( ~resolvedW )
-            m(3) = 2*m(3)-1;
+            if isa(tech,'trigtech')
+                m(3) = 2*m(3);
+            else
+                m(3) = 2*m(3)-1;
+            end
         end
         
         % Add function evaluations and check again
@@ -177,21 +193,30 @@ while ~happy
             ff = @(i,j,k) op(chebX(i,m(1)),chebY(j,m(2)),chebZ(k,m(3)));
             
             % Map the indices from T_c to T_f
-            refFactor = [0, 0, 0];
-            iter = 0;
-            while ( min(refFactor) == 0 )
-                iter = iter +1;
-                if ( n(1)*iter-(iter-1) == m(1) )
-                    refFactor(1) = iter;
-                end
-                if ( n(2)*iter-(iter-1) == m(2) )
-                    refFactor(2) = iter;
-                end
-                if ( n(3)*iter-(iter-1) == m(3) )
-                    refFactor(3) = iter;
+            if isa(tech,'trigtech')
+                refFactor = m./n;
+            else
+                refFactor = [0, 0, 0];
+                iter = 0;
+                while ( min(refFactor) == 0 )
+                    iter = iter +1;
+                    if ( n(1)*iter-(iter-1) == m(1) )
+                        refFactor(1) = iter;
+                    end
+                    if ( n(2)*iter-(iter-1) == m(2) )
+                        refFactor(2) = iter;
+                    end
+                    if ( n(3)*iter-(iter-1) == m(3) )
+                        refFactor(3) = iter;
+                    end
                 end
             end
-            ref = @(i, r) r*i-(r-1);
+            
+            if isa(tech,'trigtech')
+                ref = @(i, r) r*i-(r-1);
+            else
+                ref = @(i, r) r*i-(r-1);
+            end
             
             % U
             Jr = ref(JT1, refFactor(2));
@@ -199,7 +224,7 @@ while ~happy
             if ( ~resolvedU )
                 Uold = Uf;
                 [Ij,Ik] = ind2sub([size(Jr,2),size(Kr,2)],I2);
-                if ( vectorize == 1 )
+                if ( vectorize == 0 )
                     nn = [floor(m(1)/2),size(I2,2)];
                     x = zeros([nn(1),1]);
                     x(:,1) = 2:2:m(1);
@@ -225,11 +250,13 @@ while ~happy
                         end
                     end
                 end
-                fiberData.hscale = norm(dom(1:2), inf);
-                ct2 = createCT2(Uf,fiberData);
-                resolvedU = happinessCheck(ct2, [], ct2.coeffs, [], pref);
+                [resolvedU, ~, ~] = happinessCheck3(Uf, [], [], dom, pref, tech);
                 if ( ~resolvedU )
-                    m(1) = 2*m(1)-1;
+                    if isa(tech,'trigtech')
+                        m(1) = 2*m(1);
+                    else
+                        m(1) = 2*m(1)-1;
+                    end
                 end
             end
             
@@ -239,7 +266,7 @@ while ~happy
             if ( ~resolvedV )
                 Vold = Vf;
                 [Ji,Jk] = ind2sub([size(Ir,2),size(Kr,2)],J2);
-                if vectorize == 1
+                if ( vectorize == 0 )
                     nn = [floor(m(2)/2),size(J2,2)];
                     y = zeros([nn(1),1]);
                     y(:,1) = 2:2:m(2);
@@ -264,11 +291,13 @@ while ~happy
                         end
                     end
                 end
-                fiberData.hscale = norm(dom(3:4), inf);
-                ct2 = createCT2(Vf,fiberData);
-                resolvedV = happinessCheck(ct2, [], ct2.coeffs, [], pref);
+                [~,resolvedV,~] = happinessCheck3([], Vf, [], dom, pref, tech);
                 if ~resolvedV
-                    m(2) = 2*m(2)-1;
+                    if isa(tech,'trigtech')
+                        m(2) = 2*m(2);
+                    else
+                        m(2) = 2*m(2)-1;
+                    end
                 end
             end
             
@@ -278,7 +307,7 @@ while ~happy
             if ( ~resolvedW )
                 Wold = Wf;
                 [Ki,Kj] = ind2sub([size(Ir,2),size(Jr,2)],K2);
-                if vectorize == 1
+                if ( vectorize == 0 )
                     nn = [floor(m(3)/2),size(K2,2)];
                     z = zeros([nn(1),1]);
                     z(:,1) = 2:2:m(3);
@@ -303,21 +332,24 @@ while ~happy
                         end
                     end
                 end
-                fiberData.hscale = norm(dom(5:6), inf);
-                ct2 = createCT2(Wf,fiberData);
-                resolvedW = happinessCheck(ct2, [], ct2.coeffs, [], pref);
+                [~,~,resolvedW] = happinessCheck3([], [], Wf, dom, pref, tech);
                 if ~resolvedW
-                    m(3) = 2*m(3)-1;
+                    if isa(tech,'trigtech')
+                        m(3) = 2*m(3);
+                    else
+                        m(3) = 2*m(3)-1;
+                    end
                 end
             end
         end
         
-        [~, absTol] = getTol(Uf, pseudoLevel, absTol, dom(2)-dom(1));
-        [~, absTol] = getTol(Vf, pseudoLevel, absTol, dom(4)-dom(3));
-        [~, absTol] = getTol(Wf, pseudoLevel, absTol, dom(6)-dom(5));
+        
+        [~, absTol] = getTol(Uf, pseudoLevel, absTol, dom(2)-dom(1),tech);
+        [~, absTol] = getTol(Vf, pseudoLevel, absTol, dom(4)-dom(3),tech);
+        [~, absTol] = getTol(Wf, pseudoLevel, absTol, dom(6)-dom(5),tech);
         
         %% Phase 3
-    
+        
         % Compute factor matrices
         [QU,~] = qr(Uf,0);
         [I, QUI] = DEIM(QU);
@@ -325,34 +357,21 @@ while ~happy
         [J, QVJ] = DEIM(QV);
         [QW,~] = qr(Wf,0);
         [K, QWK] = DEIM(QW);
-
-        % Simplification:
-        % (Take a linear combination of the columns = faster)
-        lenU = standardChop(chebvals2chebcoeffs(sum(Uf,2)), pref.chebfuneps);
-        lenV = standardChop(chebvals2chebcoeffs(sum(Vf,2)), pref.chebfuneps);
-        lenW = standardChop(chebvals2chebcoeffs(sum(Wf,2)), pref.chebfuneps);
-%         % (Full simplify = slower)
-%         lenU = length(simplify(chebfun(Uf, [dom(1),dom(2)], pref), pref.chebfuneps));
-%         lenV = length(simplify(chebfun(Vf, [dom(3),dom(4)], pref), pref.chebfuneps));
-%         lenW = length(simplify(chebfun(Wf, [dom(5),dom(6)], pref), pref.chebfuneps));
-
-        % Convert to coefficients and simplify:
-        QU = chebvals2chebcoeffs(QU); QU = QU(1:lenU,:);
-        QV = chebvals2chebcoeffs(QV); QV = QV(1:lenV,:);
-        QW = chebvals2chebcoeffs(QW); QW = QW(1:lenW,:);
-       
-        % Introduce a diagonal scaling to ensure the coefficients decay to
-        % machine precision:
-        DU = diag(eps./max(min(abs(QU)),eps));
-        DV = diag(eps./max(min(abs(QV)),eps));
-        DW = diag(eps./max(min(abs(QW)),eps));
-
-        % Construct the outputs:
-        f.cols  = chebfun(QU*DU, [dom(1),dom(2)], 'coeffs', pref);
-        f.rows  = chebfun(QV*DV, [dom(3),dom(4)], 'coeffs', pref);
-        f.tubes = chebfun(QW*DW, [dom(5),dom(6)], 'coeffs', pref);
-        f.core  = invtprod(invtprod(evalTensor(I,J,K,ff,vectorize), ...
-            QUI,QVJ,QWK),DU,DV,DW);       
+        
+        % Scaling to ensure the factor matrices contain decaying coefficients
+        tmpCore  = invtprod(evalTensor(I,J,K,ff,vectorize), QUI,QVJ,QWK);
+        colScaling = max(abs(tmpCore),[],[2,3]);
+        rowScaling = max(abs(tmpCore),[],[1,3]);
+        tubeScaling = squeeze(max(abs(tmpCore),[],[1,2]));
+           
+        % Store chebfun3 object
+        f.cols  = simplify(chebfun(QU*diag(colScaling), [dom(1),dom(2)], pref));
+        f.rows  = simplify(chebfun(QV*diag(rowScaling), [dom(3),dom(4)], pref));
+        f.tubes = simplify(chebfun(QW*diag(tubeScaling), [dom(5),dom(6)], pref));
+        f.cols = simplify(f.cols, pref.chebfuneps, 'globaltol');
+        f.rows = simplify(f.rows, pref.chebfuneps, 'globaltol');
+        f.tubes = simplify(f.tubes, pref.chebfuneps, 'globaltol');
+        f.core  = invtprod(tmpCore,diag(colScaling),diag(rowScaling),diag(tubeScaling));
         
     end
     
@@ -400,9 +419,7 @@ while ~happy
 end
 end
 
-%% Additional Functions
-
-%% 
+%%
 function T = evalTensor(I, J, K, ff,vectorize)
 % Evaluate the tensor ff at indices specified by I,J,K
 
@@ -417,7 +434,11 @@ if ( vectorize == 0 ) % we can use the efficient evaluations
     z = zeros([1,1,n(3)]);
     z(1,1,:) = K;
     Z = repmat(z,n(1),n(2),1);
-    T = ff(X,Y,Z);
+    if numel(X) > 0
+        T = ff(X,Y,Z);
+    else
+        T = [];
+    end
 else % we need for loops as f is not vectorizable
     T = zeros(size(I,2),size(J,2),size(K,2));
     for i = 1:size(I,2)
@@ -459,7 +480,7 @@ Ar = Aoriginal(rowInd,:)';
 At = Aoriginal(rowInd,colInd);
 end
 
-%% 
+%%
 function [indices, UI] = DEIM(U)
 % Discrete Empirical Interpolation
 
@@ -479,7 +500,7 @@ end
 
 end
 
-%% 
+%%
 function ct2 = createCT2(W,data)
 % Create temporary chebtech2 object
 
@@ -488,14 +509,52 @@ ct2 = chebtech2(W, data);
 ct2.coeffs = sum(abs(ct2.coeffs), 2);
 end
 
-%% 
-function [relTol, absTol] = getTol(M, pseudoLevel, tolOld,domDiff)
+%%
+function [resolvedU, resolvedV, resolvedW] = happinessCheck3(U, V, W, dom, pref, tech)
+resolvedU = 1; resolvedV = 1; resolvedW = 1;
+% Happiness-check
+if numel(U) > 0
+    vsclU = max(abs(U(:,1)));
+    fiber1Data.hscale = norm(dom(5:6), inf);
+    fiber1Data.vscale = vsclU;
+    UChebtech = tech.make(U, fiber1Data);
+    UChebtech.coeffs = sum(abs(UChebtech.coeffs), 2);
+    resolvedU  = happinessCheck(UChebtech, [], ...
+        UChebtech.coeffs, [], pref);
+end
+if numel(V) > 0
+    vsclV = max(abs(V(:,1)));
+    fiber2Data.hscale = norm(dom(1:2), inf);
+    fiber2Data.vscale = vsclV;
+    VChebtech = tech.make(V, fiber2Data);
+    VChebtech.coeffs = sum(abs(VChebtech.coeffs), 2);
+    resolvedV  = happinessCheck(VChebtech, [], ...
+        VChebtech.coeffs, [], pref);
+end
+if numel(W) > 0
+    vsclW = max(abs(W(:,1)));
+    fiber3Data.hscale = norm(dom(3:4), inf);
+    fiber3Data.vscale = vsclW;
+    WChebtech = tech.make(W, fiber3Data);
+    WChebtech.coeffs = sum(abs(WChebtech.coeffs), 2);
+    resolvedW = happinessCheck(WChebtech, [], ...
+        WChebtech.coeffs, [], pref);
+end
+
+end
+
+%%
+function [relTol, absTol] = getTol(M, pseudoLevel, tolOld,domDiff,tech)
 % Get suitable tolerances as in Chebfun3 (see
 % https://github.com/chebfun/chebfun/issues/1491)
 
 relTol = 2*size(M,1)^(4/5) * pseudoLevel;
 vscale = max(abs(M(:)));
 cheb = @(i,n) -cos((i-1).*pi/(n-1));
+if isa(tech,'trigtech')
+    %use equispace points instead
+    cheb = @(i,n) -1 +  (i-1)/(n) * 2;
+end
 points = 1:size(M,1);
 points = cheb(points, size(M,1));
 gradNorms = zeros([1,size(M,1)]);
@@ -508,14 +567,14 @@ absTol = max([absTol, tolOld, pseudoLevel]);
 end
 
 %%
-function X = initializeIndexRandomly(r, maxVal)
+function X = initializeIndexRandomly(r, maxVal, restarts)
 %  Random initialization of indices by drawing one index in each of r
 %  subintervals of equal length
 
 box = floor(maxVal/r);
 X = [];
 rngprev = rng();
-rng(16051821);             % pseudorandom
+rng(16051821+restarts,'twister');             % pseudorandom
 for i = 1:r
     val = i*box + randi(box,1);
     X = [X,val];
@@ -523,7 +582,7 @@ end
 rng(rngprev);
 end
 
-%% 
+%%
 function X = invtprod(X,U,V,W)
 % Evaluate X times_1 inv(U) times_2 inv(V) times_3 inv(W) using backslash
 
@@ -535,7 +594,7 @@ X = permute(reshape(W\reshape(permute(X,[3,2,1]),[n(3),m(2)*m(1)]),[m(3),m(2),m(
 
 end
 
-%% 
+%%
 function vals = evaluate(oper, xx, yy, zz, flag)
 % EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
 % turned on.
