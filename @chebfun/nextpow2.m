@@ -36,7 +36,7 @@ absf = abs(f);
 
 % Result will have breaks where |f| is a power of 2.
 mm = minandmax(absf);
-pows = 2.^(mynextpow2(mm(1,:)):mynextpow2(mm(2,:)));
+pows = 2.^(mynextpow2(min(mm(1,:))):mynextpow2(max(mm(2,:))));
 r = f.domain.';
 for k = 1:numel(pows)
     rk = roots(absf - pows(k));

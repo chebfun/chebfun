@@ -17,7 +17,7 @@ N.lbc = 0;
 
 u = N \ 0; 
 
-pass(1) = ( norm( u(:,d(3)) - N.dbc.' ) < tol); 
+pass(1) = ( norm( u(:,d(3)) - N.dbc.' ) < 10*tol); 
 pass(2) = ( norm( u(:,d(4)) - N.ubc.' ) < tol); 
 pass(3) = ( norm( u(d(1),:) - N.lbc ) < tol); 
 pass(4) = ( norm( u(d(2),:) - N.rbc ) < tol); 

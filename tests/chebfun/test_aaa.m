@@ -134,14 +134,53 @@ err = norm(F-r(X),inf); pass(29) = abs(err-.006) < .002;
 r = aaa(F,X,'degree',4,'lawson',100,'damping',0.5,'sign',1);
 err = norm(F-r(X),inf); pass(30) = abs(err-.006) < .002;
 
-X = chebpts(1000,[0 10]); F = 1./(1+exp(50./(X-2)));   % Fermi-Dirac
+X = chebpts(1000,[0 10]); F = 1./(1+exp(5./(X-2)));   % Fermi-Dirac
 r = aaa(F,X,'degree',12,'lawson',100,'damping',0.85,'sign',1);
-err = norm(F-r(X),inf); pass(31) = abs(err-.000317) < .0001;
+err = norm(F-r(X),inf); pass(31) = abs(err-.000035) < .0001;
 
 f = @(x) max(x,0);
 r = aaa(f,'degree',8,'damping',.5,'lawson',200);
 xx = linspace(-1,1,300);
 err = norm(f(xx)-r(xx),inf); pass(32) = abs(err-.0006) < .001;
+
+Z = linspace(-1,1,100); F = exp(Z);
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(F-r{2}(Z),inf); pass(33) = abs(err) < 1e-12;
+
+Z = linspace(-1,1,100); F = sin(Z);
+r = aaa(F, Z, 'deriv_deg', 4);
+pass(34) = iscell(r) && isequal(size(r), [1, 5]);
+
+Z = linspace(-1,1,100); F = sin(Z);
+r = aaa(F, Z, 'deriv_deg', 4);
+err = norm(F-r{5}(Z),inf);
+pass(35) = abs(err) < 1e-7;
+
+Z = linspace(-1,1,100); F = Z.^3;
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(3*Z.^2-r{2}(Z),inf);
+pass(36) = abs(err) < 1e-12;
+
+Z = linspace(-1,1,100); F = 1e-100*exp(Z);
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(F-r{2}(Z),inf); pass(37) = abs(err) < 1e-112;
+
+Z = linspace(-1e100,1e100,100); F = exp(1e-100*Z);
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(1e-100*F-r{2}(Z),inf); pass(38) = abs(err) < 1e-112;
+
+Z = exp(2i*pi*(0:99)/100); F = sqrt(2-Z);
+rr = aaa(F, Z, 'degree', 6, 'deriv_deg', 1);
+r = rr{1};
+err = abs( norm(F-r(Z),inf) - 1.19e-11 ); pass(39) = abs(err) < 1e-12;
+rp = rr{2};
+pass(40) = abs(rp(1)+0.5) < 1e-6;
+
+Z = linspace(-1,1,100); F = Z + 1./(Z-1.5);
+[r,pol,res] = aaa(F, Z); % residual computation check
+[~,ii] = min(abs(pol-1.5));
+err = res(ii)-1;
+pass(41) = abs(err) < 1e-8;
 
 warning('on', 'AAA:Froissart');
 

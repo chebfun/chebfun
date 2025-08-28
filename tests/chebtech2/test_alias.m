@@ -58,6 +58,4 @@ c2 = chebtech2.vals2coeffs(v2);
 % Check in the infinity norm:
 pass(11) = norm(c1 - c2, inf) < n*tol;
 
-
-
 end

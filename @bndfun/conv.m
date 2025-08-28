@@ -120,7 +120,7 @@ if ( numPatches > 1 && coeffsConvCost > quadConvCost )
     h_left = conv(f, restrict(g, c+[0, b-a]));     % Left triangle
     h_right = conv(f, restrict(g, d-[(b-a) 0]));   % Right tirangle
     % Middle:
-    [t, w] = legpts((M+N+5)/2, [a,b]);             % Legendre grid
+    [t, w] = legpts(ceil( (M+N+5)/2 ), [a,b]);     % Legendre grid, if (M+N+5)/2 is non-integer then increase
     [tt, xx] = meshgrid(t,x);                      % Cheb/Leg grid to evaluate g
     ft = feval(f,t);                               % Evaluate f
     gxmt = feval(g, xx-tt);                        %    and g (expensive)
