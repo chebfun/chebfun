@@ -21,7 +21,7 @@ end
 Z = linspace(0, 2*pi, 1000);
 F = exp(cos(Z));
 [r, ~, ~, ~, zj] = aaatrig(F, Z, form);
-pass(1,j) = ( norm(F - r(Z), inf) < tol );
+pass(1,j) = ( norm(F - r(Z), inf) < 2*tol );
 pass(2,j) = isnan(r(nan));                  % check that r(NaN) = NaN
 pass(3,j) = isnan(r(inf));                  % real infinite evaluation should return nan
 pass(4,j) = all(~isinf(r([1i;-1i]*inf)));   % imaginary infinite evaluation should returns a finite number

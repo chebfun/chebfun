@@ -4,6 +4,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   data F on the set of sample points Z.  F may be given by its values at Z,
 %   or as a function handle or chebfun.  R = AAA(F, Z, 'degree', N) attempts to
 %   compute the minimax approximation of degree N (i.e., rational type (N,N)).
+%   If 'deriv_deg', k is specified, R will be a k+1 element cell array containing
+%   the rational approximant and its first k derivatives (as function handles).
 %
 %   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles, residues, and zeros
 %   of R.
@@ -15,7 +17,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the vector
 %   of errors ||f-r||_infty in successive iterative steps of AAA.  Note that the
 %   rational degrees are not 1,...,length(ERRVEC) but 0,...,length(ERRVEC)-1.
-%
+%   
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'degree', N: maximal degree (default N = 99). 
@@ -36,6 +38,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   - 'damping', DAMPRATIO: when running Lawson, apply a damping ratio at each
 %       step.  DAMPRATIO = 1 is standard; DAMPRATIO < 1 may be more robust.
 %   - 'sign', 'on' or 1: turns on modification good for approximating sign functions
+%   - 'deriv_deg', k: maximal degree of returned derivatives (default k = 0)
 %
 %   If 'degree' is specified and 'lawson' is not, AAA attempts to find a minimax
 %   approximant of degree N by AAA-Lawson iteration.  This will generally be
@@ -65,7 +68,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   X = linspace(-1,1,30); r = aaa(gamma(X),X);
 %   fplot(r,[-5,5]), axis([-5 5 -15 15]), grid on 
 %
-%   Z = exp(2i*pi*linspace(0,1,500)); 
+%   Z = exp(2i*pi*linspace(0,1,500));
 %   [r,pol,res] = aaa(@tan,Z); disp([pol res])
 %
 %   X = linspace(-1,1,1000); F = tanh(20*X);
@@ -77,6 +80,10 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   subplot(1,2,2)
 %   r = aaa(G,Z,'degree',3,'lawson',0); plot(G-r(Z)), axis equal, hold on
 %   r = aaa(G,Z,'degree',3); plot(G-r(Z)), axis equal, hold off
+%
+%   Z = linspace(-1,1,100); F = Z.^3;
+%   r = aaa(F,Z,'deriv_deg', 1)
+%   r{2}(1)  
 %
 %   References on AAA and AAA-Lawson, respectively:
 %
@@ -94,7 +101,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 
 % Parse inputs:
 [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, ...
-    nlawson, dampratio, degree_flag, degree, sign_flag] ...
+    nlawson, dampratio, degree_flag, degree, sign_flag, deriv_deg] ...
     = parseInputs(F, varargin{:});
 
 if ( needZ )
@@ -251,12 +258,30 @@ elseif ( cleanup_flag == 2 && nlawson == 0 )  % Alternative cleanup.  Currently
     [pol, res, zer] = prz(zj, fj, wj);
 end
 
+% Compute derivatives, if requested by the user
+if ( deriv_deg >= 1 )
+    r_output = cell(1, deriv_deg+1);
+    r_output{1} = r;
+    for k = 1:deriv_deg
+        r_output{k+1} = @(x) diffbary(x, zj, fj, wj, k);
+    end
+    r = r_output;
+end
+
+% Compute more accurate residues, if nargout > 2:
+if ( nargout > 2 )
+    deg = max(0, length(zer)-length(pol) );
+    A = [Z.^(0:deg) 1./(Z-pol.')];
+    c = A\F;
+    res = c(deg+2:end);
+end
+
 end % of AAA()
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   PARSEINPUTS   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
-    needZ, mmax_flag, nlawson, dampratio, degree_flag, degree, sign_flag] ...
-    = parseInputs(F, varargin)
+    needZ, mmax_flag, nlawson, dampratio, degree_flag, degree, sign_flag, ... 
+    deriv_deg] = parseInputs(F, varargin)
 
 % Check if F is empty:
 if ( isempty(F) )
@@ -285,6 +310,7 @@ degree = NaN;                  % Specified degree
 cleanup_tol = 1e-13;           % Cleanup tolerance
 nlawson = Inf;                 % Number of Lawson steps (Inf means adaptive)
 dampratio = 1;                 % Lawson damping ratio (1 means normal)
+deriv_deg = 0;                 % desired degree of the derivatives
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -369,6 +395,12 @@ while ( ~isempty(varargin) )   % Check if parameters have been provided
     elseif ( strncmpi(varargin{1}, 'sign', 4) )
         if ( strncmpi(varargin{2}, 'on', 2) || ( varargin{2} == 1 ) )
             sign_flag = 1;
+        end
+        varargin([1, 2]) = [];
+
+    elseif ( strncmpi(varargin{1}, 'deriv_deg', 9) )
+        if ( isnumeric(varargin{2}) && isscalar(varargin{2}) )
+            deriv_deg = varargin{2};
         end
         varargin([1, 2]) = [];
         
@@ -650,6 +682,8 @@ pol = eig(E, B);
 pol = pol(~isinf(pol));
 
 % Compute residues via formula for res of quotient of analytic functions:
+% (This is not always accurate and starting in 2025 is overwritten in
+% the calling function by a least-squares computation of residues.)
 N = @(t) (1./(t-zj.')) * (fj.*wj);
 Ddiff = @(t) -((1./(t-zj.')).^2) * wj;
 res = N(pol)./Ddiff(pol);
@@ -689,3 +723,61 @@ end
 r = reshape(r, size(zz));
 
 end % End of REVAL.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   DIFFBARY   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function dRx = diffbary(x,zj,fj,wj,k)
+% evaluate at x the kth derivative of R=N/D in barycentric form, 
+% given by 
+% for ii = 1:length(zj)
+%    N = @(x) N(x) + fj(ii)*wj(ii)./(x-zj(ii));
+%    D = @(x) D(x) + wj(ii)./(x-zj(ii));
+% end
+%
+% See Schneider and Werner, Math. Comput. (1986).
+
+if length(zj)<=1 % constant func
+    dRx = 0; return
+end
+
+if nargin<4
+    error('not enough inputs')
+end
+
+if nargin<5
+    k = 1; % default to 1st derivative 
+end
+
+D = @(x) 0;
+for ii = 1:length(zj)
+    D = @(x) D(x) + wj(ii)./(x - zj(ii));
+end
+
+xx = x(:);
+for ixx = 1:length(xx)
+    if min(abs(xx(ixx)-zj))>0 % usual points        
+        gam = (wj./(xx(ixx)-zj))/D(xx(ixx));
+        delk = fj; 
+        for ii = 0:k
+            phik = gam.'*delk;
+            delk = (delk-phik)./(zj-xx(ixx));
+        end
+        dRx(ixx) = phik*factorial(k); 
+    else % at support point 
+        [~,pos] = min(abs(xx(ixx)-zj));
+        gam = -wj/wj(pos);  gam(pos) = []; 
+        zjnow = zj;
+        zjnow(pos) = [];
+        fjnow = fj; fjnow(pos) = [];
+        del = (fjnow-fj(pos))./(zjnow-xx(ixx)); 
+        delk = del; 
+        phik = gam.'*delk; 
+        for ii = 1:k
+            phik = gam.'*delk;
+            delk = (delk-phik)./(zjnow-xx(ixx));
+        end
+        dRx(ixx)  = phik*factorial(k); 
+    end
+end
+dRx = reshape(dRx,size(x));
+
+end % End of DIFFBARY.

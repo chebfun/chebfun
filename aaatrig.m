@@ -92,7 +92,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %   [3] Peter J. Baddoo, "The AAAtrig algorithm for rational approximation 
 %   of periodic functions", SIAM J. Sci. Comp. (2021).
 %
-% See also AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
+% See also DIFFBARYTRIG, AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

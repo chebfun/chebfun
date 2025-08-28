@@ -112,7 +112,7 @@ elseif ( n == 0 )   % Return empty vectors if n == 0:
 elseif ( n == 1 )
     x0 = (b-a)/(a+b+2);
     x = diff(interval)/2 * (x0+1) + interval(1); % map from [-1,1] to interval. 
-    w = 2^(a+b+1)*beta(a+1, b+1) * diff(interval)/2;
+    w = diff(interval).^(a+b+1)*beta(a+1,b+1);
     v = 1;
     return
 end
