@@ -1,7 +1,10 @@
 function f = poly(v, d)
 %POLY   Convert roots to CHEBFUN.
-%   POLY(V, D), when V is a columns vector and D is a domain, returns a CHEBFUN
+%   POLY(V, D), when V is a column vector and D is a domain, returns a CHEBFUN
 %   of degree length(V) and domain D whose roots are the elements of V.
+%
+% Example (a nonstandard way to construct chebpoly(100)):
+%   T100 = poly(chebpts(100,1),domain(-1,1)); T100 = T100/T100(1);
 %
 % See also CHEBFUN/POLY.
 

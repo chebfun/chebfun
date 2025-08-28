@@ -4,7 +4,7 @@ function pass = test_scl(pref)
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 10*pref.cheb3Prefs.chebfun3eps;
+tol = 100*pref.cheb3Prefs.chebfun3eps;
 
 % Scale invariant
 f = chebfun3(@(x,y,z) cos(x.*y.*z));

@@ -366,6 +366,34 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 nu*tmp./f.func, f.domain)*f.jacobian;
             f.func = tmp;
         end
+
+        function f = compose(f, g)
+        % F = COMPOSE(F,G)    Compose ADCHEBFUNs and CHEBFUNs.
+        %
+        % The output will be an ADCHEBFUN with derivative representing
+        % composition of F and G (and the derivative of the input, as
+        % dictated by the chain rule).
+
+            if ( isa(g, 'adchebfun') )
+                % Create an feval linear operator at the point X.
+                E = operatorBlock.compose(g.func, f.domain);
+                % Update derivative part
+                f.jacobian = E*f.jacobian + ...
+                    operatorBlock.mult(E*diff(f.func))*g.jacobian; % <-- I think!?
+                % Update CHEBFUN part
+                f.func = compose(g.func, f.func);
+                f.linearity = iszero(g.jacobian).*f.linearity;
+            else
+                % Create an feval linear operator at the point X.
+                E = operatorBlock.compose(g, f.domain);
+                % Update derivative part
+                f.jacobian = E*f.jacobian;
+                % Update CHEBFUN part
+                f.func = compose(g, f.func);
+                % f.linearity = f.linearity;
+            end
+
+        end
         
         function f = cos(f)
             % F = COS(F)   COS of an ADCHEBFUN.
@@ -509,7 +537,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %
             % Calling sequence follows chebop/deflate. 
             %
-            %
             % References:
             %   [1] Deflation techniques for finding distinct solutions of
             %   nonlinear partial differential equations (P. E. Farrell, A.
@@ -585,7 +612,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             Nu.func = ffunc*(alp + normFun);
         end
         
-        
         function f = deriv(f, xx, varargin)
             % DERIV   Evaluate a derivative of an ADCHEBFUN.
             %
@@ -632,7 +658,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
         end
             
-                    
         function f = diff(f, k)
             % F = DIFF(F, K)   DIFF of an ADCHEBFUN
             
@@ -680,7 +705,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             sm.jacobian = operatorBlock.mult(cmtemp.*dmtemp, ...
                 f.domain)*f.jacobian;
             
-            % Compute as much derivative information is required, depending on
+            % Compute as much derivative incomposeformation is required, depending on
             % the number of outputs requested:
             if ( nargout >= 2)
                 
@@ -796,9 +821,16 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % The output will be an ADCHEBFUN with derivative representing
             % evaluation at the point X (and the derivative of the input, as
             % dictated by the chain rule).
-            
+
+            if ~( isnumeric(x) || ischar(x) )
+                % Compose also comes here because of the way SUBSREF works.
+                f = compose(f, x);
+                return
+            end
+
             % Create an feval linear operator at the point X.
             E = functionalBlock.feval(x, f.domain, varargin{:});
+
             % Update derivative part
             f.jacobian = E*f.jacobian;
             % Update CHEBFUN part
@@ -1003,7 +1035,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % LOGLOG    log-log plot of the CHEBFUN part of an ADCHEBFUN
             [varargout{1:nargout}] = loglog(f.func, varargin{:});
         end
-        
+      
         function f = mean(f)
             % MEAN(F) is the mean value of the ADCHEBFUN F.
             

@@ -30,6 +30,7 @@ else
     mylt = @(x, y) x <= y;
 end
 
+indx(xReal == dom(1)) = 1;
 % Points within the domain:
 for j = 1:numInts
     indx( mygt(xReal, dom(j)) & mylt(xReal, dom(j+1)) ) = j;

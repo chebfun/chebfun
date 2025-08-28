@@ -35,9 +35,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
 %   - 'cleanuptol', CLEANUPTOL: cleanup tolerance (default CLEANUPTOL = TOL).
-%       Poles with residues less than this number times the maximum absolute
-%       component of F are deemed spurious by the cleanup procedure. If TOL = 0,
-%       then CLEANUPTOL defaults to 1e-13.
+%       Poles with residues less than this number times the geometric mean size
+%       of F times the minimum distance to Z are deemed spurious by the cleanup
+%       procedure. If TOL = 0, then CLEANUPTOL defaults to 1e-13.
 %   - 'lawson', NLAWSON: take NLAWSON iteratively reweighted least-squares steps
 %       to bring approximation closer to minimax; specifying NLAWSON = 0 
 %       ensures there is no Lawson iteration.  See next paragraph.
@@ -86,13 +86,13 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaatrig(F, varargin)
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", SIAM J. Sci. Comp. 40 (2018), A1494-A1522.
 %
-%   [2] Yuji Nakasukasa and Lloyd N. Trefethen, "An algorithm for real and
+%   [2] Yuji Nakatsukasa and Lloyd N. Trefethen, "An algorithm for real and
 %   complex rational minimax approximation", SIAM J. Sci. Comp. (2020).
 %   
 %   [3] Peter J. Baddoo, "The AAAtrig algorithm for rational approximation 
-%   of periodic functions", arXiv (2020).
+%   of periodic functions", SIAM J. Sci. Comp. (2021).
 %
-% See also AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
+% See also DIFFBARYTRIG, AAA, TRIGRATINTERP, CHEBPADE, MINIMAX, PADEAPPROX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -298,7 +298,7 @@ fj(I) = [];
 r = @(zz) revaltrig(zz, zj, fj, wj, form);
 
 % Compute poles, residues and zeros:
-[pol, res, zer] = prztrig(r, zj, fj, wj, form);
+[pol, res, zer] = prztrig(zj, fj, wj, form);
 
 if ( cleanup_flag & nlawson == 0)       % Remove Froissart doublets
     [r, pol, res, zer, zj, fj, wj] = ...
@@ -473,14 +473,24 @@ end
 end % End of PARSEINPUT().
 
 
-%% Cleanup
+%% Cleanup.  In June 2022 the residue size test was changed to be relative to
+%            the distance to the approximation set Z.
 
 function [r, pol, res, zer, z, f, w] = ...
     cleanuptrig(r, form, finfP, finfM, pol, res, zer, z, f, w, Z, F, cleanup_tol) 
 % Remove spurious pole-zero pairs.
 
 % Find negligible residues:
-ii = find(abs(res) < cleanup_tol * norm(F, inf));
+if any(F)
+   geometric_mean_of_absF = exp(mean(log(abs(F(F~=0)))));
+else
+   geometric_mean_of_absF = 0;
+end
+Zdistances = NaN(size(pol));
+for j = 1:length(Zdistances);
+   Zdistances(j) = min(abs(pol(j)-Z));
+end
+ii = find(abs(res)./Zdistances < cleanup_tol * geometric_mean_of_absF);
 ni = length(ii);
 if ( ni == 0 )
     % Nothing to do.
@@ -543,7 +553,7 @@ w = V(:,m);
 
 % Build function handle and compute poles, residues and zeros:
 r = @(zz) revaltrig(zz, z, f, w, form);
-[pol, res, zer] = prztrig(r, z, f, w, form);
+[pol, res, zer] = prztrig(z, f, w, form);
 
 end % End of CLEANUPTRIG().
 

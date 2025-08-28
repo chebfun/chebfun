@@ -184,6 +184,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         function f = atanh(f)
             f.tree = f.univariate(f.tree, 'atanh');
         end
+
+        function f = compose(varargin)
+            %COMPOSE   Not supported.
+            error('CHEBFUN:TREEVAR:COMPOSE:notSupported', ...
+                ['Compose is not supported in treeVar. Please specify '...
+                'conditions via N.BC rather than N.LBC/RBC.']);
+        end
         
         function f = conj(f)
             f.tree = f.univariate(f.tree, 'conj');
@@ -296,6 +303,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         function f = expm1(f)
             f.tree = f.univariate(f.tree, 'expm1');
+        end
+
+        function f = feval(varargin)
+            %FEVAL   Not supported.
+            error('CHEBFUN:TREEVAR:FEVAL:notSupported', ...
+                ['Feval is not supported in treeVar. Please specify '...
+                'conditions via N.BC rather than N.LBC/RBC.']);
         end
         
         function f = fred(varargin)
@@ -469,6 +483,18 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
 
         function f = sqrt(f)
             f.tree = f.univariate(f.tree, 'sqrt');
+        end
+
+        function out = subsref(t, index)
+            %SUBSREF   Not supported.
+            if ( strcmp(index(1).type, '.') )
+                out = builtin('subsref', t, index);
+            else
+                % This is required to force Chebop to use solvebvp rather
+                % than solveivp in for operators involving compositions.
+                error('CHEBFUN:TREEVAR:SUBSREF:notSupported', ...
+                    't() is not supported in treeVar.');
+            end
         end
         
         function f = sum(f)
