@@ -14,4 +14,7 @@ S = spinop2(dom, tspan);
 pass(2) = isequal(S.domain, dom);
 pass(3) = isequal(S.tspan, tspan);
 
+% Test recursive SUBSREF:
+pass(4) = isequal(S.domain([2 4]), [2*pi 2*pi]);
+
 end

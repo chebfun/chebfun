@@ -26,7 +26,8 @@ function f = randnfun(varargin)
 %   N, if present, is preceded by an explicit specification of LAMBDA.
 %
 %   Reference: S. Filip, A. Javeed, and L. N. Trefethen, "Smooth random
-%   functions, random ODEs, and Gaussian processes," manuscript, Nov. 2017.
+%   functions, random ODEs, and Gaussian processes," SIAM Review, 61
+%   (2019), pp. 185-205.
 %
 % Examples:
 %
@@ -42,7 +43,7 @@ function f = randnfun(varargin)
 %
 %   plot(cumsum(randnfun(.01,[0 5],'complex','big'))), axis equal
 %
-% See also RANDNFUN2, RANDNFUNSPHERE, RANDNFUNDISK.
+% See also RANDNFUN2, RANDNFUNSPHERE, RANDNFUNDISK, SMOOTHIE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -76,7 +77,8 @@ if trig    % periodic case: finite Fourier-Wiener series.
 
 else       % nonperiodic case: call periodic case and restrict
 
-    dom2 = dom(1) + [0 1.2*diff(dom)];
+    dx = max(0.2,2*lambda/diff(dom));
+    dom2 = dom(1) + [0 (1+dx)*diff(dom)];
     m = round(diff(dom)/lambda);
 
     if lambda == inf

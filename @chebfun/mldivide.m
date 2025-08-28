@@ -27,7 +27,7 @@ elseif ( A(1).isTransposed )
     % [M x INF] * [INF x N] = [M x N]:
     % AX = B
     % X^* A^* = B^*
-    % X^* QR = B^*
+    % X^* QR = B^*
     % R^* Q^* X = B
     % X = Q(R^{-*} B)
     

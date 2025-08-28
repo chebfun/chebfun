@@ -1,10 +1,10 @@
-function varargout = coeffs2(f, m, n)
+function varargout = coeffs2( f, m, n )
 %COEFFS2   Double Fourier coefficients of a SPHEREFUN. 
 % 
-%   X = COEFFS2(F) returns the 2D Fourier modes of the spherefun, viewed
+%   X = COEFFS2( F ) returns the 2D Fourier modes of the spherefun, viewed
 %   as a doubly periodic function. 
 % 
-%   [C, D, R] = COEFFS2(F) returns a low rank approximation to the 2D
+%   [C, D, R] = COEFFS2( F ) returns a low rank approximation to the 2D
 %   Fourier modes.
 % 
 %   X = COEFFS2(F, M, N) returns bivariate coefficients with N Fourier 
@@ -13,6 +13,11 @@ function varargout = coeffs2(f, m, n)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% empty check
+if isempty(f)
+    varargout = {}; 
+    return
+end
 
 % Calculate the CDR decomposition: 
 [C, D, R] = cdr(f); 

@@ -1,6 +1,6 @@
 function s = mean(f, dim)
 %MEAN   Average or mean value of a DISKFUN. 
-%   MEAN(F) takes the mean in the angular direction (default), i.e., 
+%   MEAN(F) takes the mean in the radial direction (default), i.e., 
 %          MEAN(F) = sum(F).
 %
 %   MEAN(F, DIM) takes the mean along the direction DIM. If DIM = 1 it is the
@@ -19,15 +19,15 @@ if ( isempty(f) )
 end 
 
 if ( nargin == 1)
-    % Default to the angular direction.
+    % Default to the radial direction.
     dim = 1;    
 end
 
 s = sum(f, dim);
 if ( dim == 1 )
-    return; % Mean in the angular direction (default)
+    return; % Mean in the radial direction (default)
 elseif ( dim == 2 )
-    s = s / (2*pi); % Mean in the radial direction
+    s = s / (2*pi); % Mean in the angular direction
 else
     error('CHEBFUN:DISKFUN:mean:dim', ...
         'dim must be 1 or 2.')

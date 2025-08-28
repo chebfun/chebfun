@@ -55,7 +55,7 @@ else
     % [M x N] * [N x INF] = [M x INF]:
     % XA = B
     % A^* X^* = B^*
-    % QR X^*  = B^*
+    % QR X^* = B^*
     % X R^* Q^* = B
     % X = (BQ)R^{-*}
     [Q, R] = qr(A', 0);

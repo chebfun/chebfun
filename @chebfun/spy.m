@@ -44,15 +44,20 @@ for j = 1:numCols
     end
     marks = {'.-', 'o', 'x', '+', '*', 's', 'd', 'v', '^', '<', '>', 'p', 'h'}; 
     reg = regexp(linespec, marks );
+    matlab_blue = [0 .45 .74];
     if ( ~isempty( cell2mat( reg ) ) )
         % This allows the zero structure of a quasimatrix to be plotted
         rts = roots( Aj );
         rj = repmat(j, length(rts), 1);
-        plot(jj, ss, varargin{:}, 'markersize', eps, 'color', 'b')
+        plot(jj, ss, varargin{:}, 'markersize', eps, 'color', matlab_blue)
         hold on 
         plot(rj, rts, varargin{:}, 'linestyle', 'none')
     else
-        plot(jj, ss, varargin{:}); 
+        if ( nargin > 1 )
+            plot(jj, ss, varargin{:}); 
+        else
+            plot(jj, ss, 'color', matlab_blue); 
+        end
         hold on
     end
 

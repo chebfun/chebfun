@@ -92,4 +92,11 @@ err = norm(gVals - gExact, inf);
 tol = 1e3*eps*vscale(f);
 pass(13) = err < tol;
 
+%% Test for vertial scale invariance:
+g = chebfun(@(x) 1./(1+25*x.^2) + 1e-14*sign(x), [-1 0 1]);
+mg = merge(g);
+h = chebfun(@(x) 100 * (1./(1+25*x.^2) + 1e-14*sign(x)), [-1 0 1]);
+mh = merge(h);
+pass(14) = numel(mg.funs) == numel(mh.funs);
+
 end

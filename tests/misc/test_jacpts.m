@@ -73,4 +73,16 @@ a = 0.1785; b = 2;
 [x1r, w1r] = jacpts(100, a, b, [-1,1], 'rec');
 pass(29) = norm(x1a-x1r) < 100*eps && norm(w1a-w1r) < 100*eps;
 
+% Test jacpts with n = 1: 
+a = 0.14; b = 1.1; interval = [-2,3];
+w_true = 14.285331512144; 
+[x,w] = jacpts(1,a,b,interval);
+pass(30) = norm( w - w_true ) < 1e-12; 
+
+% Test jacpts with n = 1:
+a = 2; b = 2; interval = [-2,3];
+w_true = 625/6; 
+[x,w] = jacpts(1,a,b,interval);
+pass(31) = norm( w - w_true )<1e-13; 
+
 end

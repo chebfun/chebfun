@@ -101,7 +101,11 @@ classdef diskfun < separableApprox
         Y = harmonic(l,m,type);
         
         % Convert coeffs to a diskfun
-        f = coeffs2diskfun(CFS);        
+        f = coeffs2diskfun(CFS);    
+        
+        
+        varargout = coeffs2vals(U, varargin); 
+        varargout = vals2coeffs(U, varargin);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

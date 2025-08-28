@@ -23,8 +23,7 @@ function explain(varargin)
 %   (6) Text defining the function in the upper-right corner.
 %
 %   [AT] = Aurentz and Trefethen, "Chopping a Chebyshev series",
-%        available at http://arXiv.org/abs/1512.01803 and also
-%        to appear in ACM Trans. Math. Softw.
+%   ACM Trans. Math. Softw. 43 (2017), pp. 1-21.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

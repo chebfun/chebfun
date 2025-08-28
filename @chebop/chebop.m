@@ -178,7 +178,7 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % Example (unknown parameter in differential equation):
 %
-%   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
+%   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 0, y(1) = 1 can be solved via
 %   N = chebop(@(x, y, p) diff(y,2) + x.*y + p);
 %   N.lbc = @(y, p) [y - 1 ; diff(y)];
 %   N.rbc = @(y, p) y - 1;

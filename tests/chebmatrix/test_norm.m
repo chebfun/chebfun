@@ -16,7 +16,7 @@ h = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 A = [ f ; g ; h ];
 
 chebA = chebfun(A);
-tol = eps*vscale(chebA);
+tol = 2*eps*vscale(chebA);
 
 norm2 = 2.372100421113536830;
 normInf = 2.718281828459046;

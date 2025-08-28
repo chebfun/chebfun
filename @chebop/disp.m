@@ -204,7 +204,7 @@ else
         % Replace ; with the ASCII character for new line. Add indentation to
         % make it look nice
         wSpace = repmat(' ', 1, length(args) + 12);
-        op = strrep(op, ';', [char(13), wSpace]);
+        op = strrep(op, ';', [sprintf('\n'), wSpace]);
     end
 
     % Output string

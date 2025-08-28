@@ -2,7 +2,7 @@ function F = coeffs2diskfun(X)
 %COEFFS2DISKFUN   Convert a matrix of Chebyshev-Fourier coefficients to a 
 %                 diskfun. 
 % 
-%   F = coeffs2diskfun(X) returns a diskfun object F that has a
+%   F = coeffs2diskfun( X ) returns a diskfun object F that has a
 %   Chebyshev-Fourier matrix of coefficients X.  This is useful for
 %   computing quantities on the disk with the function F.
 % 
@@ -10,6 +10,9 @@ function F = coeffs2diskfun(X)
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% To get the correct doubled-up grid, we can only accept
+% certain coeff matrix sizes: 
 
 % Get size: 
 [m, n] = size( X ); 
