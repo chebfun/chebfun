@@ -135,11 +135,15 @@ for m = 1:mmax
     J(jj) = [];                            % Update index vector
     A = [A, (F-fj(end)).*C(:,end)];        % Update Loewner matrix
 
+    doscale = 0;                           % don't do diagonal scale until needed
     % Compute weights:
-    if ( length(J) >= m )                  % The usual tall-skinny case
-        if cond(A(J,:)) < 3/eps            % The usual, not too ill-cond case
+    if ( length(J) >= m )                  % The usual tall-skinny case                
+        if doscale == 0 
         [~, S, V] = svd(A(J,:), 0);        % Reduced SVD; classically wj = V(:,end);
         s = diag(S);
+        if s(1)/s(end) > 1/(3*eps)
+            doscale = 1; 
+        else                               % The usual, not too ill-cond case                    
         if (sign_flag == 0)
             mm = find( s == min(s) );          % Treat case of multiple min sing val
             nm = length(mm);
@@ -151,11 +155,13 @@ for m = 1:mmax
                 wj = wj/norm(wj);          % (see Trefethen memo Rat342, July 2024)
             end
         end
+        end
+        end
 
-        else % ill-cond; diag scaling to improve conditioning (due to Fei Xue)
-            colvecA = vecnorm(A(J,:))';
-            [~, S, V] = svd(A(J,:)/diag(colvecA), 0);
-            s = diag(S);
+        if doscale == 1 % ill-cond; diag scaling to improve conditioning (due to Fei Xue)            
+            colvecA = vecnorm(A(J,:))';           
+            [~, S, V] = svd(A(J,:)./colvecA.', 0);
+            s = diag(S);           
 
         if (sign_flag == 0)
             mm = find( s == min(s) );          % Treat case of multiple min sing val
