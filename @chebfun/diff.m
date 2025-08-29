@@ -16,7 +16,7 @@ function F = diff(F, n, dim)
 %   DIFF(F, N, 2) is the Nth-order finite difference of F along its columns if
 %   F is a column CHEBFUN and the Nth derivative of F if F is a row CHEBFUN.
 %
-%   DIFF(F, MU), when MU is not an integer returns th,1e MUth Riemann-Liouville
+%   DIFF(F, MU), when MU is not an integer returns the MUth Riemann-Liouville
 %   fractional derivative of the CHEBFUN F. DIFF(F, MU, 'Caputo') uses instead
 %   the Caputo definition. See [1] for definitions. In either case, an error is
 %   thrown if F is not smooth or is defined on an unbounded domain.
