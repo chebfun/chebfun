@@ -1,6 +1,6 @@
 % Test file for @deltafun/imag.m
 
-function pass = test_real(pref)
+function pass = test_imag(pref)
 
 if (nargin < 1)
     pref = chebfunpref();
