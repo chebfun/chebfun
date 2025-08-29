@@ -66,8 +66,8 @@ end
 [xmin, xmax] = domain(V);                          % domain of problem
 % Create a CHEBOP
 L = chebop([xmin, xmax]);
-istrig = isa(V.funs{1}.onefun,'trigtech');         % is the potential periodic?
-if istrig   
+istrig = isPeriodicTech(V);                        % is the potential periodic?
+if ( istrig )
     L.bc = 'periodic';
 else
     L.lbc = 0; L.rbc = 0;

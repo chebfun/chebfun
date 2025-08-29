@@ -34,9 +34,11 @@ op = @(u) -h^2*diff(u,2) + repmat(V, 1, n).*u;
 err = norm( op(efuns) - efuns*evals );
 pass(2) = err < 5e-8;
 
-% A periodic problem:
+%% A periodic problem:
 V = chebfun('sin(pi*x/2)^2','trig');
-e = quantumstates(V,'noplot');
+[U, D] = quantumstates(V,'noplot');
+e = diag(D);
 pass(3) = abs(e(3)-.68934055) < 1e-3;
+pass(4) = isPeriodicTech(U{1});
 
 end
