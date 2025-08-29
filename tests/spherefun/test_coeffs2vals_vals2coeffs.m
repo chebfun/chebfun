@@ -1,4 +1,4 @@
-function pass = test_coeffs2vals( pref ) 
+function pass = test_coeffs2vals_vals2coeffs( pref )
 
 % Grab some preferences
 if ( nargin == 0 )

@@ -1,4 +1,4 @@
-function pass = linop_operarith
+function pass = test_operarith
 % This test checks basic arithmetic operations of linops
 % Toby Driscoll, 3 Feb 2014
 
