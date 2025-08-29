@@ -597,7 +597,14 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             keywordPrefs.techPrefs.fixedLength = args{1};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
-            keywordPrefs.splitting = strcmpi(args{2}, 'on');
+            if ( strcmpi(args{2}, 'on') )
+                keywordPrefs.splitting = true;
+            elseif ( strcmpi(args{2}, 'off') )
+                keywordPrefs.splitting = false;
+            else
+            error('CHEBFUN:CHEBFUN:parseInputs:badSplitting', ...
+                    'Invalid value for ''splitting'' option. Must be ''on'' or ''off''.')
+            end
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'minsamples') )
             % Translate "minsamples" --> "techPrefs.minSamples".
@@ -665,6 +672,9 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
                 keywordPrefs.techPrefs.refinementFunction = 'resampling';
             elseif ( strcmpi(args{2}, 'off') )
                 keywordPrefs.techPrefs.refinementFunction = 'nested';
+            else
+                error('CHEBFUN:CHEBFUN:parseInputs:badResampling', ...
+                    'Invalid value for ''resampling'' option. Must be ''on'' or ''off''.')
             end
             args(1:2) = [];
         elseif ( any(strcmpi(args{1}, 'eps')) )

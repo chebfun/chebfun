@@ -55,11 +55,11 @@ function F = fred_col(k, v, onevar)
     % because it corresponds to the refinementFunction tech preference, which
     % doesn't belong to the list of "abstract" preferences required of all
     % techs.  Do we really need to alter it here?
-    opt1 = {'resampling', false, 'splitting', 'on', 'blowup', 'off', ...
+    opt1 = {'resampling', 'on', 'splitting', 'on', 'blowup', 'off', ...
         'vscale', normv};
     int = @(x) sum(chebfun(@(y) feval(v,y).*k(x,y), d, opt1{:}));
 
-    opt2 = {'sampleTest', false, 'resampling', false, 'blowup', 'off', ...
+    opt2 = {'sampleTest', false, 'resampling', 'on', 'blowup', 'off', ...
         'vectorize', 'vscale', normv};
     F = chebfun(int, d, opt2{:});
 
