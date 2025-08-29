@@ -103,12 +103,20 @@ f = mat2cell(f); % Convert f into a cell of scalar-valued CHEBFUNs.
 
 % Loop over the columns:
 for k = 1:numel(f)
+    
     % Compute 1st and 2nd derivatives.
-    dfk = diff(f{k});
+    if ( isreal(f{k}) )
+        dfk = diff(f{k});
+    else
+        % Note: If F is complex-valued, absolute values are taken to determine 
+        % extrema, but the resulting values correspond to those of the original 
+        % function. To achieve this we rather compute the extrema of |f|^2:
+        dfk = diff(real(f{k}).^2 + imag(f{k}).^2);        
+    end
     dfk2 = diff(dfk);
 
     % For interior extrema, look at 2nd derivative:
-    minimaLoc = feval(diff(f{k}, 2), x(:,k)) > 0;
+    minimaLoc = feval(dfk2, x(:,k)) > 0;
 
     % For end-points, look at 1st derivative:
     dfk_ends = feval(dfk, ends);
