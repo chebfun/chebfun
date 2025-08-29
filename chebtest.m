@@ -127,6 +127,10 @@ end
 % Store the current directory: (We will return here when we're done.)
 currDir = pwd();
 
+% Store the current warning state: (We will reset this when we're done.)
+warnState = warning;
+warning('off')
+
 % Switch to the tests/ subdirectory:
 cd(testsDir);
 
@@ -175,8 +179,21 @@ else
 
 end
 
+% Display list of unexpected warnings
+warn = [allResults{:,5}];
+indx = find(warn > 0);
+if ( any(indx) )
+    fprintf('The following tests displayed unexpected warnings:\n');
+    for k = indx(:)'
+        loc = fullfile(testsDir, allResults{k,1});
+        fprintf('   %s WARNING\n', printTestFilename(allResults{k,1:2}, loc))
+    end        
+end
+
 % Return to current directory.
 cd(currDir);
+% Return to previous warning state.
+warning(warnState);
 
 % Write the log if requested to.
 if ( writeLog )
@@ -225,6 +242,7 @@ maxLength = max(cellfun(@length, testFiles));
 numFiles  = numel(testFiles);
 durations = zeros(numFiles, 1);
 fails = cell(numFiles,1); failsStr = cell(numFiles,1);
+warn = zeros(numFiles,1);
 errorMessages = {'FAILED', 'CRASHED'};
 
 % TODO: Eventually this should be removed.
@@ -252,10 +270,15 @@ try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
         else
             % --verbose mode
             printTestInfo(testDir, testFile, k, maxLength);
-            [durations(k), fails{k}] = runTest(testFile);
+            [durations(k), fails{k}, warn(k)] = runTest(testFile);
             if ( durations(k) > 0 )
-                % Success message.
-                message = sprintf('passed in %.4fs', durations(k));
+                if ( ~warn(k) )
+                    % Success message.
+                    message = sprintf('passed in %.4fs', durations(k));
+                else
+                    % Warning message.
+                    message = sprintf('passed in %.4fs (with warnings)', durations(k));
+                end
             elseif ( durations(k) == -1 ) % FAIL
                 % Print failing subtests string
                 failsStr{k} = ['{' strrep(int2str(fails{k}), '  ', ',')  '}'];
@@ -302,6 +325,7 @@ for k = 1:numFiles
     testResults{k,2} = testFiles{k}(1:end-2); % test file name
     testResults{k,3} = durations(k);          % duration / error flag
     testResults{k,4} = failsStr{k};           % failing subtests (string)
+    testResults{k,5} = warn(k);               % warnings
 end
 
 end
@@ -356,7 +380,7 @@ end
 end
 
 
-function [duration, fail] = runTest(testFile)
+function [duration, fail, warn] = runTest(testFile)
 %RUNTEST Runs the given test file.
 %   [DURATION, FAIL] = RUNTEST(TESTFILE) executes the file TESTFILE.
 %   TESTFILE should return a vector or matrix of logical values. 
@@ -381,6 +405,18 @@ close all
 % Store failing subtests:
 fail = [];
 
+lastwarn(""); warn = false;
+ignoreWarningsList = {
+    'CHEBFUN:CHEBOP2:chebop2:experimental', ...
+    'CHEBFUN:CHEBFUN:vertcat:join', ...
+    'CHEBFUN:LINOP:feval:deprecated', ...
+    'CHEBFUN:CHEBOP:expm:deprecated', ...
+    'CHEBFUN:LINOP:feval:deprecated', ...
+    'CHEBFUN:CHEBTECH:techPref:unknownPref', ...
+    'CHEBFUN:CHEBOP:parseBC:keywordbc',...
+    % 'MATLAB:singularMatrix' % Chebfun3 throws this warning a lot.
+    };
+
 % Attempt to run the test:
 try
     tstart = tic();
@@ -393,6 +429,10 @@ try
         fail = find(~pass);
     end
 
+    if ( ~isempty(lastwarn) )
+        [~, wrnID] = lastwarn;
+        warn = ( ~any(strcmp(wrnID, ignoreWarningsList)) );
+    end
 
 catch ME %#ok<NASGU>
     % We crashed. This is bad. Return CRASHED flag.

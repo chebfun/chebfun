@@ -176,9 +176,9 @@ pass(28) = err1 < 2e5*eps*get(f,'vscale');
 
 x = chebfun('x', dom);
 g = x.*exp(-x);
-warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay'); lw = lastwarn;
 I2 = sum(g);
-warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdDecay');
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdDecay'); lastwarn(lw);
 err2 = abs(I2 - IExact);
 tol = 2e10*eps*get(f,'vscale');
 pass(29) = err2 < tol;
@@ -187,10 +187,10 @@ pass(29) = err2 < tol;
 f = chebfun('exp(-x.^2/16).*(1+.2*cos(10*x))',[-inf,inf]);
 
 % Suppress expected warnings which may occur on certain machines:
-warning('off','CHEBFUN:UNBNDFUN:sum:slowDecay'); 
+warning('off','CHEBFUN:UNBNDFUN:sum:slowDecay'); lw = lastwarn;
 I = sum(f);
 % Re-enable warnings:
-warning('on','CHEBFUN:UNBNDFUN:sum:slowDecay');  
+warning('on','CHEBFUN:UNBNDFUN:sum:slowDecay'); lastwarn(lw);
 IExact = 7.0898154036220641;
 err = abs(I - IExact);
 pass(30) = err < 1e9*eps*get(f,'vscale');

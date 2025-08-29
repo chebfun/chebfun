@@ -7,7 +7,6 @@ if ( nargin < 1 )
 end 
 tol = 100*pref.cheb2Prefs.chebfun2eps;
 
-
 state = warning;
 warning('off','all')
 
@@ -50,5 +49,6 @@ x = linspace(-1,1,1000);
 A = abs(u(xx,yy) - exact(xx,yy));
 pass(2) = ( max( A(:) ) < tol ); 
 
-warning(state);
+warning(state); lastwarn("");
+
 end
