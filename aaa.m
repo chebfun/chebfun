@@ -124,6 +124,7 @@ J = (1:M)';
 zj = []; fj = []; C = []; A = [];
 errvec = [];
 R = mean(F)*ones(size(J));
+doscale = 0;                           % don't do diagonal scale until needed
 
 % AAA iteration:
 for m = 1:mmax
@@ -135,7 +136,6 @@ for m = 1:mmax
     J(jj) = [];                            % Update index vector
     A = [A, (F-fj(end)).*C(:,end)];        % Update Loewner matrix
 
-    doscale = 0;                           % don't do diagonal scale until needed
     % Compute weights:
     if ( length(J) >= m )                  % The usual tall-skinny case                
         if doscale == 0 
