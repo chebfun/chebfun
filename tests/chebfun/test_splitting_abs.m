@@ -71,5 +71,15 @@ gExact = opAbs(x);
 err = gVals - gExact;
 pass(j+2,:) = norm(err, inf) < 1e6*eps*vscale(g);
 
+%%
+
+try 
+    % Valid options for 'splitting' are 'on' or 'off'. 
+    % The following should fail. See #2461.
+    f = chebfun(op, dom, 'splitting', 1);
+    pass(end+1,:) = false;
+catch
+    pass(end+1,:) = true;
+end
 
 end
