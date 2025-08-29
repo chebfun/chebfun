@@ -148,7 +148,7 @@ if ( isreal(f) )
 else
     % Note: If F is complex-valued, absolute values are taken to determine 
     % extrema, but the resulting values correspond to those of the original 
-    % function. To achieve this we athr computer the extrema of |f|^2:
+    % function. To achieve this we rather compute the extrema of |f|^2:
     df = diff(real(f).^2 + imag(f).^2);
 end
 % Ensure endpoints are included:
