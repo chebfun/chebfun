@@ -602,6 +602,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             elseif ( strcmpi(args{2}, 'off') )
                 keywordPrefs.splitting = false;
             else
+            % Previously 'splitting', 1 would fail silently. See #2489.
             error('CHEBFUN:CHEBFUN:parseInputs:badSplitting', ...
                     ['Invalid value for ''splitting'' in Chebfun construction.\n', ...
                     'Valid options are ''on'' or ''off''.'])
