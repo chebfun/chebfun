@@ -603,7 +603,8 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
                 keywordPrefs.splitting = false;
             else
             error('CHEBFUN:CHEBFUN:parseInputs:badSplitting', ...
-                    'Invalid value for ''splitting'' option. Must be ''on'' or ''off''.')
+                    ['Invalid value for ''splitting'' in Chebfun construction.\n', ...
+                    'Valid options are ''on'' or ''off''.'])
             end
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'minsamples') )
