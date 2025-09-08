@@ -136,11 +136,11 @@ if ( ~holdState )
 end
 
 % We don't want these guys to be included in LEGEND(), so we turn them off.
-set(h1, 'handlevis', 'off');
-set(h2, 'handlevis', 'off');
-set(h3, 'handlevis', 'off');
+set(h1, 'handlevisibility', 'off');
+set(h2, 'handlevisibility', 'off');
+set(h3, 'handlevisibility', 'off');
 % The dummy plot is invisible, but its handle is visible (for LEGEND).
-set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  ¯\_(o.O)_/¯
+set(hDummy, 'handlevisibility', 'on', 'visible', 'off');     %  ¯\_(o.O)_/¯
 
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
