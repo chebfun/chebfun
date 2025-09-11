@@ -203,9 +203,10 @@ function g = singIntegral(f)
     % If G is not blowing up, ensure G(-1) == 0.
     if ( g.exponents(1) >= 0 )
         % suppress the warning:
+        lw = lastwarn;
         warnState = warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
         g = g - get(g, 'lval');
-        warning(warnState)        
+        warning(warnState); lastwarn(lw);
     end
 
 end

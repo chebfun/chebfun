@@ -4,7 +4,7 @@
 function pass = test_chebpade(pref)
 
 % Turn off warnings and save the warning state.
-warnState = warning('off');
+warnState = warning('off'); lw = lastwarn;
 
 % An example which doesn't require degree-reduction.
 dom = [-1, 3];
@@ -46,6 +46,6 @@ pass(5) = norm([ratio1 ratio2] - [1i 1i], inf) < 1e-13;
 pass(6) = norm(f - p./q) < 2e-4;
 
 % Restore the warning state.
-warning(warnState);
+warning(warnState); lastwarn(lw);
 
 end
