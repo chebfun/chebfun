@@ -64,7 +64,7 @@ if ( ( dim == 3 ) && ~isHold )
             h = slice(xx, yy, zz, angle(-vv), [], [], zslices(i));
             set(h, 'EdgeColor', 'none');
             caxis([-pi pi])
-            colormap('hsv')
+            colormap(gca, 'hsv')
             axis('equal')
         end
         axis(dom)
@@ -82,7 +82,7 @@ elseif ( ( dim == 3 ) && isHold )
         else
             h = slice(xx, yy, zz, angle(-vv), [], [], zslices(i));
             caxis([-pi pi])
-            colormap('hsv')
+            colormap(gca, 'hsv')
             axis('equal')            
         end
         axis(dom)
@@ -102,7 +102,7 @@ elseif ( ( dim == 2 ) && ~isHold )
         else
             h = slice(xx, yy, zz, angle(-vv), [], yslices(i), []);
             caxis([-pi pi])
-            colormap('hsv')
+            colormap(gca, 'hsv')
             axis('equal')
         end
         set(h, 'EdgeColor', 'none')
@@ -121,7 +121,7 @@ elseif ( ( dim == 2 ) && isHold )
         else
             h = slice(xx, yy, zz, angle(-vv), [], yslices(i), []);
             caxis([-pi pi])
-            colormap('hsv')
+            colormap(gca, 'hsv')
             axis('equal')            
         end
         axis(dom)
@@ -140,7 +140,7 @@ elseif ( ( dim == 1 ) && ~isHold )
         else
             h = slice(xx, yy, zz, angle(-vv), xslices(i), [], []);
             caxis([-pi pi])
-            colormap('hsv')
+            colormap(gca, 'hsv')
             axis('equal')            
         end
         set(h, 'EdgeColor', 'none');
@@ -159,7 +159,7 @@ elseif ( ( dim == 1 ) && isHold )
         else
             h = slice(xx, yy, zz, angle(-vv), xslices(i), [], []);
             caxis([-pi pi])
-            colormap('hsv')
+            colormap(gca, 'hsv')
             axis('equal')            
         end
         set(h, 'EdgeColor', 'none')
