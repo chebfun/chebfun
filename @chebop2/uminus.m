@@ -4,7 +4,7 @@ function N = uminus(N)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Negate all the variables coefficents: 
+% Negate all the variables coefficients:
 A = N.coeffs; 
 if ( iscell(A) )
     for jj = 1:size(A, 1)

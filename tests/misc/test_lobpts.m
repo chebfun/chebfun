@@ -14,9 +14,27 @@ pass(5) = abs(w(37) - 0.029306411216166) < tol;
 pass(6) = abs(v(37) + 0.622355798366776) < tol;
 pass(7) = ( x(1) == -1 && x(n) == 1 );
 
+n = 8;
+alp = 0.3; bet = 1.2;
+[x,w,v] = lobpts(n, alp, bet);
+xc = chebfun('x');
+err = zeros(2*n-1-1,1);
+for k = 0:2*n-1-2
+    Tk = chebpoly(k);
+    F = (1-xc)^alp*(1+xc)^bet*Tk;
+    err(k+1) = sum(F)-w*Tk(x);
+end
+pass(8) = norm(err, inf) < tol;
+v2 = baryWeights(x);
+pass(9) = norm(v-v2,inf) < tol | norm(v+v2,inf) < tol;
+
 % Test domain scaling
 [x, w] = lobpts(n, [0 1]);
-pass(8) = x(1) == 0 && x(end) == 1;
-pass(9) = abs(w*x - 1/2) < tol && abs(w*x.^2 - 1/3) < tol;
+pass(10) = x(1) == 0 && x(end) == 1;
+pass(11) = abs(w*x - 1/2) < tol && abs(w*x.^2 - 1/3) < tol;
+
+[x, w] = lobpts(n, 1, 2, [0 1]);
+pass(12) = x(1) == 0 && x(end) == 1;
+pass(13) = abs(w*x - 2/5) < tol && abs(w*x.^2 - 4/15) < tol;
 
 end

@@ -1,5 +1,5 @@
-function [x, w, v] = radaupts(n, dom)
-%RADAUPTS   Gauss-Legendre-Radau quadrature nodes and weights.
+function [x, w, v] = radaupts(n, alp, bet, dom)
+%RADAUPTS   Gauss-Jacobi-Radau quadrature nodes and weights.
 %  RADAUPTS(N) returns N Legendre-Radau points X in [-1,1).
 %
 %  [X, W] = RADAUPTS(N) returns also a row vector W of weights for
@@ -9,11 +9,15 @@ function [x, w, v] = radaupts(n, dom)
 %  the barycentric formula corresponding to the points X. The weights are scaled
 %  so that max(abs(V)) = 1.
 %
-%  ... = RADAUPTS(N, [A,B]) scales the nodes and weights for the interval [A,B) .
+%  [...] = RADUAPTS(N, ALP, BET) is similar, but for the Gauss-Jacobi-Radau
+%  nodes and weights. Here ALP and BET should be scalars > -1.
+% 
+%  [...] = RADAUPTS(N, [A,B]) or [...] = RADAUPTS(N, ALP, BET, [A,B])
+%  scales the nodes and weights for the interval [A,B) .
 %
 %  In each case, N should be a positive integer.
 %
-% See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, LOBPTS.
+% See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, JACPOLY, LOBPTS.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -36,43 +40,67 @@ function [x, w, v] = radaupts(n, dom)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Parse inputs:
+if ( nargin < 2 )
+    % Default to Gauss-Legendre-Radau on [-1 1]:
+    alp = 0; bet = 0; dom = [-1 1];
+elseif ( nargin == 2 && numel(alp) == 2 )
+    % Default to Gauss-Legendre-Radau on [A, B]:
+    dom = alp; alp = 0; bet = 0;
+elseif ( nargin == 3 )
+    % Default to Gauss-Jacobi-Radau on [-1,1]:
+    dom = [-1 1];
+elseif ( nargin ~= 4 )
+    error('CHEBFUN:radaupts:inputs', 'Unable to parse inputs.')
+end
+
+% Check inputs:
+if ( ~isscalar(alp) ||  alp <= -1 )
+    error('CHEBFUN:radaupts:alp', 'ALP > 1 must be a scalar.');
+end
+if ( ~isscalar(bet) ||  bet <= -1 )
+    error('CHEBFUN:radaupts:bet', 'BET > 1 must be a scalar.');
+end
+if ( numel(dom)~=2 )
+    error('CHEBFUN:radaupts:domain', 'Invalid domain argument.');
+end
 
 %% Trivial cases:
 if ( n == 1 )
     x = -1;
-    w = 2;
+    w = 2^(1+alp+bet)*beta(1+alp,1+bet);
     v = 1;
-    
-elseif ( n == 1 )
-    x = [-1, 1/3];
-    w = [.5 ; 1.5];
-    v = [-1 ; 1];
-    
 else
-    % Call JACPTS():
-    [x, w, v] = jacpts(n - 1, 0, 1);
 
-    % Nodes:
-    x = [-1 ; x];
-
-    % Quadrature weights:
-    w = [2/n^2, w./(1 + x(2:end).')];
-
-    % Barycentric weights:
-    v = v./(1 + x(2:end));
+    %% Call JACPTS():
+    [xi, w, v] = jacpts(n-1, alp, bet+1);
+    
+    %% Nodes:
+    x = [-1 ; xi];
+    
+    %% Quadrature weights:
+    wi = w./(1 + xi.');
+    if ( alp == 0 && bet == 0 )
+        w = [2/n^2, wi];
+    else
+        % See Walter Gautschi, "Gauss–Radau formulae for Jacobi and Laguerre
+        % weight functions", Mathematics and Computers in Simulation, (2000).
+        w = [2^(alp+bet+1)*beta(bet+1,n)*beta(alp+n,bet+1)*(bet+1), wi];
+    end
+    
+    %% Barycentric weights:
+    v = v./(1 + xi);
     v = v/max(abs(v));
-    v1 = -abs(sum(x(2:end).*v));
+    v1 = -sum(v);
     v = [v1 ; v];
 end
 
 % Scale the nodes and weights:
-if ( nargin > 1 )
-    if ( dom(1) == -1 && dom(2) == 1 )
-        % Nodes are already on [-1, 1];
-    else
-        x = dom(2)*(x + 1)/2 + dom(1)*(1 - x)/2;
-        w = (diff(dom)/2)*w;
-    end
+if ( dom(1) == -1 && dom(2) == 1 )
+    % Nodes are already on [-1, 1];
+else
+    x = dom(2)*(x + 1)/2 + dom(1)*(1 - x)/2;
+    w = (diff(dom)/2)*w;
 end
 
 end

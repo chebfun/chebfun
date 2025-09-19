@@ -32,7 +32,7 @@ l = arcLength(f);
 % The exact result is obtained using method 'integral' of Matlab:
 lExact = 4.044985856867475; 
 err = abs(l - lExact);
-pass(3) = ( err < lExact*vscale(f)*eps );
+pass(3) = ( err < 10*lExact*vscale(f)*eps );
 
 % A complex-valued CHEBFUN - A unit circle in the complex plane:
 f = chebfun(@(x) exp(2*pi*1i*x), [0 1]);

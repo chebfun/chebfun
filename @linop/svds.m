@@ -59,13 +59,13 @@ for j = 1:nargin-1
     end
 end
 
-% Check that we recieved a prefs object
+% Check that we received a prefs object
 if ( isempty(prefs) )
     error('CHEBFUN:LINOP:svds:prefs', ...
         'A preference object is required.');
 end
 
-% Check that we recieved a bcType
+% Check that we received a bcType
 if ( isempty(bcType) )
     error('CHEBFUN:LINOP:svds:bcType', ...
         'A bcType is required.');

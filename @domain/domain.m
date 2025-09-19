@@ -26,8 +26,8 @@ classdef (InferiorClasses = {?chebfun}) domain < double
     methods ( Access = public, Static = false )
 
         function obj = domain(varargin)
-            %Constructor for the DOMIAN class.
-            
+            %Constructor for the DOMAIN class.
+
             % Return an empty DOMAIN on null input:
             if ( nargin == 0 )
                 data = [];

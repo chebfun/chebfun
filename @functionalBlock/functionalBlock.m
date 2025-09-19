@@ -81,7 +81,7 @@ classdef functionalBlock < linBlock
                 C = toFunction(A);
                 C = C(B);
             elseif ( isnumeric(A) )
-                % Mulitply functional by scalar.
+                % Multiply functional by scalar.
                 C = functionalBlock(B.domain);
                 C.stack = @(z) A*B.stack(z);
                 C.diffOrder = B.diffOrder;

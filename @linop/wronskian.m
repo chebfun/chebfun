@@ -2,7 +2,7 @@ function w = wronskian(L, varargin)
 %WRONSKIAN   Wronskian of chebfuns.
 %   WRONSKIAN(L, f1, ..., fn) computes the wronskian of the CHEBFUN objects fk.
 %   L is the linear differential operator and f1, ..., fn are solutions of the
-%   homogenous problem. The algorithm is based on Abel's identity for computing
+%   homogeneous problem. The algorithm is based on Abel's identity for computing
 %   the wronskian.
 %   
 %   WRONSKIAN(L, F) does the same where F is a quasimatrix or an array-valued

@@ -16,7 +16,7 @@ for k = 1:numel(c)
     % Assign each piece to a subinterval with a BNDFUN:
     funs{k} = bndfun(ct, struct('domain', dom(k: k + 1)));
 end
-% Conver the FUNS cell-array to a CHEBFUN.
+% Convert the FUNS cell-array to a CHEBFUN.
 f = chebfun(funs);
 
 end

@@ -12,7 +12,7 @@
 %% Parse inputs:
 
 % SOLVEPDE has been called by SPIN/SPIN2/SPIN3/SPINSPHERE. The inputs have been 
-% parsed in those files and are expeceted to be:
+% parsed in those files and are expected to be:
 %
 % OPTION 1.     SOLVEPDE(S, N, DT), S is a SPINOPERATOR object, N is the number
 %               of grid points and DT is the time-step.
@@ -76,7 +76,7 @@ iterplot = pref.iterplot; % plot every ITERPLOT iterations if 'movie'
 plotStyle = pref.plot;    % Plotting options
 
 % Operators: linear part L, and nonlinear parts Nc (in coefficient space) and 
-% Nv (in value space). The nonlinear opeartor, acting on the Fourier coeffs
+% Nv (in value space). The nonlinear operator, acting on the Fourier coeffs
 % is written as 
 %           
 %        N(coeffs) = Nc(fft(Nv(ifft(coeffs)))).
@@ -341,7 +341,7 @@ while ( t < tf )
             
         % Otherwise, the code will automatically chose and update these limits
         % and store them in the first entry of the CELL-ARRAY OPTS:
-        % (OPTS also stores other informations relative to graphics; see 
+        % (OPTS also stores other information relative to graphics; see
         % individual INITIALIZEMOVIE codes for details.)
         else
             opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
@@ -364,7 +364,7 @@ while ( t < tf )
         twater = [twater, t];
     end
     
-    % Output the solution if T correponds to an entry of TSPAN:
+    % Output the solution if T corresponds to an entry of TSPAN:
     if ( abs(t - tspan(pos)) < 1e-10 )
         if ( valuesUpdated == 0 )
             v = [];

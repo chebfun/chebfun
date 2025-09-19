@@ -1,12 +1,12 @@
 function w = trigBaryWeights(x)
 %TRIGBARYWEIGHTS   Barycentric weights for trigonometric interpolation.
 %   W = TRIGBARYWTS(X) returns scaled barycentric weights for 2*pi-periodic
-%   trigonometric interpolation in the points in the columm vector X. The
+%   trigonometric interpolation in the points in the column vector X. The
 %   weights are scaled such that norm(W, inf) == 1.
 % 
 % REFERENCES:
-%   [1] Berrut, Jean-Paul. "Baryzentrische Formeln zur trigonometrischen 
-%   Interpolation (I)." Zeitschrift für angewandte Mathematik und Physik 
+%   [1] Berrut, Jean-Paul. "Baryzentrische Formeln zur trigonometrischen
+%   Interpolation (I)." Zeitschrift fÃ¼r angewandte Mathematik und Physik
 %   ZAMP 35.1 (1984): 91-105.
 % 
 %   [2] Henrici, Peter. "Barycentric formulas for interpolating trigonometric 

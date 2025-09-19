@@ -37,7 +37,7 @@ if ( any(isinf(dom)) )
 end
 if ( lam <= 0 )
     error('CHEBFUN:ultrapoly:infdomain', ...
-        'Ultraspherical polynomials are not defined for LAMBA <= 0.');
+        'Ultraspherical polynomials are not defined for LAMBDA <= 0.');
 end
 
 if ( lam == .5 ) 

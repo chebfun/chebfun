@@ -133,7 +133,7 @@ function [uout, tout] = spin(varargin)
 %
 %       u_t = -u*u_x - u_xx - u_xxxx,
 %
-%    on [0 32*pi] from t=0 to t=200, with intial condition
+%    on [0 32*pi] from t=0 to t=200, with initial condition
 %
 %       u0(x) = cos(x/16)*(1 + sin(x/16)).
 %
@@ -145,7 +145,7 @@ function [uout, tout] = spin(varargin)
 %
 %       u_t = -u*u_x + 1e-1*u_xx + u_xxxx + u_xxxxxx,
 %
-%    on [0 32*pi] from t=0 to t=300, with intial condition
+%    on [0 32*pi] from t=0 to t=300, with initial condition
 %
 %       u0(x) = cos(x/16)*(1 + sin(x/16)).
 %
@@ -199,7 +199,7 @@ function [uout, tout] = spin(varargin)
 %       SPINOPERATOR.SOLVEPDE(S, N, dt, pref)
 %
 % where S is a SPINOP object, N is the number of grid points, DT is the 
-% time-step and PREF is a SPINPREF oject.
+% time-step and PREF is a SPINPREF object.
 
 % CASE 1. U = SPIN('KDV'):
 if ( nargin == 1 ) 

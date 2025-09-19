@@ -250,7 +250,7 @@ function [pivotIndices, pivotArray, removePole, isHappy, cols, pivots, ...
 % Since we are psychologically operating on a doubled up function the 
 % maximum rank is not just min(m,n), but min(2*m-2,n).  The -2 here comes
 % from the fact that the poles of F are sampled and the doubled up grid
-% does not include -pi (becaue of periodicity).
+% does not include -pi (because of periodicity).
 minSize = min(2*m-2, n);
 width = minSize/factor;
 pivotIndices = []; 
@@ -488,7 +488,7 @@ if ( ~isempty(pivotIndices) )
     pivotIndices(:, 1) = pivotIndices(:, 1) + 1;
 end
 
-% Put the poles at the begining of the pivot locations array and also 
+% Put the poles at the beginning of the pivot locations array and also
 % include the pivot matrix.
 if ( removePole )
     pivotIndices = [ 1 poleCol; pivotIndices ];
@@ -849,7 +849,7 @@ pole = mean(val);
 % Compute their standard deviation
 stddev = std(val);
 
-% If the standard deviation does not exceed the 100*tolearnce then the pole
+% If the standard deviation does not exceed the 100*tolerance then the pole
 % is "constant".
 % TODO: Get a better feel for the tolerance check.
 if ( (stddev <= 1e8*tol) || (stddev < eps) )

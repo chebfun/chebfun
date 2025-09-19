@@ -28,7 +28,7 @@ function h = conv(f, g)
 % In the following, it is assumed that the length of the domain of g is greater
 % than the length of the domain of f. If this is not the case, then simply
 % compute h = conv(g, f), which is equivalent. We assume f and g are polynomials
-% of degree M and N, resepectively. If f and g are piecewise-defined, one can
+% of degree M and N, respectively. If f and g are piecewise-defined, one can
 % use the bilinearity of convolution and convolve each each the FUNs
 % individually.
 %
@@ -69,7 +69,7 @@ function h = conv(f, g)
 %  a+c fl a+d     b+d
 %
 % Rather than make a BNDFUN corresponding to the each of the patches, we
-% instead evaluate directly on a corresonding Chebyshev grid of appropriate
+% instead evaluate directly on a corresponding Chebyshev grid of appropriate
 % size, which turns out to be far more efficient. 
 %
 % Total complexity: O( R*(m*n + n*n) + m*m )
@@ -118,9 +118,9 @@ coeffsConvCost = numPatches*((M+N)*N);
 quadConvCost = (M+N)^3;
 if ( numPatches > 1 && coeffsConvCost > quadConvCost )
     h_left = conv(f, restrict(g, c+[0, b-a]));     % Left triangle
-    h_right = conv(f, restrict(g, d-[(b-a) 0]));   % Right tirangle
+    h_right = conv(f, restrict(g, d-[(b-a) 0]));   % Right triangle
     % Middle:
-    [t, w] = legpts((M+N+5)/2, [a,b]);             % Legendre grid
+    [t, w] = legpts(ceil( (M+N+5)/2 ), [a,b]);     % Legendre grid, if (M+N+5)/2 is non-integer then increase
     [tt, xx] = meshgrid(t,x);                      % Cheb/Leg grid to evaluate g
     ft = feval(f,t);                               % Evaluate f
     gxmt = feval(g, xx-tt);                        %    and g (expensive)
@@ -214,7 +214,13 @@ else
 
     % Remainder piece: (between fl and a+d)
     remainderWidth = d + a - finishLocation; % b+d-fl-(b-a)
-    if ( remainderWidth > 0 )
+    domfk = b + [-remainderWidth, 0];               % Domain of fk
+    domfk(1) = max(domfk(1), f.domain(1));          % Ensure domfk is a
+    domfk(end) = min(domfk(end), f.domain(end));    %  valid subdomain
+    domgk = [finishLocation, d + a] - b;            % Domain of gk
+    domgk(1) = max(domgk(1), g.domain(1));          % Ensure domgk is a
+    domgk(end) = min(domgk(end), g.domain(end));    %  valid subdomain
+    if ( max(diff(domfk), diff(domgk)) > eps)
         ind = finishLocation <= x;           % Discard D and E
 
         % B: (Coeffs were computed above)
@@ -223,15 +229,9 @@ else
         y(ind) = tmp;                        % Store
 
         % C: 
-        domfk = b + [-remainderWidth, 0];               % Domain of fk
-        domfk(1) = max(domfk(1), f.domain(1));          % Ensure domfk is a
-        domfk(end) = min(domfk(end), f.domain(end));    %  valid subdomain
         fk = restrict(f, domfk);                        % Restrict f
         fk = simplify(fk);                              % Simplify f
         fk_leg = cheb2leg(get(fk, 'coeffs'));           % Legendre coeffs
-        domgk = [finishLocation, d + a] - b;            % Domain of gk
-        domgk(1) = max(domgk(1), g.domain(1));          % Ensure domgk is a
-        domgk(end) = min(domgk(end), g.domain(end));    %  valid subdomain
         gk = restrict(g, domgk);                        % Restrict g
         gk = simplify(gk);                              % Simplify g
         gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
@@ -293,7 +293,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [gammaL, gammaR] = easyConv(alpha, beta)
-% Convolution using Legendre expansions and the analoguous convolution theorem.
+% Convolution using Legendre expansions and the analogous convolution theorem.
 % See Hale and Townsend, "An algorithm for the convolution of Legendre series",
 % SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages A1207-A1220, 2014.
 

@@ -1,4 +1,4 @@
-% Test for linearity detection of various complicated expresssions
+% Test for linearity detection of various complicated expressions
 
 function pass = test_linearityDetection
 

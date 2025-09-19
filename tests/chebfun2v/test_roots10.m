@@ -19,8 +19,8 @@ pass(j) = ( norm(sort(r2(:,2))-linspace(-1,1,17).') < tol ); j = j + 1;
 % rr = randn(1,2); p2=@(x,y) y.^2-x.^3+5*rr(1).*x+5*rr(2); %elliptic
 % p3=@(x,y) prod(randn(d,1).*x-randn(d,1).*y); %star; origin is highly singular and may cause problems
 % p4=@(x,y) (x.^2+y.^2+x.*y).*[y.^2 y 1].*randn(3).*[x.^2;x;1]+[y.^2 y 1].*100.*eps*randn(3).*[x.^2;x;1]; %perturbation of a given curve; two copies will be close to having a common component
-% p5=@(x,y) 1e-7*(((3.*x+3.*y).^5-54.*x.*y).*((3.*x-0.25).^6+(3.*y+0.36).^7-0.1.*(3.*x+3.*y).^8).*(x-y).*(x+y).*x.*y.*((3.*x+3.*y).^4+(3.*x+3.*y).^3+(3.*x-3.*y).^9).*(x-0.5).*(x-1).*(x+0.5).*(x+1).*(y-0.5).*(y-1).*(y+0.5).*(y+1).*(x-y+0.5).*(x-y-0.5).*(x+y-0.5).*(x+y+0.5)); %embarassingly full of singular points
-% p5=@(x,y) 1e-4*(((3.*x+3.*y).^5-54.*x.*y).*(x-y).*(x+y).*x.*y.*((3.*x+3.*y).^4+(3.*x+3.*y).^3+(3.*x-3.*y).^9).*(x-0.5).*(x-1).*(x+0.5).*(x+1).*(y-0.5).*(y-1).*(y+0.5).*(y+1).*(x-y+0.5).*(x-y-0.5).*(x+y-0.5).*(x+y+0.5)); %embarassingly full of singular points
+% p5=@(x,y) 1e-7*(((3.*x+3.*y).^5-54.*x.*y).*((3.*x-0.25).^6+(3.*y+0.36).^7-0.1.*(3.*x+3.*y).^8).*(x-y).*(x+y).*x.*y.*((3.*x+3.*y).^4+(3.*x+3.*y).^3+(3.*x-3.*y).^9).*(x-0.5).*(x-1).*(x+0.5).*(x+1).*(y-0.5).*(y-1).*(y+0.5).*(y+1).*(x-y+0.5).*(x-y-0.5).*(x+y-0.5).*(x+y+0.5)); %embarrassingly full of singular points
+% p5=@(x,y) 1e-4*(((3.*x+3.*y).^5-54.*x.*y).*(x-y).*(x+y).*x.*y.*((3.*x+3.*y).^4+(3.*x+3.*y).^3+(3.*x-3.*y).^9).*(x-0.5).*(x-1).*(x+0.5).*(x+1).*(y-0.5).*(y-1).*(y+0.5).*(y+1).*(x-y+0.5).*(x-y-0.5).*(x+y-0.5).*(x+y+0.5)); %embarrassingly full of singular points
 % cp=-cos([0:d]*pi/d);p6=@(x,y) prod(x-cp).*prod(y-cp); %grid such that each chebyshev point is singular
 % a=1/4;p7=@(x,y) (x.^2 + y.^2 - 2.*a.*x).^2  - 4*a^2.*(x.^2 + y.^2); %cardioid
 % p8=@(x,y) (y.^2-x.^2).*(x-1).*(2.*x-3)-4.*(x.^2+y.^2-2.*x).^2; %Ampersand

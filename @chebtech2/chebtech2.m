@@ -7,7 +7,7 @@ classdef chebtech2 < chebtech
 %
 % Constructor inputs:
 %   CHEBTECH2(OP) constructs a CHEBTECH2 object from the function handle OP. OP
-%   should be vectorised (i.e., accept a vector input) and ouput a vector of
+%   should be vectorised (i.e., accept a vector input) and output a vector of
 %   the same length. CHEBTECH2 objects allow for array-valued construction
 %   (i.e., of an array-valued function), in which case OP should accept a column
 %   vector of length N and return a matrix of size NxM.

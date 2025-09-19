@@ -103,7 +103,7 @@ for k = 1:numel(varargin)
         % Do nothing.
     elseif ( strcmpi(vk, 'valid') )
         % TODO: Supoprt 'valid'. Presumably where domains of f and g overlap?
-        error('CHEBFUN:CHEBFUN:conv:validFlag', '''valid'' is not yet supprted.');
+        error('CHEBFUN:CHEBFUN:conv:validFlag', '''valid'' is not yet supported.');
     else
         error('CHEBFUN:CHEBFUN:conv:badInput', 'Unknown input option %s.', vk);
     end

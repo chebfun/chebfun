@@ -248,7 +248,7 @@ else
         xLabel = varNamesParsed{2};
     end
     varNames = varNamesParsed(end-numColumns(u0)+1:end);
-    if ( doPlot )    % Set up ploting in non-gui mode
+    if ( doPlot )    % Set up plotting in non-gui mode
         axesSol = gca;
         cla(axesSol)
         xlabel(axesSol, xLabel);
@@ -336,7 +336,7 @@ end
             view([322.5 30])
             box off
             axes(axesSol)
-            % Hang around until 'CONTINUE' or 'STOP' is presed.
+            % Hang around until 'CONTINUE' or 'STOP' is pressed.
             waitfor(clearButton, 'String');
             % Call again to see if 'STOP' was pressed.
             status = guiEvent(status);

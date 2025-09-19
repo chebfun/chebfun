@@ -91,10 +91,10 @@ classdef chebfun2 < separableApprox
     methods ( Access = public, Static = true )
         
         % Convert Chebyshev coefficients to values:
-        X = coeffs2vals(U); 
+        varargout = coeffs2vals(U, varargin); 
         
         % Convert values to Chebyshev coefficients:
-        X = vals2coeffs(U); 
+        varargout = vals2coeffs(U, varargin); 
         
         % Padua points to tensor grid:
         [C, V, X, Y] = paduaVals2coeffs( F, dom ); 

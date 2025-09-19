@@ -38,7 +38,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         function out = iszero(A)
         %ISZERO   Returns TRUE for a zero OPERATORBLOCK.
             out = A.iszero;
-        end       
+        end  
         
         function C = minus(A, B)
         %-   Operator subtraction.
@@ -252,6 +252,19 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
+
+        function C = compose(g, domain)
+        %COMPOSE   Composition operator.
+        %   C = OPERATORBLOCK.COMPOSE(G,DOMAIN) returns a functional C such
+        %   that C*u is u(g(x)) for a chebfun u defined on domain DOMAIN.
+        %
+        % See also FUNCTIONALBLOCK.FEVAL.
+
+            % Create the OPERATORBLOCK with information now available.
+            C = operatorBlock(domain);
+            C.stack = @(z) compose(z, g);
+            C.isNotDiffOrInt = true;
+        end
 
         function C = cumsum(varargin)
         %OPERATORBLOCK.CUMSUM   Antiderivative operator.

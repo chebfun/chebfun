@@ -50,7 +50,7 @@ end
 % If m or n are non-positive then throw an error
 if ( ( m <= 0 ) || ( n <= 0 ) )
     error('CHEBFUN:SPHEREFUN:HELMHOLTZ:badInput',...
-        'Discretization sizes should be positve numbers');
+        'Discretization sizes should be positive numbers');
 end
 
 % If m and n are 1, the solution is easy.  It's just a constant given by

@@ -1,4 +1,4 @@
-function [pass, u1, u2, info1, info2] = test_scalarODEdamping(pref)
+function [pass, u1, u2, info1, info2] = test_scalarODE_damping(pref)
 % A nonlinear CHEBOP test. This test tests a scalar ODE, where no breakpoints
 % occur. It solves the problem using chebcolloc1, chebcolloc2 and ultraS
 % discretizations. The problem solved requires damping for the Newton iteration

@@ -124,7 +124,7 @@ else
     % function handle for the sum from F and G.
 
     % It's worth looking for the special case when one of f or g is actually a
-    % zero funtion here. See #1423.
+    % zero function here. See #1423.
     if ( iszero(f) )
         s = g;
         return

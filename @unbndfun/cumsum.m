@@ -38,7 +38,7 @@ if ( dim == 1 )
     
 elseif ( dim == 2 )
     
-    % When dim = 2, we compute the cumlative sum over columns:
+    % When dim = 2, we compute the cumulative sum over columns:
     f.onefun = cumsum(f.onefun, 2);
     
 else

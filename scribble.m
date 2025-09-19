@@ -1,11 +1,11 @@
 function f = scribble(s, dom)
 %SCRIBBLE   Write text with a complex-valued CHEBFUN.
 %  F = JSCRIBBLE('STRING') returns a complex CHEBFUN representing the text in
-%  STRING. F is paramterized by a real variable on the interval [-1, 1] and
+%  STRING. F is parameterized by a real variable on the interval [-1, 1] and
 %  maps the range of F is contained in the box [-1 1]x[0 1] in the complex
 %  plane.
 %
-%  F = SCRIBBLE('STRING', DOM) paramterises F by a real variable on the
+%  F = SCRIBBLE('STRING', DOM) parameterises F by a real variable on the
 %  interval DOM.
 %
 %  The full United States QWERTY keyboard layout is supported (though

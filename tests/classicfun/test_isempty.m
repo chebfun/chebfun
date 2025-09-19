@@ -10,7 +10,7 @@ singPref = pref;
 singPref.blowup = true;
 
 % Set a domain for BNDFUN.
-data.domin = [-2 7];
+data.domain = [-2 7];
 
 %%
 % Test an empty BNDFUN:

@@ -56,7 +56,7 @@ else
     Vminus = [];
 end
 
-% Combine the two and sort the resutls.
+% Combine the two and sort the results.
 
 % TODO: Allow for the user to request the plus/minus decomposition.
 s = [ diag(Splus); diag(Sminus) ];

@@ -1,7 +1,7 @@
 function varargout = merge(varargin)
 %MERGE   Merge information from two OPDISCRETIZATION objects.
 %   [A, B] = MERGE(A, B) synchronize the properties of OPDISCRETIZATIONS A and
-%   B so that they will behave compatably when instantiated.
+%   B so that they will behave compatibly when instantiated.
 %
 %   [A1, A2, ...] = MERGE(A1, A2, ...) is the same as above, but for multiple
 %   discretizations.

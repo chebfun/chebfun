@@ -70,12 +70,12 @@ function varargout = plot(varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE:
 %  We actually plot a fifth 'dummy' plot which contains both the line and marker
-%  styles. This is the only plot which has 'handlevis', 'on', and so will be
-%  included in subsequent calls to LEGEND(). The handle to this plot is included
-%  as the fifth output, and the plot itself is set to 'visible', 'off'. Note
-%  that if a user modifies the plot by adjusting HLINE or HPOINT, subsequent
-%  calls the LEGEND will not have the updated style. There's no way to get
-%  around this without a complicated callback procedure.
+%  styles. This is the only plot which has 'handlevisibility', 'on', and so will
+%  be included in subsequent calls to LEGEND(). The handle to this plot is
+%  included as the fifth output, and the plot itself is set to 'visible', 'off'.
+%  Note that if a user modifies the plot by adjusting HLINE or HPOINT,
+%  subsequent calls the LEGEND will not have the updated style. There's no way
+%  to get around this without a complicated callback procedure.
 %
 %  Note, to clarify, the reason we need all this is that we must plot the line
 %  and points as different plots. MATLAB/PLOT() doesn't have this problem.
@@ -422,17 +422,17 @@ if ( ~holdState )
 end
 
 % We don't want these guys to be included in LEGEND(), so we turn them off.
-set(h1, 'handlevis', 'off');
-set(h2, 'handlevis', 'off');
-set(h3, 'handlevis', 'off');
-set(h4, 'handlevis', 'off');
+set(h1, 'handlevisibility', 'off');
+set(h2, 'handlevisibility', 'off');
+set(h3, 'handlevisibility', 'off');
+set(h4, 'handlevisibility', 'off');
 
 % Ensure that the both the handle for the dummy plot and the dummy plot itself
 % are visible for LEGEND().  The dummy plot could in theory have its 'Visible'
 % property set to 'off', but the data is NaN, so it doesn't draw anything
 % anyway.  Moreover, if 'Visible' is 'off', the entries in the legend will be
 % grayed out in R2016b and later.
-set(hDummy, 'handlevis', 'on', 'visible', 'on');     %  ¯\_(o.O)_/¯
+set(hDummy, 'handlevisibility', 'on', 'visible', 'on');     %  ¯\_(o.O)_/¯
 
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
@@ -550,7 +550,7 @@ while ( ~isempty(varargin) )
 
         % Plot the markers and match the color with the delta lines:
         hjj = plot(xData(jj), yFinish(jj), marker, ...
-            'markersize', 6, 'linestyle', 'none', 'handlevis', 'off');
+            'markersize', 6, 'linestyle', 'none', 'handlevisibility', 'off');
         set(hjj, 'color', get(h(j), 'color'));
         set(hjj, 'markerfacecolor', get(h(j), 'color'))
     end

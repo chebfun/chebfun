@@ -1,6 +1,6 @@
 % Test file for fractional calculus.
 
-function pass = test_fracInt(pref)
+function pass = test_fracCalc(pref)
 
 if ( nargin == 0 ) 
     pref = chebfunpref();

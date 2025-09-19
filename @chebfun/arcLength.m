@@ -1,21 +1,22 @@
 function out = arcLength(f, a, b)
-%ARCLENGTH	Compute the length of the arc defined by a CHEBFUN.
-%   ARCLENGTH(F) returns the arc length of the curve defined by CHEBFUN F in the
-%   x-y plane over the interval where it is defined. If F is a CHEBFUN of
-%   complex values, the output is the arc length of the curve in the complex
-%   plane.
+%ARCLENGTH   Compute the length of the arc defined by a CHEBFUN.
+%   ARCLENGTH(F) returns the arc length of the curve defined by CHEBFUN F in
+%   the x-y plane over the interval where it is defined. If F is complex,
+%   the output is the arc length of the curve in the complex plane.
 %
 %   ARCLENGTH(F, A, B) returns the arc length of F over the interval [A, B],
 %   where [A, B] is a subinterval of the domain in which F is defined. In the
-%   case of complex-valued F, ARCLENGTH(F, A, B) computes the length of the arc
-%   whose ends correspond to A and B.
+%   case of complex-valued F, ARCLENGTH(F, A, B) computes the length of the
+%   arc whose ends correspond to A and B.
 %
-%   If F is a quasimatrix, the arc length of each CHEBFUN in F will be computed
+%   If F is a quasimatrix, the arc length of each CHEBFUN in F is computed
 %   and a vector is returned.
 %
 % Examples:
-%   f = chebfun(@(x) sin(x), [0 1]);
-%   L = arcLength(f);
+%
+%   f = chebfun(@(x) sin(x), [0 1]); L = arcLength(f)
+%
+%   arcLength(chebfun('exp(1i*pi*s)'))/(2*pi)
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -53,7 +54,7 @@ end
 fPrime = f;
 for i = 1:numel(f.funs)
     % This makes sure that no delta functions are 
-    % generated due to jump discontinuities. pointValus of fPrime are not
+    % generated due to jump discontinuities. pointValues of fPrime are not
     % updated since they are not needed.
     fPrime.funs{i} = diff(f.funs{i});
 end

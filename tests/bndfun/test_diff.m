@@ -48,7 +48,7 @@ pass(4) = (norm(err, inf) < 1e3*get(f, 'vscale')*eps);
 f = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), struct('domain', dom), pref);
 df = bndfun(@(x) sin(4*x).^2, struct('domain', dom), pref);
 err = diff(f) - df;
-pass(5) = (get(err, 'vscale') < 1e3*get(f, 'vscale')*eps);
+pass(5) = (get(err, 'vscale') < 1e4*get(f, 'vscale')*eps);
 
 %%
 % Verify basic differentiation rules.

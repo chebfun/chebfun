@@ -93,6 +93,6 @@ for k = 1:m
         C(k,:) = num2cell(tmp*B);
     end
 end
-% Convert cell to CHEBMATRIX for ouput:
-C = chebmatrix(C);  
+% Convert cell to CHEBMATRIX for output:
+C = chebmatrix(C);
 end

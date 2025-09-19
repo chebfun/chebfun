@@ -3,7 +3,7 @@ function H = discriminant(f, x, y, varargin)
 %   H = DISCRIMINANT(F,x,y) returns the determinant of the Hessian of F at
 %   (x,y). The gradient of F should be zero at (x,y).
 % 
-%   H = DISCRIMINANT(F,G,x,y) returnes the determinant of the 'border' Hessian
+%   H = DISCRIMINANT(F,G,x,y) returns the determinant of the 'border' Hessian
 %   of F at (x,y).
 %
 %   Note that we cannot represent the Hessian matrix because we do not allow

@@ -25,7 +25,7 @@ function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 %                   of the phi-functions
 %
 % where s is the number of number of internal stages and q is number of steps 
-% (>1 for multistep methods). For informations about what these coefficients
+% (>1 for multistep methods). For information about what these coefficients
 % are, see [1].
 %
 % [1] H. Montanelli and N. Bootland, Solving periodic semilinear stiff PDEs in 

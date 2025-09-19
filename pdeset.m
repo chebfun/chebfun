@@ -11,8 +11,8 @@ function varargout = pdeset(varargin)
 %
 %       Eps - Tolerance to use in solving the PDE [ positive scalar {1e-6} ].
 %
-%       N - Turn off spacial adaptivity. [{NaN} | positive integer  ]
-%           Use a fixed spacial grid of size N. If N is NaN, then the automatic
+%       N - Turn off spatial adaptivity. [{NaN} | positive integer  ]
+%           Use a fixed spatial grid of size N. If N is NaN, then the automatic
 %           procedure is used.
 %
 %       Plot - Plot the solution at the end of every time chunk. [ on | {off} ]

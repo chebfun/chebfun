@@ -50,7 +50,7 @@ function F = volt_col(k, v, onevar)
 
     normv = norm(v);
     dom = domain(v);
-    opt1 = {'resampling', false, 'splitting', true, 'blowup', 'off', ...
+    opt1 = {'resampling', 'off', 'splitting', 'on', 'blowup', 'off', ...
         'vscale', normv};
 
     function out = int(x)

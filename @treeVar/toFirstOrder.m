@@ -145,7 +145,7 @@ indexStartDer = indexStart + (0:numArgs-1);
 % to get the coefficient information.
 coeffArg = zeros(1, indexStartDer(end) + totalDiffOrders(end));
 
-% Go through each componenent from the result of evaluating FUNIN,
+% Go through each component from the result of evaluating FUNIN,
 % and change it to infix format.
 for wCounter = 1:length(fevalResult)
     

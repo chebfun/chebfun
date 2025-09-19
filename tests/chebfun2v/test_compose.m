@@ -46,7 +46,7 @@ H = compose(F, G);
 H_true = chebfun2v(@(x,y) x+y, @(x,y) x - y, @(x,y) x + y);
 pass(6) = ( norm(H - H_true) < tol );
 
-%% F = peridioc CHEBFUN2V, G = CHEBFUN2 and CHEBFUN2V
+%% F = periodic CHEBFUN2V, G = CHEBFUN2 and CHEBFUN2V
 f1 = chebfun2(@(x,y) cos(pi*x) .* sin(pi*y), 'trig');
 f2 = chebfun2(@(x,y) cos(pi*x) .* cos(pi*y), 'trig');
 F = [f1; f2];

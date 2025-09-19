@@ -190,7 +190,11 @@ if ( isempty(xk) ) % no initial reference is given by the user
         
         if ~status.success % all attempts failed
         	error('CHEBFUN:CHEBFUN:minimax:failure', ...
-                'MINIMAX failed to produce the best approximant.')            
+               ['MINIMAX failed to produce the best approximant. ' ...
+                'If the accuracy is close to machine precision, ' ...
+                'it may be that what you''ve asked for is unachievable ' ...
+                'in floating-point arithmetic. In such a case, try ' ...
+                'reducing the degree to get a clean best approximant.'])
         end
     end
 else  % the user has also given a starting reference
@@ -228,7 +232,7 @@ function xk = cfInit(f, fHandle, m, n)
             pqh = @(x) feval(p, x)./feval(q, x);
             [xk, ~, ~, flag] = exchange([], 0, 2, f, fHandle, p, pqh, ...
                                         m+n+2, n);
-        catch ME  % an error occured when calling cf (ignore it)
+        catch ME  % an error occurred when calling cf (ignore it)
             flag = 0;
         end
     end
@@ -1108,6 +1112,22 @@ if dialogFlag
     end 
     qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
     pvals = nodex.*feval(N,x);
+    % If certain Chebyshev points map to support points, inf values will
+    % get propagated, so we need to handle them separately
+    for ii = 1:length(xsupport)
+        for jj = 1:length(x)
+            if x(jj) == xsupport(ii)
+                nodei = 1.0;
+                for kk = 1:length(xsupport)
+                    if ~(kk == ii)
+                        nodei = nodei * (x(jj) - xsupport(kk)); 
+                    end
+                end
+                qvals(jj) = -nodei*wD(ii);
+                pvals(jj) = nodei*wN(ii);
+            end
+        end
+    end
  
     p = chebfun(pvals,f.domain([1,end]));
     q = chebfun(qvals,f.domain([1,end]));
@@ -1299,7 +1319,7 @@ function xk = findReference(f,fHandle,r,m,n,z)
     xk = findExtrema(f,fHandle, r, sort(z,'ascend'));
     
     % Deal with length(xk) not equal to the desired m+n+2.
-    if length(xk) > m+n+2 % Reduce reference pts becuse too many found. 
+    if length(xk) > m+n+2 % Reduce reference pts because too many found.
    
         xkdiff = diff(xk);                        
         [~,ix] = sort(xkdiff,'descend'); % Take those with largest gaps.
@@ -1911,6 +1931,8 @@ if length(cU)<=1, r = []; return; end % constant function
 if (length(cU)==2)
     % degree 1 polynomial: just take the root
     ei = -cU(2)/(2*cU(1));
+    % remove root if outside domain
+    ei = ei(abs(ei)<=1+1e-7);
 else
     % now construct colleague matrix for ChebyshevU
     oh = ones(len-2,1)/2;
@@ -1918,8 +1940,8 @@ else
     cU = -cU(2:end)/cU(1)/2;cU(2) = cU(2)+.5;
     C(1,:) = cU.';
     ei = eig(C);
-    ei = real(ei(abs(imag(ei))<1e-5 & abs(ei)<=1+1e-7)); 
     % remove irrelevant roots
+    ei = real(ei(abs(imag(ei))<1e-5 & abs(ei)<=1+1e-7)); 
 end
 r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
 end

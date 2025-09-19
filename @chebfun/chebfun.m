@@ -385,6 +385,12 @@ classdef chebfun
         
         % ODE45 with CHEBFUN output.
         [t, y] = ode45(varargin);
+
+        % ODE78 with CHEBFUN output.
+        [t, y] = ode78(varargin);
+
+        % ODE89 with CHEBFUN output.
+        [t, y] = ode89(varargin);        
         
         % Cubic Hermite interpolation:
         f = pchip(x, y, method);
@@ -591,7 +597,16 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             keywordPrefs.techPrefs.fixedLength = args{1};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
-            keywordPrefs.splitting = strcmpi(args{2}, 'on');
+            if ( strcmpi(args{2}, 'on') )
+                keywordPrefs.splitting = true;
+            elseif ( strcmpi(args{2}, 'off') )
+                keywordPrefs.splitting = false;
+            else
+            % Previously 'splitting', 1 would fail silently. See #2489.
+            error('CHEBFUN:CHEBFUN:parseInputs:badSplitting', ...
+                    ['Invalid value for ''splitting'' in Chebfun construction.\n', ...
+                    'Valid options are ''on'' or ''off''.'])
+            end
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'minsamples') )
             % Translate "minsamples" --> "techPrefs.minSamples".
@@ -659,6 +674,9 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
                 keywordPrefs.techPrefs.refinementFunction = 'resampling';
             elseif ( strcmpi(args{2}, 'off') )
                 keywordPrefs.techPrefs.refinementFunction = 'nested';
+            else
+                error('CHEBFUN:CHEBFUN:parseInputs:badResampling', ...
+                    'Invalid value for ''resampling'' option. Must be ''on'' or ''off''.')
             end
             args(1:2) = [];
         elseif ( any(strcmpi(args{1}, 'eps')) )

@@ -21,7 +21,7 @@ function [vals, pos] = minandmax(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isreal(f) )
-    % We compute sqrt(max(|f|^2))to avoid intruducing a singularity.
+    % We compute sqrt(max(|f|^2)) to avoid introducing a singularity.
     realf = real(f);
     imagf = imag(f);
     h = realf.*realf + imagf.*imagf;

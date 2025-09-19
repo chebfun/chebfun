@@ -15,7 +15,7 @@ function f = compose(f, op, g, pref)
 %   COMPOSE(F, G) where G is a CHEBFUN3 or CHEBFUN3V and F has three real
 %   columns returns a CHEBFUN representing G(F).  Similarly if G is a 
 %   CHEBFUN2 or CHEBFUN2V and F has two real columns.  If F has one column,
-%   then G(F) is iterpreted as G(real(F), imag(F)), regardless of whether F
+%   then G(F) is interpreted as G(real(F), imag(F)), regardless of whether F
 %   is real or complex.
 %
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) 
@@ -406,7 +406,7 @@ if ( ~isreal(f) )
 else
 
     % Set a tolerance:
-    tol = 100*eps*max(vscale(f), vscale(g));
+    tol = 1000*eps*max(vscale(f), vscale(g));
     hsf = hscale(f); 
     % Find the range of F:
     mmF = minandmax(f);

@@ -100,6 +100,9 @@ end
 if ( n < 0 )
     error('CHEBFUN:legpts:nNegative', ...
         'First input should be a positive number.');
+elseif ~( isnumeric(n) && isfinite(n) && n == floor(n) ) % Check that n is an integer
+    error('CHEBFUN:legpts:nNonInteger', ...
+        'First input should be an integer.');
 elseif ( n == 0 )   % Return empty vectors if n == 0:
     x = [];
     w = [];
@@ -183,7 +186,7 @@ if ( mod(n, 2) )
     w = [w,  2 - sum(2*w), w(end:-1:1)];
     v = [v ; vmid ; v(end:-1:1)];
 else
-    % Evem number.
+    % Even number.
     x = [x ; -x(end:-1:1)];
     w = [w, w(end:-1:1)];
     v = [v ; v(end:-1:1)];

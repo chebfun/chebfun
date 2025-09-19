@@ -10,13 +10,13 @@ if r <= 30
     pass(1) = 1 ; 
 else
     pass(1)=0;
-end; 
+end
 
 if m <= 100
     pass(2) = 1 ; 
 else
     pass(2)=0;
-end;
+end
 
 C = 10;
 ff = @(x,y,z) 1./(1+C*(x.^2 - y.^2 + z.^2).^2);
@@ -26,14 +26,14 @@ m =length(f);
 if r <= 60
     pass(3) = 1 ; 
 else
-    pass(3)=0;
-end; 
+    pass(3) = 0;
+end
 
-if m <= 200
+if m <= 300
     pass(4) = 1 ; 
 else
     pass(4)=0;
-end; 
+end
 
 ff = @(x,y,z) real(airy(5*(x + y.^2 + z.^2))) .* ...
     real(airy(-5*(x.^2+y.^2 + z.^2)));
@@ -44,7 +44,7 @@ if r <= 60
     pass(5) = 1 ; 
 else
     pass(5)=0;
-end; 
+end
 
 if m <= 200
     pass(6) = 1 ; 

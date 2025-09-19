@@ -1,13 +1,12 @@
 function pass = test_aaa(pref)
-% Test for aaa().  Many new tests added August 2019.
+% Test for aaa.  This has been written to be independent of Chebfun.  
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    tol = 1e4*eps;
 end
-tol = 1e4*pref.chebfuneps;
 
-warning('off', 'CHEBFUN:aaa:Froissart');
+warning('off', 'AAA:Froissart');
 
 Z = linspace(-1, 1, 1000);
 F = exp(Z);
@@ -30,12 +29,15 @@ pass(7) = ( min(abs(zer)) < tol );
 pass(8) = ( min(abs(pol - 0.5)) < tol );
 pass(9) = ( min(abs(res)) > 1e-13 );        % Test for spurious poles.
 
-% Case |Z| = 2: needs special treatment.
+% Two very short cases.
 Z = [0, 1];
 F = [1, 2];
 r = aaa(F, Z);
 pass(10) = ( norm(F - r(Z), inf) < tol );
-pass(11) = ( r(inf) == -inf );
+Z = [0, 1, 2];
+F = [1, 0, 0];
+r = aaa(F, Z);
+pass(11) = ( norm(F - r(Z), inf) < tol );
 
 % Check for exact scale-invariance
 Z = linspace(0.3,1.5);
@@ -51,7 +53,7 @@ r = aaa(@gamma);
 pass(14) = ( abs(r(1.5) - gamma(1.5)) < 1e-3 );
 
 %
-rng(0); Z = randn(10000,1)+3i*randn(10000,1);
+Z = randn(10000,1)+3i*randn(10000,1);
 f = @(z) log(5-z)./(1+z.^2);
 r = aaa(f(Z),Z);
 pass(15) = ( abs(r(0) - f(0)) < tol );
@@ -83,41 +85,109 @@ pass(19) = abs(res(ii)-1) < 1e-10;
 ii = find(abs(pol-(-1))<1e-8);
 pass(20) = abs(res(ii)+(1+1i)) < 1e-10;
 
-% Make sure Lawson matches minimax:
-x = chebfun('x'); f = exp(x);
+% Make sure Lawson matches minimax and degree differs from mmax
+f = @(x) exp(x);
 xx = linspace(-1,1);
-[p,q,r] = minimax(f,3,3); err_minimax = norm(f(xx) - r(xx),inf);
-r = aaa(f,'mmax',4); err_aaa = norm(f(xx) - r(xx),inf);
+err_minimax = 1.550669058714149e-7;
+r = aaa(f,'degree',3); err_aaa = norm(f(xx) - r(xx),inf);
 pass(21) = (err_aaa/err_minimax < 1.1);
+r = aaa(f,'mmax',4); err_aaa = norm(f(xx) - r(xx),inf);
+pass(22) = (err_aaa/err_minimax > 1.1);
 
 % Make sure Lawson bails out if unsuccessful because of machine precision
 xx = linspace(-1,1);
 r = aaa(@tanh,xx); err1 = norm(tanh(xx) - r(xx),inf);
 r = aaa(@tanh,xx,'mmax',40); err2 = norm(tanh(xx) - r(xx),inf);
-pass(22) = abs(err2/err1 - 1) < 1.01; 
+pass(23) = abs(err2/err1 - 1) < 1.01; 
 
 % Make sure Lawson bails out if unsuccessful because of symmetry
 Z = exp(2i*pi*(1:500)'/500); F = log(2-Z.^4); n = 15;
 r = aaa(F,Z,'mmax',n+1,'lawson',0); err1 = norm(F - r(Z),inf);
 r = aaa(F,Z,'mmax',n+1); err2 = norm(F - r(Z),inf);
-pass(23) = abs(err2/err1 - 1) < 1.01; 
+pass(24) = abs(err2/err1 - 1) < 1.01; 
 
 % Make sure Lawson bails out if unsuccessful because of troublesome poles
-Za = chebpts(1000,[-3 -1]); Zb = chebpts(1000,[1,3]); Z = [Za; Zb];
+Za = linspace(-3,-1,1000)'; Zb = linspace(1,3,1000)'; Z = [Za; Zb];
 F = [sign(Za); sign(Zb)]; n = 12; 
 r = aaa(F,Z,'mmax',n+1,'lawson',0); err1 = norm(F - r(Z),inf);
 r = aaa(F,Z,'mmax',n+1); err2 = norm(F - r(Z),inf);
-pass(24) = abs(err2/err1 - 1) < 1.01; 
+pass(25) = abs(err2/err1 - 1) < 1.01; 
 
 % Degree option 
 Z = linspace(-1, 1, 1000);
 F = exp(Z);
 [r, pol] = aaa(F, Z, 'degree', 3);
 [r2, pol2] = aaa(F, Z, 'mmax', 4);
-pass(25) = (numel(pol) == 3);
-pass(26) = (numel(pol2) == 3);
-pass(27) = (norm(r(Z)-r2(Z)) < 1e-10);
+pass(26) = (numel(pol) == 3);
+pass(27) = (numel(pol2) == 3);
 
-warning('on', 'CHEBFUN:aaa:Froissart');
+% Bug reported by Williams Johns in issue 2423
+X = [1 2 3];
+F = [1 0 0];
+r = aaa(F,X);
+pass(28) = (norm(F-r(X)) == 0);
+
+X = chebpts(200); F = max(X,0);
+deg = 4;
+r = aaa(F,X,'degree',4,'lawson',100,'damping',0.2);
+err = norm(F-r(X),inf); pass(29) = abs(err-.006) < .002;
+r = aaa(F,X,'degree',4,'lawson',100,'damping',0.5,'sign',1);
+err = norm(F-r(X),inf); pass(30) = abs(err-.006) < .002;
+
+X = chebpts(1000,[0 10]); F = 1./(1+exp(5./(X-2)));   % Fermi-Dirac
+r = aaa(F,X,'degree',12,'lawson',100,'damping',0.85,'sign',1);
+err = norm(F-r(X),inf); pass(31) = abs(err-.000035) < .0001;
+
+f = @(x) max(x,0);
+r = aaa(f,'degree',8,'damping',.5,'lawson',200);
+xx = linspace(-1,1,300);
+err = norm(f(xx)-r(xx),inf); pass(32) = abs(err-.0006) < .001;
+
+Z = linspace(-1,1,100); F = exp(Z);
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(F-r{2}(Z),inf); pass(33) = abs(err) < 1e-12;
+
+Z = linspace(-1,1,100); F = sin(Z);
+r = aaa(F, Z, 'deriv_deg', 4);
+pass(34) = iscell(r) && isequal(size(r), [1, 5]);
+
+Z = linspace(-1,1,100); F = sin(Z);
+r = aaa(F, Z, 'deriv_deg', 4);
+err = norm(F-r{5}(Z),inf);
+pass(35) = abs(err) < 1e-7;
+
+Z = linspace(-1,1,100); F = Z.^3;
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(3*Z.^2-r{2}(Z),inf);
+pass(36) = abs(err) < 1e-12;
+
+Z = linspace(-1,1,100); F = 1e-100*exp(Z);
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(F-r{2}(Z),inf); pass(37) = abs(err) < 1e-112;
+
+Z = linspace(-1e100,1e100,100); F = exp(1e-100*Z);
+r = aaa(F, Z, 'deriv_deg', 1);
+err = norm(1e-100*F-r{2}(Z),inf); pass(38) = abs(err) < 1e-112;
+
+Z = exp(2i*pi*(0:99)/100); F = sqrt(2-Z);
+rr = aaa(F, Z, 'degree', 6, 'deriv_deg', 1);
+r = rr{1};
+err = abs( norm(F-r(Z),inf) - 1.19e-11 ); pass(39) = abs(err) < 1e-12;
+rp = rr{2};
+pass(40) = abs(rp(1)+0.5) < 1e-6;
+
+Z = linspace(-1,1,100); F = Z + 1./(Z-1.5);
+[r,pol,res] = aaa(F, Z); % residual computation check
+[~,ii] = min(abs(pol-1.5));
+err = res(ii)-1;
+pass(41) = abs(err) < 1e-8;
+
+Z = logspace(-15,0,300)'; F = Z.^(1/2); 
+r = aaa(F, Z); % this test checks diag scaling is working
+ZZ = logspace(-15,0,500)';
+err = norm(r(ZZ)-sqrt(ZZ),inf);
+pass(42) = err < 1e-8;
+
+warning('on', 'AAA:Froissart');
 
 end

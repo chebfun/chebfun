@@ -17,18 +17,22 @@ vscales = vscale(diff1) + vscale(diff2) + vscale(diff3);
 % use the following to call it just once. See CHEBFUN3/PLUS for more
 % details.
 
-% Find out a proper tolerance for the plus operation
-m = 51; % size of sampling grid
-LVals = sample(diff1, m, m, m) + sample(diff2, m, m, m) + ...
-    sample(diff3, m, m, m);
-LVscale = max(abs(LVals(:)));
-kappa = vscales/LVscale;
-pref = chebfunpref();
-eps = pref.cheb3Prefs.chebfun3eps;
-tol = eps*kappa;
+if vscales == 0
+    L = chebfun3(0);
+else
+    % Find out a proper tolerance for the plus operation
+    m = 51; % size of sampling grid
+    LVals = sample(diff1, m, m, m) + sample(diff2, m, m, m) + ...
+        sample(diff3, m, m, m);
+    LVscale = max(abs(LVals(:)));
+    kappa = vscales/LVscale;
+    pref = chebfunpref();
+    eps = pref.cheb3Prefs.chebfun3eps;
+    tol = eps*kappa;
 
-% Compute the laplacian:
-L = chebfun3(@(x,y,z) feval(diff1, x, y, z) + feval(diff2, x, y, z) + ...
-    feval(diff3, x, y, z) , f.domain, 'eps', tol);
+    % Compute the laplacian:
+    L = chebfun3(@(x,y,z) feval(diff1, x, y, z) + feval(diff2, x, y, z) + ...
+        feval(diff3, x, y, z) , f.domain, 'eps', tol);
+end
 
 end

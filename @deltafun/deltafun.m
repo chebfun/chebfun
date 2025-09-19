@@ -193,7 +193,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Merge delta function matrix
         [D, w] = mergeDeltas(A, v, B, u);
         
-        % Costruct a zero DELTAFUN
+        % Construct a zero DELTAFUN
         s = zeroDeltaFun(domain)
         
     end

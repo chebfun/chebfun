@@ -9,12 +9,12 @@ g = spherefun(@(x,y,z) y);
 h = spherefun(@(x,y,z) z);
 u = spherefunv(f,g,h);
 
-% Check that projetion of this vector in the normal direction just returns
+% Check that projection of this vector in the normal direction just returns
 % exactly this vector.
 nu = normal(u);
 pass(1) = norm(u - nu) < tol; 
 
-% Check that projetion of this vector onto the tangent space of the sphere
+% Check that projection of this vector onto the tangent space of the sphere
 % gives zero.
 tu = tangent(u);
 pass(2) = norm(tu) < tol; 
@@ -23,12 +23,12 @@ pass(2) = norm(tu) < tol;
 f = spherefun(@(x,y,z) cos(2*pi*x.*y.*z));
 u = grad(f);
 
-% Check that projetion of this vector onto the tangent space of the sphere
+% Check that projection of this vector onto the tangent space of the sphere
 % gives this vector field back.
 tu = tangent(u);
 pass(3) = norm(u - tu) < tol; 
 
-% Check that projetion of this vector in the normal direction just returns
+% Check that projection of this vector in the normal direction just returns
 % exactly this vector.
 nu = normal(u);
 pass(4) = norm(nu) < tol;

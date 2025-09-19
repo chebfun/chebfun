@@ -19,7 +19,7 @@ if isempty( f )
     return;
 end
 
-% On the sphere in Cartesian cooridnates the curl of a scalar is just
+% On the sphere in Cartesian coordinates the curl of a scalar is just
 % cross(n,gradient(f)), where n is the normal vector (which is just
 % [x,y,z]^T).
 
