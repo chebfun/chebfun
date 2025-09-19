@@ -1,4 +1,4 @@
-function [x, w, v] = lobpts(n, alp, bet)
+function [x, w, v] = lobpts(n, alp, bet, dom)
 %LOBPTS   Gauss-Jacobi-Lobatto quadrature nodes and weights.
 %  LOBPTS(N) returns N Legendre-Lobatto points X in [-1,1].
 %
@@ -11,6 +11,9 @@ function [x, w, v] = lobpts(n, alp, bet)
 %
 %  [...] = LOBPTS(N, ALP, BET) is similar, but for the Gauss-Jacobi-Lobatto
 %  nodes and weights. Here ALP and BET should be scalars > -1.
+% 
+%  [...] = LOBPTS(N, [A,B]) or [...] = LOBPTS(N, ALP, BET, [A,B]) scales
+%  the nodes and weights for the interval [A,B].
 %
 %  In each case, N should be an integer greater than or equal to 2.
 %
@@ -38,47 +41,76 @@ function [x, w, v] = lobpts(n, alp, bet)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: Scaled domains?
+% Parse inputs:
+if ( nargin < 2 )
+    % Default to Gauss-Legendre-Lobatto on [-1 1]:
+    alp = 0; bet = 0; dom = [-1 1];
+elseif ( nargin == 2 && numel(alp) == 2 )
+    % Default to Gauss-Legendre-Lobatto on [A, B]:
+    dom = alp; alp = 0; bet = 0;
+elseif ( nargin == 3 )
+    % Default to Gauss-Jacobi-Lobatto on [-1,1]:
+    dom = [-1 1];
+elseif ( nargin ~= 4 )
+    error('CHEBFUN:lobpts:inputs', 'Unable to parse inputs.')
+end
 
-if ( nargin < 3 )
-    % Default to Gauss-Legendre-Lobatto:
-    alp = 0; bet = 0;
+% Check inputs:
+if ( ~isscalar(alp) ||  alp <= -1 )
+    error('CHEBFUN:lobpts:alp', 'ALP > 1 must be a scalar.');
+end
+if ( ~isscalar(bet) ||  bet <= -1 )
+    error('CHEBFUN:lobpts:bet', 'BET > 1 must be a scalar.');
+end
+if ( numel(dom)~=2 )
+    error('CHEBFUN:lobpts:domain', 'Invalid domain argument.');
 end
 
 %% Trivial cases:
 if ( n == 1 )
     error('CHEBFUN:lobpts:notSupported', 'N = 1 is not supported.');
+    
 elseif ( n == 2 )
     x = [-1 ; 1];
     w = 2^(1+alp+bet)*[beta(bet+1, alp+2), beta(alp+1, bet+2)];
     v = [-1 ; 1];
-    return
+
+ else
+    
+    %% Call JACPTS():
+    [xi, w, v] = jacpts(n-2, alp+1, bet+1);
+    
+    %% Nodes:
+    x = [-1 ; xi ; 1];
+    
+    %% Quadrature weights:
+    w = [-1, w,  1];
+    w = w./(1-x.^2).';
+    if ( alp == 0 && bet == 0 )
+        w([1 n]) = 2/(n*(n - 1));
+    else
+        % The weights for the Gauss-Jacobi-Lobatto case are given explicitly by
+        % Walter Gautschi, "High-order Gauss–Lobatto formulae", Numerical
+        % Algorithms (2000).
+        w(1) = 2^(1+alp+bet)*beta(bet+1, alp+n)*beta(bet+2,n-2)*(n-2);
+        w(n) = 2^(1+alp+bet)*beta(alp+1, bet+n)*beta(alp+2,n-2)*(n-2);
+    end
+    
+    %% Barycentric weights:
+    v = v./(1 - xi.^2);
+    v = v/max(abs(v));
+    rhs = -[sum(v) ; sum(v.*xi)];
+    vend = [1 1 ; -1 1]\rhs;
+    v = [vend(1) ; v ; vend(2)];
+
 end
 
-%% Call JACPTS():
-[xi, w, v] = jacpts(n-2, alp+1, bet+1);
-
-%% Nodes:
-x = [-1 ; xi ; 1];
-
-%% Quadrature weights:
-w = [-1, w,  1];
-w = w./(1-x.^2).';
-if ( alp == 0 && bet == 0 )
-    w([1 n]) = 2/(n*(n - 1));
+% Scale the nodes and weights:
+if ( dom(1) == -1 && dom(2) == 1 )
+    % Nodes are already on [-1, 1];
 else
-    % The weights for the Gauss-Jacobi-Lobatto case are given explicitly by
-    % Walter Gautschi, "High-order Gauss–Lobatto formulae", Numerical
-    % Algorithms (2000).
-    w(1) = 2^(1+alp+bet)*beta(bet+1, alp+n)*beta(bet+2,n-2)*(n-2);
-    w(n) = 2^(1+alp+bet)*beta(alp+1, bet+n)*beta(alp+2,n-2)*(n-2);
+    x = dom(2)*(x + 1)/2 + dom(1)*(1 - x)/2;
+    w = (diff(dom)/2)*w;
 end
-
-%% Barycentric weights:
-v = v./(1 - xi.^2);
-v = v/max(abs(v));
-rhs = -[sum(v) ; sum(v.*xi)];
-vend = [1 1 ; -1 1]\rhs;
-v = [vend(1) ; v ; vend(2)];
 
 end
