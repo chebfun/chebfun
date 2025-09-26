@@ -1,3 +1,4 @@
+
 function E = compose(disc, y)
 %FEVAL   Evaluation functional for CHEBCOLLOC.
 %   FEVAL(DISC, LOC, DIRN) returns a functional that evaluates the Chebyshev
@@ -13,10 +14,10 @@ n = disc.dimension;
 
 % Find the collocation points and create an empty functional.
 [x, ~, v] = functionPoints(disc);
+
 offset = cumsum([0 ; n(:)]);
 N = offset(end);
 E = zeros(1, N);
-
 % Evaluate the given input at x:
 y = y(x);
 % Find which point is in which subinterval

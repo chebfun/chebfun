@@ -44,8 +44,6 @@ cheboppref.setDefaults('factory');
 cheboppref.setDefaults('damping', 0, 'plotting', 'on');
 pass(7) = (~cheboppref().damping) && strcmp(cheboppref().plotting, 'on');
 
-cheboppref.setDefaults(savedPrefs);
-
 % Test getting defaults:
 pass(8) = isnumeric(cheboppref().bvpTol);
 
@@ -57,6 +55,13 @@ pass(9) = strcmp(pref.discretization, 'values');
 pref.discretization = 'coeffs';
 pass(10) = strcmp(pref.discretization, 'coeffs');
 
+% Test sparse functionality
+cheboppref.setDefaults('factory');
+cheboppref.setDefaults('sparse', true);
+pass(11) = (cheboppref().sparse);
+
+% Reset to original state:
+cheboppref.setDefaults(savedPrefs);
 
 end
 

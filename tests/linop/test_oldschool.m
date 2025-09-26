@@ -20,7 +20,7 @@ pass(7) = doesNotCrash( @() zeros(d) );
 %% Test the feval-style instantiation syntax.
 D = diff(d);
 warnState = warning('off', 'CHEBFUN:LINOP:feval:deprecated');
-pass(8) = norm( D(8) - matrix(D,8,pref) ) < 2e-14;
+pass(8) = norm( full(D(8) - matrix(D,8,pref)) ) < 2e-14;
 warning(warnState);
 
 %% Test boundary condition syntax
@@ -35,7 +35,7 @@ correct([1 end],:) = A1(1:2,:);  % classic row replacement
 warnState = warning('off', 'CHEBFUN:LINOP:feval:deprecated');
 Aold = feval(A,12,'oldschool');
 warning(warnState);
-pass(9) = norm( correct - Aold ) < 2e-14;
+pass(9) = norm( full(correct - Aold) ) < 2e-14;
 
 end
 

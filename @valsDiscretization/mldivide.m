@@ -19,7 +19,6 @@ else
     s = 1./ max(1, max(abs(A), [], 2) );  % Row scaling to improve accuracy
     A = bsxfun(@times, s, A);
     [L, U, p] = lu(A, 'vector');
-    
     % Store factors:
     disc.mldivideData = {L, U, p, s};
     
