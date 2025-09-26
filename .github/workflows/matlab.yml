@@ -77,7 +77,7 @@ jobs:
           command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
 
  # This job tracks the latest Matlab
- latest-matlab-chebtest:
+  latest-matlab-chebtest:
     name: Latest Matlab chebtest
     runs-on: ubuntu-latest
     steps:
