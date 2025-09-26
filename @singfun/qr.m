@@ -31,7 +31,7 @@ end
 % Normalization:
 f = f/R;
 
-% The permutation scalar is alway 1:
+% The permutation scalar is always 1:
 E = 1;
 
 end

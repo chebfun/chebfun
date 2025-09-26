@@ -11,7 +11,7 @@ function c = ultracoeffs(f, n, lam)
 %   ULTRACOEFFS does not support quasimatrices.
 %
 %   Note: This code enforces no restrictions on LAM (other than the obvious LAM
-%   >= 0). However, since the scaling of ultrapsherical polynomials is bad for
+%   >= 0). However, since the scaling of ultraspherical polynomials is bad for
 %   LAM >> 1, the results may be inaccurate in this regime.
 %
 % See also CHEBCOEFFS, JACCOEFFS.

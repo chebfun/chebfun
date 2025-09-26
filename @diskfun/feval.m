@@ -1,7 +1,7 @@
 function y = feval(varargin)
 %FEVAL   Evaluate a DISKFUN at one or more points.
 %   Y = FEVAL( F, X, Y) evaluates a diskfun F at a point (X,Y) in Cartesian
-%   cooridnates, where X and Y are doubles.
+%   coordinates, where X and Y are doubles.
 %
 %   Y = FEVAL( F, THETA, R, 'polar') evaluates a diskfun F in polar
 %   coordinates (THETA,R).  Here THETA and R are doubles representing the

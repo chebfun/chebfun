@@ -58,7 +58,7 @@ elseif ( size(g.coeffs, 1) == 1)
     
 end
 
-% Do muliplication in coefficient space:
+% Do multiplication in coefficient space:
 [f.coeffs, pos] = coeff_times_main(f.coeffs, g.coeffs); 
 
 % Update ishappy:

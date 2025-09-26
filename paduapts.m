@@ -1,7 +1,7 @@
 function [xy, idx] = paduapts(n, dom)
 %PADUAPTS   Padua points.
 %   XY = PADUAPTS(N) returns a two-column vector containing the x and y
-%   co-ordinates of the degree N first-kind Padua points on [-1 1] x [-1,1].
+%   coordinates of the degree N first-kind Padua points on [-1 1] x [-1,1].
 %
 %   XY = PADUAPTS(N, [a, b, c, d]) returns the degree N Padua points on the
 %   domain [a b] x [c d].

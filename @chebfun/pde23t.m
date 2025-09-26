@@ -14,7 +14,7 @@ function varargout = pde23t(varargin)
 optsPassed = false;                 % Set flag if we find optsd were passed.
 for k = 1:nargin
     if ( isstruct(varargin{k}) && isfield(varargin{k}, 'ODESolver') )
-        % Ammend the ODESolver field to be @ode23t:
+        % Amend the ODESolver field to be @ode23t:
         varargin{k}.ODESolver = @ode23t;
         optsPassed = true;          % We know now that options were passed.
         break                       % No need to continue the loop.

@@ -454,7 +454,7 @@ if ( ~isempty(pivotIndices) )
     pivotIndices(:, 1) = pivotIndices(:, 1) + 1;
 end
 
-% Put the pole/origin at the begining of the pivot locations array and also 
+% Put the pole/origin at the beginning of the pivot locations array and also
 % include the pivot matrix.
 if ( removePoles )
     pivotIndices = [ 1 poleCol; pivotIndices ];
@@ -802,7 +802,7 @@ pole = mean(val);
 % Compute their standard deviation
 stddev = std(val);
 
-% If the standard deviation does not exceed the 1e8*tolearnce then the pole
+% If the standard deviation does not exceed the 1e8*tolerance then the pole
 % is "constant".
 % TODO: Get a better feel for the tolerance check.
 if ( (stddev <= 1e8*tol) || (stddev < eps) )

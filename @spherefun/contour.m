@@ -112,8 +112,8 @@ clrmap = parula(numel(levelList));
 % Remove the contour plot that was generated.
 delete(H);
 
-% If the plot is not being added to another then plot a solid 
-% sphere so the lines are more easily discernable.
+% If the plot is not being added to another then plot a solid
+% sphere so the lines are more easily discernible.
 if ( ~holdState )
     
     % Generate a unit sphere.

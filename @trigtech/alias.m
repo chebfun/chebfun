@@ -110,9 +110,9 @@ else % m is even.
     n2 = (n-1)/2;
     
     % Put the coefficient for the cos(m/2*pi*x) in the first entry of the
-    % coefficient vector.  This corresopnds to the exp(-1i*pi*m/2*x).  
+    % coefficient vector.  This corresponds to the exp(-1i*pi*m/2*x).
     aliasedCoeffs = coeffs(n2+1-m2:n2+m2,:);
-    % Extend the aliased cofficient vector so it is symmetric.  This allows
+    % Extend the aliased coefficient vector so it is symmetric.  This allows
     % us to easily account for aliasing on the exp(-1i*pi*m/2*x) and 
     % exp(1i*pi*m/2*x) term in the code below without the need for a 
     % special if check.  The negative allows contribution for sin(m/2*pi*x)

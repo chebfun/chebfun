@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: FSFAP
+# Copyright 2024 by The University of Oxford and The Chebfun Developers.
+# See http://www.chebfun.org/ for Chebfun information.
+#
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
+
+# lines that codespell should ignore: whitespace matters!
+
+        s = 'Kiyon ke Nick ne kaha tha!';
+
+# end of file

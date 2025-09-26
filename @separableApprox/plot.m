@@ -127,7 +127,7 @@ else
         colormap default
         
     else
-        %% Phase Protrait plot 
+        %% Phase Portrait plot
         % The following is a slightly modified version of Wegert's code from
         % p345 of his book.
         dom = f.domain; 

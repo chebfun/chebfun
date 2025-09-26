@@ -5,7 +5,7 @@ function y = feval(f, x, y, z)
 %   azimuthal) and latitudinal (or elevation) angles.
 %
 %   Y = FEVAL(F, X, Y, Z)  evaluates a spherefun F at a point (X,Y,Z) in
-%   Cartesian cooridnates on the surface of a sphere.
+%   Cartesian coordinates on the surface of a sphere.
 %
 % See also SUBSREF.
 

@@ -1,7 +1,7 @@
 function C = rdivide(A, B)
 %./    CHEBOP right division.
 %   C = A./B, where ones of a A is a CHEBOP and is B a scalar is equivalent
-%   to A*(1/B), repectively.
+%   to A*(1/B), respectively.
 %
 %   All other instances returns an error.
 %

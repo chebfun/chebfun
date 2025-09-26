@@ -186,7 +186,7 @@ if ( mod(n, 2) )
     w = [w,  2 - sum(2*w), w(end:-1:1)];
     v = [v ; vmid ; v(end:-1:1)];
 else
-    % Evem number.
+    % Even number.
     x = [x ; -x(end:-1:1)];
     w = [w, w(end:-1:1)];
     v = [v ; v(end:-1:1)];

@@ -13,7 +13,7 @@ pass(1) = isempty(h);
 f = spherefun(@(x,y,z) cos((x+.1).*y.*z));
 % Vector field tangent to the sphere
 u = grad(f);
-% Verctor field normal to the sphere
+% Vector field normal to the sphere
 nrml = spherefunv(spherefun(@(x,y,z) x),spherefun(@(x,y,z) y),spherefun(@(x,y,z) z));
 h = dot(u,nrml);
 pass(2) = norm(h,inf) < tol;

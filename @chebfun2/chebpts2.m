@@ -23,7 +23,7 @@ if ( nargin > 2 )
    if ( ~all( size( D ) == [1 4] ) )
         error('CHEBFUN:CHEBFUN2:chebpts2:domain', 'Unrecognised domain.');
    end
-else  % Default to the canoncial domain.
+else  % Default to the canonical domain.
     D = [-1, 1, -1, 1];
 end
 

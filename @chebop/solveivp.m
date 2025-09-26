@@ -147,7 +147,7 @@ catch ME
         [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
         return
     else
-        % Otherwise, an unexpected error occured, rethrow it.
+        % Otherwise, an unexpected error occurred, rethrow it.
         rethrow(ME);
     end
 end

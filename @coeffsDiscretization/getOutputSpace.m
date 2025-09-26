@@ -4,7 +4,7 @@ function outputSpace = getOutputSpace(source)
 %   operator.
 
 %   This is particularly important for the ULTRAS class for which the 
-%   ultrapsherical polynomial basis is choosed so that the differential operator 
+%   ultraspherical polynomial basis is chosen so that the differential operator
 %   remains sparse. Roughly, if the leading term is of diffOrder K, then the 
 %   range should be represented in the C^{(K)} polynomial basis. For TRIGSPEC,
 %   the operator is always sparse.

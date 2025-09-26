@@ -31,7 +31,7 @@ if ( nargin < 2 )
     m = 1;
 end
 
-% Grid point spacing h. (Note that wee start off on [-pi,pi) and scale to [-1,1)
+% Grid point spacing h. (Note that we start off on [-pi,pi) and scale to [-1,1)
 % as the final step.
 h = 2*pi/N;
 

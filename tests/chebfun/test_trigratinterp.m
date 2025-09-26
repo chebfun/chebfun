@@ -25,7 +25,7 @@ pass(3) = norm(p(th)./q(th) - fh(th), inf) < tol;
 tt = 2 * rand(100, 1) - 1;
 pass(4) = norm((p(tt)./q(tt)-fh(tt)), inf) < 1e3*tol;
 
-%% Check least squres
+%% Check least squares
 N = 101;
 [p, q, r] = trigratinterp(fh, m, n, N, [], 0);
 pass(5) = length(p) == 2*m+1;

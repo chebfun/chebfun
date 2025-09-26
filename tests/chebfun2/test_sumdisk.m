@@ -16,8 +16,8 @@ ListLength = 18;
 TestFn_Cell = cell(ListLength,5);           
 % 1st column function name, 2nd column function itself
 % 3rd column is a non-defult domain
-% 4th column excat intergal on default domain given by integral 2
-% 5th column excat intergal on non-default domain given by integral 2
+% 4th column exact integral on default domain given by integral 2
+% 5th column exact integral on non-default domain given by integral 2
 
 TestFn_Cell{1,1} = 'Exp fn';
 TestFn_Cell{1,2} = @(x,y) exp(-30*(x.^2+y.^2));

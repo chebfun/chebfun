@@ -99,7 +99,7 @@ for tCounter = 1:length(bcResults)
         activeDiffOrder];
 end
 
-% Initalise an index vector to be returned
+% Initialise an index vector to be returned
 idx = [];
 
 % Go through the list of what variables appeared in what constraints, and sort

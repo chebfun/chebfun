@@ -9,11 +9,11 @@ classdef ultraS < coeffsDiscretization
 % discretization of SOURCE of size DIMENSION-by-DIMENSION for BVPs on the
 % interval DOMAIN.
 %
-% ULTRAS(SOURCE, DIMESION) takes the DOMAIN from SOURCE.
+% ULTRAS(SOURCE, DIMENSION) takes the DOMAIN from SOURCE.
 %
 % ULTRAS(SOURCE) takes the dimension from SOURCE.
 %
-% For more details about the ultrapsherical spectral methods, see: S. Olver and
+% For more details about the ultraspherical spectral methods, see: S. Olver and
 % A. Townsend, A fast and well-conditioned spectral method, SIAM Review, 55
 % (2013), pp. 462-489.
 

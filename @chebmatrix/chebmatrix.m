@@ -57,7 +57,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 % CHEBMATRIX is the class that enables concatenating various classes of objects
 % of Chebfun into a single object. It has four fields:
 %   * blocks:    A Matlab cell used to store the components.
-%   * domain:    The domain of the componenents, including the union of all
+%   * domain:    The domain of the components, including the union of all
 %                breakpoints.
 %   * diffOrder: A dependent property. diffOrder is matrix valued, with values
 %                corresponding to the diffOrders of each components, so that
@@ -214,7 +214,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %CTRANSPOSE   Transpose a CHEBMATRIX.
         %   CTRANSPOSE(A) transposes A.BLOCKS and each of the entries in
         %   A.BLOCKS. Note the block entries are transposed, not conjugate
-        %   tranposed (which is consistent with the built in CELL class).
+        %   transposed (which is consistent with the built in CELL class).
             for k = 1:numel(A.blocks)
                 % TODO: TRANSPOSE() or CTRANSPOSE()?
                 A.blocks{k} = ctranspose(A.blocks{k});
@@ -411,9 +411,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                 end
             end
             
-            % Convert additional inouts to arrays of cells (i.e., just .blocks).
+            % Convert additional inputs to arrays of cells (i.e., just .blocks).
             varargin = cellfun(@(v) v.blocks, varargin, 'UniformOutput', false);
-                  
+
             if ( ~uniOut )
                 A.blocks = cellfun(op, A.blocks, varargin{:}, ...
                     'UniformOutput', false);

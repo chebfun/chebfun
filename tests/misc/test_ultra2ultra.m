@@ -2,7 +2,7 @@ function pass = test_ultra2ultra(pref)
 % Test for ultra2ultra
 
 % TO test, we construct a chebfun and obtain it's coefficients using
-% chebfun.ultracoeffs for two values of lamba. We then convert between these
+% chebfun.ultracoeffs for two values of lambda. We then convert between these
 % expansions using ultra2ultra and check the difference is within tolerance. 
 % (This test therefore assumes that chebfun.ultracoeffs is behaving correctly.)
 

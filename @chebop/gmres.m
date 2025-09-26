@@ -288,7 +288,7 @@ for outiter = 1:outer
         normr_act = normr;
         
         if ( normr <= tolg || stag >= maxstagsteps || moresteps )
-            % Evalute this outer loop's solution
+            % Evaluate this outer loop's solution
             y = R(1:initer,1:initer)\(P(:,1:initer)'*QTb);  % least squares soln
             additive = Q(:,1:initer)*y;                     % new part of solution
             if norm(additive) < eps*norm(u)

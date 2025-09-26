@@ -41,7 +41,7 @@ mask = false(numRoots, 1);
 tol = 10*eps*get(f, 'vscale');
 
 % We sample at an arbitrary number of points between the located root and
-% the nearest enpoint. We take max(20, numRoots), with the reasoning being that
+% the nearest endpoint. We take max(20, numRoots), with the reasoning being that
 % if there are many roots, then the function has some complex oscillatory
 % behaviour that we might need to capture.
 n = max(numRoots, 20);

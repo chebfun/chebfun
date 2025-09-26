@@ -1,10 +1,10 @@
 function str = removeTabs(str)
 %REMOVETABS   Remove tabs from CHEBGUI input
-%   REMOVETABS(STRIN) returns a string formed by removing all tabs from STRIN.
+%   REMOVETABS(STR) returns a string formed by removing all tabs from STR.
 
 % Loop over the STR input (might be a cell-array):
 for k = 1:numel(str)
-    % Initalise the index:
+    % Initialise the index:
     idx = 1;
     % Current string we're looking at
     strk = str{k};

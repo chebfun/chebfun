@@ -87,7 +87,7 @@ tol = 10*max(get(f, 'vscale')*eps, ...
 pass(8) = norm(h1 - h2, inf) < tol;
 
 %% Testing Delta function convolution
-% Delta funciton reproduces the function under convolution:
+% Delta function reproduces the function under convolution:
 f = chebfun({@(x) sin(x), @(x) cos(x), @(x) sin(4*x.^2)}, [-2, -1, 0, 1] );
 x = chebfun('x', [-2, 1] );
 d = dirac(x);
@@ -170,6 +170,22 @@ g = chebfun(@cos, [-1 1]/1e6);
 h1 = conv(f, g);
 h2 = conv(f,g, 'Old');
 pass(20) = norm(h1 - h2) < eps*10;
+
+%% Issue #2456
+% This would crash because it would result in an interval of (relative) 
+% width less than eps.
+
+try
+    z = chebfun(@(z) z, [-.1 0 .1]);
+    g = sign(z);
+    f16 = chebfun({0,chebpoly(16),0},[-1.1 -1 1 1.1]);
+    f17 = chebfun({0,chebpoly(17),0},[-1.1 -1 1 1.1]);
+    convolution16 = conv(f16,g);
+    convolution17 = conv(f17,g);
+    pass(21) = true;
+catch
+    pass(21) = false;
+end
 
 end
 

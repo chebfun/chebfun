@@ -17,7 +17,7 @@ function varargout = plotcoeffs(f, varargin)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE:
-%  The undocumented featrue plotcoeffs(f, 'barplot') shows a different kind of
+%  The undocumented feature plotcoeffs(f, 'barplot') shows a different kind of
 %  coeffs plot, which can be more attractive in some situations.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

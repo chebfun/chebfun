@@ -112,7 +112,7 @@ if ~isempty(x)
     % coefficients of the radial basis function expansion of the mean
     alpha = L'\(L\y);
 
-    % constuct a Chebfun approximation for the posterior distribution mean
+    % construct a Chebfun approximation for the posterior distribution mean
     if opts.trig && ~opts.sigmaY
         f = chebfun(@(z) mean(alpha, x, z, opts), opts.dom, 'trig', ...
             'eps', 1e-12,'splitting','on');

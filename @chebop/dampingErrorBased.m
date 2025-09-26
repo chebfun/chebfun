@@ -77,7 +77,7 @@ success = 0;
 while ( ~accept )
     
     % Check whether we want to predict a value for LAMBDA. In other words, this
-    % is the predictor step. We can only predict LAMBA once we have taken one
+    % is the predictor step. We can only predict LAMBDA once we have taken one
     % Newton step, as it is based on information obtained from the previous step
     if ( (newtonCounter > 0) && initPrediction )
         % Compute a prediction value

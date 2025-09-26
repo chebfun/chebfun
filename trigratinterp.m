@@ -515,7 +515,7 @@ function b = chopCoeffs(a, tol)
 % Input: Assume double sided coeffs in vector a with
 %       wavenumbers -k to k where k = (length(a)-1)/2
 % Output: b is a vector such that at least one of
-%       b_k and b{-k} are greather than tol in abs value.
+%       b_k and b{-k} are greater than tol in abs value.
 %
 
 % Handle the empty case:

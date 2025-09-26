@@ -2,7 +2,7 @@ function f = toFunctionIn(disc, values)
 %TOFUNCTIONIN   Convert CHEBCOLLOC1 discretization to a CHEBFUN. 
 %   TOFUNCTIONIN(DISC, VALUES) converts the values of a CHEBCOLLOC1-discretized
 %   function to a CHEBFUN. If DISC.DOMAIN has breakpoints, the input should have
-%   cell arrrays corresponding to smooth pieces.
+%   cell arrays corresponding to smooth pieces.
 %
 %   If VALUES is matrix valued, the output is an array-valued CHEBFUN, where
 %   each column of the CHEBFUN corresponds to a column of the input.

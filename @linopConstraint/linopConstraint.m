@@ -13,7 +13,7 @@ classdef linopConstraint
 %
 %        C.functional * u = C.values.
 %
-%   The preferred way to add contraints to a linop is through LINOP.ADDBC,
+%   The preferred way to add constraints to a linop is through LINOP.ADDBC,
 %   not through direct use of this class.
 %
 % See also LINOP, LINOP.ADDBC.

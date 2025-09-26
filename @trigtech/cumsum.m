@@ -113,7 +113,7 @@ function f = cumsumContinuousDim(f, m)
     integrationFactor(highestDegree+1) = 0;
     c = bsxfun(@times,c,integrationFactor);
     % If this is an odd order cumsum and there are an even number of
-    % coefficients then zero out the cofficient corresponding to sin(N/2x)
+    % coefficients then zero out the coefficient corresponding to sin(N/2x)
     % term, since this will be zero on the Fourier grid.
     if ( (mod(m, 2) == 1) && fIsEven )
         c(1,:) = 0;
@@ -124,7 +124,7 @@ function f = cumsumContinuousDim(f, m)
     c(highestDegree+1,:) = -sum(bsxfun(@times,c,(-1).^sumIndicies));
     
     % If the original TRIGTECH had an even number of coefficients then
-    % shrink the coefficent vector corresponding to its indefinite integral
+    % shrink the coefficient vector corresponding to its indefinite integral
     % back to its original size since it was increased by one above to make
     % the integration code slicker.
     if ( fIsEven )

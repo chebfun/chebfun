@@ -124,7 +124,7 @@ solvingGlobally = strcmp(options.ivpSolver, 'values') || ...
     strcmp(options.ivpSolver, 'coeffs');
 
 % Various things we only need to think about when in the GUI, changes GUI
-% compenents.
+% components.
 if ( guiMode )
     set(handles.iter_list, 'String', '');
     set(handles.iter_text, 'Visible', 'On');

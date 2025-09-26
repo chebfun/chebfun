@@ -128,7 +128,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
         10*max(vscale(g1)*eps);
 end
 
-% Test the subraction of two CHEBTECH objects F and G, specified by F_OP and
+% Test the subtraction of two CHEBTECH objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.
 function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h1 = f - g;

@@ -152,7 +152,7 @@ classdef (InferiorClasses = {?double}) chebop
 % endpoint of the domain, this often proves to be an inefficient way of solving
 % the problems. If conditions are only imposed on one of the fields N.LBC or
 % N.RBC, and not on N.BC, CHEBOP will automatically reformulate the problem so
-% that it can be solved using one of MATLAB's build-in solvers ODE113, ODE15s or
+% that it can be solved using one of MATLAB's built-in solvers ODE113, ODE15s or
 % ODE45. See the help text in CHEBOPPREF for instructions on how to select the
 % ODE solver used, or how to enforce a global method to be used. 
 % 

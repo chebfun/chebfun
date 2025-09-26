@@ -129,7 +129,7 @@ L = chebfun(@(t) polyLebesgueFun(t, x(:), w), dom, pref);
 
 if ( isa(pref.tech(), 'chebtech') )
     % Since we fixed the degree for chebtech-based representations, we must
-    % call simplify manualy.
+    % call simplify manually.
     L = simplify(L);
 end
 

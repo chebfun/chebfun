@@ -80,7 +80,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     
     % Note: The line below is a nice way to disable to objects, rather than hide
     % them.
-    % Enable all childrens of discretisation panel
+    % Enable all children of discretisation panel
     %     set(findall(handles.panel_discretization,  '-property',  'enable'),  ...
     %         'visible',  'on')
 elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode

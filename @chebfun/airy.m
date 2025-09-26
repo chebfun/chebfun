@@ -63,7 +63,7 @@ elseif ( (scale == 1) && ((K == 2) || (K == 3)) )
 
 else
     % Invalid parameter sequence:
-    error('CHEBFUN:CHEBFUN:airy:params', 'Invalid paramter selection.');
+    error('CHEBFUN:CHEBFUN:airy:params', 'Invalid parameter selection.');
 
 end
 

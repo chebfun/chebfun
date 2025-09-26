@@ -68,13 +68,13 @@ elseif ( isa(g, 'trigtech') )
     % Also return the grid points used.
     % Grid data for f:
     data.fGrid.xLine = trigtech.trigpts(size(f.values,1));
-    % Use the maximum of the lenghts of f, g and h to match the number of
+    % Use the maximum of the lengths of f, g and h to match the number of
     % values returned:
     data.fGrid.xPoints = trigtech.trigpts(len);
     
     % Grid data for g:
     data.gGrid.xLine = trigpts(npts);
-    % Use the maximum of the lenghts of f, g and h to match the number of
+    % Use the maximum of the lengths of f, g and h to match the number of
     % values returned:    
     data.gGrid.xPoints = trigpts(len);
     

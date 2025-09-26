@@ -79,7 +79,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         %            w = treeVar([0 0 1], [0 1]);
         %            f = u + 2*w;
         %        will lead to f.tree.ID == [1 0 1].
-        %    HASTERMS: Indiciates whether a TREEVAR is constructed from a
+        %    HASTERMS: Indicates whether a TREEVAR is constructed from a
         %        sequence of computations that include multiple terms. For
         %        example, the sequence
         %            u = treeVar(1, [0 1]);
