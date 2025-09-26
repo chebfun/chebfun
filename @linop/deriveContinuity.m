@@ -64,21 +64,6 @@ if ( ( max(diffOrd) > 0 ) && ( ~isempty(left) ) )
             Z = [Z, z];
         end
     end
-    
-    % for var = 1:length(diffOrd)
-    %     % Skip if this is a scalar variable; it plays no role in continuity.
-    %     if ( isnan(diffOrd(var)) || diffOrd(var) == 0 )
-    %         continue
-    %     end
-    % 
-    %     B = Z;
-    %     for m = 0:diffOrd(var)-1    % up to this variable's diff. order
-    %         for k = 1:length(left)  % for each point
-    %             B(var) = C{m+1, k}; % right/left difference in mth deriv.
-    %             cont = cont.append(B, 0);
-    %         end
-    %     end
-    % end
 
     B = Z; j = 1;
     for var = 1:length(diffOrd)
@@ -124,3 +109,4 @@ for m = 1:maxorder
 end 
 
 end
+
