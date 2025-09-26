@@ -258,9 +258,9 @@ if ( nlawson > 0 )      % Lawson iteration
         A(i,2*j) = 2*F(i);
     end
     stepno = 0;
-    while ( (nlawson < inf) & (stepno < nlawson) ) |...
-          ( (nlawson == inf) & (stepno < 20) ) |...
-          ( (nlawson == inf) & (maxerr/maxerrold < .999) & (stepno < 1000) ) 
+    while ( (nlawson < inf) && (stepno < nlawson) ) ||...
+          ( (nlawson == inf) && (stepno < 20) ) ||...
+          ( (nlawson == inf) && (maxerr/maxerrold < .999) && (stepno < 1000) )
         stepno = stepno + 1;
         wt = wt_new;
         W = spdiags(sqrt(wt),0,M,M);
@@ -284,7 +284,7 @@ if ( nlawson > 0 )      % Lawson iteration
     wj = c(2:2:end);
     fj = -c(1:2:end)./wj;
     % If Lawson has not reduced the error, return to pre-Lawson values.
-    if (maxerr > maxerrAAA) & (nlawson == Inf)
+    if (maxerr > maxerrAAA) && (nlawson == Inf)
         wj = wj0; fj = fj0;
     end
 end
@@ -300,7 +300,7 @@ r = @(zz) revaltrig(zz, zj, fj, wj, form);
 % Compute poles, residues and zeros:
 [pol, res, zer] = prztrig(zj, fj, wj, form);
 
-if ( cleanup_flag & nlawson == 0)       % Remove Froissart doublets
+if ( cleanup_flag && nlawson == 0)       % Remove Froissart doublets
     [r, pol, res, zer, zj, fj, wj] = ...
         cleanuptrig(r, form, finfP, finfM,pol, res, zer, zj, fj, wj, Z, F, cleanup_tol);
 end
@@ -361,7 +361,7 @@ while ( ~isempty(varargin) )
     elseif ( strncmpi(varargin{1}, 'tol', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             tol = varargin{2};
-            if ~cleanup_set & tol > 0 % If not manually set, set cleanup_tol to tol.
+            if ~cleanup_set && tol > 0 % If not manually set, set cleanup_tol to tol.
               cleanup_tol = tol;
             end
         end
@@ -466,7 +466,7 @@ else
     M = length(Z);
 end
 
-if ~mmax_flag & (nlawson == Inf)
+if ~mmax_flag && (nlawson == Inf)
     nlawson = 0;               
 end
 

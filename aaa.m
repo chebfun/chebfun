@@ -229,7 +229,7 @@ if ( nlawson > 0 )                         % Lawson iteration
     stepno = 0;
     while ( (nlawson < inf) && (stepno < nlawson) ) || ...
           ( (nlawson == inf) && (stepno < 20) ) || ...
-          ( (nlawson == inf) && (maxerr/maxerrold < .999) && (stepno < 1000) ) 
+          ( (nlawson == inf) && (maxerr/maxerrold < .999) && (stepno < 1000) )
         stepno = stepno + 1;
         wt = wt_new;
         W = spdiags(sqrt(wt),0,M,M);
