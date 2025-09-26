@@ -5,7 +5,6 @@ function pass = test_minimax( pref )
 % Generate a few random points to use as test values.
 seedRNG(6178);
 xx = 2 * rand(100, 1) - 1;
-
 x = chebfun(@(x) x, [-1 1]);
 
 % Test known exact answer.
@@ -55,7 +54,6 @@ pass(7) = (abs(err-.5) < 1e-10);
 err = norm(f-p./q,inf);
 pass(8) = (abs(err-.043689) < 1e-3);
 
-
 % Make sure that it works for m=0 and odd f.
 f = x.^3;
 try
@@ -65,12 +63,10 @@ catch ME
     pass(9) = false;
 end
 
-
 % A function with huge amplitude
 f1 = chebfun('exp(x)'); p1 = minimax(f1,7); err1 = norm(f1-p1,inf);
 f2 = chebfun('1e100*exp(x)'); p2 = minimax(f2,7); err2 = norm(f2-p2,inf);
 pass(10) = abs(err1-err2/1e100) < 1e-3;
-
 
 % A function with tiny amplitude
 f1 = chebfun('exp(x)');
@@ -78,7 +74,6 @@ f1 = chebfun('exp(x)');
 f2 = chebfun('1e-100*exp(x)');
 [~,~,r2] = minimax(f2,1,3); sample2 = r2(.3)-f2(.3);
 pass(11) = abs(sample1-sample2*1e100) < 1e-3;
-
 
 % A function on a big domain
 x = chebfun('x',1e30*[-1 2]);
@@ -89,7 +84,9 @@ pass(12) = (norm(f-p,inf)/1e30 - .0135210) < .01;
 % Higher degree abs(x) approximation
 x = chebfun('x');
 f = abs(x);
+warnState = warning('off', 'CHEBFUN:CHEBFUN:constructor:funNotResolved'); lw = lastwarn;
 [~, ~, ~,err,~] = minimax(f, 30, 30, 'silent');
+warning(warnState); lastwarn(lw);
 pass(13) = abs(err-2.1739878e-7)/2.1739878e-7 < 1e-3;
 
 % Check correct output formatting for polynomial Remez
@@ -111,6 +108,8 @@ xx = linspace(-1,1,10000);
 norme1 = max(abs(f(xx)-p(xx)));
 pass(16) = (abs(err - norme1)/err < 1e-4);
 
+
+
 [~,~,r,err,~] = minimax(f,4,4,'silent');
 norme2 = max(abs(f(xx)-r(xx)));
 pass(17) = (abs(err - norme2)/err < 1e-4);
@@ -120,7 +119,6 @@ x = chebfun('x'); f = 1e40*abs(x);
 pass(18) = (err < 1e38);
 
 % Test poles and zeros of the best approximation
-
 [p,q,~,~,status] = minimax(@(x) sqrt(x), [0,1], 4,4);
 zer1 = roots(p,'all'); zer1 = sort(zer1); zer2 = sort(status.zer);
 pol1 = roots(q,'all'); pol1 = sort(pol1); pol2 = sort(status.pol);

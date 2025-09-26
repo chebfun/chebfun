@@ -18,10 +18,10 @@ pass(4) = abs(result.momentOfInertia - exact.momentOfInertia) < 1e-15;
 
 %% Check results for a surface of revolution on an unbounded domain
 f = chebfun(@(x) exp(-x), [0,Inf]);
-warnstate = warning;
+warnstate = warning; lw = lastwarn;
 warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay')
 result = cheb.revolution(f);
-warning(warnstate);
+warning(warnstate); lastwarn(lw);
 
 % Known exact results
 exact.surfaceArea = pi*(sqrt(2) + asinh(1));

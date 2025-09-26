@@ -387,7 +387,8 @@ while ~happy
     % Restart
     if ( ~happy )
         if ( restarts + 1 == maxRestarts )
-            warning('chebfun3f: max number of restarts reached')
+            warning('CHEBFUN:CHEBFUN3F:constructor:maxrestarts', ...
+                'chebfun3f: max number of restarts reached')
             return
         end
         

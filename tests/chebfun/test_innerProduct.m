@@ -51,9 +51,9 @@ opf = @(x) x;
 opg = @(x) exp(-x);
 f = chebfun(opf, dom, 'exps', [0 1]);
 g = chebfun(opg, dom);
-warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay'); lw = lastwarn;
 I = innerProduct(f, g);
-warning('on', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowDecay'); lastwarn(lw);
 IExact = 2*exp(-1);
 err = abs(I - IExact);
 pass(3) = err < 1e9*max(eps*get(f,'vscale'), ...

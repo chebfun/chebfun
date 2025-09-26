@@ -7,6 +7,7 @@ if ( nargin == 0 )
 end
 
 warnState = warning('off', 'CHEBFUN:CHEBFUN:chebpoly:deprecated');
+lw = lastwarn;
 
 rev = @(A) flipud(A).';
 
@@ -70,6 +71,6 @@ c_exact = [c_exact c_exact];
 err = c - rev(c_exact);
 pass(8) = norm(err(:), inf) < 1e2*vscale(f)*eps;
 
-warning(warnState);
+warning(warnState); lastwarn(lw);
 
 end

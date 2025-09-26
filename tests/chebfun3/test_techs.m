@@ -10,9 +10,11 @@ tol = 100*pref.cheb3Prefs.chebfun3eps;
 pref.tech = @chebtech1;
 ff = @(x,y,z) cos(x.*y.*z);
 dom = [-1, 1, -1, 1 -1 1];
+warnstate = warning('off', 'CHEBFUN:CHEBFUN3F:constructor:maxrestarts'); lw = lastwarn;
 f = chebfun3(ff, dom, pref);
 pass(1) = isa(f.cols.funs{1}.onefun, 'chebtech1');
 pass(2) = abs(feval(f, 0, 0, 0) - ff(0, 0, 0)) < tol;
+warning(lastwarn); lastwarn(lw);
 
 %%
 pref.tech = @chebtech2;

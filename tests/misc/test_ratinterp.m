@@ -91,9 +91,9 @@ pass(19) = abs(pol - 0.1) < 1e-10;
 
 % Check that ratinterp accepts a domain input: (#841)
 [p1,q1] = ratinterp([-1,1], @exp, 1, 1);
-warnState = warning('off', 'CHEBFUN:ratinterp:domainDeprecated');
+warnState = warning('off', 'CHEBFUN:ratinterp:domainDeprecated'); lw = lastwarn;
 [p2,q2] = ratinterp(domain(-1,1), @exp, 1, 1);
-warning(warnState);
+warning(warnState); lastwarn(lw);
 pass(20) = norm(p1-p2) == 0 && norm(q1-q2) == 0;
 
 %% Test the examples from the m-file:

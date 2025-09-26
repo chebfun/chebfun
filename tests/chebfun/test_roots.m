@@ -171,11 +171,12 @@ pass(18) = isempty(r);
 % Check that we don't miss roots for unresolved functions.  (See GitHub issue
 % #1146.)
 warnState = warning('off', 'CHEBFUN:CHEBFUN:constructor:funNotResolved');
+lw = lastwarn;
 p = pref;
 p.splitting = true;
 p.splitPrefs.splitMaxLength = 300;
 f = chebfun(@(x) sin(exp(2*(tanh(sin(10*x))))), [0 10], p);
 pass(19) = length(roots(f)) == 32;
-warning(warnState);
+warning(warnState); lastwarn(lw);
 
 end

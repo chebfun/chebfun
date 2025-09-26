@@ -99,18 +99,18 @@ f_op = @(x) sin(200*x);
 f = chebfun(f_op, 'resampling', 'on');
 pass(17) = ishappy(f);
 
-warnstate = warning('off','CHEBFUN:CHEBFUN:constructor:notResolved');
+warnstate = warning('off','CHEBFUN:CHEBFUN:constructor:notResolved'); lw = lastwarn;
 f = chebfun(f_op, 'maxdegree', 129, 'tech', @chebtech2);
 pass(18) = ~ishappy(f) && (length(f) == 129);
-warning(warnstate);
+warning(warnstate); lastwarn(lw);
 
 f = chebfun(f_op, 'splitting', 'on', 'splitdegree', 65);
 pass(19) = ishappy(f) && all(cellfun(@(fk) length(fk) <= 65, f.funs));
 
-warnstate = warning('off','CHEBFUN:CHEBFUN:constructor:funNotResolved');
+warnstate = warning('off','CHEBFUN:CHEBFUN:constructor:funNotResolved');  lw = lastwarn;
 f = chebfun(f_op, 'splitting', 'on', 'splitLength', 65, 'splitMaxLength', 200);
 pass(20) = ~ishappy(f) && (length(f) <= 65*4);
-warning(warnstate);
+warning(warnstate); lastwarn(lw);
 
 % Test construction with a mixture of preference object and keyword inputs.
 p = pref;
