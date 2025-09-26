@@ -76,20 +76,19 @@ jobs:
         with:
           command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
 
-#  # This job tracks the latest Matlab, which might be the same as above but this
-#  # one will automatically test against 2025b when it comes out.
-#  latest-matlab-chebtest:
-#     name: Latest Matlab chebtest
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Check out repository
-#         uses: actions/checkout@v5
-#       - name: Install MATLAB
-#         uses: matlab-actions/setup-matlab@v2
-#         with:
-#           release: latest
-#           products: Optimization_Toolbox
-#       - name: Run commands
-#         uses: matlab-actions/run-command@v2
-#         with:
-#           command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
+ # This job tracks the latest Matlab
+ latest-matlab-chebtest:
+    name: Latest Matlab chebtest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Install MATLAB
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: latest
+          products: Optimization_Toolbox
+      - name: Run commands
+        uses: matlab-actions/run-command@v2
+        with:
+          command: addpath('.'); results = chebtest; assert(all([results{:,3}] > 0))
