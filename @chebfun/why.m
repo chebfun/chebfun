@@ -15,7 +15,7 @@ if ( nargin == 1 )
     r = ceil(n*rand);
 end
 
-if ( verLessThan('matlab', '7.9') )
+if ( ~is_octave() && verLessThan('matlab', '7.9') )
     simpleText = true;
 else
     simpleText = false;

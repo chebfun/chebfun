@@ -76,13 +76,13 @@ g_op = @(x) sin(10*x);
 g = testclass.make(g_op, [], pref);
 try
     h = f + g; %#ok<NASGU>
-    if ( verLessThan('matlab', '9.1') )
+    if ( ~is_octave() && verLessThan('matlab', '9.1') )
         pass(18) = false;
     else
         pass(18) = true;
     end
 catch ME
-    if ( verLessThan('matlab', '9.1') )
+    if ( ~is_octave() && verLessThan('matlab', '9.1') )
         pass(18) = strcmp(ME.message, 'Matrix dimensions must agree.');
     else
         pass(18) = false;

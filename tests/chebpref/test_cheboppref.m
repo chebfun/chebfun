@@ -61,7 +61,7 @@ pass(10) = strcmp(pref.discretization, 'coeffs');
 end
 
 function out = isequalNaN(a, b)
-    if ( verLessThan('matlab', '7.14') )
+    if ( ~is_octave() && verLessThan('matlab', '7.14') )
         out = isequalwithequalnans(a, b);
     else
         out = isequaln(a, b);

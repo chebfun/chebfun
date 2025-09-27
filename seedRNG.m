@@ -12,7 +12,7 @@ function seedRNG(s)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( verLessThan('matlab', '7.12') )
+if ( ~is_octave() && verLessThan('matlab', '7.12') )
     % Before R2011a.
     rand('seed', s);
     randn('seed', s);

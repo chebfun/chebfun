@@ -28,7 +28,7 @@ for im = [0 1]
         for scale = 0
 
             % AIRY does not support the "scale" input prior to R2013a.
-            if ( verLessThan('matlab', '8.1') )
+            if ( ~is_octave() && verLessThan('matlab', '8.1') )
                 F = @(x) airy(K, (1+im*1i)*x);
             else
                 F = @(x) airy(K, (1+im*1i)*x, scale);
