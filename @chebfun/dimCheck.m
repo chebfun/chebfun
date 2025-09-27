@@ -1,7 +1,7 @@
 function out = dimCheck(f, g, ~)
 %DIMCHECK   Check dimension compatibility of two CHEBFUN objects.
-%   The behaviour depends on whether "broadcasting" is suppported.
-%   Without broacasting (e.g., MATLAB <= 2016a) DIMCHECK(F, G) returns:
+%   The behaviour depends on whether "broadcasting" is supported.
+%   Without broadcasting (e.g., MATLAB <= 2016a) DIMCHECK(F, G) returns:
 %       1    if numColumns(F) == numColumns(G)
 %     error  otherwise.
 %
