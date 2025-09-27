@@ -37,7 +37,7 @@ plotOpts = {};
 
 % For plotting, it's useful to know whether we're running in old or new
 % Matlab graphics mode
-if ( ~verLessThan('matlab', '8.4') )
+if ( is_octave() || ~verLessThan('matlab', '8.4') )
     newMatlabVersion = true;
 else
     newMatlabVersion = false;
