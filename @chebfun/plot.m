@@ -302,8 +302,16 @@ end
 
 %% Plotting starts here:
 
+% For plotting, it's useful to know whether we're running in old or new
+% Matlab graphics mode
+if ( is_octave() || ~verLessThan('matlab', '8.4') )
+    newGraphicsMode = true;
+else
+    newGraphicsMode = false;
+end
+
 % Acquire initial color cycle if running R2014b+.
-if ( ~verLessThan('matlab', '8.4') )
+if ( newGraphicsMode )
     if ( ~holdState )
         set(gca, 'ColorOrderIndex', 1);
     end
@@ -318,7 +326,7 @@ set(h1, 'Marker', 'none', lineStyle{:})
 hold on
 
 % Get color cycle prior to point plot if running R2014b.
-if ( ~verLessThan('matlab', '8.4') )
+if ( newGraphicsMode )
     newColorOrder = get(gca, 'ColorOrderIndex');
     set(gca, 'ColorOrderIndex', originalColorOrder)
 end
@@ -333,7 +341,7 @@ if ( intervalIsSet )
 end
 
 % Reset color cycle prior to jump plot if running R2014b.
-if ( ~verLessThan('matlab', '8.4') )
+if ( newGraphicsMode )
     set(gca, 'ColorOrderIndex', originalColorOrder);
 end
 
@@ -366,7 +374,7 @@ if ( ~isempty(deltaStyle) )
 end    
 
 % Reset colors prior to legend data plot if running R2014b.
-if ( ~verLessThan('matlab', '8.4') )
+if ( newGraphicsMode )
     set(gca, 'ColorOrderIndex', originalColorOrder);
 end
 
@@ -387,7 +395,7 @@ if ( ~isempty(lineStyle) || ~isempty(pointStyle) )
 end
 
 % Reset colors prior to legend data plot if running R2014b.
-if ( ~verLessThan('matlab', '8.4') )
+if ( newGraphicsMode )
     set(gca, 'ColorOrderIndex', newColorOrder);
 end
 
@@ -445,15 +453,21 @@ function h = plotDeltas(deltaData)
 %PLOTDELTAS   Plots delta functions.
     h = [];
 
+    if ( is_octave() || ~verLessThan('matlab', '8.4') )
+        newGraphicsMode = true;
+    else
+        newGraphicsMode = false;
+    end
+
     % Get and save the current ColorOrder if running on R2014a or earlier.
-    if ( verLessThan('matlab', '8.4') )
+    if ( ~newGraphicsMode )
         originalColorOrder = get(gca, 'ColorOrder');
         colorOrder = circshift(originalColorOrder, 1);
     end
 
     for k = 1:1:numel(deltaData)
         % Set color for the next delta function plot.
-        if ( verLessThan('matlab', '8.4') )
+        if ( ~newGraphicsMode )
             % Manually manipulate the ColorOrder for R2014a or earlier.
             colorOrder = circshift(colorOrder, -1);
             set(gca, 'ColorOrder', colorOrder);
@@ -466,7 +480,7 @@ function h = plotDeltas(deltaData)
     end
 
     % Restore the ColorOrder if running on R2014a or earlier.
-    if ( verLessThan('matlab', '8.4') )
+    if ( ~newGraphicsMode )
         set(gca, 'ColorOrder', originalColorOrder);
     end
 end

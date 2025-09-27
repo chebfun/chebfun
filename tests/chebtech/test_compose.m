@@ -113,13 +113,13 @@ for n = 1:4
         f = testclass.make(@(x) [x x.^2]);
         g = testclass.make(@(x) sin(x));
         compose(f, @plus, g);
-        if ( verLessThan('matlab', '9.1') )
+        if ( ~is_octave() && verLessThan('matlab', '9.1') )
             pass(n, 11) = false;
         else
             pass(n, 11) = true;
         end
     catch ME
-        if ( verLessThan('matlab', '9.1') )
+        if ( ~is_octave() && verLessThan('matlab', '9.1') )
             pass(n, 11) = strcmp(ME.message, 'Matrix dimensions must agree.');
         else
             pass(n, 11) = false;

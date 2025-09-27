@@ -7,7 +7,12 @@ function disp(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If the 'format loose' setting is enabled, we print additional linebreaks:
-loose = strcmp(get(0, 'FormatSpacing'), 'loose');
+if is_octave()
+    [fmt, spacing] = format();
+    loose = strcmp(spacing, 'loose');
+else
+    loose = strcmp(get(0, 'FormatSpacing'), 'loose');
+end
 
 s = '';
 

@@ -73,19 +73,19 @@ for n = 1:2
     g = testclass.make(g_op, [], pref);
     pass(n, 16:17) = test_add_function_to_function(f, f_op, g, g_op, x);
     
-    % This should fail with a dimension mismatch error.
+    % Used to fail with a dimension mismatch error before broadcasting was added
     g_op = @(x) sin(x);
     g = testclass.make(g_op, [], pref);
-    try 
+    try
         h = f + g; %#ok<NASGU>
         pass(n, 18) = false;
-        if ( verLessThan('matlab', '9.1') )
+        if ( ~is_octave() && verLessThan('matlab', '9.1') )
             pass(n, 18) = false;
         else
             pass(n, 18) = true;
         end
     catch ME
-        if ( verLessThan('matlab', '9.1') )
+        if ( ~is_octave() && verLessThan('matlab', '9.1') )
             pass(n, 18) = strcmp(ME.identifier, 'MATLAB:dimagree');
         else
             pass(n, 18) = false;

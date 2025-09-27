@@ -25,7 +25,7 @@ end
 
 % NEXTPOW2 is not vectorized in versions of MATLAB prior to R2010a.  Vectorize
 % it manually if we're running on older platforms.
-if ( verLessThan('matlab', '7.10') )
+if ( ~is_octave() && verLessThan('matlab', '7.10') )
     mynextpow2 = @nextpow2Vectorized;
 else
     mynextpow2 = @nextpow2;
