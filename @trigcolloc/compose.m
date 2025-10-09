@@ -1,10 +1,10 @@
 function E = compose(disc, y)
-%FEVAL   Composition functional for CHEBCOLLOC.
-%   COMPOSE(DISC, Y) returns an operator that composes the Chebyshev
+%COMPOSE   COMPOSITION functional for TRIGCOLLOC.
+%   COMPOSE(DISC, Y) returns an operator that composes the trigonometric
 %   polynomial represented by a COLLOC discretization with the given
 %   function Y at the appropriate discretisation points.
 %
-% See also CHEBCOLLOC.FEVAL
+% See also TRIGCOLLOC.FEVAL
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -12,7 +12,7 @@ function E = compose(disc, y)
 n = disc.dimension;
 
 % Find the collocation points and create an empty functional.
-[x, ~, v] = functionPoints(disc);
+x = functionPoints(disc);
 offset = cumsum([0 ; n(:)]);
 N = offset(end);
 E = zeros(1, N);
@@ -26,9 +26,15 @@ intnum = max(intnum, 1); intnum = min(intnum,numel(n));
 for i = unique(intnum)'
     j = i == intnum;
     active = offset(i) + (1:n(i));
-    E(j,active) = barymat(y(j), x(active), v(active));
+    E(j,active) = barymattrig(y(j), x(active));
 end
 
 end
 
+function P = barymattrig(z, t)
+    P = cot((z-t.')/2);
+    P(:,2:2:end) = -P(:,2:2:end);
+    P = P./sum(P,2);
+    P(isnan(P)) = 1;
+end
 

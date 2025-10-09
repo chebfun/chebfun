@@ -63,8 +63,11 @@ dom = N.domain;
 % Construct the zero function on N.DOMAIN to linearize around if no U was
 % passed.
 if ( nargin < 2 || isempty(u) )
-    % Initialise a zero CHEBFUN:
-    zeroFun = chebfun(0, dom);
+    if ( strcmp(N.bc, 'periodic') && numel(dom) == 2 )
+        zeroFun = chebfun(0, dom, 'periodic'); 
+    else
+        zeroFun = chebfun(0, dom); 
+    end
     % Find out how many unknown variables N acts on.
     nVars = numVars(N);
     % Wrap in a cell and call repmat() to get correct dimensions
