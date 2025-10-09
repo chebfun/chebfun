@@ -100,6 +100,20 @@ end
 function f = diffContinuousDim(f, n)
 % Differentiate along continuous dimension (i.e., df/dx).
 
+% Support for the case when n is a vector:
+if ( numel(n) > 1 )
+    if ( size(f,2) > 1 )
+        error('CHEBFUN:CHEBFUN:diff:n_cts', ...
+            'In diff(F,N), N may only be a vector if F is scalar valued.')
+    end
+    tmp = cell(1,numel(n));
+    for k = 1:numel(n)
+        tmp{k} = diffContinuousDim(f, n(k));
+    end
+    f = [tmp{:}];
+    return
+end
+
 % Grab some fields from f:
 funs = f.funs;
 numFuns = numel(funs);
