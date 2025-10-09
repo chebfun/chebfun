@@ -108,13 +108,12 @@ isDone = false(1, numInt);
 isFun = isFunVariable(L);
 
 for dim = [dimVals inf]
-
     % [TODO]: It's weird that the current value of dim is the _next_ disc size.
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
     if ( isFactored(disc) )
         A = [];
-        P = speye(disc.dimension*sum(isFun)+sum(~isFun));
+        P = speye(sum(disc.dimension)*sum(isFun)+sum(~isFun));
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
