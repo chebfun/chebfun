@@ -176,7 +176,7 @@ if ( ~isempty(varargin) )
         if strcmp(varargin{1}, 'zebra')
             h = surf(f);
             caxis(norm(caxis,inf)*[-1 1])
-            colormap([0 0 0; 1 1 1])
+            colormap(gca, [0 0 0; 1 1 1])
        
             % Add unit circle to zebra plot
             holdState = ishold; 

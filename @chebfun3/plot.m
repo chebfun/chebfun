@@ -40,7 +40,7 @@ if ( nargin <= 2 )
         h = slice(xx, yy, zz, angle(-v), xSlices, ySlices, zSlices);
         set(h, 'EdgeColor','none')
         caxis([-pi pi])
-        colormap('hsv')
+        colormap(gca, 'hsv')
         axis('equal') 
     end
     return

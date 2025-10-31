@@ -116,7 +116,7 @@ if ( ~isempty(varargin) )
             h = surf(f);
             view(0,90)
             caxis(norm(caxis,inf)*[-1 1])
-            colormap([0 0 0; 1 1 1])
+            colormap(gca, [0 0 0; 1 1 1])
         else
             h = surf(f, varargin{:});
         end
@@ -124,8 +124,6 @@ if ( ~isempty(varargin) )
 else
     if ( isreal( f ) )
         h = surf( f );
-        colormap default
-        
     else
         %% Phase Portrait plot
         % The following is a slightly modified version of Wegert's code from
@@ -140,7 +138,7 @@ else
         f = feval(f, xx, yy);
         h = surf( real(zz), imag(zz), 0*zz, angle(-f) );
         set(h, 'EdgeColor', 'none');
-        caxis([-pi pi]), colormap hsv(600)
+        caxis([-pi pi]), colormap(gca, hsv(600))
         view(0, 90), axis equal, axis off  
         
     end
