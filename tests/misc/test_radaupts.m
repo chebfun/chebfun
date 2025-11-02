@@ -28,4 +28,13 @@ pass(8) = norm(err, inf) < tol;
 v2 = baryWeights(x);
 pass(9) = norm(v-v2,inf) < tol | norm(v+v2,inf) < tol;
 
+% Test domain scaling
+[x, w] = radaupts(n, [0 1]);
+pass(10) = x(1) == 0;
+pass(11) = abs(w*x - 1/2) < tol && abs(w*x.^2 - 1/3) < tol;
+
+[x, w] = radaupts(n, 1, 2, [0 1]);
+pass(12) = x(1) == 0;
+pass(13) = abs(w*x - 2/5) < tol && abs(w*x.^2 - 4/15) < tol;
+
 end
