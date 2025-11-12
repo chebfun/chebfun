@@ -144,5 +144,11 @@ gam = chebfun('gamma(x)',[-4 4],'blowup','on','splitting','on');
 mm = minandmax(1./gam);
 pass(14) = norm(mm - [-1.125953228398760;4.079508980001102]) < 1e4*eps;
 
+%% Test local extrema of complex-valued function
+f = chebfun('sin(x)+1i*exp(-x)',[0 2*pi]);
+[y,x] = minandmax(f, 'local');
+[ya,xa] = minandmax(abs(f), 'local');
+pass(15) = (numel(x) == 6) && ( norm(x-xa) < 100*eps*hscale(f)) && ...
+    (norm(f(x)-y) < 100*eps*vscale(f));
 
 end

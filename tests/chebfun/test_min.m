@@ -183,4 +183,11 @@ errX = x - xExact;
 pass(21) = ( norm(errX, inf) < eps*vscale(f) ) && ...
     ( y == yExact );
 
+%% Test local maxima of complex-values functions:
+f = chebfun('sin(x)+1i*exp(-x)',[0 2*pi]);
+[y,x] = min(f, 'local');
+[~,xa] = min(abs(f), 'local');
+pass(22) = (numel(x) == 3) && ( norm(x-xa) < 100*eps*hscale(f)) && ...
+    (norm(f(x)-y) < 100*eps*vscale(f));
+
 end
