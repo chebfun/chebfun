@@ -32,7 +32,6 @@ dom = domain.merge(dom, L.domain);
 
 diffOrd = L.diffOrder;          % order of each block
 diffOrd = max(diffOrd, [], 1);  % max order per variable
-
 cont = L.continuity;            % append, don't overwrite
 
 if ( ( nargin < 2 ) || ~makePeriodic )
@@ -65,23 +64,24 @@ if ( ( max(diffOrd) > 0 ) && ( ~isempty(left) ) )
             Z = [Z, z];
         end
     end
-    
+
+    B = Z; j = 1;
     for var = 1:length(diffOrd)
         % Skip if this is a scalar variable; it plays no role in continuity.
         if ( isnan(diffOrd(var)) || diffOrd(var) == 0 )
             continue
         end
-        
-        B = Z;
         for m = 0:diffOrd(var)-1    % up to this variable's diff. order
             for k = 1:length(left)  % for each point
-                B(var) = C{m+1, k}; % right/left difference in mth deriv.
-                cont = cont.append(B, 0);
+                B(j,:) = Z;
+                B(j,var) = C{m+1, k}; % right/left difference in mth deriv.
+                j = j+1;
             end
         end
     end
-end
+    cont = cont.append(B, zeros(size(B,1),1));
 
+end
 L.continuity = cont;
 
 end
@@ -109,3 +109,4 @@ for m = 1:maxorder
 end 
 
 end
+

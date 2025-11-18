@@ -7,6 +7,11 @@ function Z = zeros(disc)
 % See http://www.chebfun.org/ for Chebfun information.
 
 n = disc.dimension;
-Z = zeros(sum(n));
+pref = cheboppref;
+if ( pref.sparse )
+    Z = sparse(sum(n),sum(n));
+else
+    Z = zeros(sum(n));
+end
 
 end
