@@ -27,7 +27,17 @@ end
 % Rescaling factor, (b - a)/2
 rescaleFactor = 0.5*diff(f.domain);
 
-% Assign the output to be the sum of the onefun of the input, rescaled.
-out = sum(f.onefun)*rescaleFactor;
+if ( islinear(f.mapping) )
+    % Assign the output to be the sum of the onefun of the input, rescaled.
+    out = sum(f.onefun)*rescaleFactor;
+else
+    % TODO: Comment what is going on (change of variables).
+    m = f.mapping;
+%     mp = diff(bndfun(m.For));
+    mp = bndfun(m.Der);
+    f.mapping = mapping.linear([-1,1]);
+    f.domain = [-1,1];
+    out = sum(f.*mp);
+end
 
 end

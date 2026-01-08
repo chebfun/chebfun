@@ -25,9 +25,18 @@ end
 
 if ( dim == 1 )
     
-    % Integrate once to see if a cell is returned:
-    g = cumsum(f.onefun);
-
+    if ( islinear(f.mapping) )
+        % Integrate once to see if a cell is returned:
+        g = cumsum(f.onefun);
+    else
+        % TODO: Comment what is going on (change of variables).
+        m = f.mapping;
+%         mp = diff(bndfun(m.For));
+        mp = bndfun(m.Der);
+        f.mapping = mapping.linear([-1,1]);
+        g = cumsum(f.*mp);
+        g.mapping = m;
+    end
     
     if ( iscell(g) )
         
