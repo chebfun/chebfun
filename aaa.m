@@ -1,4 +1,4 @@
-function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
+function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, varargin)
 %AAA   AAA and AAA-Lawson (near-minimax) real or complex rational approximation.
 %   R = AAA(F, Z) computes the AAA rational approximant R (function handle) to
 %   data F on the set of sample points Z.  F may be given by its values at Z,
@@ -39,6 +39,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %       step.  DAMPRATIO = 1 is standard; DAMPRATIO < 1 may be more robust.
 %   - 'sign', 'on' or 1: turns on modification good for approximating sign functions
 %   - 'deriv_deg', k: maximal degree of returned derivatives (default k = 0)
+%   - 'noise_chop', 0: turns off noise chopping of the AAA error curve 
 %
 %   If 'degree' is specified and 'lawson' is not, AAA attempts to find a minimax
 %   approximant of degree N by AAA-Lawson iteration.  This will generally be
@@ -84,7 +85,16 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 %   Z = linspace(-1,1,100); F = Z.^3;
 %   r = aaa(F,Z,'deriv_deg', 1)
 %   r{2}(1)  
-%
+%    
+%   X = linspace(-1,1,500);
+%   F = sin(10*X) + 1e-8*(randn(1,500));
+%   [~,~,~,~,~,~,~,errvec] = aaa(F,X);
+%   [~,~,~,~,~,~,~,errvec_full] = aaa(F,X,'noise_chop',0); 
+%   subplot(1,2,1)
+%   semilogy(0:length(errvec_full)-1, errvec_full)
+%   subplot(1,2,2)
+%   semilogy(0:length(errvec)-1, errvec)
+% 
 %   References on AAA and AAA-Lawson, respectively:
 %
 %   [1] Y. Nakatsukasa, O. Sete, and L. N. Trefethen, "The AAA algorithm
@@ -101,14 +111,14 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt] = aaa(F, varargin)
 
 % Parse inputs:
 [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, needZ, mmax_flag, ...
-    nlawson, dampratio, degree_flag, degree, sign_flag, deriv_deg] ...
+    nlawson, dampratio, degree_flag, degree, sign_flag, deriv_deg, noise_flag] ...
     = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
-    [r, pol, res, zer, zj, fj, wj, errvec] = ...
+    [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = ...
         aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, ...
-            nlawson, dampratio, degree_flag, degree, sign_flag);
+            nlawson, dampratio, degree_flag, degree, sign_flag, noise_flag);
     return
 end
 
@@ -123,6 +133,9 @@ abstol = tol*norm(F, inf);                 % Absolute tolerance
 J = (1:M)';
 zj = []; fj = []; C = []; A = [];
 errvec = [];
+svals = [];           % Track minimal Lowener singular value for noise chopping
+wj_hist = zeros(mmax, mmax);         % Track weight vectors
+noise_degree = NaN;                  % Degree at which noise chopping occurs, if it does 
 R = mean(F)*ones(size(J));
 doscale = 0;                           % don't do diagonal scale until needed
 
@@ -137,47 +150,48 @@ for m = 1:mmax
     A = [A, (F-fj(end)).*C(:,end)];        % Update Loewner matrix
 
     % Compute weights:
-    if ( length(J) >= m )                  % The usual tall-skinny case                
-        if doscale == 0 
-        [~, S, V] = svd(A(J,:), 0);        % Reduced SVD; classically wj = V(:,end);
-        s = diag(S);
-        if s(1)/s(end) > 1/(3*eps)
-            doscale = 1; 
-        else                               % The usual, not too ill-cond case                    
-        if (sign_flag == 0)
-            mm = find( s == min(s) );          % Treat case of multiple min sing val
-            nm = length(mm);
-            wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
-        else
-            wj = V(:,end);
-            if min(s) > 0
-                wj = V*(1./s.^2);          % the 'sign' improvement
-                wj = wj/norm(wj);          % (see Trefethen memo Rat342, July 2024)
+    if ( length(J) >= m )                  % The usual tall-skinny case
+        if ( doscale == 0 )
+            [~, S, V] = svd(A(J,:), 0);    % Reduced SVD; classically wj = V(:,end);
+            s = diag(S);
+            if s(1)/s(end) > 1/(3*eps)
+                doscale = 1;
+            else                           % The usual, not too ill-cond case
+                if (sign_flag == 0)
+                    mm = find( s == min(s) );          % Treat case of multiple min sing val
+                    nm = length(mm);
+                    wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
+                else
+                    wj = V(:,end);
+                    if min(s) > 0
+                        wj = V*(1./s.^2);  % the 'sign' improvement
+                        wj = wj/norm(wj);  % (see Trefethen memo Rat342, July 2024)
+                    end
+                end
             end
         end
-        end
-        end
 
-        if doscale == 1 % ill-cond; diag scaling to improve conditioning (due to Fei Xue)            
-            colvecA = vecnorm(A(J,:))';           
+        if ( doscale == 1 ) % ill-cond; diag scaling to improve conditioning (due to Fei Xue)
+            colvecA = vecnorm(A(J,:))';
             [~, S, V] = svd(A(J,:)./colvecA.', 0);
-            s = diag(S);           
+            s = diag(S);
 
-        if (sign_flag == 0)
-            mm = find( s == min(s) );          % Treat case of multiple min sing val
-            nm = length(mm);
-            wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
-        else
-            wj = V(:,end);
-            if min(s) > 0
-                wj = V*(1./s.^2);          % the 'sign' improvement (Wilber-Trefethen 25)
-                wj = wj/norm(wj);          % (see Trefethen memo Rat342, July 2024)
+            if (sign_flag == 0)
+                mm = find( s == min(s) );          % Treat case of multiple min sing val
+                nm = length(mm);
+                wj = V(:,mm)*ones(nm,1)/sqrt(nm);  % Aim for non-sparse wt vector
+            else
+                wj = V(:,end);
+                if min(s) > 0
+                    wj = V*(1./s.^2);      % the 'sign' improvement (Wilber-Trefethen 25)
+                    wj = wj/norm(wj);      % (see Trefethen memo Rat342, July 2024)
+                end
             end
-        end
-            wj = wj./colvecA;         % transform back diag scaling         % transform back diag scaling
+            wj = wj./colvecA;              % Transform back from diagonal scaling.
             wj = wj/norm(wj);
         end
 
+        svals = [svals; min(s)];
     elseif ( length(J) >= 1 )
         V = null(A(J,:));                  % Fewer rows than columns
         nm = size(V,2);                    
@@ -185,7 +199,8 @@ for m = 1:mmax
     else
         wj = ones(m,1)/sqrt(m);            % No rows at all (needed for Octave)
     end
-    
+    wj_hist(1:m, m) = wj;                  % Update weight history for noise chopping
+
     % Compute rational approximant:
     i0 = find(wj~=0);                      % Omit columns with wj = 0
     N = C(:,i0)*(wj(i0).*fj(i0));          % Numerator
@@ -200,8 +215,25 @@ for m = 1:mmax
     if ( maxerr <= abstol )
         break
     end
+
+    % Noise chop check
+    if (noise_flag && (length(errvec) == length(svals)) )
+        degree = noiseChop(errvec, svals);
+        if ( degree < length(errvec) - 1 )
+            noise_degree = degree; 
+            break 
+        end
+    end
 end
 maxerrAAA = maxerr;                        % Error at end of AAA 
+
+% Noise chopping 
+if ~isnan(noise_degree)
+    k = noise_degree + 1;
+    zj = zj(1:k); fj = fj(1:k); errvec = errvec(1:k);
+    wj = wj_hist(1:k, k);
+    maxerrAAA = errvec(k);
+end
 
 % We now enter Lawson iteration: barycentric IRLS = iteratively reweighted
 % least-squares if 'lawson' is specified with NLAWSON > 0 or 'mmax' is
@@ -309,7 +341,7 @@ end % of AAA()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   PARSEINPUTS   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [F, Z, M, dom, tol, mmax, cleanup_flag, cleanup_tol, ...
     needZ, mmax_flag, nlawson, dampratio, degree_flag, degree, sign_flag, ... 
-    deriv_deg] = parseInputs(F, varargin)
+    deriv_deg, noise_flag] = parseInputs(F, varargin)
 
 % Check if F is empty:
 if ( isempty(F) )
@@ -339,6 +371,7 @@ cleanup_tol = 1e-13;           % Cleanup tolerance
 nlawson = Inf;                 % Number of Lawson steps (Inf means adaptive)
 dampratio = 1;                 % Lawson damping ratio (1 means normal)
 deriv_deg = 0;                 % desired degree of the derivatives
+noise_flag = 1;                % Stop AAA when noiseChope identifies a proper cutoff 
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -350,6 +383,7 @@ mmax_flag = 0;                 % Checks if mmax manually specified
 degree_flag = 0;               % Checks if degree specified
 cleanup_set = 0;               % Checks if cleanup_tol manually specified
 sign_flag = 0;                 % Classic AAA without improvement for sign functions
+noise_flag = 1;                % Noise chopping 
 while ( ~isempty(varargin) )   % Check if parameters have been provided
     if ( strncmpi(varargin{1}, 'tol', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
@@ -431,7 +465,12 @@ while ( ~isempty(varargin) )   % Check if parameters have been provided
             deriv_deg = varargin{2};
         end
         varargin([1, 2]) = [];
-        
+    elseif  ( strncmpi(varargin{1}, 'noise_chop', 10) ) 
+        if ( (isnumeric(varargin{2}) || islogical(varargin{2})) && ...
+                isscalar(varargin{2}) )
+            noise_flag = logical(varargin{2});
+        end
+        varargin([1, 2]) = [];
     else
         error('AAA:UnknownArg', 'Argument unknown.')
     end
@@ -644,9 +683,10 @@ c.zj = z; c.fj = f; c.wj = w;
 end  % End of CLEANUP2.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   AAA_AUTOZ   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [r, pol, res, zer, zj, fj, wj, errvec] = ...
+function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = ...
     aaa_autoZ(F, dom, tol, mmax, cleanup_flag, cleanup_tol, mmax_flag, ...
-               nlawson, dampratio, degree_flag, degree, sign_flag)
+               nlawson, dampratio, degree_flag, degree, sign_flag, ...
+               noise_flag)
 % Automated choice of sample set
 
 % Flag if function has been resolved:
@@ -658,14 +698,15 @@ for n = 5:14
     % Next line enables us to do pretty well near poles
     Z = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), 1 + 2^n).';
     if degree_flag
-       [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
+       [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, Z, 'tol', tol, ...
           'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, ...
           'lawson', nlawson, 'sign', sign_flag, 'damping', dampratio, ...
-          'degree', degree);
+          'degree', degree, 'noise_chop', noise_flag);
     else
-       [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
+       [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, Z, 'tol', tol, ...
           'mmax', mmax, 'cleanup', cleanup_flag, 'cleanuptol', cleanup_tol, ...
-          'lawson', nlawson, 'sign', sign_flag, 'damping', dampratio);
+          'lawson', nlawson, 'sign', sign_flag, 'damping', dampratio, ...
+          'noise_chop', noise_flag);
     end
     % Test if rational approximant is accurate:
     abstol = tol * norm(F(Z), inf);
@@ -809,3 +850,90 @@ end
 dRx = reshape(dRx,size(x));
 
 end % End of DIFFBARY.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   NOISECHOP   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function degree = noiseChop(errvec, svals)
+%NOISECHOP  Chop an AAA error curve once the singular values plateau.
+%   DEGREE = NOISECHOP(ERRVEC, SVALS) returns a suggested degree at which to
+%   truncate the AAA error history ERRVEC.  ERRVEC is assumed to contain the
+%   successive approximation errors for degrees 0,1,...,length(ERRVEC)-1, and
+%   SVALS is the corresponding sequence of singular values returned
+%   by AAA.
+%
+%   Input:
+%
+%   ERRVEC       A nonempty row or column vector, typically the AAA errors
+%                returned by AAA_ERR.
+%
+%   SVALS        A row or column vector of the same length as ERRVEC
+%                containing the singular-value data used to detect a
+%                plateau.  Only ratios of nearby entries are used, so the
+%                overall scaling of SVALS is irrelevant.
+%
+%   Output:
+%
+%   DEGREE       A nonnegative integer in the range
+%                0,...,length(ERRVEC)-1 giving the suggested cutoff degree.
+%                If ERRVEC is too short for a reliable decision, or if no
+%                plateau is detected, DEGREE defaults to the last available
+%                degree length(ERRVEC)-1.
+%
+%   NOISECHOP first forms a normalized lower envelope of ABS(ERRVEC).  It
+%   then scans SVALS for a plateau using a forward look-ahead window.  Once a
+%   plateau is detected, it selects DEGREE by minimizing a biased logarithmic
+%   score built from the lower envelope.  The rule is adapted from the
+%   plateau-detection ideas in Chebfun's STANDARDCHOP.
+
+% Heuristic parameters for plateau detection and left-biased minimization.
+r = 0.7;
+minLen = 30;
+lookAhead = @(k) round(1.1*k + 20);
+
+% Default to "keep everything" unless a reliable chop is found.
+plateauPoint = 0;
+n = length(errvec);
+degree = n - 1;
+if ( n < minLen )
+    return
+end
+if ( errvec(1) == 0 )
+    degree = 0;
+    return
+end
+
+% Step 1: Form a monotonically nonincreasing lower envelope of ERRVEC and
+% normalize it so that the first entry is 1.
+envelope = cummin(abs(errvec));
+envelope = envelope/envelope(1);
+
+% Step 2: Scan SVALS for the first index J that is followed by a plateau.
+% The look-ahead point J2 determines how far ahead to test for flattening.
+for j = 2:n
+    j2 = lookAhead(j);
+    if ( j2 > n )
+        % There is no room left to certify a plateau.
+        return
+    end
+
+    e1 = svals(j);
+    e2 = svals(j2);
+    plateau = (e1 == 0) | (e2/e1 > r);
+    if ( plateau )
+        plateauPoint = j;
+        break
+    end
+end
+
+% Step 3: Choose DEGREE by minimizing a biased log-envelope score.  The
+% added linear term nudges the choice toward the left end of the plateau.
+if ( envelope(plateauPoint) == 0 )
+    degree = plateauPoint - 1;
+else
+    cc = log10(envelope(1:j2));
+    cc = cc(:);
+    cc = cc + linspace(0, 1 - .5*log10(envelope(j2)), j2)';
+    [~, d] = min(cc);
+    degree = d - 1;
+end
+
+end % End of NOISECHOP.
