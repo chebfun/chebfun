@@ -6,11 +6,11 @@
 
 name: Matlab tests
 
-# Trigger on pushes to main and commits to pull requests.
+# Trigger on pushes to master and commits to pull requests.
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
