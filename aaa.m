@@ -94,6 +94,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, varargin)
 %   semilogy(0:length(errvec_full)-1, errvec_full)
 %   subplot(1,2,2)
 %   semilogy(0:length(errvec)-1, errvec)
+%   xlim([0, length(errvec_full)-1])
 % 
 %   References on AAA and AAA-Lawson, respectively:
 %
