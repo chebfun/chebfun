@@ -139,8 +139,10 @@ r = aaa(F,X,'degree',12,'lawson',100,'damping',0.85,'sign',1);
 err = norm(F-r(X),inf); pass(31) = abs(err-.000035) < .0001;
 
 f = @(x) max(x,0);
-r = aaa(f,'degree',8,'damping',.5,'lawson',200);
 xx = linspace(-1,1,300);
+r = aaa(f(xx),xx,'degree',8,'damping',.5,'lawson',200);
+% r = aaa(f,'degree',8,'damping',.5,'lawson',200);
+% xx = linspace(-1,1,300);
 err = norm(f(xx)-r(xx),inf); pass(32) = abs(err-.0006) < .001;
 
 Z = linspace(-1,1,100); F = exp(Z);
@@ -187,6 +189,112 @@ r = aaa(F, Z); % this test checks diag scaling is working
 ZZ = logspace(-15,0,500)';
 err = norm(r(ZZ)-sqrt(ZZ),inf);
 pass(42) = err < 1e-8;
+
+%%% Noise chop tests
+
+% Test basic behavior: chopping occurs and consistent outputs 
+state = rng;
+rng(0)
+X = linspace(-1,1,500);
+F = sin(10*X) + 1e-8*randn(1,500);
+[~,~,~,~,zj0,fj0,~,errvec_full,~,svals0] = aaa(F, X);
+[~,pol,res,zer,zj,fj,wj,errvec_chop,~,svals] = ...
+    aaa(F, X, 'noise_chop', 1);
+pass(43) = isvector(errvec_chop) && isvector(errvec_full);
+pass(44) = length(errvec_full) == length(svals0);
+pass(45) = length(errvec_chop) < length(errvec_full);
+n = length(errvec_chop);
+pass(46) = all(cellfun(@length, ...
+    {zj, fj, wj, svals}) == n);
+m = length(pol);
+[~,poln,resn,zern,zjn,fjn,wjn,errvecn,~,svalsn] = aaa(F, X, 'mmax', n);
+pass(47) = (m == length(res)) && (length(zer) <= n-1) && ...
+    isequal(zj0(1:n), zj) && isequal(fj0(1:n), fj) && ...
+    isequal(errvec_full(1:n), errvec_chop) && ...
+    isequal(svals0(1:n), svals) && isequal(zjn, zj) && ...
+    isequal(fjn, fj) && isequal(wjn, wj) && ...
+    isequal(errvecn, errvec_chop) && isequal(svalsn, svals) && ...
+    isequal(poln, pol) && isequal(resn, res) && isequal(zern, zer);
+[~,~,~,~,~,~,~,errvec_off] = aaa(F, X, 'noise_chop', 0);
+pass(48) = isequal(errvec_full, errvec_off);
+
+% Test that noise chop does not affect clean data
+Fclean = sin(10*X);
+[~,~,~,~,~,~,~,errvec_clean] = aaa(Fclean, X);
+[~,~,~,~,~,~,~,errvec_clean_full] = aaa(Fclean, X, 'noise_chop', 0);
+pass(49) = isequal(errvec_clean, errvec_clean_full);
+
+% Test logical values for options 
+[~,~,~,~,~,~,~,errvec_true] = aaa(Fclean, X, 'noise_chop', true);
+[~,~,~,~,~,~,~,errvec_false] = aaa(Fclean, X, 'noise_chop', false);
+[~,~,~,~,~,~,~,errvec_zero] = aaa(Fclean, X, 'noise_chop', 0);
+[~,~,~,~,~,~,~,errvec_one] = aaa(Fclean, X, 'noise_chop', 1);
+pass(50) = isequal(errvec_true, errvec_one);
+pass(51) = isequal(errvec_false, errvec_zero);
+pass(52) = isequal(errvec_false, errvec_clean);
+
+% Test on short data with noise chop on and off
+rng(0)
+Fshort = sin(10*X) + 1e-8*randn(1,500);
+[~,~,~,~,~,~,~,errvec_short] = aaa(Fshort, X, 'mmax', 20);
+rng(0)
+Fshort = sin(10*X) + 1e-8*randn(1,500);
+[~,~,~,~,~,~,~,errvec_short_full] = aaa(Fshort, X, 'mmax', 20, ...
+    'noise_chop', 0);
+pass(53) = isequal(errvec_short, errvec_short_full);
+
+Xlawson = linspace(-1,1,200);
+Flawson = max(Xlawson,0);
+[r0,~,~,~,zj0,~,~,errvec0] = aaa(Flawson, Xlawson, 'degree', 4, ...
+    'lawson', 100, 'damping', 0.2);
+[r1,~,~,~,zj1,~,~,errvec1] = aaa(Flawson, Xlawson, 'degree', 4, ...
+    'lawson', 100, 'damping', 0.2, 'noise_chop', 1);
+pass(54) = isequal(errvec0, errvec1) && length(zj0) == length(zj1) && ...
+    norm(r0(Xlawson)-r1(Xlawson), inf) == 0;
+
+[r0,~,~,~,zj0,~,~,errvec0] = aaa(Flawson, Xlawson, 'degree', 4, ...
+    'lawson', 100, 'damping', 0.5, 'sign', 1);
+[r1,~,~,~,zj1,~,~,errvec1] = aaa(Flawson, Xlawson, 'degree', 4, ...
+    'lawson', 100, 'damping', 0.5, 'sign', 1, 'noise_chop', 1);
+pass(55) = isequal(errvec0, errvec1) && length(zj0) == length(zj1) && ...
+    norm(r0(Xlawson)-r1(Xlawson), inf) == 0;
+
+[r_auto,~,~,~,~,~,~,errvec_auto,wt_auto,svals_auto] = aaa(@exp, ...
+    'noise_chop', 0);
+[r_auto_chop,~,~,~,~,~,~,errvec_auto_chop,~,svals_auto_chop] = ...
+    aaa(@exp, 'noise_chop', 1);
+xx = linspace(-1,1);
+pass(56) = isa(r_auto, 'function_handle');
+pass(57) = ~isempty(errvec_auto) && (numel(errvec_auto) == numel(svals_auto));
+pass(58) = isvector(wt_auto) && all(isnan(wt_auto));
+pass(59) = isequal(errvec_auto, errvec_auto_chop) && ...
+    isequal(svals_auto, svals_auto_chop) && ...
+    norm(r_auto(xx)-r_auto_chop(xx), inf) == 0;
+
+rng(0)
+F = tanh(20*X) + 1e-8*randn(1,500);
+[r_lawson_chop,~,~,~,zj_lawson_chop,~,~,errvec_lawson_chop] = ...
+    aaa(F, X, 'noise_chop', 1, 'lawson', 5, 'sign', 1);
+rng(0)
+F = tanh(20*X) + 1e-8*randn(1,500);
+[~,~,~,~,zj_lawson_full,~,~,errvec_lawson_full] = ...
+    aaa(F, X, 'noise_chop', 0, 'lawson', 5, 'sign', 1);
+pass(60) = length(errvec_lawson_chop) < length(errvec_lawson_full);
+pass(61) = length(zj_lawson_chop) < length(zj_lawson_full);
+pass(62) = all(isfinite(r_lawson_chop(X))) && ...
+    norm(F-r_lawson_chop(X), inf) < 1e-5;
+
+rng(0)
+X = linspace(-1,1,80);
+F = sin(10*X) + 1e-8*randn(size(X));
+[~,~,~,~,~,~,~,e0] = aaa(F,X,'mmax',80,'noise_chop',0);
+[~,~,~,~,~,~,~,e1,~,s1] = aaa(F,X,'mmax',80,'noise_chop',1);
+pass(63) = length(e1) == length(s1);
+pass(64) = length(e1) <= floor(length(X)/2);
+pass(65) = length(e0) > length(e1);
+
+rng(state)
+
 
 warning('on', 'AAA:Froissart');
 
