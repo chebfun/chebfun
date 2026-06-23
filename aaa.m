@@ -97,11 +97,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, varargin)
 %   F = sin(10*X) + 1e-8*(randn(1,500));
 %   [~,~,~,~,~,~,~,errvec_full] = aaa(F,X);
 %   [~,~,~,~,~,~,~,errvec] = aaa(F,X,'noise_chop',1); 
-%   subplot(1,2,1)
-%   semilogy(0:length(errvec_full)-1, errvec_full)
-%   subplot(1,2,2)
-%   semilogy(0:length(errvec)-1, errvec)
-%   xlim([0, length(errvec_full)-1])
+%   semilogy(0:length(errvec_full)-1, errvec_full), hold on
+%   semilogy(0:length(errvec)-1, errvec), hold off
 % 
 %   References on AAA and AAA-Lawson, respectively:
 %
