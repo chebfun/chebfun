@@ -139,8 +139,10 @@ r = aaa(F,X,'degree',12,'lawson',100,'damping',0.85,'sign',1);
 err = norm(F-r(X),inf); pass(31) = abs(err-.000035) < .0001;
 
 f = @(x) max(x,0);
-r = aaa(f,'degree',8,'damping',.5,'lawson',200);
 xx = linspace(-1,1,300);
+r = aaa(f(xx),xx,'degree',8,'damping',.5,'lawson',200);
+% r = aaa(f,'degree',8,'damping',.5,'lawson',200);
+% xx = linspace(-1,1,300);
 err = norm(f(xx)-r(xx),inf); pass(32) = abs(err-.0006) < .001;
 
 Z = linspace(-1,1,100); F = exp(Z);

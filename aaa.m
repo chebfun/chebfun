@@ -39,7 +39,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, varargin)
 %       step.  DAMPRATIO = 1 is standard; DAMPRATIO < 1 may be more robust.
 %   - 'sign', 'on' or 1: turns on modification good for approximating sign functions
 %   - 'deriv_deg', k: maximal degree of returned derivatives (default k = 0)
-%   - 'noise_chop', 0: turns off noise chopping of the AAA error curve 
+%   - 'noise_chop', 0: turns off noise chopping of the AAA error curve. Noise 
+%       chopping was added in 2026 as another stopping criterion that triggers 
+%       when a noise plateau is detected.  
 %
 %   If 'degree' is specified and 'lawson' is not, AAA attempts to find a minimax
 %   approximant of degree N by AAA-Lawson iteration.  This will generally be
