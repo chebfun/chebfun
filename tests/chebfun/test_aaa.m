@@ -205,8 +205,10 @@ pass(45) = isequal(errvec_clean, errvec_clean_full);
 [~,~,~,~,~,~,~,errvec_true] = aaa(Fclean, X, 'noise_chop', true);
 [~,~,~,~,~,~,~,errvec_false] = aaa(Fclean, X, 'noise_chop', false);
 [~,~,~,~,~,~,~,errvec_zero] = aaa(Fclean, X, 'noise_chop', 0);
+[~,~,~,~,~,~,~,errvec_one] = aaa(Fclean, X, 'noise_chop', 1);
 pass(46) = isequal(errvec_true, errvec_clean);
-pass(47) = isequal(errvec_false, errvec_zero);
+pass(47) = isequal(errvec_true, errvec_one);
+pass(48) = isequal(errvec_false, errvec_zero);
 
 rng(0);
 Fshort = sin(10*X) + 1e-8*randn(1,500);
@@ -215,14 +217,14 @@ rng(0);
 Fshort = sin(10*X) + 1e-8*randn(1,500);
 [~,~,~,~,~,~,~,errvec_short_full] = aaa(Fshort, X, 'mmax', 20, ...
     'noise_chop', 0);
-pass(48) = isequal(errvec_short, errvec_short_full);
+pass(49) = isequal(errvec_short, errvec_short_full);
 rng(state);
 
 [r_auto,~,~,~,~,~,~,errvec_auto,wt_auto,svals_auto] = aaa(@exp, ...
     'noise_chop', 0);
-pass(49) = isa(r_auto, 'function_handle');
-pass(50) = ~isempty(errvec_auto) && (numel(errvec_auto) == numel(svals_auto));
-pass(51) = isvector(wt_auto) && all(isnan(wt_auto));
+pass(50) = isa(r_auto, 'function_handle');
+pass(51) = ~isempty(errvec_auto) && (numel(errvec_auto) == numel(svals_auto));
+pass(52) = isvector(wt_auto) && all(isnan(wt_auto));
 
 warning('on', 'AAA:Froissart');
 
