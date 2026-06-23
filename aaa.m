@@ -6,6 +6,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, varargin)
 %   compute the minimax approximation of degree N (i.e., rational type (N,N)).
 %   If 'deriv_deg', k is specified, R will be a k+1 element cell array containing
 %   the rational approximant and its first k derivatives (as function handles).
+%   If your function has noise, specify 'noise_chop', 1 to instruct the code to
+%   terminate at the beginning of a noise plateau (feature added in 2026).
 %
 %   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles, residues, and zeros
 %   of R.
@@ -37,11 +39,9 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, varargin)
 %       ensures there is no Lawson iteration.  See next paragraph.
 %   - 'damping', DAMPRATIO: when running Lawson, apply a damping ratio at each
 %       step.  DAMPRATIO = 1 is standard; DAMPRATIO < 1 may be more robust.
-%   - 'sign', 'on' or 1: turns on modification good for approximating sign functions
-%   - 'deriv_deg', k: maximal degree of returned derivatives (default k = 0)
-%   - 'noise_chop', 0: turns off noise chopping of the AAA error curve. Noise 
-%       chopping was added in 2026 as another stopping criterion that triggers 
-%       when a noise plateau is detected.  
+%   - 'sign', 'on' or 1: turns on modification good for approximating sign functions.
+%   - 'deriv_deg', k: maximal degree of returned derivatives (default k = 0).
+%   - 'noise_chop', 1: turns on noise chopping of the AAA error curve (default 0).
 %
 %   If 'degree' is specified and 'lawson' is not, AAA attempts to find a minimax
 %   approximant of degree N by AAA-Lawson iteration.  This will generally be
@@ -52,6 +52,11 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, varargin)
 %   The final weight vector WT of the Lawson iteration is available with
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT] = AAA(F, Z).
 %
+%   The minimal singular values of the Loewner matrices, which are also the
+%   linearized errors of AAA and used for noise chopping, are in SVALS.
+%   They are available with 
+%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC, WT, SVALS] = AAA(F, Z).
+% 
 %   Note that R may have fewer than N poles and zeros.  This may happen, for
 %   example, if N is too large, or if F is even and N is odd, or if F is odd
 %   and N is even.
@@ -90,8 +95,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec, wt, svals] = aaa(F, varargin)
 %    
 %   X = linspace(-1,1,500);
 %   F = sin(10*X) + 1e-8*(randn(1,500));
-%   [~,~,~,~,~,~,~,errvec] = aaa(F,X);
-%   [~,~,~,~,~,~,~,errvec_full] = aaa(F,X,'noise_chop',0); 
+%   [~,~,~,~,~,~,~,errvec_full] = aaa(F,X);
+%   [~,~,~,~,~,~,~,errvec] = aaa(F,X,'noise_chop',1); 
 %   subplot(1,2,1)
 %   semilogy(0:length(errvec_full)-1, errvec_full)
 %   subplot(1,2,2)
@@ -132,6 +137,7 @@ F = F(toKeep); Z = Z(toKeep);
 
 % Initialization for AAA iteration:
 M = length(Z);
+if noise_flag, mmax = min(mmax, floor(M/2)); end  % svals are only for m <= floor(M/2)
 abstol = tol*norm(F, inf);                 % Absolute tolerance
 J = (1:M)';
 zj = []; fj = []; C = []; A = [];
@@ -219,7 +225,7 @@ for m = 1:mmax
         break
     end
 
-    % Noise chop check
+    % Noise chop stopping criterion check
     if (noise_flag && (length(errvec) == length(svals)) )
         degree = noiseChop(errvec, svals);
         if ( degree < length(errvec) - 1 )
@@ -233,7 +239,8 @@ maxerrAAA = maxerr;                        % Error at end of AAA
 % Noise chopping 
 if ~isnan(noise_degree)
     k = noise_degree + 1;
-    zj = zj(1:k); fj = fj(1:k); errvec = errvec(1:k);
+    zj = zj(1:k); fj = fj(1:k); 
+    errvec = errvec(1:k); svals = svals(1:k);
     wj = wj_hist(1:k, k);
     maxerrAAA = errvec(k);
 end
@@ -374,7 +381,6 @@ cleanup_tol = 1e-13;           % Cleanup tolerance
 nlawson = Inf;                 % Number of Lawson steps (Inf means adaptive)
 dampratio = 1;                 % Lawson damping ratio (1 means normal)
 deriv_deg = 0;                 % desired degree of the derivatives
-noise_flag = 1;                % Stop AAA when noiseChope identifies a proper cutoff 
 % Domain:
 if ( isa(F, 'chebfun') )
     dom = F.domain([1, end]);
@@ -386,7 +392,7 @@ mmax_flag = 0;                 % Checks if mmax manually specified
 degree_flag = 0;               % Checks if degree specified
 cleanup_set = 0;               % Checks if cleanup_tol manually specified
 sign_flag = 0;                 % Classic AAA without improvement for sign functions
-noise_flag = 1;                % Noise chopping 
+noise_flag = 0;                % Enables noise chopping
 while ( ~isempty(varargin) )   % Check if parameters have been provided
     if ( strncmpi(varargin{1}, 'tol', 3) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
